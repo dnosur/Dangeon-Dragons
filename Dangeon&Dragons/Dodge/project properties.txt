@@ -1,0 +1,23 @@
+Additional Include Directories
+
+$(MSBuildStartupDirectory)\include;$(MSBuildStartupDirectory)\vcpkg_installed\x64-windows\include;%(AdditionalIncludeDirectories)
+
+Additional Library Directories
+
+$(MSBuildStartupDirectory)\lib-vc2022;$(MSBuildStartupDirectory)\vcpkg_installed\x64-windows\lib;%(AdditionalLibraryDirectories)
+
+Additional dependencies
+
+glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;freeglut.lib;OpenAL32.lib;sndfile.lib;tinyxml2.lib;freetype.lib;%(AdditionalDependencies)
+
+Post-Build Event Command Line
+
+copy "$(CurrentVsInstallRoot)\VC\Auxiliary\VS\bin\x64" "$(OutDir)"
+
+Preprocessor
+
+_DEBUG
+_CONSOLE
+NDEBUG
+_CRT_NONSTDC_NO_DEPRECATE
+_CRT_SECURE_NO_WARNINGS
