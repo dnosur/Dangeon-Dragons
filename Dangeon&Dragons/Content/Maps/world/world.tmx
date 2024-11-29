@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" infinite="1" nextlayerid="22" nextobjectid="136">
+ <tileset firstgid="1" source="tilesets/mystic_woods_ground.tsx"/>
+ <tileset firstgid="122" name="tiny_sword_ground" tilewidth="32" tileheight="32" tilecount="160" columns="20">
+  <image source="../../Assets/Tiny Swords (Update 010)/Terrain/Ground/Tilemap_Flat.png" width="640" height="256"/>
+ </tileset>
+ <tileset firstgid="282" source="tilesets/tiny_sword_tree.tsx"/>
+ <group id="2" name="Sprites">
+  <group id="6" name="Foilages">
+   <layer id="7" name="foilages" width="30" height="20">
+    <data encoding="csv">
+     <chunk x="-16" y="-16" width="16" height="16">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,282,283,0,0,286,287,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,311,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,283,284,285,286,0,0,0,0,0,0,0,0,
+0,0,0,0,307,308,309,310,0,0,0,0,0,0,0,0,
+0,0,0,0,331,332,333,334,0,0,0,0,0,0,0,0,
+0,0,0,0,355,356,357,358,0,0,0,0,0,0,0,0,
+0,0,0,0,379,380,381,382,0,0,0,0,0,0,0,0,
+0,0,0,0,403,404,405,406,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,403,0,0,406,0,0,0,0,0,0,0,0,0,0
+</chunk>
+    </data>
+   </layer>
+  </group>
+  <group id="4" name="Ground">
+   <layer id="5" name="ground" width="30" height="20">
+    <data encoding="csv"/>
+   </layer>
+  </group>
+ </group>
+ <group id="3" name="Classes"/>
+</map>

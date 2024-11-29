@@ -1,0 +1,97 @@
+{
+    "activeFile": "",
+    "expandedProjectPaths": [
+        ".",
+        "tilesets"
+    ],
+    "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
+        "D:/Github/C++/OpenGL_Snake/OpenGL_Snake/Dodge/maps/fences.tsx": {
+            "scaleInDock": 1
+        },
+        "D:/Github/C++/OpenGL_Snake/OpenGL_Snake/Dodge/maps/ground.tsx": {
+            "scaleInDock": 1
+        },
+        "D:/Github/C++/OpenGL_Snake/OpenGL_Snake/Dodge/maps/map.tsx": {
+            "scaleInDock": 1
+        },
+        "D:/Github/C++/OpenGL_Snake/OpenGL_Snake/Dodge/maps/map1.tmx": {
+            "scale": 0.8682901554404144,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 481.98174006444685,
+                "y": 319.59362692445404
+            }
+        },
+        "D:/Github/C++/OpenGL_Snake/OpenGL_Snake/Dodge/maps/plains.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "mystic_woods_ground.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "sample.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/tiny_sword_shadow.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/tiny_sword_stones.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/tiny_sword_tree.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "world.tmx": {
+            "expandedGroupLayers": [
+                3,
+                20,
+                6,
+                2
+            ],
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": -318,
+                "y": -316.5
+            }
+        },
+        "world.tmx#mystic_woods_ground": {
+            "scaleInDock": 1
+        },
+        "world.tmx#tiny_sword_ground": {
+            "scaleInDock": 1
+        },
+        "world.tmx#tiny_sword_tree": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "frame.defaultDuration": 300,
+    "last.externalTilesetPath": "D:/Github/C++/Dangeon-Dragons/Dangeon&Dragons/Content/Maps/world/tilesets",
+    "last.objectTemplatePath": "D:/Github/C++/Dangeon-Dragons/Dangeon&Dragons/Content/Maps/world/tilesets",
+    "openFiles": [
+    ],
+    "project": "dangeon-dragons.tiled-project",
+    "property.type": "bool",
+    "recentFiles": [
+        "tilesets/tiny_sword_shadow.tsx",
+        "tilesets/tiny_sword_stones.tsx",
+        "tilesets/tiny_sword_tree.tsx",
+        "world.tmx",
+        "sample.tsx",
+        "mystic_woods_ground.tsx",
+        "D:/Github/C++/OpenGL_Snake/OpenGL_Snake/Dodge/maps/map1.tmx",
+        "D:/Github/C++/OpenGL_Snake/OpenGL_Snake/Dodge/maps/plains.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.type": 1
+}
