@@ -226,10 +226,8 @@ void SpriteAnimation::Play(Coord coord, Size size)
 		timePassed = 0;
 
 		if (!reverse) {
-			// Прямое проигрывание
 			currentSpriteIndex = (currentSpriteIndex + 1) % sprites.GetSize();
 
-			// Проверка завершения анимации при прямом проигрывании
 			if (currentSpriteIndex >= sprites.GetSize() - 1 && !repeat) {
 				currentSpriteIndex = 0;
 				play = false;
@@ -238,18 +236,16 @@ void SpriteAnimation::Play(Coord coord, Size size)
 			}
 		}
 		else {
-			// Реверсивное проигрывание
 			if (currentSpriteIndex > 0) {
 				currentSpriteIndex--;
 			}
 			else {
-				// Достигнут первый кадр
 				if (!repeat) {
 					play = false;
 					end = true;
 					return;
 				}
-				// Перезапуск с последнего кадра
+
 				currentSpriteIndex = sprites.GetSize() - 1;
 			}
 		}
@@ -325,4 +321,38 @@ Image* SpriteAnimation::GetCurrentyFrame()
 Image* SpriteAnimation::GetRootTile()
 {
 	return rootTile;
+}
+
+IAnimation* SpriteAnimation::Clone()
+{
+	return new SpriteAnimation(*this);
+}
+
+bool SpriteAnimation::operator=(const SpriteAnimation& other)
+{
+	if (this != &other) {
+		this->currentFrameTitle = other.currentFrameTitle;
+		this->currentSpriteIndex = other.currentSpriteIndex;
+		this->frameRate = other.frameRate;
+
+		this->pos = other.pos;
+		this->size = other.size;
+
+		this->end = other.end;
+		this->pause = other.pause;
+		this->play = other.play;
+		this->repeat = other.repeat;
+		this->reverse = other.reverse;
+
+		this->sprites = other.sprites;
+
+		this->stopOnEnd = other.stopOnEnd;
+		this->timePassed = other.timePassed;
+
+		this->timer = other.timer;
+
+		copyStr(other.folder, this->folder);
+		copyStr(other.title, this->title);
+	}
+	return false;
 }

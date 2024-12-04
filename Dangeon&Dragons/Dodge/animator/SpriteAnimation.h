@@ -2,15 +2,17 @@
 #include <iostream>
 #include <filesystem>
 
+#include "IAnimation.h"
+
 #include "../FrameSoundsController.h"
 #include "../ImagesController.h"
-#include "../Window.h"
 
 #include "../functions.h"
 
 namespace fs = std::filesystem;
 
-class SpriteAnimation
+class SpriteAnimation 
+	: public IAnimation
 {
 	ImagesController sprites;
 	FrameSoundsController frameSounds;
@@ -91,4 +93,8 @@ public:
 
 	Image* GetCurrentyFrame();
 	Image* GetRootTile();
+
+	IAnimation* Clone();
+
+	bool operator =(const SpriteAnimation& other);
 };
