@@ -2,6 +2,8 @@
 #include "../Window.h"
 #include "TileMap.h"
 
+#include "../animator/AnimationController.h"
+
 class TinyMap
 {
 protected:
@@ -9,6 +11,8 @@ protected:
 	TileMap* tileMap;
 
 	Coord pos;
+
+	AnimationController animationController;
 
 	std::vector<IGameObject*> gameObjects;
 	std::vector<IGameObject*> gameClasses;
