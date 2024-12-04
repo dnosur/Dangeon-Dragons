@@ -6,10 +6,11 @@ Tile::Tile()
 	collision = nullptr;
 }
 
-Tile::Tile(int id, ICollision* collision)
+Tile::Tile(int id, ICollision* collision, Animation* animation)
 {
 	this->id = id;
 	this->collision = collision;
+	this->animation = animation;
 }
 
 int Tile::GetId()
@@ -22,6 +23,11 @@ ICollision* Tile::GetCollision()
 	return collision;
 }
 
+Animation* Tile::GetAnimation()
+{
+	return animation;
+}
+
 bool Tile::Undefined()
 {
 	return id == -1 && collision == nullptr;
@@ -29,7 +35,8 @@ bool Tile::Undefined()
 
 bool Tile::operator==(const Tile& other) const
 {
-	return id == other.id && collision == other.collision;
+	return id == other.id && collision == other.collision && 
+		animation == other.animation;
 }
 
 bool Tile::operator!=(const Tile& other) const
@@ -45,5 +52,6 @@ Tile& Tile::operator=(const Tile& other)
 
 	id = other.id;
 	collision = other.collision;
+	animation = other.animation;
 	return *this;
 }
