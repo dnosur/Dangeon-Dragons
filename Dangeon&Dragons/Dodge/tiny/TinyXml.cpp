@@ -1,12 +1,13 @@
 #include "TinyXml.h"
 #include "TileMap.h"
 
-const char* TinyXml::root_dir = "Dodge/";
+const char* TinyXml::root_dir = "Content/";
 
 std::string TinyXml::GetPathToTileSource(std::string path)
 {
-    std::filesystem::path fullSource = std::filesystem::path(root_dir) / path.substr(3);
-    return fullSource.string();
+    std::filesystem::path fullPath = std::filesystem::absolute(path);
+    std::filesystem::path fullSource = std::filesystem::path(root_dir) / path.substr(8);
+    return root_dir + fullSource.string();
 }
 
 std::vector<Coord> TinyXml::ParsePolygon(std::string polygon, const Coord& offset)
@@ -84,6 +85,8 @@ TileMap* TinyXml::LoadMap(const char* path, const char* title)
     //Classes
     TinyClassController objects;
     tinyxml2::XMLElement* classes = mapElement->FirstChildElement("group");
+
+    std::cout << classes->Attribute("name") << std::endl;
 
     if (classes != nullptr) {
 		objects = TinyClassController(classes);
