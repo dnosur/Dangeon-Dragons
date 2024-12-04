@@ -162,51 +162,6 @@
    <frame tileid="250" duration="300"/>
   </animation>
  </tile>
- <tile id="193">
-  <objectgroup draworder="index" id="2">
-   <object id="1" name="Tree" type="TinySwordTreeCollision" x="20.75" y="3.5" width="11" height="28.125"/>
-  </objectgroup>
- </tile>
- <tile id="194">
-  <objectgroup draworder="index" id="2">
-   <object id="1" name="Tree" type="TinySwordTreeCollision" x="0" y="0" width="32" height="32"/>
-  </objectgroup>
- </tile>
- <tile id="195">
-  <objectgroup draworder="index" id="2">
-   <object id="1" name="Tree" type="TinySwordTreeCollision" x="-0.125" y="1.125" width="11.625" height="30.75"/>
-  </objectgroup>
- </tile>
- <tile id="217">
-  <objectgroup draworder="index" id="2">
-   <object id="1" name="Tree" type="TinySwordTreeCollision" x="19.25" y="0.25" width="12.5" height="31.625"/>
-  </objectgroup>
- </tile>
- <tile id="218">
-  <objectgroup draworder="index" id="2">
-   <object id="1" name="Tree" type="TinySwordTreeCollision" x="0" y="0" width="32" height="32"/>
-  </objectgroup>
- </tile>
- <tile id="219">
-  <objectgroup draworder="index" id="2">
-   <object id="1" name="Tree" type="TinySwordTreeCollision" x="0.125" y="0.5" width="25.625" height="31.375"/>
-  </objectgroup>
- </tile>
- <tile id="241">
-  <objectgroup draworder="index" id="2">
-   <object id="1" name="Tree" type="TinySwordTreeCollision" x="16.875" y="0.25" width="14.875" height="26"/>
-  </objectgroup>
- </tile>
- <tile id="242">
-  <objectgroup draworder="index" id="2">
-   <object id="1" name="Tree" type="TinySwordTreeCollision" x="0" y="0" width="32" height="32"/>
-  </objectgroup>
- </tile>
- <tile id="243">
-  <objectgroup draworder="index" id="2">
-   <object id="1" name="Tree" type="TinySwordTreeCollision" x="-0.125" y="0" width="26.875" height="31.875"/>
-  </objectgroup>
- </tile>
  <wangsets>
   <wangset name="Безымянный набор" type="edge" tile="-1">
    <wangcolor name="" color="#ff0000" tile="-1" probability="1"/>

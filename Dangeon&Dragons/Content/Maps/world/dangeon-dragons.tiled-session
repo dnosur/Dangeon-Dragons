@@ -38,6 +38,13 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "tilesets/mystic_woods_ground.tsx": {
+            "scaleInDock": 1
+        },
+        "tilesets/tiny_sword_ground.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "tilesets/tiny_sword_shadow.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -84,6 +91,7 @@
     "property.type": "bool",
     "recentFiles": [
         "tilesets/tiny_sword_shadow.tsx",
+        "tilesets/tiny_sword_ground.tsx",
         "tilesets/tiny_sword_stones.tsx",
         "tilesets/tiny_sword_tree.tsx",
         "world.tmx",
@@ -92,6 +100,7 @@
         "D:/Github/C++/OpenGL_Snake/OpenGL_Snake/Dodge/maps/map1.tmx",
         "D:/Github/C++/OpenGL_Snake/OpenGL_Snake/Dodge/maps/plains.tsx"
     ],
+    "resizeMap.removeObjects": false,
     "tileset.lastUsedFormat": "tsx",
     "tileset.type": 1
 }
