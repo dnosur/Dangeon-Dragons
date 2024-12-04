@@ -35,6 +35,9 @@ Size MathSize(Size size, Size windowSize);
 Coord MathCoord(Coord coord, Size windowSize);
 
 template <typename T>
+void copyArray(T** origin, T** destination);
+
+template <typename T>
 void ClearVector(std::vector<T>& vector);
 
 template<typename T>
@@ -42,6 +45,12 @@ inline bool ExistInVector(std::vector<T>& vector, T value);
 
 template<typename T>
 inline void RemoveFromVector(std::vector<T>& vector, T value);
+
+template<typename T>
+inline void copyArray(T** origin, T** destination)
+{
+	*destination = *origin;
+}
 
 template<typename T>
 inline void ClearVector(std::vector<T>& vector)
@@ -76,5 +85,7 @@ inline void RemoveFromVector(std::vector<T>& vector, T value)
 }
 
 float CalculateDistance(const Coord& a, const Coord& b);
+
+std::string generateRandomString(int length);
 
 const char* GetCurrentUser();

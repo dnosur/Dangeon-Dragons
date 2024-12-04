@@ -1,4 +1,5 @@
 #include "functions.h"
+#include <random>
 
 void clear() {
 	system("cls");
@@ -125,6 +126,25 @@ float CalculateDistance(const Coord& a, const Coord& b)
 	float dx = a.X - b.X;
 	float dy = a.Y - b.Y;
 	return std::sqrt(dx * dx + dy * dy);
+}
+
+std::string generateRandomString(int length)
+{
+	const std::string characters =
+		"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+	std::random_device rd;
+	std::mt19937 generator(rd());
+	std::uniform_int_distribution<> distribution(0, characters.size() - 1);
+
+	std::string randomString;
+	randomString.reserve(length);
+
+	for (int i = 0; i < length; ++i) {
+		randomString += characters[distribution(generator)];
+	}
+
+	return randomString;
 }
 
 const char* GetCurrentUser()
