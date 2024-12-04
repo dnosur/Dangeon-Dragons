@@ -47,7 +47,7 @@ Tileset* TilesetsController::LoadTileset(int firstgId, const char* path)
     tinyxml2::XMLDocument doc;
     if (TinyXml::ReadDoc(doc, path) != tinyxml2::XML_SUCCESS) {
         return nullptr;
-    }
+    } 
 
     tinyxml2::XMLElement* tilesetElement = doc.FirstChildElement("tileset");
     const char* name = tilesetElement->Attribute("name");
@@ -57,6 +57,8 @@ Tileset* TilesetsController::LoadTileset(int firstgId, const char* path)
 
     int tileCount = tilesetElement->IntAttribute("tilecount");
     int columns = tilesetElement->IntAttribute("columns");
+
+    TilesetPropertiesController tilesetProperties = TilesetPropertiesController();
 
     //Load image
     tinyxml2::XMLElement* image = tilesetElement->FirstChildElement("image");
@@ -83,10 +85,26 @@ Tileset* TilesetsController::LoadTileset(int firstgId, const char* path)
         tileset = tileset->NextSiblingElement("tile")
         ) {
 
+        int tile_id = tileset->IntAttribute("id");
+
+        //animation
+        tinyxml2::XMLElement* animation = tileset->FirstChildElement("animation");
+
+        Animation* animation_obj = nullptr;
+        if (animation != nullptr) {
+            animation_obj = new Animation(animation);
+        }
         //Object group
         tinyxml2::XMLElement* objectGroup = tileset->FirstChildElement("objectgroup");
 
         if (objectGroup == nullptr) {
+            tiles.push_back(
+                Tile(
+                    tile_id,
+					nullptr,
+                    animation_obj
+                )
+            );
             continue;
         }
 
@@ -94,6 +112,13 @@ Tileset* TilesetsController::LoadTileset(int firstgId, const char* path)
         tinyxml2::XMLElement* object = objectGroup->FirstChildElement("object");
 
         if (object == nullptr) {
+            tiles.push_back(
+                Tile(
+                    tile_id,
+                    nullptr,
+                    animation_obj
+                )
+            );
             continue;
         }
 
@@ -111,8 +136,6 @@ Tileset* TilesetsController::LoadTileset(int firstgId, const char* path)
             object->DoubleAttribute("height")
         };
 
-        int tile_id = tileset->IntAttribute("id");
-
         tinyxml2::XMLElement* polygon = object->FirstChildElement("polygon");
 
         if (polygon == nullptr) {
@@ -125,7 +148,8 @@ Tileset* TilesetsController::LoadTileset(int firstgId, const char* path)
                         object_id,
                         (char*)object_name,
                         (char*)object_type
-                    )
+                    ),
+					animation_obj
                 )
             );
             continue;
@@ -139,7 +163,8 @@ Tileset* TilesetsController::LoadTileset(int firstgId, const char* path)
                     object_id,
                     (char*)object_name,
                     (char*)object_type
-                )
+                ),
+                animation_obj
             )
         );
     }
@@ -147,7 +172,7 @@ Tileset* TilesetsController::LoadTileset(int firstgId, const char* path)
     return new Tileset(
         firstgId, tileWidth, tileHeight, width, height,
         tileCount, columns, name, source.c_str(), 
-        image_obj, tiles
+        image_obj, tiles, tilesetProperties
     );
 }
 
