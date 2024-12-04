@@ -9,7 +9,7 @@ protected:
 public:
 	Propertie();
 	Propertie(char* title, char* value, char* type);
-	~Propertie() = default;
+	~Propertie();
 
 	char* getTitle();
 	char* getValue();
