@@ -111,6 +111,10 @@ Image ImagesController::LoadImg(const char* path, const char* title)
     stbi_set_flip_vertically_on_load(true);
 
     unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
+    if (!data) {
+        std::cout << "stbi_load error: " << stbi_failure_reason() << std::endl;
+    }
+
     if (data) {
         GLenum format;
         if (nrChannels == 1)
