@@ -2,6 +2,8 @@
 #include "font/Font.h"
 #include "Save.h"
 
+#include "../Content/Scripts/Maps/WonderWorld/WonderWold.h"
+
 void MainWindow::Lose()
 {
     DrawSymbols(
@@ -154,6 +156,9 @@ void MainWindow::Update()
 {
     gameStatus = GameStatuses::Start;
 
+    TileMap* tileMap = TinyXml::LoadMap("Content/Maps/world/world.tmx", "wonder_world");
+    WonderWold wonderWold(this, tileMap, Coord(100, -400));
+
     while (!glfwWindowShouldClose(GetWindow()) && !IsClosed())
     {
         FillBackground();
@@ -178,6 +183,8 @@ void MainWindow::Update()
         if (gameStatus == GameStatuses::End) {
             Lose();
         }
+
+        wonderWold.Update();
 
         mouse.Update();
         keyboard.Update();
