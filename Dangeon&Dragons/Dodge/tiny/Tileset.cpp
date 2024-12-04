@@ -16,7 +16,7 @@ Tileset::Tileset()
 Tileset::Tileset(
 	int firstgId, int tileWidth, int tileHeight, int width, int height,
 	int tileCount, int columns, char* name, char* source,
-	Image image, std::vector<Tile> tiles
+	Image image, std::vector<Tile> tiles, TilesetPropertiesController tilesetProperties
 ){
 	std::cout << source << std::endl;
 
@@ -38,12 +38,14 @@ Tileset::Tileset(
 	copyStr(source, this->source);
 
 	this->tiles = tiles;
+
+	this->tilesetProperties = tilesetProperties;
 }
 
 Tileset::Tileset(
 	int firstgId, int tileWidth, int tileHeight, int width, int height,
 	int tileCount, int columns, const char* name,const char* source,
-	Image image, std::vector<Tile> tiles
+	Image image, std::vector<Tile> tiles, TilesetPropertiesController tilesetProperties
 ) {
 	std::cout << source << std::endl;
 
@@ -65,6 +67,8 @@ Tileset::Tileset(
 	copyStr(source, this->source);
 
 	this->tiles = tiles;
+
+	this->tilesetProperties = tilesetProperties;
 }
 
 Tileset::~Tileset()
@@ -148,6 +152,11 @@ int Tileset::MathId(int tileId)
 	}
 
 	return tileId - firstgId;
+}
+
+TilesetPropertiesController* Tileset::GetProperties()
+{
+	return &tilesetProperties;
 }
 
 Tile* Tileset::operator[](int index)

@@ -1,5 +1,6 @@
 #pragma once
 #include "Tile.h"
+#include "TilesetProperties/TilesetPropertiesController.h"
 
 class Tileset
 {
@@ -19,20 +20,19 @@ class Tileset
 
 	Image image;
 	std::vector<Tile> tiles;
-
-
+	TilesetPropertiesController tilesetProperties;
 public:
 	Tileset();
 	Tileset(
 		int firstgId, int tileWidth, int tileHeight, int width, int height,
 		int tileCount, int columns, char* name, char* source, 
-		Image image, std::vector<Tile> tile
+		Image image, std::vector<Tile> tile, TilesetPropertiesController tilesetProperties
 	);
 
 	Tileset(
 		int firstgId, int tileWidth, int tileHeight, int width, int height,
 		int tileCount, int columns, const char* name, const char* source,
-		Image image, std::vector<Tile> tile
+		Image image, std::vector<Tile> tile, TilesetPropertiesController tilesetProperties
 	);
 	~Tileset();
 
@@ -57,6 +57,8 @@ public:
 
 	bool IsContains(int gId);
 	int MathId(int tileId);
+
+	TilesetPropertiesController* GetProperties();
 
 	Tile* operator[](int index);
 };
