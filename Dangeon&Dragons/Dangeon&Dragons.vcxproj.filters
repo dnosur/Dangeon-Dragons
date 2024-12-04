@@ -153,6 +153,39 @@
     <ClCompile Include="Dodge\glad\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Dodge\tiny\Animation\Animation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\animator\VertexAnimation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\animator\AnimationController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\tiny\TilesetProperties\BoolPropertie.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\tiny\TilesetProperties\Propertie.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\tiny\TilesetProperties\StringPropertie.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\tiny\TilesetProperties\TilesetPropertiesController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\tiny\TilesetProperties\PropertiesFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\tiny\Animation\Frame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Scripts\Maps\WonderWorld\WonderWold.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\tiny\TinyChunk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dodge\Audio.h">
@@ -315,6 +348,42 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dodge\lib\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\tiny\Animation\Animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\animator\VertexAnimation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\animator\AnimationController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\tiny\TilesetProperties\BoolPropertie.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\tiny\TilesetProperties\Propertie.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\tiny\TilesetProperties\StringPropertie.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\tiny\TilesetProperties\TilesetPropertiesController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\tiny\TilesetProperties\PropertiesFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\animator\IAnimation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\tiny\Animation\Frame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\Maps\WonderWorld\WonderWold.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\tiny\TinyChunk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

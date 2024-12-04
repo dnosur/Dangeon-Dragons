@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -134,6 +134,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Dodge\tiny\Animation\Animation.cpp" />
+    <ClCompile Include="Dodge\animator\VertexAnimation.cpp" />
+    <ClCompile Include="Dodge\animator\AnimationController.cpp" />
     <ClCompile Include="Dangeon&amp;Dragons.cpp" />
     <ClCompile Include="Dodge\animator\SpriteAnimation.cpp" />
     <ClCompile Include="Dodge\animator\SpriteAnimationController.cpp" />
@@ -172,6 +175,10 @@
     <ClCompile Include="Dodge\tiny\Tile.cpp" />
     <ClCompile Include="Dodge\tiny\TileMap.cpp" />
     <ClCompile Include="Dodge\tiny\Tileset.cpp" />
+    <ClCompile Include="Dodge\tiny\TilesetProperties\BoolPropertie.cpp" />
+    <ClCompile Include="Dodge\tiny\TilesetProperties\Propertie.cpp" />
+    <ClCompile Include="Dodge\tiny\TilesetProperties\StringPropertie.cpp" />
+    <ClCompile Include="Dodge\tiny\TilesetProperties\TilesetPropertiesController.cpp" />
     <ClCompile Include="Dodge\tiny\TilesetsController.cpp" />
     <ClCompile Include="Dodge\tiny\TinyClass.cpp" />
     <ClCompile Include="Dodge\tiny\TinyClassController.cpp" />
@@ -180,8 +187,15 @@
     <ClCompile Include="Dodge\tiny\TinySrpiteLayersController.cpp" />
     <ClCompile Include="Dodge\tiny\TinyXml.cpp" />
     <ClCompile Include="Dodge\Window.cpp" />
+    <ClCompile Include="Dodge\tiny\TilesetProperties\PropertiesFactory.cpp" />
+    <ClCompile Include="Dodge\tiny\Animation\Frame.cpp" />
+    <ClCompile Include="Content\Scripts\Maps\WonderWorld\WonderWold.cpp" />
+    <ClCompile Include="Dodge\tiny\TinyChunk.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Dodge\tiny\Animation\Animation.h" />
+    <ClInclude Include="Dodge\animator\VertexAnimation.h" />
+    <ClInclude Include="Dodge\animator\AnimationController.h" />
     <ClInclude Include="Dodge\animator\IAnimationObject.h" />
     <ClInclude Include="Dodge\animator\SpriteAnimation.h" />
     <ClInclude Include="Dodge\animator\SpriteAnimationController.h" />
@@ -226,6 +240,10 @@
     <ClInclude Include="Dodge\tiny\Tile.h" />
     <ClInclude Include="Dodge\tiny\TileMap.h" />
     <ClInclude Include="Dodge\tiny\Tileset.h" />
+    <ClInclude Include="Dodge\tiny\TilesetProperties\BoolPropertie.h" />
+    <ClInclude Include="Dodge\tiny\TilesetProperties\Propertie.h" />
+    <ClInclude Include="Dodge\tiny\TilesetProperties\StringPropertie.h" />
+    <ClInclude Include="Dodge\tiny\TilesetProperties\TilesetPropertiesController.h" />
     <ClInclude Include="Dodge\tiny\TilesetsController.h" />
     <ClInclude Include="Dodge\tiny\TinyClass.h" />
     <ClInclude Include="Dodge\tiny\TinyClassController.h" />
@@ -236,6 +254,11 @@
     <ClInclude Include="Dodge\Window.h" />
     <ClInclude Include="Dodge\WindowPointer.h" />
     <ClInclude Include="Dodge\WindowPointerController.h" />
+    <ClInclude Include="Dodge\tiny\TilesetProperties\PropertiesFactory.h" />
+    <ClInclude Include="Dodge\animator\IAnimation.h" />
+    <ClInclude Include="Dodge\tiny\Animation\Frame.h" />
+    <ClInclude Include="Content\Scripts\Maps\WonderWorld\WonderWold.h" />
+    <ClInclude Include="Dodge\tiny\TinyChunk.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dodge\project properties.txt" />
