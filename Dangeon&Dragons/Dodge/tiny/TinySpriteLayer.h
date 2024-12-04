@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "../figures/Rect.h"
+#include "TinyChunk.h"
 
 class TinySpriteLayer
 {
@@ -12,7 +13,7 @@ class TinySpriteLayer
 
 	Coord offset;
 
-	int** tileIds;
+	std::vector<TinyChunk*> chunks;
 public:
 	TinySpriteLayer();
 	TinySpriteLayer(int id, const char* name, Size size, int** tileIds, Coord offset = Coord(0, 0));
@@ -21,11 +22,14 @@ public:
 
 	bool Undefined();
 
-	static void GetSprites(tinyxml2::XMLElement* element, int**& ids);
+	static void GetSprites(tinyxml2::XMLElement* element, std::vector<TinyChunk*>& chunks);
+	static void LoadChunkIds(std::string data, int**& ids, Size size);
 
 	int GetId();
 	char* GetName();
 	Size GetSize();
 
-	int* operator[](int index);
+	int GetChunksCount();
+
+	TinyChunk* operator[](int index);
 };

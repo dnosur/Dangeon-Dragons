@@ -5,7 +5,6 @@ TinySpriteLayer::TinySpriteLayer()
 	id = -1;
 	name = nullptr;
 	size = Size(0, 0);
-	tileIds = nullptr;
 
 	offset = Coord(0, 0);
 }
@@ -20,7 +19,6 @@ TinySpriteLayer::TinySpriteLayer(
 	this->id = id;
 	copyStr(name, this->name);
 	this->size = size;
-	this->tileIds = tileIds;
 }
 
 TinySpriteLayer::TinySpriteLayer(tinyxml2::XMLElement* element)
@@ -29,7 +27,6 @@ TinySpriteLayer::TinySpriteLayer(tinyxml2::XMLElement* element)
 		id = -1;
 		name = nullptr;
 		size = Size(0, 0);
-		tileIds = nullptr;
 		return;
 	}
 
@@ -41,14 +38,7 @@ TinySpriteLayer::TinySpriteLayer(tinyxml2::XMLElement* element)
 	size = Size(element->DoubleAttribute("width"), element->DoubleAttribute("height"));
 	offset = Coord(element->DoubleAttribute("offsetx"), element->DoubleAttribute("offsety"));
 
-	GetSprites(element, tileIds);
-
-	for (int i = 0; i < size.height; i++) {
-		for (int j = 0; j < size.width; j++) {
-			std::cout << tileIds[i][j] << " ";
-		}
-		std::cout << std::endl;
-	}
+	GetSprites(element, chunks);
 }
 
 TinySpriteLayer::~TinySpriteLayer()
@@ -57,10 +47,10 @@ TinySpriteLayer::~TinySpriteLayer()
 
 bool TinySpriteLayer::Undefined()
 {
-	return id < 0 && name == nullptr && size == Size(0, 0) && tileIds == nullptr;
+	return id < 0 && name == nullptr && size == Size(0, 0) && !chunks.size();
 }
 
-void TinySpriteLayer::GetSprites(tinyxml2::XMLElement* element, int**& ids)
+void TinySpriteLayer::GetSprites(tinyxml2::XMLElement* element, std::vector<TinyChunk*>& chunks)
 {
 	int height = element->IntAttribute("height");
 	int width = element->IntAttribute("width");
@@ -74,9 +64,42 @@ void TinySpriteLayer::GetSprites(tinyxml2::XMLElement* element, int**& ids)
 		return;
 	}
 
-	std::string data = dataLayer->GetText();
+	for (tinyxml2::XMLElement* child = dataLayer->FirstChildElement("chunk");
+		child != nullptr;
+		child = child->NextSiblingElement("chunk")
+		) {
+		chunks.push_back(new TinyChunk(child));
 
-	ids = new int*[height];
+		std::cout << "chunk " << child->IntAttribute("x") << " " << child->IntAttribute("y") << std::endl;
+		for (int i = 0; i < chunks[chunks.size() - 1]->size.height; i++) {
+			for (int j = 0; j < chunks[chunks.size() - 1]->size.width; j++) {
+				std::cout << chunks[chunks.size() - 1]->tileIds[i][j] << " ";
+			}
+			std::cout << std::endl;
+		}
+	}
+
+	if (!chunks.empty()) {
+		return;
+	}
+
+	TinyChunk chunk;
+	chunk.size = Size(width, height);
+
+	std::string data = dataLayer->GetText();
+	LoadChunkIds(data, chunk.tileIds, Size(width, height));
+
+	for (int i = 0; i < chunk.size.height; i++) {
+		for (int j = 0; j < chunk.size.width; j++) {
+			std::cout << chunk.tileIds[i][j] << " ";
+		}
+		std::cout << std::endl;
+	}
+}
+
+void TinySpriteLayer::LoadChunkIds(std::string data, int**& ids, Size size)
+{
+	ids = new int* [size.height];
 
 	std::istringstream stream(data);
 	std::string line;
@@ -90,7 +113,7 @@ void TinySpriteLayer::GetSprites(tinyxml2::XMLElement* element, int**& ids)
 		std::istringstream lineStream(line);
 		std::string point;
 
-		ids[i] = new int[width];
+		ids[i] = new int[size.width];
 		int j = 0;
 		while (std::getline(lineStream, point, ',')) {
 			ids[i][j] = std::stoi(point);
@@ -115,10 +138,15 @@ Size TinySpriteLayer::GetSize()
 	return size;
 }
 
-int* TinySpriteLayer::operator[](int index)
+int TinySpriteLayer::GetChunksCount()
 {
-	if (index < 0 || index >= size.height) {
+	return chunks.size();
+}
+
+TinyChunk* TinySpriteLayer::operator[](int index)
+{
+	if (index < 0 || index >= chunks.size()) {
 		return nullptr;
 	}
-	return tileIds[index];
+	return chunks[index];
 }
