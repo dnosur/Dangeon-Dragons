@@ -4,11 +4,14 @@
 class AnimationController
 {
 	std::vector<IAnimation*> animations;
+	char* prevAnim;
 
 	IAnimation* GetByTitle(const char* title);
 	IAnimation* GetByTitle(const char* title, int& index);
 
 	IAnimation* GetByIndex(int index);
+
+	void DropPrevAnim(IAnimation* currentAnim);
 
 	int currentIndex;
 public:
@@ -36,7 +39,7 @@ public:
 
 	bool IsAnimationEnd();
 
-	IAnimation* operator[](int index);
 	IAnimation* operator[](const char* title);
+	IAnimation* operator[](int index);
 };
 

@@ -31,14 +31,31 @@ IAnimation* AnimationController::GetByIndex(int index)
 	return animations[index];
 }
 
+void AnimationController::DropPrevAnim(IAnimation* currentAnim)
+{
+	return;
+
+	if (prevAnim == nullptr) {
+		copyStr(currentAnim->GetTitle(), prevAnim);
+		return;
+	}
+
+	if (strcmp(currentAnim->GetTitle(), prevAnim)) {
+		animations[currentIndex]->Stop();
+		copyStr(currentAnim->GetTitle(), prevAnim);
+	}
+}
+
 AnimationController::AnimationController()
 {
+	prevAnim = nullptr;
 	currentIndex = -1;
 }
 
 AnimationController::AnimationController(std::vector<IAnimation*> animations)
 {
 	this->animations = animations;
+	prevAnim = nullptr;
 	currentIndex = -1;
 }
 
@@ -63,7 +80,9 @@ void AnimationController::AddAnimations(std::vector<IAnimation*> animations)
 void AnimationController::Play(int index)
 {
 	IAnimation* animation = GetByIndex(index);
+
 	if (animation != nullptr) {
+		DropPrevAnim(animation);
 		animation->Play();
 		currentIndex = index;
 	}
@@ -72,7 +91,9 @@ void AnimationController::Play(int index)
 void AnimationController::Play(int index, Coord pos, Size size)
 {
 	IAnimation* animation = GetByIndex(index);
+
 	if (animation != nullptr) {
+		DropPrevAnim(animation);
 		animation->Play(pos, size);
 		currentIndex = index;
 	}
@@ -98,10 +119,19 @@ void AnimationController::PlayOnEnd(int index, Coord pos, Size size)
 
 bool AnimationController::Play(const char* title)
 {
-	IAnimation* animation = GetByTitle(title, currentIndex);
+	int newIndex = 0;
+	IAnimation* animation = GetByTitle(title, newIndex);
 
 	if (animation != nullptr) {
+		DropPrevAnim(animation);
+
+		if (animation->IsEnd()) {
+			animation->Restart();
+			return true;
+		}
+
 		animation->Play();
+		currentIndex = newIndex;
 		return true;
 	}
 	return false;
@@ -109,10 +139,13 @@ bool AnimationController::Play(const char* title)
 
 void AnimationController::Play(const char* title, Coord pos, Size size)
 {
-	IAnimation* animation = GetByTitle(title, currentIndex);
+	int newIndex = 0;
+	IAnimation* animation = GetByTitle(title, newIndex);
 
 	if (animation != nullptr) {
+		DropPrevAnim(animation);
 		animation->Play(pos, size);
+		currentIndex = newIndex;
 	}
 }
 
@@ -156,12 +189,12 @@ bool AnimationController::IsAnimationEnd()
 	return currentIndex < 0 || !animations.size() || animations.operator[](currentIndex)->IsEnd();
 }
 
-IAnimation* AnimationController::operator[](int index)
-{
-	return GetByIndex(index);
-}
-
 IAnimation* AnimationController::operator[](const char* title)
 {
 	return GetByTitle(title);
+}
+
+IAnimation* AnimationController::operator[](int index)
+{
+	return GetByIndex(index);
 }
