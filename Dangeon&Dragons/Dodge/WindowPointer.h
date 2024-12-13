@@ -31,6 +31,7 @@ template<typename T>
 inline WindowPointer<T>::WindowPointer()
 {
 	title = (char*)"Undefined";
+	value = nullptr;
 	undefined = true;
 }
 
