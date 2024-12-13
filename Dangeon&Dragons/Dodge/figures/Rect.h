@@ -1,6 +1,6 @@
 #pragma once
 #include "../materials/figures/BaseFigureMaterial.h"
-#include "../ImagesController.h"
+#include "../images/ImagesController.h"
 #include "../Directions.h"
 
 class Rect :
@@ -31,7 +31,13 @@ class Rect :
 
     Directions moveDirection;
 
+    Camera* camera;
+
     char* title;
+
+    Layer layer;
+
+    bool kinematic;
 
     bool MouseInRect(Mouse& mouse);
 
@@ -56,6 +62,8 @@ public:
     void Update();
 
     Coord GetPos();
+    Coord GetOpenGlPos();
+
     Size GetSize();
 
     bool MouseHover(Mouse& mouse);
@@ -89,6 +97,14 @@ public:
     Directions GetMoveDirection();
 
     const bool IsMouseOverlap();
+
+    void SetLayer(Layer layer);
+    Layer GetLayer();
+
+    bool IsKinematic();
+    void SetKinematic(bool kinematic);
+
+    Coord GetDistanceTo(IGameObject& gameObject);
 
     void HookMouseHover(MouseHoverHandler handler);
     void HookMouseOver(MouseHoverHandler handler);
