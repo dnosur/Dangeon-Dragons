@@ -1,7 +1,8 @@
 #pragma once
 #include "Shader.h"
-#include "Image.h"
+#include "./images/Image.h"
 #include "IGameObject.h"
+#include "camera/Camera.h"
 
 class Material
 {
@@ -18,6 +19,7 @@ protected:
 	float emissiveIntensity;
 
 	Shader* shader;
+	Camera* camera;
 
 	Image* diffuseMap;
 	Image* normalMap;
@@ -57,6 +59,7 @@ public:
 	~Material();
 
 	void SetShader(Shader* shader);
+	void SetCamera(Camera* camera);
 	void SetDiffuseMap(Image* diffuseMap);
 	void SetNormalMap(Image* normalMap);
 	void SetSpecularMap(Image* specularMap);
@@ -73,10 +76,15 @@ public:
 	void SetSpecularIntensity(float specularIntensity);
 	void SetEmissiveIntensity(float emissiveIntensity);
 
-	void SetDiffuseMapVerticies(std::vector<Coord> diffuseMapVerticies);
+	void SetDiffuseMapVerticies(std::vector<Coord>& diffuseMapVerticies);
 	void SetNormalMapVerticies(std::vector<Coord> normalMapVerticies);
 	void SetSpecularMapVerticies(std::vector<Coord> specularMapVerticies);
 	void SetEmissiveMapVerticies(std::vector<Coord> emissiveMapVerticies);
+
+	void SetDiffuseMapVerticies(std::pair<Coord, Coord> diffuseMapVerticies);
+	void SetNormalMapVerticies(std::pair<Coord, Coord> normalMapVerticies);
+	void SetSpecularMapVerticies(std::pair<Coord, Coord> specularMapVerticies);
+	void SetEmissiveMapVerticies(std::pair<Coord, Coord> emissiveMapVerticies);
 
 	Color GetAmbient();
 	Color GetDiffuse();
@@ -90,6 +98,7 @@ public:
 	float GetEmissiveIntensity();
 
 	Shader* GetShader();
+	Camera* GetCamera();
 	Image* GetDiffuseMap();
 	Image* GetNormalMap();
 	Image* GetSpecularMap();

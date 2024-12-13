@@ -42,11 +42,21 @@ Material::~Material()
 	if (normalMap != nullptr) delete normalMap;
 	if (specularMap != nullptr) delete specularMap;
 	if (emissiveMap != nullptr) delete emissiveMap;
+
+	ClearVector<Coord>(diffuseMapVerticies);
+	ClearVector<Coord>(normalMapVerticies);
+	ClearVector<Coord>(specularMapVerticies);
+	ClearVector<Coord>(emissiveMapVerticies);
 }
 
 void Material::SetShader(Shader* shader)
 {
 	this->shader = shader;
+}
+
+void Material::SetCamera(Camera* camera)
+{
+	this->camera = camera;
 }
 
 void Material::SetDiffuseMap(Image* diffuseMap)
@@ -114,10 +124,10 @@ void Material::SetEmissiveIntensity(float emissiveIntensity)
 	this->emissiveIntensity = emissiveIntensity;
 }
 
-void Material::SetDiffuseMapVerticies(std::vector<Coord> diffuseMapVerticies)
+void Material::SetDiffuseMapVerticies(std::vector<Coord>& diffuseMapVerticies)
 {
-	ClearVector<Coord>(this->diffuseMapVerticies);
 	this->diffuseMapVerticies = diffuseMapVerticies;
+	//this->diffuseMapVerticies.swap(diffuseMapVerticies);
 }
 
 void Material::SetNormalMapVerticies(std::vector<Coord> normalMapVerticies)
@@ -136,6 +146,34 @@ void Material::SetEmissiveMapVerticies(std::vector<Coord> emissiveMapVerticies)
 {
 	ClearVector<Coord>(this->emissiveMapVerticies);
 	this->emissiveMapVerticies = emissiveMapVerticies;
+}
+
+void Material::SetDiffuseMapVerticies(std::pair<Coord, Coord> diffuseMapVerticies)
+{
+	ClearVector<Coord>(this->diffuseMapVerticies);
+	this->diffuseMapVerticies.push_back(diffuseMapVerticies.first);
+	this->diffuseMapVerticies.push_back(diffuseMapVerticies.second);
+}
+
+void Material::SetNormalMapVerticies(std::pair<Coord, Coord> normalMapVerticies)
+{
+	ClearVector<Coord>(this->normalMapVerticies);
+	this->normalMapVerticies.push_back(normalMapVerticies.first);
+	this->normalMapVerticies.push_back(normalMapVerticies.second);
+}
+
+void Material::SetSpecularMapVerticies(std::pair<Coord, Coord> specularMapVerticies)
+{
+	ClearVector<Coord>(this->specularMapVerticies);
+	this->specularMapVerticies.push_back(specularMapVerticies.first);
+	this->specularMapVerticies.push_back(specularMapVerticies.second);
+}
+
+void Material::SetEmissiveMapVerticies(std::pair<Coord, Coord> emissiveMapVerticies)
+{
+	ClearVector<Coord>(this->emissiveMapVerticies);
+	this->emissiveMapVerticies.push_back(emissiveMapVerticies.first);
+	this->emissiveMapVerticies.push_back(emissiveMapVerticies.second);
 }
 
 Color Material::GetSpecular()
@@ -230,7 +268,7 @@ bool Material::operator==(const Material& other) const
 	return ambient == other.ambient && diffuse == other.diffuse && specular == other.specular && 
 		emissive == other.emissive && shininess == other.shininess && metalic == other.metalic && 
 		roughness == other.roughness && specularIntensity == other.specularIntensity && 
-		emissiveIntensity == other.emissiveIntensity && shader == other.shader && 
+		emissiveIntensity == other.emissiveIntensity && shader == other.shader && camera == other.camera &&
 		diffuseMap == other.diffuseMap && normalMap == other.normalMap && specularMap == other.specularMap && 
 		emissiveMap == other.emissiveMap;
 }
@@ -255,6 +293,7 @@ Material& Material::operator=(const Material& other)
 		emissiveIntensity = other.emissiveIntensity;
 
 		shader = other.shader;
+		camera = other.camera;
 
 		diffuseMap = other.diffuseMap;
 		normalMap = other.normalMap;
@@ -268,6 +307,11 @@ Material& Material::operator=(const Material& other)
 Shader* Material::GetShader()
 {
 	return shader;
+}
+
+Camera* Material::GetCamera()
+{
+	return camera;
 }
 
 
