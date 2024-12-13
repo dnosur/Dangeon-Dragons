@@ -5,7 +5,7 @@ TilesetPropertiesController::TilesetPropertiesController()
 {
 }
 
-TilesetPropertiesController::TilesetPropertiesController(std::vector<Propertie> tilesetProperties)
+TilesetPropertiesController::TilesetPropertiesController(std::vector<Propertie*> tilesetProperties)
 	: tilesetProperties(tilesetProperties)
 {
 	this->tilesetProperties = tilesetProperties;
@@ -20,12 +20,12 @@ TilesetPropertiesController::~TilesetPropertiesController()
 {
 }
 
-std::vector<Propertie>::iterator TilesetPropertiesController::begin()
+std::vector<Propertie*>::iterator TilesetPropertiesController::begin()
 {
 	return tilesetProperties.begin();
 }
 
-std::vector<Propertie>::iterator TilesetPropertiesController::end()
+std::vector<Propertie*>::iterator TilesetPropertiesController::end()
 {
 	return tilesetProperties.end();
 }
@@ -37,9 +37,9 @@ int TilesetPropertiesController::GetSize()
 
 Propertie* TilesetPropertiesController::operator[](const char* name)
 {
-	for (Propertie& propertie : tilesetProperties) {
-		if (!strcmp(propertie.getTitle(), name)) {
-			return &propertie;
+	for (Propertie*& propertie : tilesetProperties) {
+		if (!strcmp(propertie->getTitle(), name)) {
+			return propertie;
 		}
 	}
 	return nullptr;
@@ -50,12 +50,12 @@ Propertie* TilesetPropertiesController::operator[](int index)
 	return nullptr;
 }
 
-void TilesetPropertiesController::readTilesetProperties(tinyxml2::XMLElement* tileset, std::vector<Propertie>& tilesetProperties)
+void TilesetPropertiesController::readTilesetProperties(tinyxml2::XMLElement* tileset, std::vector<Propertie*>& tilesetProperties)
 {
-	tinyxml2::XMLElement* properties = getTilesetProperties(tileset);
+	//tinyxml2::XMLElement* properties = getTilesetProperties(tileset);
 
 	for (
-		tinyxml2::XMLElement* child = properties->FirstChildElement("property");
+		tinyxml2::XMLElement* child = tileset->FirstChildElement("property");
 		child != nullptr;
 		child = child->NextSiblingElement("property")
 		) {
