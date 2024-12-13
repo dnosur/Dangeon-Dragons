@@ -1,6 +1,6 @@
 #pragma once
 #include "IAnimation.h"
-#include "../FrameSoundsController.h"
+#include "../audio/FrameSoundsController.h"
 #include "../IGameObject.h"
 
 class VertexAnimation :
@@ -35,8 +35,8 @@ class VertexAnimation :
 
 public:
 	VertexAnimation(const char* title, int frameRate, bool repeat, bool stopOnEnd, IGameObject* object, std::vector<
-		std::pair<int, std::vector<Coord>>
-	> frames = {});
+		std::pair<int, std::vector<Coord>>> frames = {}
+	);
 
 	void Play();
 	void Play(Coord coord, Size size);

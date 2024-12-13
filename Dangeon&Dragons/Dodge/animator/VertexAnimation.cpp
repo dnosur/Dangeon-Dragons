@@ -28,6 +28,10 @@ void VertexAnimation::Play()
 
 void VertexAnimation::Play(Coord coord, Size size)
 {
+	if (end) {
+		Restart();
+	}
+
 	if (end || pause) {
 		return;
 	}
@@ -68,9 +72,10 @@ void VertexAnimation::Play(Coord coord, Size size)
 			std::cout << currentAnimationIndex << std::endl;
 		}
 
-		if (currentAnimationIndex >= 0 && currentAnimationIndex < frames.size()) {
+		if (currentAnimationIndex >= 0 && currentAnimationIndex < frames.size())
+		{
+			// Используем ссылку на вектор, чтобы избежать создания копии
 			object->GetMaterial()->SetDiffuseMapVerticies(frames[currentAnimationIndex].second);
-
 			delay = frames[currentAnimationIndex].first;
 		}
 	}
