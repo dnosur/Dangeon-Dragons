@@ -39,21 +39,86 @@ Audio::Audio()
 {
     title = path = (char*)"Undefined";
     buffer = source = -1;
+
+    volume = .0f;
+    loop = false;
+
+    state = AudioStates::FINISHED;
 }
 
-Audio::Audio(const char* title, const char* path)
+Audio::Audio(
+    const char* title, const char* path,
+    float radius, float volume,
+    bool loop
+)
 {
     copyStr(title, this->title);
     copyStr(path, this->path);
     Load();
 
+    state = AudioStates::FINISHED;
+
+    this->loop = loop;
+    this->radius = radius;
+
     alGenSources(1, &source);
     alSourcei(source, AL_BUFFER, buffer);
+
+    SetVolume(volume);
 }
 
-void Audio::Play()
+void Audio::Play(bool loop)
 {
+    SetLoop(loop);
     alSourcePlay(source);
+}
+
+void Audio::SetVolume(float volume)
+{
+    this->volume = volume;
+    baseVolume = volume;
+    alSourcef(source, AL_GAIN, volume);
+}
+
+void Audio::SetDistanceVolume(Coord sourcePos, Coord listenerPos)
+{
+    float distance = CalculateDistance(sourcePos, listenerPos);
+
+    if (distance <= radius)
+    {
+        volume = baseVolume;
+        alSourcef(source, AL_GAIN, volume);
+        return;
+    }
+
+    float falloffFactor = baseVolume - ((distance - radius) / radius);
+    SetVolume(std::max(0.0f, falloffFactor));
+}
+
+float Audio::GetVolume()
+{
+    return volume;
+}
+
+void Audio::SetRadius(float radius)
+{
+    this->radius = radius;
+}
+
+float Audio::GetRadius()
+{
+    return radius;
+}
+
+void Audio::SetLoop(bool loop)
+{
+    this->loop = loop;
+    alSourcei(source, AL_LOOPING, loop);
+}
+
+bool Audio::GetLoop()
+{
+    return loop;
 }
 
 char* Audio::GetTitle()
@@ -66,9 +131,35 @@ char* Audio::GetPath()
     return path;
 }
 
+AudioStates Audio::GetState()
+{
+    ALint state;
+    alGetSourcei(source, AL_SOURCE_STATE, &state);
+
+    if (state == AL_PLAYING) {
+        this->state = AudioStates::PLAYING;
+    }
+
+    if (state == AL_STOPPED) {
+        this->state = AudioStates::STOPPED;
+	}
+
+    if (state == AL_PAUSED) {
+        this->state = AudioStates::PAUSED;
+	}
+
+    ALint processedBuffers;
+    alGetSourcei(source, AL_BUFFERS_PROCESSED, &processedBuffers);
+
+    if (processedBuffers > 0) {
+        this->state = AudioStates::FINISHED;
+    }
+
+    return this->state;
+}
+
 Audio::~Audio()
 {
-
 }
 
 bool Audio::operator==(const Audio& other) const
