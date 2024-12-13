@@ -84,10 +84,6 @@ void TinyMap::Initialize()
 								? tileId - tileset->GetFirstgId()
 								: tileId;
 
-							if (tileValue == 8) {
-								std::cout << "tileValue: " << tileValue << std::endl;
-							}
-
 							int atlasX = tileValue % columns;
 							int atlasY = tileValue / columns;
 
@@ -179,8 +175,6 @@ void TinyMap::Initialize()
 		std::cout << std::endl;
 	}
 
-	IGameObject* sample = gameObjects[788];
-
 	//Classes
 	for (TinyClass& classes : tileMap->classesController) {
 		std::cout << "Class: " << classes.GetName() << std::endl;
@@ -222,13 +216,37 @@ std::vector<IGameObject*> TinyMap::GetClassesByType(const char* type)
 {
 	std::vector<IGameObject*> result = std::vector<IGameObject*>();
 
-	for (IGameObject* object : gameClasses) {
+	for (IGameObject*& object : gameClasses) {
 		if (!strcmp(object->GetCollision()->GetType(), type)) {
 			result.push_back(object);
 		}
 	}
 
 	return result;
+}
+
+std::vector<IGameObject*> TinyMap::GetClassesByName(const char* name)
+{
+	std::vector<IGameObject*> classes;
+
+	for (IGameObject* object : gameClasses) {
+		if (!strcmp(object->GetCollision()->GetRootTitle(), name)) {
+			classes.push_back(object);
+		}
+	}
+
+	return classes;
+}
+
+IGameObject* TinyMap::GetClassByName(const char* name)
+{
+	for (IGameObject* object : gameClasses) {
+		if (!strcmp(object->GetCollision()->GetRootTitle(), name)) {
+			return object;
+		}
+	}
+
+	return nullptr;
 }
 
 Window* TinyMap::GetWindow()

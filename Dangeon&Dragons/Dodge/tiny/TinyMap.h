@@ -29,6 +29,8 @@ public:
 	virtual void Update() = 0;
 
 	std::vector<IGameObject*> GetClassesByType(const char* type);
+	std::vector<IGameObject*> GetClassesByName(const char* name);
+	IGameObject* GetClassByName(const char* name);
 
 	Window* GetWindow();
 	TileMap* GetTileMap();
