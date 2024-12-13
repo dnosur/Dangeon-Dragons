@@ -6,7 +6,15 @@
    <property name="movebleCollisions" type="bool" value="false"/>
   </properties>
  </tile>
+ <tile id="1">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
+ </tile>
  <tile id="2">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
   <animation>
    <frame tileid="2" duration="300"/>
    <frame tileid="8" duration="300"/>
@@ -16,6 +24,9 @@
   </animation>
  </tile>
  <tile id="3">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
   <animation>
    <frame tileid="3" duration="300"/>
    <frame tileid="9" duration="300"/>
@@ -24,7 +35,15 @@
    <frame tileid="153" duration="300"/>
   </animation>
  </tile>
+ <tile id="4">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
+ </tile>
  <tile id="25">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
   <animation>
    <frame tileid="25" duration="300"/>
    <frame tileid="31" duration="300"/>
@@ -34,6 +53,9 @@
   </animation>
  </tile>
  <tile id="26">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
   <animation>
    <frame tileid="26" duration="300"/>
    <frame tileid="32" duration="300"/>
@@ -43,6 +65,9 @@
   </animation>
  </tile>
  <tile id="27">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
   <animation>
    <frame tileid="27" duration="300"/>
    <frame tileid="33" duration="300"/>
@@ -51,7 +76,15 @@
    <frame tileid="177" duration="300"/>
   </animation>
  </tile>
+ <tile id="28">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
+ </tile>
  <tile id="49">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
   <animation>
    <frame tileid="49" duration="300"/>
    <frame tileid="55" duration="300"/>
@@ -61,6 +94,9 @@
   </animation>
  </tile>
  <tile id="50">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
   <animation>
    <frame tileid="50" duration="300"/>
    <frame tileid="56" duration="300"/>
@@ -70,6 +106,9 @@
   </animation>
  </tile>
  <tile id="51">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
   <objectgroup draworder="index" id="2">
    <object id="1" template="../tileTree.tx" x="-24" y="-48"/>
   </objectgroup>
@@ -82,6 +121,9 @@
   </animation>
  </tile>
  <tile id="52">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
   <animation>
    <frame tileid="52" duration="300"/>
    <frame tileid="58" duration="300"/>
@@ -91,6 +133,9 @@
   </animation>
  </tile>
  <tile id="73">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
   <animation>
    <frame tileid="73" duration="300"/>
    <frame tileid="79" duration="300"/>
@@ -100,6 +145,12 @@
   </animation>
  </tile>
  <tile id="74">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="0" y="0" width="32" height="32"/>
+  </objectgroup>
   <animation>
    <frame tileid="74" duration="300"/>
    <frame tileid="80" duration="300"/>
@@ -109,6 +160,9 @@
   </animation>
  </tile>
  <tile id="75">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
   <animation>
    <frame tileid="75" duration="300"/>
    <frame tileid="81" duration="300"/>
@@ -118,6 +172,9 @@
   </animation>
  </tile>
  <tile id="76">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
   <animation>
    <frame tileid="76" duration="300"/>
    <frame tileid="82" duration="300"/>
@@ -127,6 +184,9 @@
   </animation>
  </tile>
  <tile id="97">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
   <animation>
    <frame tileid="97" duration="300"/>
    <frame tileid="103" duration="300"/>
@@ -136,6 +196,9 @@
   </animation>
  </tile>
  <tile id="98">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
   <animation>
    <frame tileid="98" duration="300"/>
    <frame tileid="104" duration="300"/>
@@ -145,6 +208,9 @@
   </animation>
  </tile>
  <tile id="99">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
   <animation>
    <frame tileid="99" duration="300"/>
    <frame tileid="105" duration="300"/>
@@ -154,6 +220,9 @@
   </animation>
  </tile>
  <tile id="100">
+  <properties>
+   <property name="zIndex" type="int" value="1"/>
+  </properties>
   <animation>
    <frame tileid="100" duration="300"/>
    <frame tileid="106" duration="300"/>
