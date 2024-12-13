@@ -11,6 +11,10 @@ class BoxCollision :
 	Coord point;
 	Size size;
 
+	Layer layer;
+
+	bool kinematic;
+
 	std::vector<IGameObject*> gameObjects;
 public:
 	BoxCollision(Coord point,Size size, int root_id, char* root_title = nullptr, char* type = nullptr);
@@ -29,9 +33,17 @@ public:
 	Size GetSize();
 	void SetSize(Size size);
 
+	Layer GetLayer();
+	void SetLayer(Layer layer);
+
+	bool IsKinematic();
+	void SetKinematic(bool kinematic);
+
 	bool IsCollisionEnter(IGameObject* gameObject);
 	bool IsCollisionStay(IGameObject* gameObject);
 	bool IsCollisionExit(IGameObject* gameObject);
+
+	bool IsCollisionEnter(Coord point, Size size);
 
 	bool IsExist(IGameObject* gameObject);
 

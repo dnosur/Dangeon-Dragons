@@ -7,6 +7,10 @@ BoxCollision::BoxCollision(Coord point, Size size, int root_id, char* root_title
 
 	this->root_id = root_id;
 
+    this->kinematic = false;
+
+    SetLayer(Layer::Collision);
+
     copyStr(root_title, this->root_title);
     copyStr(type, this->type);
 }
@@ -55,41 +59,69 @@ void BoxCollision::SetSize(Size size)
     this->size = size;
 }
 
+Layer BoxCollision::GetLayer()
+{
+    return layer;
+}
+
+void BoxCollision::SetLayer(Layer layer)
+{
+	this->layer = layer;
+}
+
+bool BoxCollision::IsKinematic()
+{
+    return kinematic;
+}
+
+void BoxCollision::SetKinematic(bool kinematic)
+{
+    this->kinematic = kinematic;
+}
+
 bool BoxCollision::IsCollisionEnter(IGameObject* gameObject)
 {
-    if (!gameObject || gameObject == nullptr) {
+    if (!gameObject || !gameObject->GetCollision()) {
         return false;
     }
 
     ICollision* otherCollision = gameObject->GetCollision();
-    if (otherCollision == nullptr || otherCollision == this) {
+    if (otherCollision == this) {
         return false;
     }
 
+    // Координаты текущей коллизии
     float xMin1 = point.X;
     float yMin1 = point.Y;
     float xMax1 = point.X + size.width;
     float yMax1 = point.Y + size.height;
 
+    // Проверяем, является ли другая коллизия "BoxCollision"
     auto* otherBoxCollision = dynamic_cast<BoxCollision*>(otherCollision);
     if (otherBoxCollision) {
+        // Координаты другой коллизии
         float xMin2 = otherBoxCollision->point.X;
         float yMin2 = otherBoxCollision->point.Y;
         float xMax2 = otherBoxCollision->point.X + otherBoxCollision->size.width;
         float yMax2 = otherBoxCollision->point.Y + otherBoxCollision->size.height;
 
-        bool intersect = !(xMax1 < xMin2 || xMax2 < xMin1 || yMax1 < yMin2 || yMax2 < yMin1);
+        // Проверяем пересечение
+        bool isIntersecting = !(xMax1 < xMin2 || xMax2 < xMin1 || yMax1 < yMin2 || yMax2 < yMin1);
 
-        if (!intersect) {
-            return false;
-        }
+        // Проверяем вложение одного прямоугольника в другой
+        bool isInside = (xMin2 >= xMin1 && xMax2 <= xMax1 && yMin2 >= yMin1 && yMax2 <= yMax1) ||
+            (xMin1 >= xMin2 && xMax1 <= xMax2 && yMin1 >= yMin2 && yMax1 <= yMax2);
 
-        if (IsExist(gameObject)) {
+        if (isIntersecting || isInside) {
+            // Проверяем, если объект уже зарегистрирован
+            if (IsExist(gameObject)) {
+                return true;
+            }
+
+            // Добавляем объект в список коллизий
+            gameObjects.push_back(gameObject);
             return true;
         }
-
-        gameObjects.push_back(gameObject);
-        return true;
     }
 
 
@@ -132,6 +164,30 @@ bool BoxCollision::IsCollisionExit(IGameObject* gameObject)
 	}
 
 	return isExit;
+}
+
+bool BoxCollision::IsCollisionEnter(Coord point, Size size)
+{
+    // Координаты текущей коллизии
+    float xMin1 = this->point.X;
+    float yMin1 = this->point.Y;
+    float xMax1 = this->point.X + this->size.width;
+    float yMax1 = this->point.Y + this->size.height;
+
+    // Координаты другой коллизии
+    float xMin2 = point.X;
+    float yMin2 = point.Y;
+    float xMax2 = point.X + size.width;
+    float yMax2 = point.Y + size.height;
+
+    // Проверяем пересечение
+    bool isIntersecting = !(xMax1 < xMin2 || xMax2 < xMin1 || yMax1 < yMin2 || yMax2 < yMin1);
+
+    // Проверяем вложение одного прямоугольника в другой
+    bool isInside = (xMin2 >= xMin1 && xMax2 <= xMax1 && yMin2 >= yMin1 && yMax2 <= yMax1) ||
+        (xMin1 >= xMin2 && xMax1 <= xMax2 && yMin1 >= yMin2 && yMax1 <= yMax2);
+
+    return isIntersecting || isInside;
 }
 
 bool BoxCollision::IsExist(IGameObject* gameObject)
