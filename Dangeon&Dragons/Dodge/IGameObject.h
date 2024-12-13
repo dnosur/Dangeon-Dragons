@@ -1,5 +1,6 @@
 #pragma once
 #include "Window.h"
+#include "Layers.h"
 
 #include "collisions/ICollision.h"
 
@@ -26,6 +27,8 @@ __interface IGameObject
 	Window* GetWindow();
 
 	Coord GetPos();
+	Coord GetOpenGlPos();
+
 	std::vector<Coord> GetVertices();
 
 	void SetColor(Color color);
@@ -52,6 +55,14 @@ __interface IGameObject
 
 	const char* GetTitle();
 	void SetTitle(const char* title);
+
+	void SetLayer(Layer layer);
+	Layer GetLayer();
+
+	bool IsKinematic();
+	void SetKinematic(bool kinematic);
+
+	Coord GetDistanceTo(IGameObject& gameObject);
 
 	const bool IsMouseOverlap();
 
