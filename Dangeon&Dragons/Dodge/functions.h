@@ -46,6 +46,15 @@ inline bool ExistInVector(std::vector<T>& vector, T value);
 template<typename T>
 inline void RemoveFromVector(std::vector<T>& vector, T value);
 
+template <typename T>
+inline bool ValidateVectorIndex(std::vector<T>& vector, int index);
+
+template <typename T>
+T Max(T a, T b);
+
+template <typename T>
+T Min(T a, T b);
+
 template<typename T>
 inline void copyArray(T** origin, T** destination)
 {
@@ -84,7 +93,34 @@ inline void RemoveFromVector(std::vector<T>& vector, T value)
 	vector.erase(it, vector.end());
 }
 
-float CalculateDistance(const Coord& a, const Coord& b);
+template<typename T>
+inline bool ValidateVectorIndex(std::vector<T>& vector, int index)
+{
+	if (index < 0 || index >= vector.size()) {
+		return false;
+	}
+	return true;
+}
+
+template<typename T>
+inline T Max(T a, T b)
+{
+	return (a > b) ? a : b;
+}
+
+template<typename T>
+inline T Min(T a, T b)
+{
+	return (a < b) ? a : b;
+}
+
+float CalculateDistance(const Coord a, const Coord b);
+
+float CalculateDistanceWithSize(Coord a, Coord b, Size bSIze);
+
+bool IsPointBetween(Coord start, Coord end, Coord point);
+
+bool IsPointBetween(Coord start, Coord end, Coord point, float tolerance);
 
 std::string generateRandomString(int length);
 

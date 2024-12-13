@@ -98,12 +98,6 @@ void getxy(int& x, int& y) {
 	x = screenBufferInfo.dwCursorPosition.X;
 	y = screenBufferInfo.dwCursorPosition.Y;
 }
-//
-//const int newX = static_cast<int>((float)(element.first.GetPos().X - 15.0f) * (float)(window->GetSize().width / 1280.0f));
-//const int newY = static_cast<int>((float)(element.first.GetPos().Y + .0f) * (float)(window->GetSize().height / 720.0f));
-//
-//const int sizeWidth = static_cast<int>(50.0f * (float)(window->GetSize().width / 1280.0f));
-//const int sizeHeight = static_cast<int>(50.0f * (float)(window->GetSize().height / 720.0f));
 
 Size MathSize(Size size, Size windowSize)
 {
@@ -121,11 +115,54 @@ Coord MathCoord(Coord coord, Size windowSize)
 	);
 }
 
-float CalculateDistance(const Coord& a, const Coord& b)
+float CalculateDistance(const Coord a, const Coord b)
 {
 	float dx = a.X - b.X;
 	float dy = a.Y - b.Y;
 	return std::sqrt(dx * dx + dy * dy);
+}
+
+float CalculateDistanceWithSize(Coord a, Coord b, Size bSize)
+{
+	float deltaX = a.X - b.X;
+	float deltaY = a.Y - b.Y;
+
+	float distance = std::sqrt(deltaX * deltaX + deltaY * deltaY);
+
+	float radius = std::sqrt(bSize.width * bSize.width + bSize.height * bSize.height) / 2.0f;
+
+	float adjustedDistance = distance - radius;
+
+	return std::max(0.0f, adjustedDistance);
+}
+
+bool IsPointBetween(Coord start, Coord end, Coord point)
+{
+	float vectorX = end.X - start.X;
+	float vectorY = end.Y - start.Y;
+
+	float pointVectorX = point.X - start.X;
+	float pointVectorY = point.Y - start.Y;
+
+	float dotProduct = pointVectorX * vectorX + pointVectorY * vectorY;
+
+	float lengthSquared = vectorX * vectorX + vectorY * vectorY;
+
+	return dotProduct >= 0 && dotProduct <= lengthSquared;
+}
+
+bool IsPointBetween(Coord start, Coord end, Coord point, float tolerance)
+{
+	float area = std::abs(
+		(end.X - start.X) * (start.Y - point.Y) -
+		(start.X - point.X) * (end.Y - start.Y)
+	) / 2.0f;
+
+	float lineLength = CalculateDistance(start, end);
+
+	float distance = (2 * area) / lineLength;
+
+	return distance <= tolerance && IsPointBetween(start, end, point);
 }
 
 std::string generateRandomString(int length)
