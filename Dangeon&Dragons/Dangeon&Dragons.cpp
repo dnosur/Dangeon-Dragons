@@ -1,6 +1,7 @@
 // Dangeon&Dragons.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
+//#define _CRTDBG_MAP_ALLOC
 #define STB_IMAGE_IMPLEMENTATION
 #define GL_GLEXT_PROTOTYPES
 
@@ -10,19 +11,24 @@
 #include <GLFW/glfw3.h>
 
 #include "Dodge/MainWindow.h"
-#include "Dodge/SoundSystem.h"
+#include "Dodge/audio/SoundSystem.h"
 
 #include "Dodge/tiny/TinyXml.h"
 
+#include <cstdlib>
+#include <crtdbg.h>
+
 int main(int argc, char** argv)
 {
+    //_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
     srand(time(NULL));
     glutInit(&argc, argv);
     if (!glfwInit())
         return -1;
 
     SoundSystem soundSystem;
-    MainWindow main(Size(1280, 720), "Amazing Snake", Color(.4f, .6f, 0));
+    MainWindow main(Size(1280, 720), "Sample", Color(.4f, .6f, 0));
 
     main.MakeContext();
     main.Initialize();

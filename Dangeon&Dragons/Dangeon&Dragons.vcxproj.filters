@@ -18,10 +18,10 @@
     <ClCompile Include="Dangeon&amp;Dragons.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dodge\Audio.cpp">
+    <ClCompile Include="Dodge\audio\Audio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dodge\AudioController.cpp">
+    <ClCompile Include="Dodge\audio\AudioController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dodge\Color.cpp">
@@ -33,25 +33,25 @@
     <ClCompile Include="Dodge\Figures.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dodge\FrameSound.cpp">
+    <ClCompile Include="Dodge\audio\FrameSound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dodge\FrameSoundsController.cpp">
+    <ClCompile Include="Dodge\audio\FrameSoundsController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dodge\functions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dodge\Image.cpp">
+    <ClCompile Include="Dodge\images\Image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dodge\ImagesController.cpp">
+    <ClCompile Include="Dodge\images\ImagesController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dodge\Keyboard.cpp">
+    <ClCompile Include="Dodge\keyboard\Keyboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dodge\KeyboardKey.cpp">
+    <ClCompile Include="Dodge\keyboard\KeyboardKey.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dodge\MainWindow.cpp">
@@ -63,7 +63,7 @@
     <ClCompile Include="Dodge\Mouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dodge\PoligonCollisionsController.cpp">
+    <ClCompile Include="Dodge\collisions\PoligonCollisionsController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dodge\Save.cpp">
@@ -75,7 +75,7 @@
     <ClCompile Include="Dodge\Size.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dodge\SoundSystem.cpp">
+    <ClCompile Include="Dodge\audio\SoundSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dodge\Timer.cpp">
@@ -135,13 +135,7 @@
     <ClCompile Include="Dodge\collisions\PoligonCollision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dodge\figures\Circle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Dodge\figures\Rect.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Dodge\figures\Triangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dodge\font\Character.cpp">
@@ -186,12 +180,48 @@
     <ClCompile Include="Dodge\tiny\TinyChunk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Dodge\images\SlicedImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Scripts\Characters\Player\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\Layers.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\animator\AnimationsFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\camera\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\math\Vec2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\math\Mat4.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\tiny\TilesetProperties\IntPropertie.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\Properties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Scripts\Characters\Enemys\Skeleton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Scripts\AI\Node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Scripts\AI\Movement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Dodge\Audio.h">
+    <ClInclude Include="Dodge\audio\Audio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dodge\AudioController.h">
+    <ClInclude Include="Dodge\audio\AudioController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dodge\Cell.h">
@@ -209,10 +239,10 @@
     <ClInclude Include="Dodge\Figures.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dodge\FrameSound.h">
+    <ClInclude Include="Dodge\audio\FrameSound.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dodge\FrameSoundsController.h">
+    <ClInclude Include="Dodge\audio\FrameSoundsController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dodge\functions.h">
@@ -224,19 +254,19 @@
     <ClInclude Include="Dodge\IGameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dodge\Image.h">
+    <ClInclude Include="Dodge\images\Image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dodge\ImagesController.h">
+    <ClInclude Include="Dodge\images\ImagesController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dodge\Keyboard.h">
+    <ClInclude Include="Dodge\keyboard\Keyboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dodge\KeyboardKey.h">
+    <ClInclude Include="Dodge\keyboard\KeyboardKey.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dodge\KeyboardKeys.h">
+    <ClInclude Include="Dodge\keyboard\KeyboardKeys.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dodge\MainWindow.h">
@@ -248,7 +278,7 @@
     <ClInclude Include="Dodge\Mouse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dodge\PoligonCollisionsController.h">
+    <ClInclude Include="Dodge\collisions\PoligonCollisionsController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dodge\Save.h">
@@ -260,7 +290,7 @@
     <ClInclude Include="Dodge\Size.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dodge\SoundSystem.h">
+    <ClInclude Include="Dodge\audio\SoundSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dodge\Timer.h">
@@ -332,13 +362,7 @@
     <ClInclude Include="Dodge\collisions\PoligonCollision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dodge\figures\Circle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Dodge\figures\Rect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dodge\figures\Triangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dodge\font\Character.h">
@@ -384,6 +408,45 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dodge\tiny\TinyChunk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\images\SlicedImage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\Characters\Player\Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\animator\AnimationsFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\pawn\Actions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\camera\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\math\Vec2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\math\Mat4.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\tiny\TilesetProperties\IntPropertie.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\Properties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\Characters\Enemys\Skeleton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\AI\Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\AI\Movement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\audio\AudioStates.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
