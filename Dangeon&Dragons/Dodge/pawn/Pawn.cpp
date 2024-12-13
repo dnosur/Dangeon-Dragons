@@ -57,7 +57,7 @@ Pawn::Pawn(
 	ICollision* collision, Material* material, Directions moveDirection,
 	Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
 	float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
-	std::vector<SpriteAnimation> animations
+	std::vector<IAnimation*> animations
 ){
 	this->window = &window;
 
@@ -79,8 +79,12 @@ Pawn::Pawn(
 	this->maxHealth = maxHealth;
 
 	this->isPlayable = isPlayable;
-	this->isKinematic = isKinematic;
+	this->kinematic = isKinematic;
 	this->isHidden = isHidden;
+
+	SetLayer(Layer::Pawn);
+
+	SetAction(Actions::Idle);
 
 	this->animations.AddAnimations(animations);
 }
@@ -149,9 +153,14 @@ void Pawn::SetIsPlayable(bool isPlayable)
 	this->isPlayable = isPlayable;
 }
 
-void Pawn::SetIsKinematic(bool isKinematic)
+bool Pawn::IsKinematic()
 {
-	this->isKinematic = isKinematic;
+	return kinematic;
+}
+
+void Pawn::SetKinematic(bool kinamatic)
+{
+	this->kinematic = kinamatic;
 }
 
 void Pawn::SetIsHidden(bool isHidden)
@@ -174,12 +183,12 @@ void Pawn::SetColor(Color color)
 	material->SetDiffuse(color);
 }
 
-void Pawn::AddAnimation(SpriteAnimation animation)
+void Pawn::AddAnimation(IAnimation* animation)
 {
 	animations.AddAnimation(animation);
 }
 
-void Pawn::AddAnimations(std::vector<SpriteAnimation> animations)
+void Pawn::AddAnimations(std::vector<IAnimation*> animations)
 {
 	this->animations.AddAnimations(animations);
 }
@@ -269,6 +278,11 @@ Coord Pawn::GetPos()
 	return pos;
 }
 
+Coord Pawn::GetOpenGlPos()
+{
+	return Coord(window->PixelToGLX(pos.X), window->PixelToGLY(pos.Y));
+}
+
 std::vector<Coord> Pawn::GetVertices()
 {
 	return vertexes;
@@ -304,9 +318,29 @@ Color Pawn::GetBaseColor()
 	return material->GetDiffuse();
 }
 
-SpriteAnimationController Pawn::GetAnimations()
+AnimationController Pawn::GetAnimations()
 {
 	return animations;
+}
+
+Layer Pawn::GetLayer()
+{
+	return layer;
+}
+
+void Pawn::SetLayer(Layer layer)
+{
+	this->layer = layer;
+}
+
+Actions Pawn::GetAction()
+{
+	return action;
+}
+
+void Pawn::SetAction(Actions action)
+{
+	this->action = action;
 }
 
 float Pawn::GetSpeed()
@@ -349,14 +383,17 @@ bool Pawn::GetIsPlayable()
 	return isPlayable;
 }
 
-bool Pawn::GetIsKinematic()
-{
-	return isKinematic;
-}
-
 bool Pawn::GetIsHidden()
 {
 	return isHidden;
+}
+
+const bool Pawn::IsNear(Coord startPos, Coord targetPos, float distance)
+{
+	return (std::abs(startPos.X) == std::abs(targetPos.X)
+		&& std::abs(startPos.Y) == std::abs(targetPos.Y)) ||
+		(std::abs(startPos.X - targetPos.X) <= distance &&
+			std::abs(startPos.Y - targetPos.Y) <= distance);
 }
 
 const bool Pawn::IsMouseOverlap()

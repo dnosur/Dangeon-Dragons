@@ -1,5 +1,5 @@
 #pragma once
-#include "../animator/SpriteAnimationController.h"
+#include "../animator/AnimationController.h"
 #include "../collisions/ICollision.h"
 #include "../Directions.h"
 
@@ -8,6 +8,9 @@
 #include "../Coord.h"
 #include "../Size.h"
 
+#include "../images/SlicedImage.h"
+
+#include "Actions.h"
 
 class Pawn : public IGameObject
 {
@@ -27,10 +30,17 @@ protected:
 
 	Directions moveDirection;
 
-	SpriteAnimationController animations;
+	AnimationController animations;
+	AudioController audioController;
 
 	Coord pos;
 	Size size;
+
+	SlicedImage* playerImages;
+
+	Layer layer;
+
+	Actions action;
 
 	char* title;
 
@@ -43,12 +53,22 @@ protected:
 
 	float weight;
 
+	float damage;
+	float damageDistance;
+
+	float viewDistance;
+
 	bool isDead;
 	bool isPlayable;
 
-	bool isKinematic;
-
 	bool isHidden;
+
+	bool kinematic;
+
+	virtual void LoadAnimations() = 0;
+	virtual const char* GetAnimationName() = 0;
+
+	virtual void LoadAudio() = 0;
 
 	virtual void Initialize() = 0;
 	virtual void Draw() = 0;
@@ -57,13 +77,15 @@ protected:
 	void MathPos(Coord& pos);
 
 	bool MouseInRect(Mouse& mouse);
+
+	virtual void AIMovement() = 0;
 public:
 	Pawn(
 		const char* title, Window& window,
 		ICollision* collision, Material* material, Directions moveDirection, 
 		Coord pos, Size size, float speed, float maxSpeed, float minSpeed, 
 		float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
-		std::vector<SpriteAnimation> animations = {}
+		std::vector<IAnimation*> animations = {}
 	);
 	~Pawn() = default;
 
@@ -88,7 +110,6 @@ public:
 	void SetWeight(float weight);
 
 	void SetIsPlayable(bool isPlayable);
-	void SetIsKinematic(bool isKinematic);
 	void SetIsHidden(bool isHidden);
 
 	void SetCollision(ICollision* collision);
@@ -97,8 +118,8 @@ public:
 
 	void SetColor(Color color);
 
-	void AddAnimation(SpriteAnimation animation);
-	void AddAnimations(std::vector<SpriteAnimation> animations);
+	void AddAnimation(IAnimation* animation);
+	void AddAnimations(std::vector<IAnimation*> animations);
 
 	void Damage(float damage);
 	void Die();
@@ -120,6 +141,8 @@ public:
 	Window* GetWindow();
 
 	Coord GetPos();
+	Coord GetOpenGlPos();
+
 	std::vector<Coord> GetVertices();
 
 	Size GetSize();
@@ -133,7 +156,16 @@ public:
 
 	Color GetBaseColor();
 
-	SpriteAnimationController GetAnimations();
+	AnimationController GetAnimations();
+
+	Layer GetLayer();
+	void SetLayer(Layer layer);
+
+	Actions GetAction();
+	void SetAction(Actions action);
+
+	bool IsKinematic();
+	void SetKinematic(bool kinamatic);
 
 	float GetSpeed();
 	float GetMaxSpeed();
@@ -147,8 +179,14 @@ public:
 	float GetWeight();
 
 	bool GetIsPlayable();
-	bool GetIsKinematic();
 	bool GetIsHidden();
+
+	virtual Coord GetDistanceTo(IGameObject& gameObject) = 0;
+	virtual float GetDistanceTo(IGameObject& gameObject, Size objSize) = 0;
+
+	virtual bool IsNear(IGameObject& gameObject) = 0;
+	virtual bool IsNear(Coord pos) = 0;
+	const bool IsNear(Coord startPos, Coord targetPos, float distance = 10.0f);
 
 	const bool IsMouseOverlap();
 
