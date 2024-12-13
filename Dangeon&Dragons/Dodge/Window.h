@@ -2,13 +2,13 @@
 #define DEFAULT_WINDOW_WIDTH 1280
 #define DEFAULT_WINDOW_HEIGHT 720
 
-#include "ImagesController.h"
-#include "AudioController.h"
+#include "./images/ImagesController.h"
+#include "./audio/AudioController.h"
 
 #include "Size.h"
 #include "Mouse.h"
 #include "Color.h"
-#include "Keyboard.h"
+#include "./keyboard/Keyboard.h"
 #include "Timer.h"
 
 class Window
@@ -40,6 +40,7 @@ public:
 
 	Window();
 	Window(Size size, const char* title, Color backgroundColor = Color(1, 1, 1), GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
+	~Window();
 
 	GLFWwindow* GetWindow();
 	GLFWmonitor* GetMonitor();

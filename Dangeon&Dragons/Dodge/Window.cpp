@@ -27,7 +27,7 @@ void Window::ResizeWindow(Size size)
 
     glViewport(0, 0, size.width, size.height);
 
-    this->size = size;
+   // this->size = size;
 }
 
 Window::Window()
@@ -41,7 +41,7 @@ Window::Window()
     monitor = NULL;
 
     MakeWindow();
-}
+} 
 
 Window::Window(Size size, const char* title, Color backgroundColor, GLFWmonitor* monitor, GLFWwindow* share)
 {
@@ -54,6 +54,11 @@ Window::Window(Size size, const char* title, Color backgroundColor, GLFWmonitor*
     this->backgroundColor = backgroundColor;
 
     MakeWindow();
+}
+
+Window::~Window()
+{
+	CloseWindow();
 }
 
 GLFWwindow* Window::GetWindow()
@@ -107,8 +112,22 @@ void Window::MakeContext()
 
 void Window::CloseWindow()
 {
+
+    if (window) {
+        glfwDestroyWindow(window);
+    }
+
+    if (share) {
+        glfwDestroyWindow(share);
+    }
+
+    if (monitor) {
+        delete monitor;
+    }
+
     glfwTerminate();
     closed = true;
+
     return;
 }
 
