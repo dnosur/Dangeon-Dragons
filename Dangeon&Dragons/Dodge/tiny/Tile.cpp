@@ -28,6 +28,16 @@ Animation* Tile::GetAnimation()
 	return animation;
 }
 
+TilesetPropertiesController* Tile::GetTilesetProperties()
+{
+	return &tilesetProperties;
+}
+
+void Tile::SetTilesetProperties(TilesetPropertiesController tilesetProperties)
+{
+	this->tilesetProperties = tilesetProperties;
+}
+
 bool Tile::Undefined()
 {
 	return id == -1 && collision == nullptr;
