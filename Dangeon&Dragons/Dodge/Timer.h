@@ -6,6 +6,7 @@ class Timer
 	std::chrono::high_resolution_clock::time_point lastTime;
 public:
     Timer();
+    ~Timer() = default;
 
     float GetDeltaTime();
 };
