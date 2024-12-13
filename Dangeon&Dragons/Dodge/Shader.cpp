@@ -109,6 +109,22 @@ Shader::Shader(const char* title, const char* vertexPath, const char* fragmentPa
 
 Shader::~Shader()
 {
+    if (title != NULL)
+	{
+		delete[] title;
+		title = NULL;
+	}
+	if (vertexPath != NULL)
+	{
+		delete[] vertexPath;
+		vertexPath = NULL;
+	}
+	if (fragmentPath != NULL)
+	{
+		delete[] fragmentPath;
+		fragmentPath = NULL;
+	}
+
     if (id != 0 && this != NULL)
 	{
 		glDeleteProgram(id);
@@ -185,6 +201,11 @@ void Shader::SetVec3(const char* name, float x, float y, float z) const
 void Shader::SetVec4(const char* name, float x, float y, float z, float w) const
 {
 	glUniform4f(glGetUniformLocation(id, name), x, y, z, w);
+}
+
+void Shader::SetMat4(const char* name, Mat4 mat)
+{
+    glUniformMatrix4fv(glGetUniformLocation(id, name), 1, GL_FALSE, mat.elements);
 }
 
 void Shader::SetColor(const char* name, Color color)

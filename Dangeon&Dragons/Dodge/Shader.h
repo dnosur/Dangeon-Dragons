@@ -11,6 +11,8 @@
 
 #include "Color.h"
 
+#include "math/Mat4.h"
+
 class Shader
 {
 	unsigned int id;
@@ -43,6 +45,8 @@ public:
 	void SetVec2(const char* name, float x, float y) const;
 	void SetVec3(const char* name, float x, float y, float z) const;
 	void SetVec4(const char* name, float x, float y, float z, float w) const;
+
+	void SetMat4(const char* name, Mat4 mat);
 
 	void SetColor(const char* name, Color color);
 
