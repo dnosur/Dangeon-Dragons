@@ -6,11 +6,11 @@ Propertie::Propertie()
 	title = value = type = nullptr;
 }
 
-Propertie::Propertie(char* title, char* value, char* type)
+Propertie::Propertie(char* title, char* value,const char* type)
 {
-	copyStr(this->title, title);
-	copyStr(this->value, value);
-	copyStr(this->type, type);
+	copyStr(title, this->title);
+	copyStr(value, this->value);
+	copyStr(type, this->type);
 }
 
 char* Propertie::getTitle()

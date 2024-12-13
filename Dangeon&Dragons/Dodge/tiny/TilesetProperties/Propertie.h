@@ -8,7 +8,7 @@ protected:
 	char* type;
 public:
 	Propertie();
-	Propertie(char* title, char* value, char* type);
+	Propertie(char* title, char* value, const char* type);
 	~Propertie();
 
 	char* getTitle();
