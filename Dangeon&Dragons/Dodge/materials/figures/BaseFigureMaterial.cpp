@@ -53,6 +53,16 @@ void BaseFigureMaterial::Use(IGameObject* gameObject)
 
 	shader->SetFloat("material.metalic", metalic);
 	shader->SetFloat("material.roughness", roughness);
+
+	//Camera 
+	if (camera) {
+		shader->SetBool("useCamera", false);
+
+		Coord cameraOffsetPosition = camera->GetPosition();
+		shader->SetVec3("camera.cameraOffsetPosition", cameraOffsetPosition.X, cameraOffsetPosition.Y, 0.0f);
+		shader->SetMat4("camera.view", camera->GetViewMatrix());
+		shader->SetMat4("camera.projection", camera->GetProjectionMatrix());
+	}
 }
 
 void BaseFigureMaterial::Disable(IGameObject* gameObject)
