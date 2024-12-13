@@ -87,6 +87,12 @@ Tileset* TilesetsController::LoadTileset(int firstgId, const char* path)
 
         int tile_id = tileset->IntAttribute("id");
 
+        //Properties
+		tinyxml2::XMLElement* properties = tileset->FirstChildElement("properties");
+		if (properties != nullptr) {
+			tilesetProperties = TilesetPropertiesController(properties);
+		}
+
         //animation
         tinyxml2::XMLElement* animation = tileset->FirstChildElement("animation");
 
@@ -98,13 +104,15 @@ Tileset* TilesetsController::LoadTileset(int firstgId, const char* path)
         tinyxml2::XMLElement* objectGroup = tileset->FirstChildElement("objectgroup");
 
         if (objectGroup == nullptr) {
-            tiles.push_back(
-                Tile(
-                    tile_id,
-					nullptr,
-                    animation_obj
-                )
+            Tile tile = Tile(
+                tile_id,
+                nullptr,
+                animation_obj
             );
+
+            tile.SetTilesetProperties(tilesetProperties);
+
+            tiles.push_back(tile);
             continue;
         }
 
@@ -112,13 +120,14 @@ Tileset* TilesetsController::LoadTileset(int firstgId, const char* path)
         tinyxml2::XMLElement* object = objectGroup->FirstChildElement("object");
 
         if (object == nullptr) {
-            tiles.push_back(
-                Tile(
-                    tile_id,
-                    nullptr,
-                    animation_obj
-                )
+            Tile tile = Tile(
+                tile_id,
+                nullptr,
+                animation_obj
             );
+
+			tile.SetTilesetProperties(tilesetProperties);
+            tiles.push_back(tile);
             continue;
         }
 
@@ -139,33 +148,41 @@ Tileset* TilesetsController::LoadTileset(int firstgId, const char* path)
         tinyxml2::XMLElement* polygon = object->FirstChildElement("polygon");
 
         if (polygon == nullptr) {
-            tiles.push_back(
-                Tile(
-                    tile_id,
-                    new BoxCollision(
-                        object_pos,
-                        object_size,
-                        object_id,
-                        (char*)object_name,
-                        (char*)object_type
-                    ),
-					animation_obj
-                )
-            );
-            continue;
-        }
-
-        tiles.push_back(
-            Tile(
+            Tile tile = Tile(
                 tile_id,
-                new PoligonCollision(
-                    TinyXml::ParsePolygon(polygon->Attribute("points"), object_pos),
+                new BoxCollision(
+                    object_pos,
+                    object_size,
                     object_id,
                     (char*)object_name,
                     (char*)object_type
                 ),
                 animation_obj
-            )
+            );
+
+			tile.SetTilesetProperties(tilesetProperties);
+
+            tiles.push_back(
+				tile
+            );
+            continue;
+        }
+
+        Tile tile = Tile(
+            tile_id,
+            new PoligonCollision(
+                TinyXml::ParsePolygon(polygon->Attribute("points"), object_pos),
+                object_id,
+                (char*)object_name,
+                (char*)object_type
+            ),
+            animation_obj
+        );
+
+        tile.SetTilesetProperties(tilesetProperties);
+
+        tiles.push_back(
+            tile
         );
     }
 
