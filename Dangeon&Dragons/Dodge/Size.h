@@ -1,11 +1,11 @@
 #pragma once
-struct Size
+struct alignas(16) Size
 {
 	double width, height;
 public:
 
 	Size();
-	Size(double width, double height);
+	constexpr Size(const double width, const double height);
 
 	double GetWidth();
 	double GetHeight();

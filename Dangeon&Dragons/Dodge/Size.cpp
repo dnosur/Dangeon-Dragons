@@ -5,10 +5,10 @@ Size::Size()
 	width = height = 0;
 }
 
-Size::Size(double width, double height)
+constexpr Size::Size(const double width, const double height)
+	: width(width), height(height)
 {
-	this->width = width;
-	this->height = height;
+
 }
 
 double Size::GetWidth()
