@@ -5,12 +5,20 @@ PoligonCollision::PoligonCollision()
 	root_id = -1;
 	root_title = nullptr;
 	type = nullptr;
+
+	kinematic = false;
+
+	SetLayer(Layer::Undefined);
 }
 
 PoligonCollision::PoligonCollision(std::vector<Coord> points, int root_id, char* root_title, char* type)
 {
 	this->root_id = root_id;
 	this->points = points;
+
+	this->kinematic = false;
+
+	SetLayer(Layer::Collision);
 
 	copyStr(root_title, this->root_title);
 	copyStr(type, this->type);
@@ -66,6 +74,26 @@ void PoligonCollision::SetPoints(std::vector<Coord> points)
 PoligonCollision* PoligonCollision::Clone() const
 {
 	return new PoligonCollision(*this);
+}
+
+Layer PoligonCollision::GetLayer()
+{
+	return layer;
+}
+
+void PoligonCollision::SetLayer(Layer layer)
+{
+	this->layer = layer;
+}
+
+bool PoligonCollision::IsKinematic()
+{
+	return kinematic;
+}
+
+void PoligonCollision::SetKinematic(bool kinematic)
+{
+	this->kinematic = kinematic;
 }
 
 bool PoligonCollision::IsCollisionEnter(IGameObject* gameObject)
@@ -140,6 +168,11 @@ bool PoligonCollision::IsCollisionExit(IGameObject* gameObject)
 	}
 
 	return isExit;
+}
+
+bool PoligonCollision::IsCollisionEnter(Coord point, Size size)
+{
+	return false;
 }
 
 bool PoligonCollision::IsExist(IGameObject* gameObject)

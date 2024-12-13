@@ -8,6 +8,10 @@ class PoligonCollision
 	char* root_title;
 	char* type;
 
+	Layer layer;
+
+	bool kinematic;
+
 	std::vector<Coord> points;
 	std::vector<IGameObject*> gameObjects;
 public:
@@ -26,9 +30,17 @@ public:
 
 	PoligonCollision* Clone() const override;
 
+	Layer GetLayer();
+	void SetLayer(Layer layer);
+
+	bool IsKinematic();
+	void SetKinematic(bool kinematic);
+
 	bool IsCollisionEnter(IGameObject* gameObject);
 	bool IsCollisionStay(IGameObject* gameObject);
 	bool IsCollisionExit(IGameObject* gameObject);
+
+	bool IsCollisionEnter(Coord point, Size size);
 
 	bool IsExist(IGameObject* gameObject);
 
