@@ -14,28 +14,18 @@
 
 #include "GameStatuses.h"
 #include "animator/SpriteAnimation.h"
+#include "camera/Camera.h"
 
 class MainWindow :
     public Window
 {
     GameStatuses gameStatus;
 
-    SpriteAnimation restartButtonAnimation;
-    Rect* restartButton;
-
     std::vector<std::pair<std::string, std::string>> saveData;
-    int recordFieldIndex;
-
-    int record;
-    bool isRecord;
-
-    void Lose();
-    void Restart();
-
-    void DrawScore(int score);
 public:
     MainWindow();
     MainWindow(Size size, const char* title, Color backgroundColor = Color(1, 1, 1), GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
+    ~MainWindow();
 
     void Initialize() override;
     void Update() override;
