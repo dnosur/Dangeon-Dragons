@@ -217,6 +217,10 @@ void SpriteAnimation::Play()
 
 void SpriteAnimation::Play(Coord coord, Size size)
 {
+	if (end) {
+		Restart();
+	}
+
 	if (end || pause) {
 		return;
 	}

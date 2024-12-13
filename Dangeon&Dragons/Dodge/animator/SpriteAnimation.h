@@ -4,8 +4,8 @@
 
 #include "IAnimation.h"
 
-#include "../FrameSoundsController.h"
-#include "../ImagesController.h"
+#include "../audio/FrameSoundsController.h"
+#include "../images/ImagesController.h"
 
 #include "../functions.h"
 
