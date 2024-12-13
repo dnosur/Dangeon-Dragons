@@ -17,7 +17,15 @@ __interface ICollision
 
 	bool IsExist(IGameObject* gameObject);
 
+	Layer GetLayer();
+	void SetLayer(Layer layer);
+
+	bool IsKinematic();
+	void SetKinematic(bool kinematic);
+
 	bool IsCollisionEnter(IGameObject* gameObject);
 	bool IsCollisionStay(IGameObject* gameObject);
 	bool IsCollisionExit(IGameObject* gameObject);
+
+	bool IsCollisionEnter(Coord point, Size size);
 };
