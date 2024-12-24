@@ -204,9 +204,6 @@
     <ClCompile Include="Dodge\tiny\TilesetProperties\IntPropertie.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Dodge\Properties.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Content\Scripts\Characters\Enemys\Skeleton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -214,6 +211,30 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Content\Scripts\AI\Movement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\raycast\Raycast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\raycast\Ray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\raycast\RayFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Scripts\Utilities\PlayerUtilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\GameObjects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\threads\GameThreads.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\threads\Thread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Scripts\Utilities\RaycastUtilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -434,9 +455,6 @@
     <ClInclude Include="Dodge\tiny\TilesetProperties\IntPropertie.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Dodge\Properties.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Content\Scripts\Characters\Enemys\Skeleton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -447,6 +465,30 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dodge\audio\AudioStates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\raycast\Raycast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\raycast\Ray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\raycast\RayFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\Utilities\PlayerUtilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\GameObjects.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\threads\GameThreads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\threads\Thread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\Utilities\RaycastUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -197,10 +197,17 @@
     <ClCompile Include="Dodge\math\Vec2.cpp" />
     <ClCompile Include="Dodge\math\Mat4.cpp" />
     <ClCompile Include="Dodge\tiny\TilesetProperties\IntPropertie.cpp" />
-    <ClCompile Include="Dodge\Properties.cpp" />
     <ClCompile Include="Content\Scripts\Characters\Enemys\Skeleton.cpp" />
     <ClCompile Include="Content\Scripts\AI\Node.cpp" />
     <ClCompile Include="Content\Scripts\AI\Movement.cpp" />
+    <ClCompile Include="Dodge\raycast\Raycast.cpp" />
+    <ClCompile Include="Dodge\raycast\Ray.cpp" />
+    <ClCompile Include="Dodge\raycast\RayFactory.cpp" />
+    <ClCompile Include="Content\Scripts\Utilities\PlayerUtilities.cpp" />
+    <ClCompile Include="Dodge\GameObjects.cpp" />
+    <ClCompile Include="Dodge\threads\GameThreads.cpp" />
+    <ClCompile Include="Dodge\threads\Thread.cpp" />
+    <ClCompile Include="Content\Scripts\Utilities\RaycastUtilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dodge\audio\AudioStates.h" />
@@ -276,10 +283,17 @@
     <ClInclude Include="Dodge\math\Vec2.h" />
     <ClInclude Include="Dodge\math\Mat4.h" />
     <ClInclude Include="Dodge\tiny\TilesetProperties\IntPropertie.h" />
-    <ClInclude Include="Dodge\Properties.h" />
     <ClInclude Include="Content\Scripts\Characters\Enemys\Skeleton.h" />
     <ClInclude Include="Content\Scripts\AI\Node.h" />
     <ClInclude Include="Content\Scripts\AI\Movement.h" />
+    <ClInclude Include="Dodge\raycast\Raycast.h" />
+    <ClInclude Include="Dodge\raycast\Ray.h" />
+    <ClInclude Include="Dodge\raycast\RayFactory.h" />
+    <ClInclude Include="Content\Scripts\Utilities\PlayerUtilities.h" />
+    <ClInclude Include="Dodge\GameObjects.h" />
+    <ClInclude Include="Dodge\threads\GameThreads.h" />
+    <ClInclude Include="Dodge\threads\Thread.h" />
+    <ClInclude Include="Content\Scripts\Utilities\RaycastUtilities.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dodge\project properties.txt" />
