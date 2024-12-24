@@ -1,6 +1,6 @@
 #include "Coord.h"
 
-Coord::Coord(): X(-1), Y(-1), Z(-1)
+Coord::Coord(): X(0), Y(0), Z(0)
 {
 }
 
