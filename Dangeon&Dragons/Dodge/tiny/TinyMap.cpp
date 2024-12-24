@@ -184,8 +184,11 @@ void TinyMap::Initialize()
 			std::cout << "Collision: " << collision->GetRootTitle() << std::endl;
 
 			MoveCollison(collision);
+			std::string name = "";
+			name += std::to_string(collision->GetRootId()) + "_" + collision->GetType();
+
 			Rect* circle = new Rect(
-				std::to_string(classes.GetId()).c_str(),
+				name.c_str(),
 				*window,
 				collision->GetPoints()[0],
 				Size(35, 35),
