@@ -1,6 +1,8 @@
 #pragma once
 #include "../../../../Dodge/pawn/Pawn.h"
 
+#include <mutex>
+
 class Player :
     public Pawn
 {
@@ -9,6 +11,8 @@ class Player :
     //Позиция на экране для отрисовки
     Coord startPos;
     Coord startPosVertexes[2];
+
+    std::mutex* raycastMutex;
 
     void LoadAnimations() override;
     const char* GetAnimationName() override;
@@ -20,6 +24,8 @@ class Player :
 
     void Move();
     void Drag(Coord newPos);
+
+    void Raycasting();
 
     bool CheckForCollision();
     bool CheckForCollision(Coord pos, Size size);
@@ -37,7 +43,7 @@ public:
     Coord GetStartPos();
 
     Coord GetDistanceTo(IGameObject& gameObject) override;
-    float GetDistanceTo(IGameObject& gameObject, Size objSize) override;
+    float GetFloatDistanceTo(IGameObject& gameObject) override;
 
     bool IsNear(IGameObject& gameObject) override;
     bool IsNear(Coord pos) override;

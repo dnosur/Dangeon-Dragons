@@ -1,7 +1,12 @@
 #include "Player.h"
-#include "../../../../Dodge/figures/Rect.h"
 
 #include <future>
+
+#include "../../../../Dodge/raycast/Raycast.h"
+#include "../../../../Dodge/raycast/RayFactory.h"
+
+#include "../../Utilities/PlayerUtilities.h"
+#include "../../../../Dodge/threads/Thread.h"
 
 void Player::LoadAnimations()
 {
@@ -101,8 +106,12 @@ void Player::Initialize()
 	startPosVertexes[0] = vertexes[0];
 	startPosVertexes[1] = vertexes[1];
 
-	damage = 20.0f;
-	damageDistance = 10.0f;
+	damage = 60.0f;
+	damageDistance = 60.0f;
+
+	interactiveDistance = 60.0f;
+
+	raycastMutex = new std::mutex();
 
 	LoadAnimations();
 	LoadAudio();
@@ -281,9 +290,61 @@ void Player::Drag(Coord newPos)
 	pos += newPos - startPos;
 }
 
+void Player::Raycasting()
+{
+	Ray* interactiveRay = RayFactory::CreateRay(
+		&startPos,
+		&moveDirection,
+		interactiveDistance,
+		20
+	);
+
+	Ray* damageRay = RayFactory::CreateRay(
+		&startPos,
+		&moveDirection,
+		damageDistance,
+		20
+	);
+
+	IGameObject* interactiveCollision = Raycast::RaycastFirst(
+		interactiveRay
+	);
+
+	IGameObject* damageCollision = Raycast::RaycastFirst(
+		damageRay
+	);
+
+
+	if (interactiveCollision != nullptr && 
+		interactiveCollision->GetLayer() != Layer::MainPlayer && 
+		interactiveCollision->GetLayer() != Layer::Enemy
+	) {
+		SetRaycastedObject(interactiveCollision, interactiveObject, new Color(.5f, 1, .5f));
+	}
+	else if(interactiveObject != nullptr) {
+		interactiveObject->GetMaterial()->SetDiffuse(Color(1, 1, 1));
+		interactiveObject = nullptr;
+	}
+
+	if (damageCollision != nullptr && 
+		interactiveCollision->GetLayer() != Layer::MainPlayer && 
+		damageCollision->GetLayer() == Layer::Enemy
+	) {
+		SetRaycastedObject(damageCollision, damageObject, new Color(.9f, .9f, .1f));
+	}
+	else if(damageObject != nullptr) {
+		damageObject->GetMaterial()->SetDiffuse(Color(1, 1, 1));
+		damageObject = nullptr;
+	}
+}
+
 bool Player::CheckForCollision()
 {
-	WindowPointer<std::vector<IGameObject*>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<IGameObject*>>(window->GetWindow(), "SolidCollisions");
+	WindowPointer<std::vector<IGameObject*>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<IGameObject*>>(
+		window->GetWindow(), 
+		"SolidCollisions"
+	);
+
 	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().empty()) {
 		return true;
 	}
@@ -426,9 +487,13 @@ Coord Player::GetDistanceTo(IGameObject& gameObject)
 	return startPos - gameObject.GetPos();
 }
 
-float Player::GetDistanceTo(IGameObject& gameObject, Size objSize)
+float Player::GetFloatDistanceTo(IGameObject& gameObject)
 {
-	return CalculateDistanceWithSize(startPos, gameObject.GetPos(), objSize);
+	return CalculateDistanceWithSize(
+		startPos, 
+		gameObject.GetPos(), 
+		gameObject.GetSize()
+	);
 }
 
 bool Player::IsNear(IGameObject& gameObject)
@@ -449,7 +514,15 @@ bool Player::IsNear(Coord pos)
 
 void Player::Update()
 {
+	Thread* th = new Thread("PlayerRaycast", [this]() {
+		Raycasting();
+	});
+
 	Move();
 	Draw();
+
+	th->Join();
+	delete th;
+
 	animations[GetAnimationName()]->Play();
 }
