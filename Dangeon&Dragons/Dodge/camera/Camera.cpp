@@ -47,7 +47,7 @@ void Camera::DropOffset()
 }
 
 Camera::Camera(const char* title, Size cameraSize, Size mapSize, Window* window)
-    : size(cameraSize), mapSize(mapSize), window(window){
+    : size(cameraSize), mapSize(mapSize), window(window), observed(nullptr){
     copyStr(
         title,
         this->title
@@ -58,6 +58,7 @@ void Camera::Update()
 {
     UpdateCamera();
 }
+
 
 Mat4 Camera::GetViewMatrix() const {
     // Матрица вида: сдвиг сцены относительно позиции камеры
