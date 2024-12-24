@@ -1,4 +1,5 @@
 #include "PoligonCollision.h"
+#include "../functions.h"
 
 PoligonCollision::PoligonCollision()
 {
