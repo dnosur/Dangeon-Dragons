@@ -1,8 +1,8 @@
 {
     "activeFile": "world.tmx",
     "expandedProjectPaths": [
-        "tilesets",
-        "."
+        ".",
+        "tilesets"
     ],
     "file.lastUsedOpenFilter": "Все файлы (*)",
     "fileStates": {
@@ -89,23 +89,23 @@
         },
         "world.tmx": {
             "expandedGroupLayers": [
+                44,
                 48,
-                33,
+                4,
+                20,
+                6,
                 39,
                 32,
-                6,
-                3,
-                20,
-                44,
                 2,
+                3,
                 38,
-                4
+                33
             ],
             "scale": 1,
-            "selectedLayer": 2,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 596,
-                "y": 820
+                "x": 238,
+                "y": 1097
             }
         },
         "world.tmx#06": {
