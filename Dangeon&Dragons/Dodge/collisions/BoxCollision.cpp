@@ -1,4 +1,5 @@
 #include "BoxCollision.h"
+#include "../functions.h"
 
 BoxCollision::BoxCollision(Coord point, Size size, int root_id, char* root_title, char* type)
 {
