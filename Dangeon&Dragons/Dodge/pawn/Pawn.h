@@ -55,8 +55,11 @@ protected:
 
 	float damage;
 	float damageDistance;
+	IGameObject* damageObject;
 
 	float viewDistance;
+	float interactiveDistance;
+	IGameObject* interactiveObject;
 
 	bool isDead;
 	bool isPlayable;
@@ -182,7 +185,7 @@ public:
 	bool GetIsHidden();
 
 	virtual Coord GetDistanceTo(IGameObject& gameObject) = 0;
-	virtual float GetDistanceTo(IGameObject& gameObject, Size objSize) = 0;
+	virtual float GetFloatDistanceTo(IGameObject& gameObject) = 0;
 
 	virtual bool IsNear(IGameObject& gameObject) = 0;
 	virtual bool IsNear(Coord pos) = 0;
