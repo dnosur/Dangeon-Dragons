@@ -1,6 +1,8 @@
 #include "WonderWold.h"
 
 #include "../../Characters/Enemys/Skeleton.h"
+#include "../../../../Dodge/raycast/Raycast.h"
+#include "../../../../Dodge/GameObjects.h"
 
 void WonderWold::CreateCamera()
 {
@@ -65,34 +67,37 @@ void WonderWold::SpawnPlayer()
 		window->GetWindow(), 
 		WindowPointer<Player*>("player", &player)
 	);
+
+	GameObjects::Add(player);
 }
 
 void WonderWold::SpawnSkeleton(Coord pos)
 {
-	Material* skeletonMaterial = new BaseFigureMaterial();
-	skeletonMaterial->SetShader(
-		new Shader(
-			"Skeleton",
-			"Dodge/shaders/Test/vertex.vs",
-			"Dodge/shaders/Test/fragment.frag"
-		)
-	);
-
-	skeletonMaterial->SetDiffuse(Color(1, 1, 1));
-	skeletonMaterial->SetDiffuseMap(
-		new Image(
-			ImagesController::LoadImg(
-				"Content/Assets/lpc_entry/males/skeleton.png",
-				"Skeleton"
-			)
-		)
-	);
-
-	skeletonMaterial->SetCamera(camera);
 
 	for (IGameObject* spawn : GetClassesByName("SkeletonSpawnPoint")) {
 		//skeleton->SetTarget(player);
-		enemys.push_back(new Skeleton(
+		Material* skeletonMaterial = new BaseFigureMaterial();
+		skeletonMaterial->SetShader(
+			new Shader(
+				"Skeleton",
+				"Dodge/shaders/Test/vertex.vs",
+				"Dodge/shaders/Test/fragment.frag"
+			)
+		);
+
+		skeletonMaterial->SetDiffuse(Color(1, 1, 1));
+		skeletonMaterial->SetDiffuseMap(
+			new Image(
+				ImagesController::LoadImg(
+					"Content/Assets/lpc_entry/males/skeleton.png",
+					"Skeleton"
+				)
+			)
+		);
+
+		skeletonMaterial->SetCamera(camera);
+
+		Skeleton* skeleton = new Skeleton(
 			"Skeleton",
 			*window,
 			new BoxCollision(
@@ -114,7 +119,10 @@ void WonderWold::SpawnSkeleton(Coord pos)
 			true,
 			false,
 			false
-		));
+		);
+
+		enemys.push_back(skeleton);
+		GameObjects::Add(skeleton);
 	}
 }
 
@@ -187,7 +195,6 @@ void WonderWold::Update()
 	}
 
 	if (cameraMove) {
-
 		for (class Pawn* pawn : enemys) {
 			pawn->SetPos(pawn->GetPos() + cameraOffset);
 			if (Skeleton* skeleton = dynamic_cast<Skeleton*>(pawn)) {
@@ -200,19 +207,16 @@ void WonderWold::Update()
 
 			pawn->GetCollision()->SetPoints({
 				pawn->GetPos()
-				});
+			});
 		}
 
-		std::thread([&]() {
-			std::lock_guard<std::mutex> lock(pawnUpdate);
-			for (IGameObject* obj : gameClasses)
-			{
-				obj->SetPos(obj->GetPos() + cameraOffset);
-				obj->GetCollision()->SetPoints({
-					obj->GetPos()
-					});
-			}
-		}).detach();
+		for (IGameObject* obj : gameClasses)
+		{
+			obj->SetPos(obj->GetPos() + cameraOffset);
+			obj->GetCollision()->SetPoints({
+				obj->GetPos()
+			});
+		}
 	}
 
 	UpdatePawns();
