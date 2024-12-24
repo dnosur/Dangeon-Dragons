@@ -17,6 +17,10 @@
 #include "Color.h"
 #include "Size.h"
 
+struct Ray;
+
+__interface IGameObject;
+
 void clear();
 void pause();
 
@@ -41,7 +45,7 @@ template <typename T>
 void ClearVector(std::vector<T>& vector);
 
 template<typename T>
-inline bool ExistInVector(std::vector<T>& vector, T value);
+inline bool ExistInVector(std::vector<T>& vector, T* value);
 
 template<typename T>
 inline void RemoveFromVector(std::vector<T>& vector, T value);
@@ -54,6 +58,9 @@ T Max(T a, T b);
 
 template <typename T>
 T Min(T a, T b);
+
+template <typename T, typename T1>
+bool EqualTypes(T* a, T1* b);
 
 template<typename T>
 inline void copyArray(T** origin, T** destination)
@@ -114,13 +121,36 @@ inline T Min(T a, T b)
 	return (a < b) ? a : b;
 }
 
+template<typename T, typename T1>
+inline bool EqualTypes(T* a, T1* b)
+{
+	T* bPtr = dynamic_cast<T*>(&b);
+	T1* aPtr = dynamic_cast<T1*>(&a);
+
+	return bPtr != nullptr && aPtr != nullptr;
+}
+
 float CalculateDistance(const Coord a, const Coord b);
+float CalculateDistanceRef(const Coord& a, const Coord& b);
 
 float CalculateDistanceWithSize(Coord a, Coord b, Size bSIze);
 
 bool IsPointBetween(Coord start, Coord end, Coord point);
 
 bool IsPointBetween(Coord start, Coord end, Coord point, float tolerance);
+
+bool IsPointBetween(Ray* ray, Coord point);
+
+/**
+ * Checks if an object is between a ray.
+ *
+ * @param ray The ray to check.
+ * @param object The object to check.
+ * @param useCollision Whether to use collision or not.
+ *
+ * @return True if the object is between the ray, false otherwise.
+ */
+bool IsObjectBetween(Ray* ray, IGameObject* object, bool useCollision = true);
 
 std::string generateRandomString(int length);
 

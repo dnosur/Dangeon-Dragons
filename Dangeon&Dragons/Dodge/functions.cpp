@@ -1,5 +1,12 @@
 #include "functions.h"
+
+#include "IGameObject.h"
+#include "raycast/Ray.h"
+
 #include <random>
+#include "raycast/Raycast.h"
+#include "collisions/PoligonCollision.h"
+#include "collisions/BoxCollision.h"
 
 void clear() {
 	system("cls");
@@ -117,6 +124,11 @@ Coord MathCoord(Coord coord, Size windowSize)
 
 float CalculateDistance(const Coord a, const Coord b)
 {
+	return CalculateDistanceRef(a, b);
+}
+
+float CalculateDistanceRef(const Coord& a, const Coord& b)
+{
 	float dx = a.X - b.X;
 	float dy = a.Y - b.Y;
 	return std::sqrt(dx * dx + dy * dy);
@@ -163,6 +175,85 @@ bool IsPointBetween(Coord start, Coord end, Coord point, float tolerance)
 	float distance = (2 * area) / lineLength;
 
 	return distance <= tolerance && IsPointBetween(start, end, point);
+}
+
+bool IsPointBetween(Ray* ray, Coord point)
+{
+	float vectorX = ray->direction->X - ray->origin->X;
+	float vectorY = ray->direction->Y - ray->origin->Y;
+
+	float pointVectorX = point.X - ray->origin->X;
+	float pointVectorY = point.Y - ray->origin->Y;
+
+	float dotProduct = pointVectorX * vectorX + pointVectorY * vectorY;
+
+	float lengthSquared = vectorX * vectorX + vectorY * vectorY;
+
+	return dotProduct >= 0 && dotProduct <= lengthSquared;
+}
+
+bool IsObjectBetween(Ray* ray, IGameObject* object, bool useCollision) {
+
+		// Координаты луча
+	Coord rayOrigin = *ray->origin;
+	Coord rayEnd = *ray->direction;
+	Coord rayDir = { rayEnd.X - rayOrigin.X, rayEnd.Y - rayOrigin.Y, rayEnd.Z - rayOrigin.Z };
+
+	// Нормализуем вектор направления луча
+	double magnitude = std::sqrt(rayDir.X * rayDir.X + rayDir.Y * rayDir.Y + rayDir.Z * rayDir.Z);
+	if (magnitude == 0) {
+		return false; // Некорректное направление
+	}
+	rayDir.X /= magnitude;
+	rayDir.Y /= magnitude;
+	rayDir.Z /= magnitude;
+
+	if (useCollision) {
+		if (PoligonCollision* collision = dynamic_cast<PoligonCollision*>(object->GetCollision())) {
+			std::vector<Coord> polygonPoints = collision->GetPoints();
+
+			// Проверяем пересечение луча с многоугольником
+			return Raycast::CheckRayPolygonIntersection(rayOrigin, rayDir, polygonPoints);
+		}
+	}
+
+	// Получаем позицию и размеры объекта
+	Coord objPos = object->GetPos();
+	Size objSize = object->GetSize();
+
+	if (useCollision) {
+		BoxCollision* collision = dynamic_cast<BoxCollision*>(object->GetCollision());
+
+		objPos = (collision != nullptr ? collision->GetPoints()[0] : objPos);
+		objSize = (collision != nullptr ? collision->GetSize() : objSize);
+	}
+
+	// Вычисляем AABB объекта
+	double objLeft = objPos.X;
+	double objRight = objPos.X + objSize.width;
+	double objBottom = objPos.Y + objSize.height;
+	double objTop = objPos.Y;
+
+	if ((rayOrigin.X > objRight + ray->rayWidth && rayEnd.X > objRight + ray->rayWidth) ||
+		(rayOrigin.X < objLeft - ray->rayWidth && rayEnd.X < objLeft - ray->rayWidth)) {
+		return false; // Луч полностью справа или слева от объекта
+	}
+
+	if ((rayOrigin.Y > objBottom + ray->rayWidth && rayEnd.Y > objBottom + ray->rayWidth) ||
+		(rayOrigin.Y < objTop - ray->rayWidth && rayEnd.Y < objTop - ray->rayWidth)) {
+		return false; // Луч полностью выше или ниже объекта
+	}
+
+	object->Draw();
+	return true;
+
+	//Метод AABB не понадобился, но на будущее пускай будет :)
+
+	// Проверяем пересечение луча с AABB
+	return Raycast::CheckRayAABBIntersection(
+		rayOrigin, rayDir, ray->rayWidth, 
+		objLeft, objRight, objBottom, objTop
+	);
 }
 
 std::string generateRandomString(int length)
