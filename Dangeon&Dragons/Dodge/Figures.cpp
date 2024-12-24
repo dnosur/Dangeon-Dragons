@@ -1,4 +1,5 @@
 #include "Figures.h"
+#include "functions.h"
 
 void drawCircle(float cx, float cy, float r, int num_segments) {
     glBegin(GL_TRIANGLE_FAN);
@@ -30,5 +31,51 @@ void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3)
     glVertex2f(x1, y1);
     glVertex2f(x2, y2); 
     glVertex2f(x3, y3); 
+    glEnd();
+}
+
+void drawLine(Coord a, Coord b, Color color, int lineWidth)
+{
+    glLineWidth(lineWidth);
+    // Вычисляем координаты
+    glColor3f(color.r, color.g, color.b);
+
+    Coord first = Coord(
+        2.0f * a.X / 1280 - 1.0f,
+        1.0f - 2.0f * a.Y / 720
+    );
+
+    Coord second = Coord(
+        2.0f * b.X / 1280 - 1.0f,
+        1.0f - 2.0f * b.Y / 720
+    );
+
+    // Рисуем линию
+    glBegin(GL_LINES);
+    glVertex2f(first.X, first.Y);
+    glVertex2f(second.X, second.Y);
+    glEnd();
+}
+
+void drawRay(Ray*& ray, Color& color)
+{
+    glLineWidth(ray->rayWidth);
+    // Вычисляем координаты
+    glColor3f(color.r, color.g, color.b);
+
+    Coord* first = new Coord(
+        2.0f * ray->origin->X / 1280 - 1.0f,
+        1.0f - 2.0f * ray->origin->Y / 720
+    );
+
+    Coord* second = new Coord(
+        2.0f * ray->direction->X / 1280 - 1.0f,
+        1.0f - 2.0f * ray->direction->Y / 720
+    );
+
+    // Рисуем линию
+    glBegin(GL_LINES);
+    glVertex2f(first->X, first->Y);
+    glVertex2f(second->X, second->Y);
     glEnd();
 }
