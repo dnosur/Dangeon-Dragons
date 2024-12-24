@@ -8,6 +8,8 @@
 #include "../Content/Scripts/Characters/Player/Player.h"
 #include "../Content/Scripts/Characters/Enemys/Skeleton.h"
 
+#include "../Dodge/GameObjects.h"
+
 MainWindow::MainWindow(): Window()
 {
     gameStatus = GameStatuses::End;
@@ -57,7 +59,7 @@ void MainWindow::Update()
 {
     gameStatus = GameStatuses::Start;
 
-    WonderWold wonderWold(
+    WonderWold* wonderWold = new WonderWold(
         this, 
         TinyXml::LoadMap(
             "Content/Maps/world/world.tmx", 
@@ -66,20 +68,13 @@ void MainWindow::Update()
         Coord(100, -400)
     );
 
-    std::vector<IGameObject*> solidCollisions = wonderWold.GetClassesByType("SolidCollision");
+    std::vector<IGameObject*> solidCollisions = wonderWold->GetClassesByType("SolidCollision");
 
     if (!solidCollisions.empty()) {
         WindowPointerController::SetPointer(window, WindowPointer<std::vector<IGameObject*> >("SolidCollisions", &solidCollisions));
     }
 
-  //  Rect* rect = new Rect(
-		//"Rect",
-		//*this,
-		//Coord(200, 300),
-		//Size(24, 10),
-		//Color(1, 0, 0)
-  //  );
-  //  rect->GetMaterial()->SetDiffuseMap(new Image());
+    GameObjects::Add(&solidCollisions);
 
     while (!glfwWindowShouldClose(GetWindow()) && !IsClosed())
     {
@@ -103,7 +98,7 @@ void MainWindow::Update()
         if (gameStatus == GameStatuses::End) {
         }
 
-        wonderWold.Update();
+        wonderWold->Update();
 
         mouse.Update();
         keyboard.Update();
