@@ -5,6 +5,12 @@
 #include <queue>
 #include <math.h>
 #include <corecrt_math_defines.h>
+#include <random>
+#include "../../../../Dodge/threads/Thread.h"
+#include "../../../../Dodge/GameObjects.h"
+#include "../../../../Dodge/raycast/Raycast.h"
+#include "../../../../Dodge/raycast/RayFactory.h"
+#include "../../Utilities/RaycastUtilities.h"
 
 Skeleton::Skeleton(
 	const char* title, Window& window, ICollision* collision, 
@@ -31,9 +37,13 @@ Coord Skeleton::GetDistanceTo(IGameObject& gameObject)
 	return gameObject.GetPos() - pos;
 }
 
-float Skeleton::GetDistanceTo(IGameObject& gameObject, Size objSize)
+float Skeleton::GetFloatDistanceTo(IGameObject& gameObject)
 {
-	return CalculateDistanceWithSize(startPos, gameObject.GetPos(), objSize);
+	return CalculateDistanceWithSize(
+		startPos, 
+		gameObject.GetPos(),
+		gameObject.GetSize()
+	);
 }
 
 bool Skeleton::IsNear(IGameObject& gameObject)
@@ -309,7 +319,7 @@ void Skeleton::Initialize()
 	damage = 5.0f;
 	damageDistance = 32.0f;
 
-	viewDistance = 100.0f;
+	viewDistance = 300.0f;
 	viewWidth = 10.0f;
 
 	movementIndex = 0;
@@ -418,6 +428,43 @@ void Skeleton::AIMovement()
 		action = Actions::Idle;
 		animations.Play(GetAnimationName());
 		movementIndex = 0;
+
+		if (target) {
+			return;
+		}
+
+		Thread* findTarget = new Thread(nullptr, [&]() {
+			Player* player = GameObjects::GetDynamicByTitle<Player>("Player");
+			if (player == nullptr) {
+				return;
+			}
+
+			Ray* ray = RayFactory::CreateRay(
+				new Coord(startPos),
+				new Coord(player->GetStartPos())
+			);
+
+			if (ray == nullptr || ray->raySize > viewDistance) {
+				delete ray;
+				return;
+			}
+
+			IGameObject* target = Raycast::RaycastFirst(
+				RayFactory::CreateRay(
+					new Coord(startPos),
+					new Coord(player->GetStartPos())
+				)
+			);
+
+			if (target != player) {
+				return;
+			}
+
+			std::cout << "Found player\n";
+			this->SetTarget(player);
+		});
+
+		findTarget->Detach();
 		return;
 	}
 
@@ -444,9 +491,24 @@ void Skeleton::AIMovement()
 	//Движение к цели
 	if (!findingPath && target) {
 		std::thread([this]() { 
-			Player* player = dynamic_cast<Player*>(target);
 			std::lock_guard<std::mutex> lock(pathMutex);
-			FindPath(GetPos(), player->GetStartPos());
+			Coord targetPos;
+
+			if (Player* player = dynamic_cast<Player*>(target)) {
+				targetPos = player->GetStartPos();
+			}
+			else {
+				targetPos = target->GetPos();
+			}
+
+			Ray* ray = RayFactory::CreateRay(&startPos, &targetPos);
+
+			if (ray == nullptr || ray->raySize > viewDistance) {
+				delete ray;
+				return;
+			}
+
+			FindPath(GetPos(), targetPos);
 			findingPath = false;
 		}).detach();
 		//std::cout << "Skeleton moving to " << target->GetTitle() << "...\n";
@@ -456,11 +518,10 @@ void Skeleton::AIMovement()
 	//Буждание
 	if (!findingPath && !target) {
 		std::thread([this]() {
-			srand(time(NULL));
-			std::lock_guard<std::mutex> lock(pathMutex);
-
 			float wanderRadius = 100.0f;
-			Coord randomPosition = GenerateRandomPosition(startPos, wanderRadius);
+			Coord randomPosition = GenerateRandomPosition(GetPos(), wanderRadius);
+
+			std::lock_guard<std::mutex> lock(pathMutex);
 			FindPath(GetPos(), randomPosition);
 			findingPath = false;
 		}).detach();
@@ -472,8 +533,15 @@ void Skeleton::AIMovement()
 
 Coord Skeleton::GenerateRandomPosition(Coord center, float radius)
 {
-	float angle = static_cast<float>(rand()) / RAND_MAX * 2 * M_PI; // Случайный угол
-	float distance = static_cast<float>(rand()) / RAND_MAX * radius; // Случайное расстояние в пределах радиуса
+	unsigned int seed = std::random_device{}();
+	std::mt19937 gen(seed);
+	std::uniform_real_distribution<float> distribution(0.0f, RAND_MAX);
+
+	int num1 = distribution(gen);
+	int num2 = distribution(gen);
+
+	float angle = static_cast<float>(num1) / RAND_MAX * 2 * M_PI; // Случайный угол
+	float distance = static_cast<float>(num2) / RAND_MAX * radius; // Случайное расстояние в пределах радиуса
 	float offsetX = distance * cos(angle);
 	float offsetY = distance * sin(angle);
 
@@ -529,7 +597,7 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 		}
 
 		//Цель достигнута
-		if (Pawn::IsNear(currentNode->movement->position, goal, damageDistance)) {
+		if (Pawn::IsNear(currentNode->movement->position, goal, damageDistance - 10)) {
 			Node* node = currentNode;
 			while (node != nullptr) {
 				movements.push_back(node->movement);
@@ -565,6 +633,11 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 	}
 
 	return false;
+}
+
+bool Skeleton::FindTarget()
+{
+	return true;
 }
 
 std::vector<Movement*> Skeleton::GetNeighbors(Coord position)

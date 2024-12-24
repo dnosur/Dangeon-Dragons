@@ -48,6 +48,8 @@ class Skeleton
     Coord GenerateRandomPosition(Coord center, float radius);
 
     bool FindPath(Coord start, Coord goal);
+    bool FindTarget();
+
     std::vector<Movement*> GetNeighbors(Coord position);
     bool IsWalkable(Coord position);
 public:
@@ -62,7 +64,7 @@ public:
     Coord GetStartPos();
 
     Coord GetDistanceTo(IGameObject& gameObject) override;
-    float GetDistanceTo(IGameObject& gameObject, Size objSize) override;
+    float GetFloatDistanceTo(IGameObject& gameObject) override;
 
     bool IsNear(IGameObject& gameObject) override;
     bool IsNear(Coord pos) override;
