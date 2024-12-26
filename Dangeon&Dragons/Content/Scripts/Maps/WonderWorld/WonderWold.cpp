@@ -29,12 +29,10 @@ void WonderWold::SpawnPlayer()
 
 	playerMaterial->SetDiffuse(Color(1, 1, 1));
 	playerMaterial->SetDiffuseMap(
-		new Image(
 			ImagesController::LoadImg(
 				"Content/Assets/lpc_entry/males/player.png",
 				"Player"
 			)
-		)
 	);
 
 	player = new Player(
@@ -87,12 +85,10 @@ void WonderWold::SpawnSkeleton(Coord pos)
 
 		skeletonMaterial->SetDiffuse(Color(1, 1, 1));
 		skeletonMaterial->SetDiffuseMap(
-			new Image(
 				ImagesController::LoadImg(
 					"Content/Assets/lpc_entry/males/skeleton.png",
 					"Skeleton"
 				)
-			)
 		);
 
 		skeletonMaterial->SetCamera(camera);

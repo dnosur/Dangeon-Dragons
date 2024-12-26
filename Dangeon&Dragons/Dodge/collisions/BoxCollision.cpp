@@ -1,6 +1,16 @@
 #include "BoxCollision.h"
 #include "../functions.h"
 
+bool BoxCollision::ExistGameObject(IGameObject* gameObject)
+{
+	for (auto gameObject : gameObjects) {
+		if (gameObject == gameObject) {
+			return true;
+		}
+	}
+	return false;
+}
+
 BoxCollision::BoxCollision(Coord point, Size size, int root_id, char* root_title, char* type)
 {
 	this->point = point;
@@ -40,12 +50,12 @@ BoxCollision* BoxCollision::Clone() const
     return new BoxCollision(*this);
 }
 
-std::vector<Coord> BoxCollision::GetPoints()
+boost::container::vector<Coord> BoxCollision::GetPoints()
 {
 	return { point };
 }
 
-void BoxCollision::SetPoints(std::vector<Coord> points)
+void BoxCollision::SetPoints(boost::container::vector<Coord> points)
 {
 	point = points[0];
 }
@@ -126,7 +136,7 @@ bool BoxCollision::IsCollisionEnter(IGameObject* gameObject)
     }
 
 
-    std::vector<Coord> otherPoints = otherCollision->GetPoints();
+    boost::container::vector<Coord> otherPoints = otherCollision->GetPoints();
     if (otherPoints.empty()) {
         return false;
     }
@@ -193,7 +203,7 @@ bool BoxCollision::IsCollisionEnter(Coord point, Size size)
 
 bool BoxCollision::IsExist(IGameObject* gameObject)
 {
-	return ExistInVector<IGameObject*>(gameObjects, gameObject);
+	return ExistGameObject(gameObject);
 }
 
 bool BoxCollision::operator==(const BoxCollision& other) const

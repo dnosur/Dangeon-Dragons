@@ -39,6 +39,7 @@ struct TileMap
 		TinyClassController classesController,
 		TinySrpiteLayersController spriteLayersController
 	);
+	~TileMap();
 
 	bool operator==(const TileMap& other) const;
 	bool operator!=(const TileMap& other) const;

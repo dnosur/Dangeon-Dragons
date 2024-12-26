@@ -6,8 +6,8 @@ Material::Material(
 	float specularIntensity, float emissiveIntensity, 
 	Shader* shader, 
 	Image* diffuseMap, Image* normalMap, Image* specularMap, Image* emissiveMap,
-	std::vector<Coord> diffuseMapVerticies, std::vector<Coord> normalMapVerticies,
-	std::vector<Coord> specularMapVerticies,std::vector<Coord> emissiveMapVerticies
+	boost::container::vector<Coord> diffuseMapVerticies, boost::container::vector<Coord> normalMapVerticies,
+	boost::container::vector<Coord> specularMapVerticies,boost::container::vector<Coord> emissiveMapVerticies
 )
 {
 	this->ambient = ambient;
@@ -43,10 +43,10 @@ Material::~Material()
 	if (specularMap != nullptr) delete specularMap;
 	if (emissiveMap != nullptr) delete emissiveMap;
 
-	ClearVector<Coord>(diffuseMapVerticies);
-	ClearVector<Coord>(normalMapVerticies);
-	ClearVector<Coord>(specularMapVerticies);
-	ClearVector<Coord>(emissiveMapVerticies);
+	ClearBoostVector<Coord>(diffuseMapVerticies);
+	ClearBoostVector<Coord>(normalMapVerticies);
+	ClearBoostVector<Coord>(specularMapVerticies);
+	ClearBoostVector<Coord>(emissiveMapVerticies);
 }
 
 void Material::SetShader(Shader* shader)
@@ -124,54 +124,54 @@ void Material::SetEmissiveIntensity(float emissiveIntensity)
 	this->emissiveIntensity = emissiveIntensity;
 }
 
-void Material::SetDiffuseMapVerticies(std::vector<Coord>& diffuseMapVerticies)
+void Material::SetDiffuseMapVerticies(boost::container::vector<Coord>& diffuseMapVerticies)
 {
 	this->diffuseMapVerticies = diffuseMapVerticies;
 	//this->diffuseMapVerticies.swap(diffuseMapVerticies);
 }
 
-void Material::SetNormalMapVerticies(std::vector<Coord> normalMapVerticies)
+void Material::SetNormalMapVerticies(boost::container::vector<Coord> normalMapVerticies)
 {
-	ClearVector<Coord>(this->normalMapVerticies);
+	ClearBoostVector<Coord>(this->normalMapVerticies);
 	this->normalMapVerticies = normalMapVerticies;
 }
 
-void Material::SetSpecularMapVerticies(std::vector<Coord> specularMapVerticies)
+void Material::SetSpecularMapVerticies(boost::container::vector<Coord> specularMapVerticies)
 {
-	ClearVector<Coord>(this->specularMapVerticies);
+	ClearBoostVector<Coord>(this->specularMapVerticies);
 	this->specularMapVerticies = specularMapVerticies;
 }
 
-void Material::SetEmissiveMapVerticies(std::vector<Coord> emissiveMapVerticies)
+void Material::SetEmissiveMapVerticies(boost::container::vector<Coord> emissiveMapVerticies)
 {
-	ClearVector<Coord>(this->emissiveMapVerticies);
+	ClearBoostVector<Coord>(this->emissiveMapVerticies);
 	this->emissiveMapVerticies = emissiveMapVerticies;
 }
 
 void Material::SetDiffuseMapVerticies(std::pair<Coord, Coord> diffuseMapVerticies)
 {
-	ClearVector<Coord>(this->diffuseMapVerticies);
+	ClearBoostVector<Coord>(this->diffuseMapVerticies);
 	this->diffuseMapVerticies.push_back(diffuseMapVerticies.first);
 	this->diffuseMapVerticies.push_back(diffuseMapVerticies.second);
 }
 
 void Material::SetNormalMapVerticies(std::pair<Coord, Coord> normalMapVerticies)
 {
-	ClearVector<Coord>(this->normalMapVerticies);
+	ClearBoostVector<Coord>(this->normalMapVerticies);
 	this->normalMapVerticies.push_back(normalMapVerticies.first);
 	this->normalMapVerticies.push_back(normalMapVerticies.second);
 }
 
 void Material::SetSpecularMapVerticies(std::pair<Coord, Coord> specularMapVerticies)
 {
-	ClearVector<Coord>(this->specularMapVerticies);
+	ClearBoostVector<Coord>(this->specularMapVerticies);
 	this->specularMapVerticies.push_back(specularMapVerticies.first);
 	this->specularMapVerticies.push_back(specularMapVerticies.second);
 }
 
 void Material::SetEmissiveMapVerticies(std::pair<Coord, Coord> emissiveMapVerticies)
 {
-	ClearVector<Coord>(this->emissiveMapVerticies);
+	ClearBoostVector<Coord>(this->emissiveMapVerticies);
 	this->emissiveMapVerticies.push_back(emissiveMapVerticies.first);
 	this->emissiveMapVerticies.push_back(emissiveMapVerticies.second);
 }
@@ -243,22 +243,22 @@ Image* Material::GetEmissiveMap()
 	return emissiveMap;
 }
 
-std::vector<Coord> Material::GetDiffuseMapVerticies()
+boost::container::vector<Coord> Material::GetDiffuseMapVerticies()
 {
 	return diffuseMapVerticies;
 }
 
-std::vector<Coord> Material::GetNormalMapVerticies()
+boost::container::vector<Coord> Material::GetNormalMapVerticies()
 {
 	return normalMapVerticies;
 }
 
-std::vector<Coord> Material::GetSpecularMapVerticies()
+boost::container::vector<Coord> Material::GetSpecularMapVerticies()
 {
 	return specularMapVerticies;
 }
 
-std::vector<Coord> Material::GetEmissiveMapVerticies()
+boost::container::vector<Coord> Material::GetEmissiveMapVerticies()
 {
 	return emissiveMapVerticies;
 }

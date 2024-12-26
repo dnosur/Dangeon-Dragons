@@ -26,10 +26,10 @@ protected:
 	Image* specularMap;
 	Image* emissiveMap;
 
-	std::vector<Coord> diffuseMapVerticies;
-	std::vector<Coord> normalMapVerticies;
-	std::vector<Coord> specularMapVerticies;
-	std::vector<Coord> emissiveMapVerticies;
+	boost::container::vector<Coord> diffuseMapVerticies;
+	boost::container::vector<Coord> normalMapVerticies;
+	boost::container::vector<Coord> specularMapVerticies;
+	boost::container::vector<Coord> emissiveMapVerticies;
 
 public:
 	Material(
@@ -51,10 +51,10 @@ public:
 		Image* specularMap = nullptr, 
 		Image* emissiveMap = nullptr,
 
-		std::vector<Coord> diffuseMapVerticies = std::vector<Coord>(),
-		std::vector<Coord> normalMapVerticies = std::vector<Coord>(),
-		std::vector<Coord> specularMapVerticies = std::vector<Coord>(),
-		std::vector<Coord> emissiveMapVerticies = std::vector<Coord>()
+		boost::container::vector<Coord> diffuseMapVerticies = boost::container::vector<Coord>(),
+		boost::container::vector<Coord> normalMapVerticies = boost::container::vector<Coord>(),
+		boost::container::vector<Coord> specularMapVerticies = boost::container::vector<Coord>(),
+		boost::container::vector<Coord> emissiveMapVerticies = boost::container::vector<Coord>()
 	);
 	~Material();
 
@@ -76,10 +76,10 @@ public:
 	void SetSpecularIntensity(float specularIntensity);
 	void SetEmissiveIntensity(float emissiveIntensity);
 
-	void SetDiffuseMapVerticies(std::vector<Coord>& diffuseMapVerticies);
-	void SetNormalMapVerticies(std::vector<Coord> normalMapVerticies);
-	void SetSpecularMapVerticies(std::vector<Coord> specularMapVerticies);
-	void SetEmissiveMapVerticies(std::vector<Coord> emissiveMapVerticies);
+	void SetDiffuseMapVerticies(boost::container::vector<Coord>& diffuseMapVerticies);
+	void SetNormalMapVerticies(boost::container::vector<Coord> normalMapVerticies);
+	void SetSpecularMapVerticies(boost::container::vector<Coord> specularMapVerticies);
+	void SetEmissiveMapVerticies(boost::container::vector<Coord> emissiveMapVerticies);
 
 	void SetDiffuseMapVerticies(std::pair<Coord, Coord> diffuseMapVerticies);
 	void SetNormalMapVerticies(std::pair<Coord, Coord> normalMapVerticies);
@@ -104,10 +104,10 @@ public:
 	Image* GetSpecularMap();
 	Image* GetEmissiveMap();
 
-	std::vector<Coord> GetDiffuseMapVerticies();
-	std::vector<Coord> GetNormalMapVerticies();
-	std::vector<Coord> GetSpecularMapVerticies();
-	std::vector<Coord> GetEmissiveMapVerticies();
+	boost::container::vector<Coord> GetDiffuseMapVerticies();
+	boost::container::vector<Coord> GetNormalMapVerticies();
+	boost::container::vector<Coord> GetSpecularMapVerticies();
+	boost::container::vector<Coord> GetEmissiveMapVerticies();
 
 	virtual void Use(IGameObject* gameObject) = 0;
 	virtual void Disable(IGameObject* gameObject) = 0;

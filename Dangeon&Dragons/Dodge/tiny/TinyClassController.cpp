@@ -2,10 +2,10 @@
 
 TinyClassController::TinyClassController()
 {
-	classes = std::vector<TinyClass>();
+	classes = boost::container::vector<TinyClass>();
 }
 
-TinyClassController::TinyClassController(std::vector<TinyClass> classes)
+TinyClassController::TinyClassController(boost::container::vector<TinyClass> classes)
 {
 	this->classes = classes;
 }
@@ -17,9 +17,13 @@ TinyClassController::TinyClassController(tinyxml2::XMLElement* element)
 
 TinyClassController::~TinyClassController()
 {
+	if (classes.empty()) {
+		return;
+	}
+	classes.clear();
 }
 
-void TinyClassController::LoadClasses(tinyxml2::XMLElement* element, std::vector<TinyClass>& classes)
+void TinyClassController::LoadClasses(tinyxml2::XMLElement* element, boost::container::vector<TinyClass>& classes)
 {
 	for (tinyxml2::XMLElement* child = element->FirstChildElement("group");
 		child != nullptr;
@@ -30,12 +34,12 @@ void TinyClassController::LoadClasses(tinyxml2::XMLElement* element, std::vector
 	}
 }
 
-std::vector<TinyClass>::iterator TinyClassController::begin()
+boost::container::vector<TinyClass>::iterator TinyClassController::begin()
 {
 	return classes.begin();
 }
 
-std::vector<TinyClass>::iterator TinyClassController::end()
+boost::container::vector<TinyClass>::iterator TinyClassController::end()
 {
 	return classes.end();
 }

@@ -20,6 +20,8 @@ __interface ICollision;
 #include "../collisions/BoxCollision.h"
 #include "../collisions/PoligonCollision.h"
 
+#include <boost/container/vector.hpp>
+
 namespace fs = std::filesystem;
 
 static class TinyXml
@@ -29,7 +31,7 @@ public:
 	static tinyxml2::XMLError ReadDoc(tinyxml2::XMLDocument& doc, const char* path);
 	static TileMap* LoadMap(const char* path, const char* title = "sampleMap");
 
-	static std::vector<Coord> ParsePolygon(std::string polygon, const Coord& offset);
+	static boost::container::vector<Coord> ParsePolygon(std::string polygon, const Coord& offset);
 	static std::string GetPathToTileSource(std::string path);
 };
 

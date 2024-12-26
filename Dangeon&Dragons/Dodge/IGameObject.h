@@ -1,4 +1,7 @@
 #pragma once
+#include <boost/container/vector.hpp>
+#include <boost/container/small_vector.hpp>
+
 #include "Window.h"
 #include "Layers.h"
 
@@ -29,12 +32,12 @@ __interface IGameObject
 	Coord GetPos();
 	Coord GetOpenGlPos();
 
-	std::vector<Coord> GetVertices();
+	boost::container::vector<Coord> GetVertices();
 
 	void SetColor(Color color);
 	Color GetColor();
 
-	void SetPos(std::vector<Coord> vertices);
+	void SetPos(boost::container::vector<Coord> vertices);
 	void SetPos(Coord pos);
 
 	Directions GetMoveDirection();

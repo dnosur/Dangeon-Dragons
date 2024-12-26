@@ -37,7 +37,7 @@ public:
         ICollision* collision, Material* material, Directions moveDirection,
         Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
-        std::vector<IAnimation*> animations = {}
+        boost::container::vector<IAnimation*> animations = {}
     );
 
     Coord GetStartPos();

@@ -13,19 +13,19 @@ int ImagesController::GetIndexByTitle(char* title)
     return -1;
 }
 
-void ImagesController::ChangeIfExist(Image image)
+void ImagesController::ChangeIfExist(Image* image)
 {
-    if (image.title == nullptr) {
+    if (image->title == nullptr) {
         return;
     }
 
-    const int index = GetIndexByTitle(image.title);
+    const int index = GetIndexByTitle(image->title);
     if (index < 0) {
-        images.push_back(image);
+        images.push_back(*image);
         return;
     }
 
-    images[index] = image;
+    images[index] = *image;
 }
 
 void ImagesController::Draw(Image& item, Coord& position, Color& color, Size& windowSize, Size& size, bool reverse)
@@ -88,9 +88,9 @@ void ImagesController::Draw(Image& item, Coord& position, Color& color, Size& wi
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, image);
 
-    item.shader->Use();
-    item.shader->SetInt("diffuseTexture", 0);
-    item.shader->SetVec4("diffuseColor", color.r, color.g, color.b, color.a);
+    item.shader.get()->Use();
+    item.shader.get()->SetInt("diffuseTexture", 0);
+    item.shader.get()->SetVec4("diffuseColor", color.r, color.g, color.b, color.a);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -101,7 +101,7 @@ void ImagesController::Draw(Image& item, Coord& position, Color& color, Size& wi
     glUseProgram(0);
 }
 
-Image ImagesController::LoadImg(const char* path, const char* title)
+Image* ImagesController::LoadImg(const char* path, const char* title)
 {
     GLuint textureID;
     glGenTextures(1, &textureID);
@@ -133,12 +133,12 @@ Image ImagesController::LoadImg(const char* path, const char* title)
     }
     else {
         std::cout << "Failed to load texture" << std::endl;
-        return Image();
+        return new Image();
     }
 
     stbi_image_free(data);
 
-    return Image(
+    return new Image(
         title,
         path,
         textureID,
@@ -150,14 +150,15 @@ Image ImagesController::LoadImg(const char* path, const char* title)
             title,
             "Dodge/shaders/Image/imageVertex.vs",
             "Dodge/shaders/Image/imageFragment.frag"
-        ));
+        )
+    );
 }
 
 void ImagesController::Load(const char* path, const char* title, Shader* shader)
 {
-    Image image = ImagesController::LoadImg(path, title);
+    Image* image = ImagesController::LoadImg(path, title);
     if (shader != nullptr) {
-        image.shader = shader;
+        image->shader = std::unique_ptr<Shader>(shader);
     }
 
     ChangeIfExist(image);
@@ -169,13 +170,13 @@ void ImagesController::LoadAndDrawImage(
     Size size, Size windowSize
 )
 {
-    Image image_obj = ImagesController::LoadImg(path, title);
-    if (!image_obj.image) {
+    Image* image_obj = ImagesController::LoadImg(path, title);
+    if (!image_obj->image) {
         return;
     }
 
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, image_obj.image);
+    glBindTexture(GL_TEXTURE_2D, image_obj->image);
 
 
     glMatrixMode(GL_PROJECTION);
@@ -216,12 +217,12 @@ void ImagesController::DrawImage(const char* title, Coord position, Size size, S
     Draw(images[index], position, color, windowSize, size, reverse);
 }
 
-std::vector<Image> ImagesController::GetImages()
+boost::container::small_vector<Image, 16> ImagesController::GetImages()
 {
     return images;
 }
 
-void ImagesController::SetImages(std::vector<Image> images)
+void ImagesController::SetImages(boost::container::vector<Image> images)
 {
     Clear();
     for (const Image& image : images) {

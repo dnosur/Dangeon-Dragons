@@ -3,16 +3,18 @@
 
 #include "Tileset.h"
 
+#include <boost/container/vector.hpp>
+
 class TilesetsController
 {
-	std::vector<Tileset*> tilesets;
+	boost::container::vector<Tileset*> tilesets;
 public:
 	TilesetsController();
-	TilesetsController(std::vector<Tileset*> tilesets);
+	TilesetsController(boost::container::vector<Tileset*> tilesets);
 	TilesetsController(tinyxml2::XMLElement* element, std::string path);
 	~TilesetsController();
 
-	static void LoadTilesets(tinyxml2::XMLElement* element, std::vector<Tileset*>& tilesets, std::string path);
+	static void LoadTilesets(tinyxml2::XMLElement* element, boost::container::vector<Tileset*>& tilesets, std::string path);
 	static Tileset* LoadTileset(int firstgId, const char* path);
 
 	int GetSize();

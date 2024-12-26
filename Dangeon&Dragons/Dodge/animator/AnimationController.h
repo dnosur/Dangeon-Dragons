@@ -3,7 +3,7 @@
 
 class AnimationController
 {
-	std::vector<IAnimation*> animations;
+	boost::container::vector<IAnimation*> animations;
 	char* prevAnim;
 
 	IAnimation* GetByTitle(const char* title);
@@ -16,10 +16,10 @@ class AnimationController
 	int currentIndex;
 public:
 	AnimationController();
-	AnimationController(std::vector<IAnimation*> animations);
+	AnimationController(boost::container::vector<IAnimation*> animations);
 
 	void AddAnimation(IAnimation* animation);
-	void AddAnimations(std::vector<IAnimation*> animations);
+	void AddAnimations(boost::container::vector<IAnimation*> animations);
 
 	void Play(int index);
 	void Play(int index, Coord pos, Size size);

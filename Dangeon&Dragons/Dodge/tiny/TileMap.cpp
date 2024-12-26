@@ -34,6 +34,21 @@ TileMap::TileMap(
 	this->spriteLayersController = spriteLayersController;
 }
 
+TileMap::~TileMap()
+{
+	if (title != nullptr) {
+		delete title;
+	}
+
+	if (orientation != nullptr) {
+		delete orientation;
+	}
+
+	if (renderOreder != nullptr) {
+		delete renderOreder;
+	}
+}
+
 bool TileMap::operator==(const TileMap& other) const
 {
 	return !strcmp(this->title, other.title) && other.undefined == undefined;

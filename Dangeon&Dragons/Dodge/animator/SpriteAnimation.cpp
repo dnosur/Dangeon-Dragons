@@ -36,7 +36,7 @@ SpriteAnimation::SpriteAnimation()
 SpriteAnimation::SpriteAnimation(
 	const char* title, const char* folder, int frameRate, 
 	Window* window, bool revere, 
-	std::vector<FrameSound> frameSounds
+	boost::container::vector<FrameSound> frameSounds
 )
 {
 	copyStr((char*)title, this->title);
@@ -58,7 +58,7 @@ SpriteAnimation::SpriteAnimation(
 SpriteAnimation::SpriteAnimation(
 	const char* title, Coord pos, Size size, 
 	const char* folder, int frameRate, Window* window, bool revere,
-	std::vector<FrameSound> frameSounds
+	boost::container::vector<FrameSound> frameSounds
 ){
 	copyStr((char*)title, this->title);
 	copyStr((char*)folder, this->folder);
@@ -80,9 +80,9 @@ SpriteAnimation::SpriteAnimation(
 }
 
 SpriteAnimation::SpriteAnimation(
-	const char* title, std::vector<Image> sprites, 
+	const char* title, boost::container::vector<Image> sprites, 
 	int frameRate, Window* window, bool revere,
-	std::vector<FrameSound> frameSounds)
+	boost::container::vector<FrameSound> frameSounds)
 {
 	copyStr((char*)title, this->title);
 	SetSprites(sprites);
@@ -103,8 +103,8 @@ SpriteAnimation::SpriteAnimation(
 
 SpriteAnimation::SpriteAnimation(
 	const char* title, Coord pos, Size size,
-	std::vector<Image> sprites, int frameRate, 
-	Window* window, bool revere, std::vector<FrameSound> frameSounds
+	boost::container::vector<Image> sprites, int frameRate, 
+	Window* window, bool revere, boost::container::vector<FrameSound> frameSounds
 )
 {
 	copyStr((char*)title, this->title);
@@ -143,12 +143,12 @@ char* SpriteAnimation::GetTitle()
 	return title;
 }
 
-std::vector<Image> SpriteAnimation::GetSprites()
+boost::container::small_vector<Image, 16> SpriteAnimation::GetSprites()
 {
 	return sprites.GetImages();
 }
 
-void SpriteAnimation::SetSprites(std::vector<Image> sprites)
+void SpriteAnimation::SetSprites(boost::container::vector<Image> sprites)
 {
 	this->sprites.SetImages(sprites);
 }

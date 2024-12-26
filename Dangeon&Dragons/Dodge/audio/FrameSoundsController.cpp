@@ -4,7 +4,7 @@ FrameSoundsController::FrameSoundsController()
 {
 }
 
-FrameSoundsController::FrameSoundsController(std::vector<FrameSound> frameSounds)
+FrameSoundsController::FrameSoundsController(boost::container::vector<FrameSound> frameSounds)
 {
 }
 
@@ -27,7 +27,7 @@ void FrameSoundsController::Update(int currentFrame)
 	}
 }
 
-void FrameSoundsController::SetFrameSounds(std::vector<FrameSound> frameSounds)
+void FrameSoundsController::SetFrameSounds(boost::container::vector<FrameSound> frameSounds)
 {
 	if (!frameSounds.size()) {
 		return;
@@ -39,7 +39,7 @@ void FrameSoundsController::SetFrameSounds(std::vector<FrameSound> frameSounds)
 	}
 }
 
-std::vector<FrameSound> FrameSoundsController::GetFrameSounds()
+boost::container::vector<FrameSound> FrameSoundsController::GetFrameSounds()
 {
 	return frameSounds;
 }

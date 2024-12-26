@@ -1,11 +1,10 @@
 #include "GameObjects.h"
 
-#include "IGameObject.h"
 #include "Layers.h"
 #include "pawn/Pawn.h"
 
-std::vector<IGameObject*> GameObjects::gameObjects;
-std::vector<class Pawn*> GameObjects::pawns;
+boost::container::vector<IGameObject*> GameObjects::gameObjects;
+boost::container::vector<class Pawn*> GameObjects::pawns;
 
 void GameObjects::Add(IGameObject* gameObject)
 {
@@ -23,7 +22,7 @@ void GameObjects::Add(class Pawn* pawn)
 	gameObjects.push_back(pawn);
 }
 
-void GameObjects::Add(std::vector<IGameObject*>* gameObjects)
+void GameObjects::Add(boost::container::vector<IGameObject*>* gameObjects)
 {
 	for (IGameObject* gameObject : *gameObjects)
 	{
@@ -57,12 +56,12 @@ IGameObject* GameObjects::GetByTitle(const char* title, Layer layer)
 	return nullptr;
 }
 
-std::vector<IGameObject*>* GameObjects::GetAll()
+boost::container::vector<IGameObject*>* GameObjects::GetAll()
 {
 	return &gameObjects;
 }
 
-std::vector<IGameObject*>* GameObjects::GetAll(Layer layer)
+boost::container::vector<IGameObject*>* GameObjects::GetAll(Layer layer)
 {
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
@@ -74,12 +73,12 @@ std::vector<IGameObject*>* GameObjects::GetAll(Layer layer)
 	return nullptr;
 }
 
-std::vector<class Pawn*>* GameObjects::GetAllPawns()
+boost::container::vector<class Pawn*>* GameObjects::GetAllPawns()
 {
 	return &pawns;
 }
 
-std::vector<class Pawn*>* GameObjects::GetAllPawns(Layer layer)
+boost::container::vector<class Pawn*>* GameObjects::GetAllPawns(Layer layer)
 {
 	for (int i = 0; i < pawns.size(); i++)
 	{

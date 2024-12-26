@@ -10,6 +10,8 @@
 
 #include "../Dodge/GameObjects.h"
 
+#include <memory>
+
 MainWindow::MainWindow(): Window()
 {
     gameStatus = GameStatuses::End;
@@ -59,19 +61,19 @@ void MainWindow::Update()
 {
     gameStatus = GameStatuses::Start;
 
-    WonderWold* wonderWold = new WonderWold(
-        this, 
+    std::unique_ptr<WonderWold> wonderWorld(new WonderWold(
+        this,
         TinyXml::LoadMap(
-            "Content/Maps/world/world.tmx", 
+            "Content/Maps/world/world.tmx",
             "wonder_world"
         ),
         Coord(100, -400)
-    );
+    ));
 
-    std::vector<IGameObject*> solidCollisions = wonderWold->GetClassesByType("SolidCollision");
+    boost::container::vector<IGameObject*> solidCollisions = wonderWorld.get()->GetClassesByType("SolidCollision");
 
     if (!solidCollisions.empty()) {
-        WindowPointerController::SetPointer(window, WindowPointer<std::vector<IGameObject*> >("SolidCollisions", &solidCollisions));
+        WindowPointerController::SetPointer(window, WindowPointer<boost::container::vector<IGameObject*> >("SolidCollisions", &solidCollisions));
     }
 
     GameObjects::Add(&solidCollisions);
@@ -98,7 +100,7 @@ void MainWindow::Update()
         if (gameStatus == GameStatuses::End) {
         }
 
-        wonderWold->Update();
+        wonderWorld.get()->Update();
 
         mouse.Update();
         keyboard.Update();

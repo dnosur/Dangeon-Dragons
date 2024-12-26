@@ -14,8 +14,8 @@ protected:
 
 	AnimationController animationController;
 
-	std::vector<IGameObject*> gameObjects;
-	std::vector<IGameObject*> gameClasses;
+	boost::container::vector<IGameObject*> gameObjects;
+	boost::container::vector<IGameObject*> gameClasses;
 
 	void MoveCollison(ICollision* collision, Coord* pos = nullptr);
 
@@ -28,8 +28,8 @@ public:
 
 	virtual void Update() = 0;
 
-	std::vector<IGameObject*> GetClassesByType(const char* type);
-	std::vector<IGameObject*> GetClassesByName(const char* name);
+	boost::container::vector<IGameObject*> GetClassesByType(const char* type);
+	boost::container::vector<IGameObject*> GetClassesByName(const char* name);
 	IGameObject* GetClassByName(const char* name);
 
 	Window* GetWindow();

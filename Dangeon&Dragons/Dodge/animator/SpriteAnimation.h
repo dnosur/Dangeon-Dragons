@@ -47,18 +47,18 @@ class SpriteAnimation
 public:
 	SpriteAnimation();
 
-	SpriteAnimation(const char* title, const char* folder, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
-	SpriteAnimation(const char* title, Coord pos, Size size, const char* folder, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
-	SpriteAnimation(const char* title, std::vector<Image> sprites, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
-	SpriteAnimation(const char* title, Coord pos, Size size, std::vector<Image> sprites, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
+	SpriteAnimation(const char* title, const char* folder, int frameRate, Window* window, bool revere = false, boost::container::vector<FrameSound> frameSounds = boost::container::vector<FrameSound>());
+	SpriteAnimation(const char* title, Coord pos, Size size, const char* folder, int frameRate, Window* window, bool revere = false, boost::container::vector<FrameSound> frameSounds = boost::container::vector<FrameSound>());
+	SpriteAnimation(const char* title, boost::container::vector<Image> sprites, int frameRate, Window* window, bool revere = false, boost::container::vector<FrameSound> frameSounds = boost::container::vector<FrameSound>());
+	SpriteAnimation(const char* title, Coord pos, Size size, boost::container::vector<Image> sprites, int frameRate, Window* window, bool revere = false, boost::container::vector<FrameSound> frameSounds = boost::container::vector<FrameSound>());
 
 	void SetWindow(Window* window);
 
 	void SetTitle(char* title);
 	char* GetTitle();
 
-	std::vector<Image> GetSprites();
-	void SetSprites(std::vector<Image> sprites);
+	boost::container::small_vector<Image, 16> GetSprites();
+	void SetSprites(boost::container::vector<Image> sprites);
 
 	char* GetFolder();
 	void LoadFromFolder(char* folder);

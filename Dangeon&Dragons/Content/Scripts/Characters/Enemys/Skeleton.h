@@ -20,7 +20,7 @@ class Skeleton
     Coord offset;
 
     //В дальнейшем перенести в класс!
-    std::vector<Movement*> movements;
+    boost::container::vector<Movement*> movements;
 	int movementIndex;
 
     std::mutex pathMutex;
@@ -50,7 +50,7 @@ class Skeleton
     bool FindPath(Coord start, Coord goal);
     bool FindTarget();
 
-    std::vector<Movement*> GetNeighbors(Coord position);
+    boost::container::vector<Movement*> GetNeighbors(Coord position);
     bool IsWalkable(Coord position);
 public:
     Skeleton(
@@ -58,7 +58,7 @@ public:
         ICollision* collision, Material* material, Directions moveDirection,
         Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
-        std::vector<IAnimation*> animations = {}
+        boost::container::vector<IAnimation*> animations = {}
     );
 
     Coord GetStartPos();

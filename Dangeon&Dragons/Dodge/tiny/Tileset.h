@@ -18,7 +18,7 @@ class Tileset
 	char* name;
 	char* source;
 
-	Image image;
+	Image* image;
 	std::vector<Tile> tiles;
 	TilesetPropertiesController tilesetProperties;
 public:
@@ -26,13 +26,13 @@ public:
 	Tileset(
 		int firstgId, int tileWidth, int tileHeight, int width, int height,
 		int tileCount, int columns, char* name, char* source, 
-		Image image, std::vector<Tile> tile, TilesetPropertiesController tilesetProperties
+		Image* image, std::vector<Tile> tile, TilesetPropertiesController tilesetProperties
 	);
 
 	Tileset(
 		int firstgId, int tileWidth, int tileHeight, int width, int height,
 		int tileCount, int columns, const char* name, const char* source,
-		Image image, std::vector<Tile> tile, TilesetPropertiesController tilesetProperties
+		Image* image, std::vector<Tile> tile, TilesetPropertiesController tilesetProperties
 	);
 	~Tileset();
 
@@ -53,7 +53,7 @@ public:
 
 	Tile* GetTileById(int id);
 
-	Image GetImage();
+	Image* GetImage();
 
 	bool IsContains(int gId);
 	int MathId(int tileId);

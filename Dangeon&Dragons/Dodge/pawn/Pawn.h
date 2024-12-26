@@ -24,7 +24,7 @@ protected:
 
 	OnCollisionEnter OnCollisionEnterHandler;
 
-	std::vector<Coord> vertexes;
+	boost::container::vector<Coord> vertexes;
 	ICollision* collision;
 	Material* material;
 
@@ -76,7 +76,7 @@ protected:
 	virtual void Initialize() = 0;
 	virtual void Draw() = 0;
 
-	void MathPos(std::vector<Coord> vertexes);
+	void MathPos(boost::container::vector<Coord> vertexes);
 	void MathPos(Coord& pos);
 
 	bool MouseInRect(Mouse& mouse);
@@ -88,13 +88,13 @@ public:
 		ICollision* collision, Material* material, Directions moveDirection, 
 		Coord pos, Size size, float speed, float maxSpeed, float minSpeed, 
 		float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
-		std::vector<IAnimation*> animations = {}
+		boost::container::vector<IAnimation*> animations = {}
 	);
 	~Pawn() = default;
 
 	void SetMoveDirection(Directions moveDirection);
 
-	void SetPos(std::vector<Coord> vertexes);
+	void SetPos(boost::container::vector<Coord> vertexes);
 	void SetPos(Coord pos);
 
 	void RotateToDirection(Directions direction);
@@ -122,7 +122,7 @@ public:
 	void SetColor(Color color);
 
 	void AddAnimation(IAnimation* animation);
-	void AddAnimations(std::vector<IAnimation*> animations);
+	void AddAnimations(boost::container::vector<IAnimation*> animations);
 
 	void Damage(float damage);
 	void Die();
@@ -146,7 +146,7 @@ public:
 	Coord GetPos();
 	Coord GetOpenGlPos();
 
-	std::vector<Coord> GetVertices();
+	boost::container::vector<Coord> GetVertices();
 
 	Size GetSize();
 

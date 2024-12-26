@@ -5,17 +5,17 @@
 
 class FrameSoundsController
 {
-	std::vector<FrameSound> frameSounds;
+	boost::container::vector<FrameSound> frameSounds;
 
 public:
 	FrameSoundsController();
-	FrameSoundsController(std::vector<FrameSound> frameSounds);
+	FrameSoundsController(boost::container::vector<FrameSound> frameSounds);
 
 	void Update(int currentFrame);
 
-	void SetFrameSounds(std::vector<FrameSound> frameSounds);
+	void SetFrameSounds(boost::container::vector<FrameSound> frameSounds);
 
-	std::vector<FrameSound> GetFrameSounds();
+	boost::container::vector<FrameSound> GetFrameSounds();
 	int GetFrameSoundsSize();
 
 	void Restart();

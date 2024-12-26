@@ -13,7 +13,7 @@ void TinyMap::MoveCollison(ICollision* collision, Coord* pos)
 		pos = new Coord(this->pos);
 	}
 
-	std::vector<Coord> points;
+	boost::container::vector<Coord> points;
 
 	for (Coord& coord : collision->GetPoints()) {
 		coord += *pos;
@@ -157,7 +157,7 @@ void TinyMap::Initialize()
 					}
 
 					rect->SetCollision(collision);
-					rect->GetMaterial()->SetDiffuseMap(new Image(tileset->GetImage()));
+					rect->GetMaterial()->SetDiffuseMap(tileset->GetImage());
 
 					if (collision) {
 						rect->HookOnCollisionEnter([](IGameObject* object, IGameObject* sender, GLFWwindow* window) {
@@ -215,9 +215,9 @@ TinyMap::TinyMap(Window* window, TileMap* tileMap, Coord pos)
 	Initialize();
 }
 
-std::vector<IGameObject*> TinyMap::GetClassesByType(const char* type)
+boost::container::vector<IGameObject*> TinyMap::GetClassesByType(const char* type)
 {
-	std::vector<IGameObject*> result = std::vector<IGameObject*>();
+	boost::container::vector<IGameObject*> result = boost::container::vector<IGameObject*>();
 
 	for (IGameObject*& object : gameClasses) {
 		if (!strcmp(object->GetCollision()->GetType(), type)) {
@@ -228,9 +228,9 @@ std::vector<IGameObject*> TinyMap::GetClassesByType(const char* type)
 	return result;
 }
 
-std::vector<IGameObject*> TinyMap::GetClassesByName(const char* name)
+boost::container::vector<IGameObject*> TinyMap::GetClassesByName(const char* name)
 {
-	std::vector<IGameObject*> classes;
+	boost::container::vector<IGameObject*> classes;
 
 	for (IGameObject* object : gameClasses) {
 		if (!strcmp(object->GetCollision()->GetRootTitle(), name)) {

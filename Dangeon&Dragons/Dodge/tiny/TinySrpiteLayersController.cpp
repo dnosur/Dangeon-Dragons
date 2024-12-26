@@ -2,10 +2,10 @@
 
 TinySrpiteLayersController::TinySrpiteLayersController()
 {
-	spriteLayers = std::vector<TinySpriteLayer>();
+	spriteLayers = boost::container::vector<TinySpriteLayer>();
 }
 
-TinySrpiteLayersController::TinySrpiteLayersController(std::vector<TinySpriteLayer> spriteLayers)
+TinySrpiteLayersController::TinySrpiteLayersController(boost::container::vector<TinySpriteLayer> spriteLayers)
 {
 	this->spriteLayers = spriteLayers;
 }
@@ -17,10 +17,16 @@ TinySrpiteLayersController::TinySrpiteLayersController(tinyxml2::XMLElement* ele
 
 TinySrpiteLayersController::~TinySrpiteLayersController()
 {
+	if (spriteLayers.empty()) {
+		return;
+	}
+	spriteLayers.clear();
 }
 
-void TinySrpiteLayersController::LoadSpriteLayers(tinyxml2::XMLElement* element, std::vector<TinySpriteLayer>& spriteLayers)
-{
+void TinySrpiteLayersController::LoadSpriteLayers(
+	tinyxml2::XMLElement* element, 
+	boost::container::vector<TinySpriteLayer>& spriteLayers
+){
 	for (tinyxml2::XMLElement* group = element->FirstChildElement("group");
 		group != nullptr;
 		group = group->NextSiblingElement("group")
@@ -56,12 +62,12 @@ TinySpriteLayer* TinySrpiteLayersController::GetById(int id)
 	return nullptr;
 }
 
-std::vector<TinySpriteLayer>::iterator TinySrpiteLayersController::begin()
+boost::container::vector<TinySpriteLayer>::iterator TinySrpiteLayersController::begin()
 {
 	return spriteLayers.begin();
 }
 
-std::vector<TinySpriteLayer>::iterator TinySrpiteLayersController::end()
+boost::container::vector<TinySpriteLayer>::iterator TinySrpiteLayersController::end()
 {
 	return spriteLayers.end();
 }

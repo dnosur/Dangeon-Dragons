@@ -10,6 +10,9 @@
 #include <string>
 #include <conio.h>
 
+#include <boost/container/vector.hpp>
+#include <boost/container/small_vector.hpp>
+
 #include <map>
 #include <vector>
 
@@ -52,6 +55,18 @@ inline void RemoveFromVector(std::vector<T>& vector, T value);
 
 template <typename T>
 inline bool ValidateVectorIndex(std::vector<T>& vector, int index);
+
+template <typename T>
+void ClearBoostVector(boost::container::vector<T>& vector);
+
+template<typename T>
+inline bool ExistInBoostVector(boost::container::vector<T>& vector, T* value);
+
+template<typename T>
+inline void RemoveFromBoostVector(boost::container::vector<T>& vector, T value);
+
+template <typename T>
+inline bool ValidateBoostVectorIndex(boost::container::vector<T>& vector, int index);
 
 template <typename T>
 T Max(T a, T b);
@@ -102,6 +117,47 @@ inline void RemoveFromVector(std::vector<T>& vector, T value)
 
 template<typename T>
 inline bool ValidateVectorIndex(std::vector<T>& vector, int index)
+{
+	if (index < 0 || index >= vector.size()) {
+		return false;
+	}
+	return true;
+}
+
+template<typename T>
+inline void ClearBoostVector(boost::container::vector<T>& vector)
+{
+	if (vector.size() <= 0) {
+		return;
+	}
+	vector.clear();
+	vector.shrink_to_fit();
+}
+
+template<typename T>
+inline bool ExistInBoostVector(boost::container::vector<T>& vector, T* value)
+{
+	if (vector.empty() || value == nullptr) {
+		return false;
+	}
+
+	for (T& item : vector) {
+		if (item == value) {
+			return true;
+		}
+	}
+	return false;
+}
+
+template<typename T>
+inline void RemoveFromBoostVector(boost::container::vector<T>& vector, T value)
+{
+	auto it = std::remove(vector.begin(), vector.end(), value);
+	vector.erase(it, vector.end());
+}
+
+template<typename T>
+inline bool ValidateBoostVectorIndex(boost::container::vector<T>& vector, int index)
 {
 	if (index < 0 || index >= vector.size()) {
 		return false;

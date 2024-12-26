@@ -6,10 +6,12 @@
 #include "WindowPointer.h"
 #include <vector>
 
+#include <boost/container/small_vector.hpp>
+
 class WindowPointerController
 {
 	template <typename T>
-	static void Save(GLFWwindow* window, std::vector<WindowPointer<T>>* pointers);
+	static void Save(GLFWwindow* window, boost::container::small_vector<WindowPointer<T>, 32>* pointers);
 public:
 	template <typename T>
 	static void SetPointer(GLFWwindow* window, WindowPointer<T> pointer);
@@ -19,7 +21,9 @@ public:
 };
 
 template<typename T>
-inline void WindowPointerController::Save(GLFWwindow* window, std::vector<WindowPointer<T>>* pointers)
+inline void WindowPointerController::Save(
+	GLFWwindow* window, 
+	boost::container::small_vector<WindowPointer<T>, 32>* pointers)
 {
 	glfwSetWindowUserPointer(window, pointers);
 }
@@ -27,9 +31,9 @@ inline void WindowPointerController::Save(GLFWwindow* window, std::vector<Window
 template<typename T>
 inline void WindowPointerController::SetPointer(GLFWwindow* window, WindowPointer<T> pointer)
 {
-	std::vector<WindowPointer<T>>* pointers = static_cast<std::vector<WindowPointer<T>>*>(glfwGetWindowUserPointer(window));
+	boost::container::small_vector<WindowPointer<T>, 32>* pointers = static_cast<boost::container::small_vector<WindowPointer<T>, 32>*>(glfwGetWindowUserPointer(window));
 	if (pointers == nullptr || !pointers->capacity() || pointers->empty()) {
-		pointers = new std::vector<WindowPointer<T>>();
+		pointers = new boost::container::small_vector<WindowPointer<T>, 32>();
 		pointers->push_back(pointer);
 		WindowPointerController::Save(window, pointers);
 		return;
@@ -49,7 +53,7 @@ inline void WindowPointerController::SetPointer(GLFWwindow* window, WindowPointe
 template<typename T>
 inline WindowPointer<T>* WindowPointerController::GetValue(GLFWwindow* window, const char* title)
 {
-	std::vector<WindowPointer<T>>* pointers = static_cast<std::vector<WindowPointer<T>>*>(glfwGetWindowUserPointer(window));
+	boost::container::small_vector<WindowPointer<T>, 32>* pointers = static_cast<boost::container::small_vector<WindowPointer<T>, 32>*>(glfwGetWindowUserPointer(window));
 	if (!pointers->capacity() || pointers->empty() || pointers == nullptr) {
 		return new WindowPointer<T>();
 	}

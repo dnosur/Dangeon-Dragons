@@ -1,6 +1,6 @@
 #include "Pawn.h"
 
-void Pawn::MathPos(std::vector<Coord> vertexes)
+void Pawn::MathPos(boost::container::vector<Coord> vertexes)
 {
 	this->vertexes = vertexes;
 
@@ -37,7 +37,7 @@ void Pawn::MathPos(Coord& pos)
 	vertex2.X = glCenterX + halfWidth;
 	vertex2.Y = glCenterY + halfHeight;
 
-	vertexes = std::vector<Coord>({ vertex1, vertex2 });
+	vertexes = boost::container::vector<Coord>({ vertex1, vertex2 });
 }
 
 bool Pawn::MouseInRect(Mouse& mouse)
@@ -57,7 +57,7 @@ Pawn::Pawn(
 	ICollision* collision, Material* material, Directions moveDirection,
 	Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
 	float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
-	std::vector<IAnimation*> animations
+	boost::container::vector<IAnimation*> animations
 ){
 	this->window = &window;
 
@@ -94,7 +94,7 @@ void Pawn::SetMoveDirection(Directions moveDirection)
 	this->moveDirection = moveDirection;
 }
 
-void Pawn::SetPos(std::vector<Coord> vertexes)
+void Pawn::SetPos(boost::container::vector<Coord> vertexes)
 {
 	MathPos(vertexes);
 }
@@ -188,7 +188,7 @@ void Pawn::AddAnimation(IAnimation* animation)
 	animations.AddAnimation(animation);
 }
 
-void Pawn::AddAnimations(std::vector<IAnimation*> animations)
+void Pawn::AddAnimations(boost::container::vector<IAnimation*> animations)
 {
 	this->animations.AddAnimations(animations);
 }
@@ -283,7 +283,7 @@ Coord Pawn::GetOpenGlPos()
 	return Coord(window->PixelToGLX(pos.X), window->PixelToGLY(pos.Y));
 }
 
-std::vector<Coord> Pawn::GetVertices()
+boost::container::vector<Coord> Pawn::GetVertices()
 {
 	return vertexes;
 }

@@ -1,6 +1,16 @@
 #include "PoligonCollision.h"
 #include "../functions.h"
 
+bool PoligonCollision::ExistGameObject(IGameObject* gameObject)
+{
+	for (auto gameObject : gameObjects) {
+		if (gameObject == gameObject) {
+			return true;
+		}
+	}
+	return false;
+}
+
 PoligonCollision::PoligonCollision()
 {
 	root_id = -1;
@@ -12,7 +22,7 @@ PoligonCollision::PoligonCollision()
 	SetLayer(Layer::Undefined);
 }
 
-PoligonCollision::PoligonCollision(std::vector<Coord> points, int root_id, char* root_title, char* type)
+PoligonCollision::PoligonCollision(boost::container::vector<Coord> points, int root_id, char* root_title, char* type)
 {
 	this->root_id = root_id;
 	this->points = points;
@@ -25,7 +35,7 @@ PoligonCollision::PoligonCollision(std::vector<Coord> points, int root_id, char*
 	copyStr(type, this->type);
 }
 
-bool PoligonCollision::IsPointInPolygon(const Coord& point, const std::vector<Coord>& polygon)
+bool PoligonCollision::IsPointInPolygon(const Coord& point, const boost::container::vector<Coord>& polygon)
 {
 	int intersections = 0;
 	size_t numPoints = polygon.size();
@@ -57,13 +67,12 @@ char* PoligonCollision::GetType()
 {
 	return type;
 }
-
-std::vector<Coord> PoligonCollision::GetPoints()
+boost::container::vector<Coord> PoligonCollision::GetPoints()
 {
 	return points;
 }
 
-void PoligonCollision::SetPoints(std::vector<Coord> points)
+void PoligonCollision::SetPoints(boost::container::vector<Coord> points)
 {
 	if (this->points.size()) {
 		this->points.clear();
@@ -111,7 +120,7 @@ bool PoligonCollision::IsCollisionEnter(IGameObject* gameObject)
 		return true;
 	}
 
-	const std::vector<Coord>& polygonPoints = this->points;
+	const boost::container::vector<Coord>& polygonPoints = this->points;
 	if (polygonPoints.size() < 3) {
 		return false;
 	}
@@ -121,7 +130,7 @@ bool PoligonCollision::IsCollisionEnter(IGameObject* gameObject)
 		return false;
 	}
 
-	std::vector<Coord> otherPoints = otherCollision->GetPoints();
+	boost::container::vector<Coord> otherPoints = otherCollision->GetPoints();
 	if (otherPoints.empty()) {
 		return false;
 	}
@@ -178,7 +187,7 @@ bool PoligonCollision::IsCollisionEnter(Coord point, Size size)
 
 bool PoligonCollision::IsExist(IGameObject* gameObject)
 {
-	return ExistInVector<IGameObject*>(gameObjects, gameObject);
+	return ExistGameObject(gameObject);
 }
 
 bool PoligonCollision::operator==(const PoligonCollision& other) const

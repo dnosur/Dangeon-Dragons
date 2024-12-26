@@ -12,21 +12,23 @@ class PoligonCollision
 
 	bool kinematic;
 
-	std::vector<Coord> points;
-	std::vector<IGameObject*> gameObjects;
+	boost::container::vector<Coord> points;
+	boost::container::small_vector<IGameObject*, 32> gameObjects;
+
+	bool ExistGameObject(IGameObject* gameObject);
 public:
 	PoligonCollision();
-	PoligonCollision(std::vector<Coord> points, int root_id, char* root_title = nullptr, char* type = nullptr);
+	PoligonCollision(boost::container::vector<Coord>, int root_id, char* root_title = nullptr, char* type = nullptr);
 
-	static bool IsPointInPolygon(const Coord& point, const std::vector<Coord>& polygon);
+	static bool IsPointInPolygon(const Coord& point, const 	boost::container::vector<Coord>& polygon);
 
 	int GetRootId();
 
 	char* GetRootTitle();
 	char* GetType();
 
-	std::vector<Coord> GetPoints();
-	void SetPoints(std::vector<Coord> points);
+	boost::container::vector<Coord> GetPoints();
+	void SetPoints(boost::container::vector<Coord> points);
 
 	PoligonCollision* Clone() const override;
 

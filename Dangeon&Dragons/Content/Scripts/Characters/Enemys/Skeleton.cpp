@@ -16,7 +16,7 @@ Skeleton::Skeleton(
 	const char* title, Window& window, ICollision* collision, 
 	Material* material, Directions moveDirection, Coord pos, Size size, 
 	float speed, float maxSpeed, float minSpeed, float health, float maxHealth, 
-	bool isPlayable, bool isKinematic, bool isHidden, std::vector<IAnimation*> animations
+	bool isPlayable, bool isKinematic, bool isHidden, boost::container::vector<IAnimation*> animations
 ) : Pawn(
 	title, window, collision,
 	material, moveDirection, pos, size,
@@ -111,7 +111,7 @@ void Skeleton::LoadAnimations()
 
 	for (VertexAnimation*& animation : playerImages->CreateVertexAnimations(
 		std::make_pair(
-			std::vector<const char*>({
+			boost::container::vector<const char*>({
 				"walk_top",
 				"walk_right",
 				"walk_down",
@@ -128,7 +128,7 @@ void Skeleton::LoadAnimations()
 				"idle_left",
 
 				"die"
-				}), std::vector<int>({
+				}), boost::container::vector<int>({
 					//Walk
 					300,
 					300,
@@ -394,13 +394,13 @@ void Skeleton::Drag(Coord newPos)
 
 bool Skeleton::CheckForCollision(Coord position)
 {
-	WindowPointer<std::vector<IGameObject*>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<IGameObject*>>(window->GetWindow(), "SolidCollisions");
+	WindowPointer<boost::container::vector<IGameObject*>>* solidCollisionsObjects = WindowPointerController::GetValue<boost::container::vector<IGameObject*>>(window->GetWindow(), "SolidCollisions");
 	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().empty()) {
 		return true;
 	}
 
 	for (IGameObject* collisionObj : solidCollisionsObjects->GetValue()) {
-		std::vector<Coord> points = collisionObj->GetCollision()->GetPoints();
+		boost::container::vector<Coord> points = collisionObj->GetCollision()->GetPoints();
 
 		if (collisionObj == nullptr || collisionObj->GetCollision() == nullptr) {
 			continue;
@@ -563,7 +563,7 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 	findingPath = true;
 
 	//Текущий путь
-	std::priority_queue<Node*, std::vector<Node*>, CompareNodes> openList;
+	std::priority_queue<Node*, boost::container::vector<Node*>, CompareNodes> openList;
 
 	//Закрытый
 	std::unordered_map<int, bool> closedList;
@@ -610,7 +610,7 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 		closedList[GetKey(currentNode->movement->position)] = true;
 
 		//Проверяем все стороны движения
-		std::vector<Movement*> neighbors = GetNeighbors(currentNode->movement->position);
+		boost::container::vector<Movement*> neighbors = GetNeighbors(currentNode->movement->position);
 		for (Movement*& neighbor : neighbors) {
 			Coord& neighborPos = neighbor->position;
 			int neighborKey = GetKey(neighborPos);
@@ -640,10 +640,10 @@ bool Skeleton::FindTarget()
 	return true;
 }
 
-std::vector<Movement*> Skeleton::GetNeighbors(Coord position)
+boost::container::vector<Movement*> Skeleton::GetNeighbors(Coord position)
 {
-	std::vector<Movement*> neighbors;
-	std::vector<Coord> directions = {
+	boost::container::vector<Movement*> neighbors;
+	boost::container::vector<Coord> directions = {
 		{ 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 }, // Основные направления
 		{ 1, 1 }, { 1, -1 }, { -1, 1 }, { -1, -1 } // Диагональные направления
 	};

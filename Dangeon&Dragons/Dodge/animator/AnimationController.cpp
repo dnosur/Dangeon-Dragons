@@ -52,7 +52,7 @@ AnimationController::AnimationController()
 	currentIndex = -1;
 }
 
-AnimationController::AnimationController(std::vector<IAnimation*> animations)
+AnimationController::AnimationController(boost::container::vector<IAnimation*> animations)
 {
 	this->animations = animations;
 	prevAnim = nullptr;
@@ -70,7 +70,7 @@ void AnimationController::AddAnimation(IAnimation* animation)
 	same = animation->Clone();
 }
 
-void AnimationController::AddAnimations(std::vector<IAnimation*> animations)
+void AnimationController::AddAnimations(boost::container::vector<IAnimation*> animations)
 {
 	for (IAnimation*& animation : animations) {
 		AddAnimation(animation);

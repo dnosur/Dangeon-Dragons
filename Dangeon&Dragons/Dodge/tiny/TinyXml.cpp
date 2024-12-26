@@ -10,9 +10,9 @@ std::string TinyXml::GetPathToTileSource(std::string path)
     return root_dir + fullSource.string();
 }
 
-std::vector<Coord> TinyXml::ParsePolygon(std::string polygon, const Coord& offset)
+boost::container::vector<Coord> TinyXml::ParsePolygon(std::string polygon, const Coord& offset)
 {
-    std::vector<Coord> coords;
+    boost::container::vector<Coord> coords;
     std::istringstream stream(polygon);
     std::string point;
 

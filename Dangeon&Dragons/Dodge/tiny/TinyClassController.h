@@ -1,19 +1,21 @@
 #pragma once
 #include "TinyClass.h"
 
+#include <boost/container/vector.hpp>
+
 class TinyClassController
 {
-	std::vector<TinyClass> classes;
+	boost::container::vector<TinyClass> classes;
 public:
 	TinyClassController();
-	TinyClassController(std::vector<TinyClass> classes);
+	TinyClassController(boost::container::vector<TinyClass> classes);
 	TinyClassController(tinyxml2::XMLElement* element);
 	~TinyClassController();
 
-	static void LoadClasses(tinyxml2::XMLElement* element, std::vector<TinyClass>& classes);
+	static void LoadClasses(tinyxml2::XMLElement* element, boost::container::vector<TinyClass>& classes);
 
-	std::vector<TinyClass>::iterator begin();
-	std::vector<TinyClass>::iterator end();
+	boost::container::vector<TinyClass>::iterator begin();
+	boost::container::vector<TinyClass>::iterator end();
 
 	int GetSize();
 	

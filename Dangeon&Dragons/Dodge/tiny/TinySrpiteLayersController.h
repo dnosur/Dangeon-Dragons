@@ -1,23 +1,28 @@
 #pragma once
 #include "TinySpriteLayer.h"
 
+#include <boost/container/vector.hpp>
+
 class TinySrpiteLayersController
 {
-	std::vector<TinySpriteLayer> spriteLayers;
+	boost::container::vector<TinySpriteLayer> spriteLayers;
 public:
 	TinySrpiteLayersController();
-	TinySrpiteLayersController(std::vector<TinySpriteLayer> spriteLayers);
+	TinySrpiteLayersController(boost::container::vector<TinySpriteLayer> spriteLayers);
 	TinySrpiteLayersController(tinyxml2::XMLElement* element);
 	~TinySrpiteLayersController();
 
-	static void LoadSpriteLayers(tinyxml2::XMLElement* element, std::vector<TinySpriteLayer>& spriteLayers);
+	static void LoadSpriteLayers(
+		tinyxml2::XMLElement* element, 
+		boost::container::vector<TinySpriteLayer>& spriteLayers
+	);
 
 	int GetSize();
 
 	TinySpriteLayer* GetById(int id);
 
-	std::vector<TinySpriteLayer>::iterator begin();
-	std::vector<TinySpriteLayer>::iterator end();
+	boost::container::vector<TinySpriteLayer>::iterator begin();
+	boost::container::vector<TinySpriteLayer>::iterator end();
 
 	TinySpriteLayer* operator[](int index);
 	TinySpriteLayer* operator[](const char* name);

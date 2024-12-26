@@ -166,7 +166,7 @@ Rect::Rect(
         )
     );
 
-    std::vector<Coord> verticies = std::vector<Coord>{
+    boost::container::vector<Coord> verticies = boost::container::vector<Coord>{
         textureVertex1, textureVertex2
     };
     material->SetDiffuseMapVerticies(verticies);
@@ -230,7 +230,7 @@ void Rect::Draw()
     material->Disable(this);
 }
 
-std::vector<float> Rect::GetVerticesByDirection(Rect& rect, Directions moveDirection, bool returnTexCoords)
+boost::container::vector<float> Rect::GetVerticesByDirection(Rect& rect, Directions moveDirection, bool returnTexCoords)
 {
     Coord vertex1 = rect.GetVertices()[0];
     Coord vertex2 = rect.GetVertices()[1];
@@ -239,29 +239,14 @@ std::vector<float> Rect::GetVerticesByDirection(Rect& rect, Directions moveDirec
     const Coord& textCoord1 = isHasDiffuseVertexs ? rect.material->GetDiffuseMapVerticies()[0] : Coord(0, 0);
     const Coord& textCoord2 = isHasDiffuseVertexs ? rect.material->GetDiffuseMapVerticies()[1] : Coord(1, 1);
 
-    if (moveDirection == Directions::UP) {
-        return returnTexCoords ? std::vector<float> {
-            (float)vertex2.X, (float)vertex2.Y, 0.0f, (float)textCoord1.X, (float)textCoord1.Y,
-                (float)vertex1.X, (float)vertex2.Y, 0.0f, (float)textCoord2.X, (float)textCoord1.Y,
-                (float)vertex1.X, (float)vertex1.Y, 0.0f, (float)textCoord2.X, (float)textCoord2.Y,
-                (float)vertex2.X, (float)vertex1.Y, 0.0f, (float)textCoord1.X, (float)textCoord2.Y
-        }
-        : std::vector<float>{
-            (float)vertex2.X, (float)vertex2.Y, 0.0f, 
-                (float)vertex1.X, (float)vertex2.Y, 0.0f, 
-                (float)vertex1.X, (float)vertex1.Y, 0.0f, 
-                (float)vertex2.X, (float)vertex1.Y, 0.0f
-        };
-    }
-
     if (moveDirection == Directions::DOWN) {
-        return returnTexCoords ? std::vector<float> {
+        return returnTexCoords ? boost::container::vector<float> {
             (float)vertex1.X, (float)vertex1.Y, 0.0f, (float)textCoord1.X, (float)textCoord1.Y,
                 (float)vertex2.X, (float)vertex1.Y, 0.0f, (float)textCoord2.X, (float)textCoord1.Y,
                 (float)vertex2.X, (float)vertex2.Y, 0.0f, (float)textCoord2.X, (float)textCoord2.Y,
                 (float)vertex1.X, (float)vertex2.Y, 0.0f, (float)textCoord1.X, (float)textCoord2.Y
         }
-        : std::vector<float>{
+        : boost::container::vector<float>{
 			(float)vertex1.X, (float)vertex1.Y, 0.0f, 
 				(float)vertex2.X, (float)vertex1.Y, 0.0f, 
 				(float)vertex2.X, (float)vertex2.Y, 0.0f, 
@@ -271,14 +256,14 @@ std::vector<float> Rect::GetVerticesByDirection(Rect& rect, Directions moveDirec
 
     if (moveDirection == Directions::LEFT) {
         return returnTexCoords 
-                ? std::vector<float> {
+                ? boost::container::vector<float> {
                 (float)vertex1.X, (float)vertex1.Y, 0.0f, (float)textCoord1.X, (float)textCoord1.Y,
                 (float)vertex1.X, (float)vertex2.Y, 0.0f, (float)textCoord2.X, (float)textCoord1.Y,
                 (float)vertex2.X, (float)vertex2.Y, 0.0f, (float)textCoord2.X, (float)textCoord2.Y,
                 (float)vertex2.X, (float)vertex1.Y, 0.0f, (float)textCoord1.X, (float)textCoord2.Y
             }
         :
-            std::vector<float>{
+            boost::container::vector<float>{
                 (float)vertex1.X, (float)vertex1.Y, 0.0f,
                 (float)vertex1.X, (float)vertex2.Y, 0.0f,
                 (float)vertex2.X, (float)vertex2.Y, 0.0f,
@@ -287,19 +272,33 @@ std::vector<float> Rect::GetVerticesByDirection(Rect& rect, Directions moveDirec
     }
 
     if (moveDirection == Directions::RIGHT) {
-        return returnTexCoords ? std::vector<float> {
+        return returnTexCoords ? boost::container::vector<float> {
             (float)vertex2.X, (float)vertex2.Y, 0.0f, (float)textCoord1.X, (float)textCoord1.Y,
                 (float)vertex2.X, (float)vertex1.Y, 0.0f, (float)textCoord2.X, (float)textCoord1.Y,
                 (float)vertex1.X, (float)vertex1.Y, 0.0f, (float)textCoord2.X, (float)textCoord2.Y,
                 (float)vertex1.X, (float)vertex2.Y, 0.0f, (float)textCoord1.X, (float)textCoord2.Y
         }
-        : std::vector<float>{
+        : boost::container::vector<float>{
             (float)vertex2.X, (float)vertex2.Y, 0.0f, 
                 (float)vertex2.X, (float)vertex1.Y, 0.0f, 
                 (float)vertex1.X, (float)vertex1.Y, 0.0f, 
                 (float)vertex1.X, (float)vertex2.Y, 0.0f, 
         };
     }
+
+    //Default - DOWN
+    return returnTexCoords ? boost::container::vector<float> {
+        (float)vertex2.X, (float)vertex2.Y, 0.0f, (float)textCoord1.X, (float)textCoord1.Y,
+            (float)vertex1.X, (float)vertex2.Y, 0.0f, (float)textCoord2.X, (float)textCoord1.Y,
+            (float)vertex1.X, (float)vertex1.Y, 0.0f, (float)textCoord2.X, (float)textCoord2.Y,
+            (float)vertex2.X, (float)vertex1.Y, 0.0f, (float)textCoord1.X, (float)textCoord2.Y
+    }
+    : boost::container::vector<float>{
+        (float)vertex2.X, (float)vertex2.Y, 0.0f,
+            (float)vertex1.X, (float)vertex2.Y, 0.0f,
+            (float)vertex1.X, (float)vertex1.Y, 0.0f,
+            (float)vertex2.X, (float)vertex1.Y, 0.0f
+    };
 }
 
 void Rect::RotateToDirection(Directions direction)
@@ -440,12 +439,12 @@ Color Rect::GetBaseColor()
     return baseColor;
 }
 
-std::vector<Coord> Rect::GetVertices()
+boost::container::vector<Coord> Rect::GetVertices()
 {
     return { vertex1, vertex2 };
 }
 
-void Rect::SetPos(std::vector<Coord> vertices)
+void Rect::SetPos(boost::container::vector<Coord> vertices)
 {
     MathPos(vertices[0], vertices[1]);
 }

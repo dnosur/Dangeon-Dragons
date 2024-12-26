@@ -10,13 +10,13 @@ static class Raycast
 {
 public:
 	static IGameObject* RaycastFirst(Ray* ray, bool debug = false, Color debugColor = Color(1, 0, 0));
-	static std::vector<IGameObject*> RaycastAll(Ray* ray, bool debug = false, Color debugColor = Color(1, 0, 0));
+	static boost::container::vector<IGameObject*> RaycastAll(Ray* ray, bool debug = false, Color debugColor = Color(1, 0, 0));
 
 	template<typename T = IGameObject*>
 	static T* RaycastFirstDynamic(Ray* ray, bool debug = false, Color debugColor = Color(1, 0, 0));
 
 	template<typename T = IGameObject*>
-	static std::vector<T*> RaycastAllDynamic(Ray* ray, bool debug = false, Color debugColor = Color(1, 0, 0));
+	static boost::container::vector<T*> RaycastAllDynamic(Ray* ray, bool debug = false, Color debugColor = Color(1, 0, 0));
 
 	//Helpers
 	// Проверка пересечения луча с AABB
@@ -28,7 +28,7 @@ public:
 	// Проверка пересечения луча с многоугольником
 	static bool CheckRayPolygonIntersection(
 		const Coord& rayOrigin, const Coord& rayDir, 
-		const std::vector<Coord>& polygon
+		const boost::container::vector<Coord>& polygon
 	);
 };
 
@@ -43,11 +43,11 @@ inline T* Raycast::RaycastFirstDynamic(Ray* ray, bool debug, Color debugColor)
 }
 
 template<typename T>
-inline std::vector<T*> Raycast::RaycastAllDynamic(Ray* ray, bool debug, Color debugColor)
+inline boost::container::vector<T*> Raycast::RaycastAllDynamic(Ray* ray, bool debug, Color debugColor)
 {
 	if (debug) {
 		drawRay(ray, debugColor);
 	}
 
-	return dynamic_cast<std::vector<T*>>(Raycast::RaycastAll(ray));
+	return dynamic_cast<boost::container::vector<T*>>(Raycast::RaycastAll(ray));
 }

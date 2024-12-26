@@ -2,10 +2,10 @@
 
 TilesetsController::TilesetsController()
 {
-	tilesets = std::vector<Tileset*>();
+	tilesets = boost::container::vector<Tileset*>();
 }
 
-TilesetsController::TilesetsController(std::vector<Tileset*> tilesets)
+TilesetsController::TilesetsController(boost::container::vector<Tileset*> tilesets)
 {
 	this->tilesets = tilesets;
 }
@@ -17,10 +17,17 @@ TilesetsController::TilesetsController(tinyxml2::XMLElement* element, std::strin
 
 TilesetsController::~TilesetsController()
 {
+    if (tilesets.empty()) {
+        return;
+    }
+    tilesets.clear();
 }
 
-void TilesetsController::LoadTilesets(tinyxml2::XMLElement* element, std::vector<Tileset*>& tilesets, std::string path)
-{
+void TilesetsController::LoadTilesets(
+    tinyxml2::XMLElement* element, 
+    boost::container::vector<Tileset*>& tilesets, 
+    std::string path
+){
 	for (tinyxml2::XMLElement* tileset = element->FirstChildElement("tileset");
 		tileset != nullptr;
 		tileset = tileset->NextSiblingElement("tileset")
@@ -72,8 +79,8 @@ Tileset* TilesetsController::LoadTileset(int firstgId, const char* path)
     }
 
     source = TinyXml::GetPathToTileSource(source);
-    Image image_obj = ImagesController::LoadImg(source.c_str(), name);
-    if (image_obj.image <= 0) {
+    Image* image_obj = ImagesController::LoadImg(source.c_str(), name);
+    if (image_obj->image <= 0) {
         return nullptr;
     }
 

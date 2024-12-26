@@ -9,9 +9,8 @@ __interface ICollision
 
 	char* GetRootTitle();
 	char* GetType();
-
-	std::vector<Coord> GetPoints();
-	void SetPoints(std::vector<Coord> points);
+	boost::container::vector<Coord> GetPoints();
+	void SetPoints(boost::container::vector<Coord> points);
 
 	virtual ICollision* Clone() const = 0;
 

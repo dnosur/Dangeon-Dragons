@@ -1,19 +1,18 @@
 #pragma once
-#include <vector>
+#include "IGameObject.h"
 
-__interface IGameObject;
 class Pawn;
 enum Layer;
 
 static class GameObjects
 {
-	static std::vector<IGameObject*> gameObjects;
-	static std::vector<class Pawn*> pawns;
+	static boost::container::vector<IGameObject*> gameObjects;
+	static boost::container::vector<class Pawn*> pawns;
 public:
 	static void Add(IGameObject* gameObject);
 	static void Add(class Pawn* pawn);
 
-	static void Add(std::vector<IGameObject*>* gameObjects);
+	static void Add(boost::container::vector<IGameObject*>* gameObjects);
 
 	static IGameObject* GetByTitle(const char* title);
 	template <typename T>
@@ -23,16 +22,16 @@ public:
 	template <typename T>
 	static T* GetDynamicByTitle(const char* title, Layer layer);
 
-	static std::vector<IGameObject*>* GetAll();
-	static std::vector<IGameObject*>* GetAll(Layer layer);
+	static boost::container::vector<IGameObject*>* GetAll();
+	static boost::container::vector<IGameObject*>* GetAll(Layer layer);
 
-	static std::vector<class Pawn*>* GetAllPawns();
-	static std::vector<class Pawn*>* GetAllPawns(Layer layer);
+	static boost::container::vector<class Pawn*>* GetAllPawns();
+	static boost::container::vector<class Pawn*>* GetAllPawns(Layer layer);
 
 	template <typename T>
-	static std::vector<T*>* GetAllDynamic();
+	static boost::container::vector<T*>* GetAllDynamic();
 	template <typename T>
-	static std::vector<T*>* GetAllDynamic(Layer layer);
+	static boost::container::vector<T*>* GetAllDynamic(Layer layer);
 
 	template <typename T>
 	bool Exists(T* gameObject);
@@ -51,9 +50,9 @@ inline T* GameObjects::GetDynamicByTitle(const char* title, Layer layer)
 }
 
 template<typename T>
-inline std::vector<T*>* GameObjects::GetAllDynamic()
+inline boost::container::vector<T*>* GameObjects::GetAllDynamic()
 {
-	std::vector<T*>* temp = new std::vector<T*>;
+	boost::container::vector<T*>* temp = new boost::container::vector<T*>;
 	for (IGameObject* gameObject : gameObjects)
 	{
 		T* casted = dynamic_cast<T*>(gameObject);
@@ -66,9 +65,9 @@ inline std::vector<T*>* GameObjects::GetAllDynamic()
 }
 
 template<typename T>
-inline std::vector<T*>* GameObjects::GetAllDynamic(Layer layer)
+inline boost::container::vector<T*>* GameObjects::GetAllDynamic(Layer layer)
 {
-	std::vector<T*>* temp = new std::vector<T*>;
+	boost::container::vector<T*>* temp = new boost::container::vector<T*>;
 	for (IGameObject* gameObject : GetAll(layer))
 	{
 		T* casted = dynamic_cast<T*>(gameObject);

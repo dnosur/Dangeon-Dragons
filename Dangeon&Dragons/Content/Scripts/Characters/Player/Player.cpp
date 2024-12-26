@@ -26,7 +26,7 @@ void Player::LoadAnimations()
 
 	for (VertexAnimation*& animation : playerImages->CreateVertexAnimations(
 		std::make_pair(
-			std::vector<const char*>({
+			boost::container::vector<const char*>({
 				"idle_top",
 				"idle_right",
 				"idle_down",
@@ -53,7 +53,7 @@ void Player::LoadAnimations()
 				"bow_left",
 
 				"die"
-				}), std::vector<int>({
+				}), boost::container::vector<int>({
 					//Idle
 					300,
 					300,
@@ -340,7 +340,7 @@ void Player::Raycasting()
 
 bool Player::CheckForCollision()
 {
-	WindowPointer<std::vector<IGameObject*>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<IGameObject*>>(
+	WindowPointer<boost::container::vector<IGameObject*>>* solidCollisionsObjects = WindowPointerController::GetValue<boost::container::vector<IGameObject*>>(
 		window->GetWindow(), 
 		"SolidCollisions"
 	);
@@ -350,7 +350,7 @@ bool Player::CheckForCollision()
 	}
 
 	for (IGameObject* collisionObj : solidCollisionsObjects->GetValue()) {
-		std::vector<Coord> points = collisionObj->GetCollision()->GetPoints();
+		boost::container::vector<Coord> points = collisionObj->GetCollision()->GetPoints();
 
 		if (collisionObj == nullptr || collisionObj->GetCollision() == nullptr) {
 			continue;
@@ -366,13 +366,13 @@ bool Player::CheckForCollision()
 
 bool Player::CheckForCollision(Coord pos, Size size)
 {
-	WindowPointer<std::vector<IGameObject*>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<IGameObject*>>(window->GetWindow(), "SolidCollisions");
+	WindowPointer<boost::container::vector<IGameObject*>>* solidCollisionsObjects = WindowPointerController::GetValue<boost::container::vector<IGameObject*>>(window->GetWindow(), "SolidCollisions");
 	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().empty()) {
 		return true;
 	}
 
 	for (IGameObject* collisionObj : solidCollisionsObjects->GetValue()) {
-		std::vector<Coord> points = collisionObj->GetCollision()->GetPoints();
+		boost::container::vector<Coord> points = collisionObj->GetCollision()->GetPoints();
 
 		if (collisionObj == nullptr || collisionObj->GetCollision() == nullptr) {
 			continue;
@@ -466,7 +466,7 @@ Player::Player(
 	Material* material, Directions moveDirection, Coord pos, Size size, 
 	float speed, float maxSpeed, float minSpeed, 
 	float health, float maxHealth, bool isPlayable, bool isKinematic, 
-	bool isHidden, std::vector<IAnimation*> animations)
+	bool isHidden, boost::container::vector<IAnimation*> animations)
 	: Pawn(
 		title, window, collision, 
 		material, moveDirection, pos, size, 

@@ -8,9 +8,9 @@ class VertexAnimation :
 {
     FrameSoundsController frameSounds;
 
-    std::vector<
+    boost::container::vector<
 		//wait time, vertexes
-		std::pair<int, std::vector<Coord>>
+		std::pair<int, boost::container::vector<Coord>>
     > frames;
 
     Timer* timer;
@@ -34,8 +34,8 @@ class VertexAnimation :
 	IGameObject* object;
 
 public:
-	VertexAnimation(const char* title, int frameRate, bool repeat, bool stopOnEnd, IGameObject* object, std::vector<
-		std::pair<int, std::vector<Coord>>> frames = {}
+	VertexAnimation(const char* title, int frameRate, bool repeat, bool stopOnEnd, IGameObject* object, boost::container::vector<
+		std::pair<int, boost::container::vector<Coord>>> frames = {}
 	);
 
 	void Play();
@@ -67,8 +67,8 @@ public:
 	void SetTitle(char* title);
 	char* GetTitle();
 
-	void AddFrame(int waitTime, std::vector<Coord> vertexes);
-	void AddFrame(std::pair<int, std::vector<Coord>> frame);
+	void AddFrame(int waitTime, boost::container::vector<Coord> vertexes);
+	void AddFrame(std::pair<int, boost::container::vector<Coord>> frame);
 
 	void ClearFrames();
 
@@ -79,6 +79,6 @@ public:
 
 	IAnimation* Clone();
 
-	std::pair<int, std::vector<Coord>>* operator[](int index);
+	std::pair<int, boost::container::vector<Coord>>* operator[](int index);
 };
 

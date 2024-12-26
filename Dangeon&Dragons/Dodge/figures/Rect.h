@@ -51,7 +51,7 @@ public:
     Rect(const char* title, Window& window, Coord vertex1, Coord vertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
     Rect(const char* title, Window& window, Coord vertex1, Coord vertex2, Coord textureVertex1, Coord textureVertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
 
-    static std::vector<float> GetVerticesByDirection(
+    static boost::container::vector<float> GetVerticesByDirection(
         Rect& rect, 
         Directions moveDirection, 
         bool returnTexCoords = false
@@ -78,9 +78,9 @@ public:
 
     Color GetBaseColor();
 
-    std::vector<Coord> GetVertices();
+    boost::container::vector<Coord> GetVertices();
 
-    void SetPos(std::vector<Coord> vertices);
+    void SetPos(boost::container::vector<Coord> vertices);
     void SetPos(Coord pos);
 
     void SetMaterial(Material* material);

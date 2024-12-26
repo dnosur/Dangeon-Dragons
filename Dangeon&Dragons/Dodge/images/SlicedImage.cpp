@@ -11,7 +11,7 @@ void SlicedImage::CalculateVertexes(int row_index, int start_column, int max_col
 	) {
 		if (!i) {
 			vertexes.push_back(
-				std::vector<std::pair<Coord, Coord>>()
+				boost::container::vector<std::pair<Coord, Coord>>()
 			);
 		}
 
@@ -43,7 +43,7 @@ bool SlicedImage::ValidateIndex(Coord& vertex_coord)
 	return true;
 }
 
-SlicedImage::SlicedImage(Image* image, std::vector<std::vector<std::pair<Coord, Coord>>> vertexes, Size frameSize)
+SlicedImage::SlicedImage(Image* image, boost::container::vector<boost::container::vector<std::pair<Coord, Coord>>> vertexes, Size frameSize)
 {
 	this->image = image;
 	this->vertexes = vertexes;
@@ -51,7 +51,7 @@ SlicedImage::SlicedImage(Image* image, std::vector<std::vector<std::pair<Coord, 
 	this->Initilize();
 }
 
-SlicedImage::SlicedImage(Image* image, std::vector<int> widths, int height, Size frameSize)
+SlicedImage::SlicedImage(Image* image, boost::container::vector<int> widths, int height, Size frameSize)
 {
 	this->image = image;
 	this->frameSize = frameSize;
@@ -102,7 +102,7 @@ std::pair<Coord, Coord> SlicedImage::CalculateTextureVertexes(
 	};
 }
 
-void SlicedImage::Slice(std::vector<int> widths, int height)
+void SlicedImage::Slice(boost::container::vector<int> widths, int height)
 {
 for (int i = 0; i < height; i++) {
 		CalculateVertexes(i, 0, widths[i]);
@@ -197,13 +197,13 @@ VertexAnimation* SlicedImage::CreateVertexAnimation(
 		return nullptr;
 	}
 
-	std::vector<std::pair<int, std::vector<Coord>>> frames;
+	boost::container::vector<std::pair<int, boost::container::vector<Coord>>> frames;
 
 	for (std::pair<Coord, Coord>& vertex : vertexes[vertex_row_index]) {
 		frames.push_back(
 			std::make_pair(
 				frame_setting.second,
-				std::vector<Coord>({
+				boost::container::vector<Coord>({
 					vertex.first, vertex.second
 					})
 			)
@@ -217,10 +217,10 @@ VertexAnimation* SlicedImage::CreateVertexAnimation(
 	);
 }
 
-std::vector<VertexAnimation*> SlicedImage::CreateVertexAnimations()
+boost::container::vector<VertexAnimation*> SlicedImage::CreateVertexAnimations()
 {
-	std::vector<const char*> names;
-	std::vector<int> durations;
+	boost::container::vector<const char*> names;
+	boost::container::vector<int> durations;
 
 	for (int i = 0; i < vertexes.size(); i++) {
 		std::string name = "slice_" + generateRandomString(5);
@@ -233,20 +233,20 @@ std::vector<VertexAnimation*> SlicedImage::CreateVertexAnimations()
 	);
 }
 
-std::vector<VertexAnimation*> SlicedImage::CreateVertexAnimations(
-	std::pair<std::vector<const char*>, std::vector<int>> frames_settings
+boost::container::vector<VertexAnimation*> SlicedImage::CreateVertexAnimations(
+	std::pair<boost::container::vector<const char*>, boost::container::vector<int>> frames_settings
 )
 {
-	std::vector<VertexAnimation*> vertex_animations;
+	boost::container::vector<VertexAnimation*> vertex_animations;
 
 	for (int i = 0; i < vertexes.size(); i++) {
-		std::vector<std::pair<int, std::vector<Coord>>> frames;
+		boost::container::vector<std::pair<int, boost::container::vector<Coord>>> frames;
 
 		for (std::pair<Coord, Coord>& vertex : vertexes[i]) {
 			frames.push_back(
 				std::make_pair(
 					frames_settings.second[i], 
-					std::vector<Coord>({ 
+					boost::container::vector<Coord>({ 
 						vertex.first, vertex.second 
 					})
 				)
@@ -267,17 +267,17 @@ std::vector<VertexAnimation*> SlicedImage::CreateVertexAnimations(
 	return vertex_animations;
 }
 
-std::vector<std::vector<std::pair<Coord, Coord>>>::iterator SlicedImage::begin()
+boost::container::vector<boost::container::vector<std::pair<Coord, Coord>>>::iterator SlicedImage::begin()
 {
 	return vertexes.begin();
 }
 
-std::vector<std::vector<std::pair<Coord, Coord>>>::iterator SlicedImage::end()
+boost::container::vector<boost::container::vector<std::pair<Coord, Coord>>>::iterator SlicedImage::end()
 {
 	return vertexes.end();
 }
 
-std::vector<std::pair<Coord, Coord>>* SlicedImage::operator[](int index)
+boost::container::vector<std::pair<Coord, Coord>>* SlicedImage::operator[](int index)
 {
 	if (index >= 0 && index < vertexes.size()) {
 		return &vertexes[index];

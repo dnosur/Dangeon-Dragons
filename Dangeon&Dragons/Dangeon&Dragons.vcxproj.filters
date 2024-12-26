@@ -495,4 +495,7 @@
   <ItemGroup>
     <Text Include="Dodge\project properties.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\vcpkg.json" />
+  </ItemGroup>
 </Project>

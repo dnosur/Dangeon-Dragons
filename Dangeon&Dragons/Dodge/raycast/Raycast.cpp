@@ -21,13 +21,13 @@ IGameObject* Raycast::RaycastFirst(Ray* ray, bool debug, Color debugColor)
 	return nullptr;
 }
 
-std::vector<IGameObject*> Raycast::RaycastAll(Ray* ray, bool debug, Color debugColor)
+boost::container::vector<IGameObject*> Raycast::RaycastAll(Ray* ray, bool debug, Color debugColor)
 {
 	if (debug) {
 		drawRay(ray, debugColor);
 	}
 
-	std::vector<IGameObject*> result;
+	boost::container::vector<IGameObject*> result;
 	for (IGameObject*& object : *GameObjects::GetAll()) {
 		if (IsPointBetween(ray, object->GetPos())) {
 			result.push_back(object);
@@ -80,7 +80,7 @@ bool Raycast::CheckRayAABBIntersection(
 
 bool Raycast::CheckRayPolygonIntersection(
 	const Coord& rayOrigin, const Coord& rayDir, 
-	const std::vector<Coord>& polygon)
+	const boost::container::vector<Coord>& polygon)
 {
 	size_t n = polygon.size();
 	if (n < 3) {

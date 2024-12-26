@@ -210,7 +210,7 @@ bool IsObjectBetween(Ray* ray, IGameObject* object, bool useCollision) {
 
 	if (useCollision) {
 		if (PoligonCollision* collision = dynamic_cast<PoligonCollision*>(object->GetCollision())) {
-			std::vector<Coord> polygonPoints = collision->GetPoints();
+			boost::container::vector<Coord> polygonPoints = collision->GetPoints();
 
 			// Проверяем пересечение луча с многоугольником
 			return Raycast::CheckRayPolygonIntersection(rayOrigin, rayDir, polygonPoints);

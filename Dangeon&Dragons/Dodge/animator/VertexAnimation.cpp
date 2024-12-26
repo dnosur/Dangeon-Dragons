@@ -1,7 +1,7 @@
 #include "VertexAnimation.h"
 #include "../Material.h"
 
-VertexAnimation::VertexAnimation(const char* title, int frameRate, bool repeat, bool stopOnEnd, IGameObject* object, std::vector<std::pair<int, std::vector<Coord>>> frames)
+VertexAnimation::VertexAnimation(const char* title, int frameRate, bool repeat, bool stopOnEnd, IGameObject* object, boost::container::vector<std::pair<int, boost::container::vector<Coord>>> frames)
 {
 	copyStr(title, this->title);
 
@@ -182,12 +182,12 @@ char* VertexAnimation::GetTitle()
 	return title;
 }
 
-void VertexAnimation::AddFrame(int waitTime, std::vector<Coord> frames)
+void VertexAnimation::AddFrame(int waitTime, boost::container::vector<Coord> frames)
 {
     this->frames.push_back(std::make_pair(waitTime, frames));
 }
 
-void VertexAnimation::AddFrame(std::pair<int, std::vector<Coord>> frame)
+void VertexAnimation::AddFrame(std::pair<int, boost::container::vector<Coord>> frame)
 {
 	this->frames.push_back(frame);
 }
@@ -219,7 +219,7 @@ IAnimation* VertexAnimation::Clone()
 	return new VertexAnimation(*this);
 }
 
-std::pair<int, std::vector<Coord>>* VertexAnimation::operator[](int index)
+std::pair<int, boost::container::vector<Coord>>* VertexAnimation::operator[](int index)
 {
 	if (index >= 0 && index < frames.size()) {
 		return &frames[index];

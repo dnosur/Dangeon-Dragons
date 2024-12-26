@@ -15,7 +15,9 @@ class BoxCollision :
 
 	bool kinematic;
 
-	std::vector<IGameObject*> gameObjects;
+	boost::container::small_vector<IGameObject*, 32> gameObjects;
+
+	bool ExistGameObject(IGameObject* gameObject);
 public:
 	BoxCollision(Coord point,Size size, int root_id, char* root_title = nullptr, char* type = nullptr);
 	~BoxCollision();
@@ -27,8 +29,8 @@ public:
 
 	BoxCollision* Clone() const override;
 
-	std::vector<Coord> GetPoints();
-	void SetPoints(std::vector<Coord> points);
+	boost::container::vector<Coord> GetPoints();
+	void SetPoints(boost::container::vector<Coord> points);
 
 	Size GetSize();
 	void SetSize(Size size);
