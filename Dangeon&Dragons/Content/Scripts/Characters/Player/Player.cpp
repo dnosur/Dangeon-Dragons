@@ -292,45 +292,48 @@ void Player::Drag(Coord newPos)
 
 void Player::Raycasting()
 {
-	Ray* interactiveRay = RayFactory::CreateRay(
+	std::unique_ptr<Ray> interactiveRay = std::move(RayFactory::CreateRay(
 		&startPos,
 		&moveDirection,
 		interactiveDistance,
 		20
-	);
+	));
 
-	Ray* damageRay = RayFactory::CreateRay(
+	std::unique_ptr<Ray> damageRay = std::move(RayFactory::CreateRay(
 		&startPos,
 		&moveDirection,
 		damageDistance,
 		20
-	);
+	));
 
-	IGameObject* interactiveCollision = Raycast::RaycastFirst(
+	std::weak_ptr<IGameObject> interactiveCollision = Raycast::RaycastFirst(
 		interactiveRay
 	);
 
-	IGameObject* damageCollision = Raycast::RaycastFirst(
+	std::weak_ptr<IGameObject> damageCollision = Raycast::RaycastFirst(
 		damageRay
 	);
 
+	std::shared_ptr<IGameObject> lockedInteractiveCollision = interactiveCollision.lock();
+	std::shared_ptr<IGameObject> lockedDamageObject = damageCollision.lock();
 
-	if (interactiveCollision != nullptr && 
-		interactiveCollision->GetLayer() != Layer::MainPlayer && 
-		interactiveCollision->GetLayer() != Layer::Enemy
+
+	if (lockedInteractiveCollision != nullptr &&
+		lockedInteractiveCollision->GetLayer() != Layer::MainPlayer &&
+		lockedInteractiveCollision->GetLayer() != Layer::Enemy
 	) {
-		SetRaycastedObject(interactiveCollision, interactiveObject, new Color(.5f, 1, .5f));
+		SetRaycastedObject(lockedInteractiveCollision, interactiveObject, new Color(.5f, 1, .5f));
 	}
 	else if(interactiveObject != nullptr) {
 		interactiveObject->GetMaterial()->SetDiffuse(Color(1, 1, 1));
 		interactiveObject = nullptr;
 	}
 
-	if (damageCollision != nullptr && 
-		interactiveCollision->GetLayer() != Layer::MainPlayer && 
-		damageCollision->GetLayer() == Layer::Enemy
+	if (lockedDamageObject != nullptr &&
+		lockedInteractiveCollision->GetLayer() != Layer::MainPlayer &&
+		lockedDamageObject->GetLayer() == Layer::Enemy
 	) {
-		SetRaycastedObject(damageCollision, damageObject, new Color(.9f, .9f, .1f));
+		SetRaycastedObject(lockedDamageObject, damageObject, new Color(.9f, .9f, .1f));
 	}
 	else if(damageObject != nullptr) {
 		damageObject->GetMaterial()->SetDiffuse(Color(1, 1, 1));

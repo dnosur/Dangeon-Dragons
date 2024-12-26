@@ -1,15 +1,15 @@
 #include "RayFactory.h"
 
-Ray* RayFactory::CreateRay(Coord* origin, Coord* direction, float rayWidth)
+std::unique_ptr<Ray> RayFactory::CreateRay(Coord* origin, Coord* direction, float rayWidth)
 {
 	if (origin == nullptr || direction == nullptr) {
 		return nullptr;
 	}
 
-	return new Ray(origin, direction, rayWidth);
+	return std::move(std::unique_ptr<Ray>(new Ray(origin, direction, rayWidth)));
 }
 
-Ray* RayFactory::CreateRay(
+std::unique_ptr<Ray> RayFactory::CreateRay(
 	Coord* origin, Directions* direction,
 	float raySize, float rayWidth
 )
@@ -32,22 +32,22 @@ Ray* RayFactory::CreateRay(
 		dir.X += raySize;
 	}
 
-	return new Ray(
+	return std::move (std::unique_ptr<Ray>(new Ray(
 		origin, new Coord(*origin + dir),
 		rayWidth
-	);
+	)));
 }
 
-Ray* RayFactory::CreatePawnDirectionRay(
+std::unique_ptr<Ray> RayFactory::CreatePawnDirectionRay(
 	class Pawn* pawn, 
 	float raySize, float rayWidth)
 {
-	return CreateRay(
+	return std::move(CreateRay(
 		new Coord(
 			pawn->GetPos()
 		), new Directions(
 			pawn->GetMoveDirection()
 		),
 		raySize, rayWidth
-	);
+	));
 }

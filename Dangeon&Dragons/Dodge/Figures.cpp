@@ -79,3 +79,8 @@ void drawRay(Ray*& ray, Color& color)
     glVertex2f(second->X, second->Y);
     glEnd();
 }
+
+void drawRay(std::unique_ptr<Ray>& ray, Color& color)
+{
+    drawRay(ray, color);
+}

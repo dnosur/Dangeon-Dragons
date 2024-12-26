@@ -1,38 +1,41 @@
 #include "Raycast.h"
 #include "../GameObjects.h"
 
-IGameObject* Raycast::RaycastFirst(Ray* ray, bool debug, Color debugColor)
+std::weak_ptr<IGameObject> Raycast::RaycastFirst(std::unique_ptr<Ray>& ray, bool debug, Color debugColor)
 {
 	if (debug) {
 		drawRay(ray, debugColor);
 	}
 
-	for (IGameObject*& object : *GameObjects::GetAll()) {
-		//if (object->GetCollision()->GetRootId() == 223) {
-		//	if (IsObjectBetween(ray, object)) {
-		//		return object;
-		//	}
-		//	continue;
-		//}
+	for (std::weak_ptr<IGameObject> object : *GameObjects::GetAll()) {
+		if (!object.lock()) {
+			continue; 
+		}
+
 		if (IsObjectBetween(ray, object)) {
 			return object;
 		}
 	}
-	return nullptr;
+	return std::shared_ptr<IGameObject>(nullptr);
 }
 
-std::vector<IGameObject*> Raycast::RaycastAll(Ray* ray, bool debug, Color debugColor)
+std::vector<std::weak_ptr<IGameObject>> Raycast::RaycastAll(std::unique_ptr<Ray>& ray, bool debug, Color debugColor)
 {
 	if (debug) {
 		drawRay(ray, debugColor);
 	}
 
-	std::vector<IGameObject*> result;
-	for (IGameObject*& object : *GameObjects::GetAll()) {
-		if (IsPointBetween(ray, object->GetPos())) {
+	std::vector<std::weak_ptr<IGameObject>> result;
+	for (std::shared_ptr<IGameObject>& object : *GameObjects::GetAll()) {
+		if (!object.get()) {
+			continue;
+		}
+
+		if (IsPointBetween(ray, object.get()->GetPos())) {
 			result.push_back(object);
 		}
 	}
+
 	return result;
 }
 

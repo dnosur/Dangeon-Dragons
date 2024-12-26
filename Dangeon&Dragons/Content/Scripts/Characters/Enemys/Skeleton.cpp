@@ -62,12 +62,18 @@ bool Skeleton::IsNear(Coord pos)
 			std::abs(pos.Y - this->pos.Y) <= damageDistance);
 }
 
-void Skeleton::SetTarget(Pawn* target)
+void Skeleton::SetTarget(std::shared_ptr<Pawn> target)
+{
+	this->target = target;
+	std::cout << this->target.lock().get()->GetTitle() << std::endl;
+}
+
+void Skeleton::SetTarget(std::weak_ptr<Pawn>& target)
 {
 	this->target = target;
 }
 
-class Pawn* Skeleton::GetTarget()
+std::weak_ptr<class Pawn> Skeleton::GetTarget()
 {
 	return target;
 }
@@ -429,39 +435,42 @@ void Skeleton::AIMovement()
 		animations.Play(GetAnimationName());
 		movementIndex = 0;
 
-		if (target) {
+		if (target.lock()) {
 			return;
 		}
 
 		Thread* findTarget = new Thread(nullptr, [&]() {
-			Player* player = GameObjects::GetDynamicByTitle<Player>("Player");
-			if (player == nullptr) {
+			std::weak_ptr<Player> player = GameObjects::GetDynamicByTitle<Player>("Player");
+			if (player.lock() == nullptr) {
 				return;
 			}
 
-			Ray* ray = RayFactory::CreateRay(
+			std::unique_ptr<Ray> ray = std::move(RayFactory::CreateRay(
 				new Coord(startPos),
-				new Coord(player->GetStartPos())
-			);
+				new Coord(player.lock()->GetStartPos())
+			));
 
 			if (ray == nullptr || ray->raySize > viewDistance) {
-				delete ray;
+				ray.release();
 				return;
 			}
+			ray.release();
 
-			IGameObject* target = Raycast::RaycastFirst(
-				RayFactory::CreateRay(
-					new Coord(startPos),
-					new Coord(player->GetStartPos())
-				)
+			std::unique_ptr<Ray> rayToTarget = std::move(RayFactory::CreateRay(
+				new Coord(startPos),
+				new Coord(player.lock()->GetStartPos())
+			));
+
+			std::weak_ptr<IGameObject> target = Raycast::RaycastFirst(
+				rayToTarget
 			);
 
-			if (target != player) {
+			if (target.lock() != player.lock()) {
 				return;
 			}
 
 			std::cout << "Found player\n";
-			this->SetTarget(player);
+			this->SetTarget(std::dynamic_pointer_cast<Pawn>(player.lock()));
 		});
 
 		findTarget->Detach();
@@ -489,22 +498,28 @@ void Skeleton::AIMovement()
 	}
 
 	//Движение к цели
-	if (!findingPath && target) {
+	if (!findingPath && target.lock()) {
 		std::thread([this]() { 
 			std::lock_guard<std::mutex> lock(pathMutex);
+
+			std::shared_ptr<Pawn> target_ptr = target.lock();
+			if (target_ptr == nullptr) {
+				return;
+			}
+
 			Coord targetPos;
 
-			if (Player* player = dynamic_cast<Player*>(target)) {
+			if (Player* player = dynamic_cast<Player*>(target_ptr.get())) {
 				targetPos = player->GetStartPos();
 			}
 			else {
-				targetPos = target->GetPos();
+				targetPos = target_ptr->GetPos();
 			}
 
-			Ray* ray = RayFactory::CreateRay(&startPos, &targetPos);
+			std::unique_ptr<Ray> ray = RayFactory::CreateRay(&startPos, &targetPos);
 
 			if (ray == nullptr || ray->raySize > viewDistance) {
-				delete ray;
+				ray.release();
 				return;
 			}
 
@@ -516,7 +531,7 @@ void Skeleton::AIMovement()
 	}
 
 	//Буждание
-	if (!findingPath && !target) {
+	if (!findingPath && !target.lock()) {
 		std::thread([this]() {
 			float wanderRadius = 100.0f;
 			Coord randomPosition = GenerateRandomPosition(GetPos(), wanderRadius);

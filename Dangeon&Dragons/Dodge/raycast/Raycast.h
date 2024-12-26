@@ -9,8 +9,8 @@
 static class Raycast
 {
 public:
-	static IGameObject* RaycastFirst(Ray* ray, bool debug = false, Color debugColor = Color(1, 0, 0));
-	static std::vector<IGameObject*> RaycastAll(Ray* ray, bool debug = false, Color debugColor = Color(1, 0, 0));
+	static std::weak_ptr<IGameObject> RaycastFirst(std::unique_ptr<Ray>& ray, bool debug = false, Color debugColor = Color(1, 0, 0));
+	static std::vector<std::weak_ptr<IGameObject>> RaycastAll(std::unique_ptr<Ray>&, bool debug = false, Color debugColor = Color(1, 0, 0));
 
 	template<typename T = IGameObject*>
 	static T* RaycastFirstDynamic(Ray* ray, bool debug = false, Color debugColor = Color(1, 0, 0));

@@ -19,7 +19,7 @@ protected:
 	float emissiveIntensity;
 
 	Shader* shader;
-	Camera* camera;
+	std::shared_ptr<Camera> camera;
 
 	Image* diffuseMap;
 	Image* normalMap;
@@ -98,7 +98,7 @@ public:
 	float GetEmissiveIntensity();
 
 	Shader* GetShader();
-	Camera* GetCamera();
+	std::weak_ptr<Camera> GetCamera();
 	Image* GetDiffuseMap();
 	Image* GetNormalMap();
 	Image* GetSpecularMap();

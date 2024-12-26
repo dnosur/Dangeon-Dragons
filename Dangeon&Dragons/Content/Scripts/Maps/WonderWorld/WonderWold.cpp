@@ -6,12 +6,12 @@
 
 void WonderWold::CreateCamera()
 {
-	camera = new Camera(
+	camera = std::unique_ptr<Camera>(new Camera(
 		"Player",
 		Size(0, 0),
 		Size(1000, 1000),
 		window
-	);
+	));
 }
 
 void WonderWold::SpawnPlayer()
@@ -37,7 +37,7 @@ void WonderWold::SpawnPlayer()
 		)
 	);
 
-	player = new Player(
+	player = std::unique_ptr<Player>(new Player(
 		"Player",
 		*window,
 		new BoxCollision(
@@ -59,21 +59,20 @@ void WonderWold::SpawnPlayer()
 		true,
 		false,
 		false
-	);
+	));
 
-	camera->SetObservedObj(player);
+	camera->SetObservedObj(player.get());
 
 	WindowPointerController::SetPointer(
 		window->GetWindow(), 
-		WindowPointer<Player*>("player", &player)
+		WindowPointer<Player>("player", player.get())
 	);
 
-	GameObjects::Add(player);
+	GameObjects::Add(player.get());
 }
 
 void WonderWold::SpawnSkeleton(Coord pos)
 {
-
 	for (IGameObject* spawn : GetClassesByName("SkeletonSpawnPoint")) {
 		//skeleton->SetTarget(player);
 		Material* skeletonMaterial = new BaseFigureMaterial();
@@ -95,9 +94,9 @@ void WonderWold::SpawnSkeleton(Coord pos)
 			)
 		);
 
-		skeletonMaterial->SetCamera(camera);
+		skeletonMaterial->SetCamera(camera.get());
 
-		Skeleton* skeleton = new Skeleton(
+		std::unique_ptr<class Pawn> skeleton = std::unique_ptr<class Pawn>(new Skeleton(
 			"Skeleton",
 			*window,
 			new BoxCollision(
@@ -119,10 +118,10 @@ void WonderWold::SpawnSkeleton(Coord pos)
 			true,
 			false,
 			false
-		);
+		));
 
-		enemys.push_back(skeleton);
 		GameObjects::Add(skeleton);
+		enemys.push_back(std::move(skeleton));
 	}
 }
 
@@ -161,19 +160,14 @@ WonderWold::WonderWold(Window* window, TileMap* tileMap, Coord pos)
 	Initialize();
 }
 
-WonderWold::~WonderWold()
-{
-
-}
-
 void WonderWold::SetCamera(Camera* camera)
 {
-	this->camera = camera;
+	this->camera = std::unique_ptr<Camera>(camera);
 }
 
 void WonderWold::Update()
 {
-	IGameObject* observed = camera->GetObservedObj();
+	IGameObject* observed = camera.get()->GetObservedObj().get();
 	Coord cameraOffset = camera->GetOffset();
 	bool cameraMove = cameraOffset.X != 0 || cameraOffset.Y != 0;
 
@@ -195,9 +189,9 @@ void WonderWold::Update()
 	}
 
 	if (cameraMove) {
-		for (class Pawn* pawn : enemys) {
+		for (std::unique_ptr<class Pawn>& pawn : enemys) {
 			pawn->SetPos(pawn->GetPos() + cameraOffset);
-			if (Skeleton* skeleton = dynamic_cast<Skeleton*>(pawn)) {
+			if (Skeleton* skeleton = dynamic_cast<Skeleton*>(pawn.get())) {
 				skeleton->SetPathOffset(cameraOffset);
 			}
 
@@ -225,9 +219,9 @@ void WonderWold::Update()
 void WonderWold::UpdatePawns()
 {
 	camera->DropOffset();
-	for (IGameObject* obj : enemys)
+	for (std::unique_ptr<class Pawn>& enemy : enemys)
 	{
-		obj->Update();
+		enemy->Update();
 	}
 
 	player->Update();

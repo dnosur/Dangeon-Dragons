@@ -192,6 +192,21 @@ bool IsPointBetween(Ray* ray, Coord point)
 	return dotProduct >= 0 && dotProduct <= lengthSquared;
 }
 
+bool IsPointBetween(std::unique_ptr<Ray>& ray, Coord point)
+{
+	float vectorX = ray->direction->X - ray->origin->X;
+	float vectorY = ray->direction->Y - ray->origin->Y;
+
+	float pointVectorX = point.X - ray->origin->X;
+	float pointVectorY = point.Y - ray->origin->Y;
+
+	float dotProduct = pointVectorX * vectorX + pointVectorY * vectorY;
+
+	float lengthSquared = vectorX * vectorX + vectorY * vectorY;
+
+	return dotProduct >= 0 && dotProduct <= lengthSquared;
+}
+
 bool IsObjectBetween(Ray* ray, IGameObject* object, bool useCollision) {
 
 		// Координаты луча
@@ -252,6 +267,75 @@ bool IsObjectBetween(Ray* ray, IGameObject* object, bool useCollision) {
 	// Проверяем пересечение луча с AABB
 	return Raycast::CheckRayAABBIntersection(
 		rayOrigin, rayDir, ray->rayWidth, 
+		objLeft, objRight, objBottom, objTop
+	);
+}
+
+bool IsObjectBetween(std::unique_ptr<Ray>& ray, std::weak_ptr<IGameObject>& object, bool useCollision)
+{
+	std::shared_ptr<IGameObject> shared_obj = object.lock();
+	if (!shared_obj) {
+		return false;
+	}
+
+	// Координаты луча
+	Coord rayOrigin = *ray->origin;
+	Coord rayEnd = *ray->direction;
+	Coord rayDir = { rayEnd.X - rayOrigin.X, rayEnd.Y - rayOrigin.Y, rayEnd.Z - rayOrigin.Z };
+
+	// Нормализуем вектор направления луча
+	double magnitude = std::sqrt(rayDir.X * rayDir.X + rayDir.Y * rayDir.Y + rayDir.Z * rayDir.Z);
+	if (magnitude == 0) {
+		return false; // Некорректное направление
+	}
+	rayDir.X /= magnitude;
+	rayDir.Y /= magnitude;
+	rayDir.Z /= magnitude;
+
+	if (useCollision) {
+		if (PoligonCollision* collision = dynamic_cast<PoligonCollision*>(shared_obj->GetCollision())) {
+			std::vector<Coord> polygonPoints = collision->GetPoints();
+
+			// Проверяем пересечение луча с многоугольником
+			return Raycast::CheckRayPolygonIntersection(rayOrigin, rayDir, polygonPoints);
+		}
+	}
+
+	// Получаем позицию и размеры объекта
+	Coord objPos = shared_obj->GetPos();
+	Size objSize = shared_obj->GetSize();
+
+	if (useCollision) {
+		BoxCollision* collision = dynamic_cast<BoxCollision*>(shared_obj->GetCollision());
+
+		objPos = (collision != nullptr ? collision->GetPoints()[0] : objPos);
+		objSize = (collision != nullptr ? collision->GetSize() : objSize);
+	}
+
+	// Вычисляем AABB объекта
+	double objLeft = objPos.X;
+	double objRight = objPos.X + objSize.width;
+	double objBottom = objPos.Y + objSize.height;
+	double objTop = objPos.Y;
+
+	if ((rayOrigin.X > objRight + ray->rayWidth && rayEnd.X > objRight + ray->rayWidth) ||
+		(rayOrigin.X < objLeft - ray->rayWidth && rayEnd.X < objLeft - ray->rayWidth)) {
+		return false; // Луч полностью справа или слева от объекта
+	}
+
+	if ((rayOrigin.Y > objBottom + ray->rayWidth && rayEnd.Y > objBottom + ray->rayWidth) ||
+		(rayOrigin.Y < objTop - ray->rayWidth && rayEnd.Y < objTop - ray->rayWidth)) {
+		return false; // Луч полностью выше или ниже объекта
+	}
+
+	shared_obj->Draw();
+	return true;
+
+	//Метод AABB не понадобился, но на будущее пускай будет :)
+
+	// Проверяем пересечение луча с AABB
+	return Raycast::CheckRayAABBIntersection(
+		rayOrigin, rayDir, ray->rayWidth,
 		objLeft, objRight, objBottom, objTop
 	);
 }

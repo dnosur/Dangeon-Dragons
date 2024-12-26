@@ -140,6 +140,7 @@ bool IsPointBetween(Coord start, Coord end, Coord point);
 bool IsPointBetween(Coord start, Coord end, Coord point, float tolerance);
 
 bool IsPointBetween(Ray* ray, Coord point);
+bool IsPointBetween(std::unique_ptr<Ray>& ray, Coord point);
 
 /**
  * Checks if an object is between a ray.
@@ -151,6 +152,7 @@ bool IsPointBetween(Ray* ray, Coord point);
  * @return True if the object is between the ray, false otherwise.
  */
 bool IsObjectBetween(Ray* ray, IGameObject* object, bool useCollision = true);
+bool IsObjectBetween(std::unique_ptr<Ray>& ray, std::weak_ptr<IGameObject>& object, bool useCollision = true);
 
 std::string generateRandomString(int length);
 

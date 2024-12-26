@@ -50,6 +50,7 @@ public:
     Rect(const char* title, Window& window, Coord pos, Size size, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
     Rect(const char* title, Window& window, Coord vertex1, Coord vertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
     Rect(const char* title, Window& window, Coord vertex1, Coord vertex2, Coord textureVertex1, Coord textureVertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
+    ~Rect() = default;
 
     static std::vector<float> GetVerticesByDirection(
         Rect& rect, 

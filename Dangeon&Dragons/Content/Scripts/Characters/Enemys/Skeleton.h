@@ -10,7 +10,7 @@
 class Skeleton
 	: public Pawn
 {
-    Pawn* target;
+    std::weak_ptr<Pawn> target;
     float viewDistance;
 
     float viewWidth;
@@ -60,6 +60,7 @@ public:
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
         std::vector<IAnimation*> animations = {}
     );
+    ~Skeleton() = default;
 
     Coord GetStartPos();
 
@@ -69,8 +70,9 @@ public:
     bool IsNear(IGameObject& gameObject) override;
     bool IsNear(Coord pos) override;
 
-    void SetTarget(Pawn* target);
-    Pawn* GetTarget();
+    void SetTarget(std::shared_ptr<Pawn> target);
+    void SetTarget(std::weak_ptr<Pawn>& target);
+    std::weak_ptr<Pawn> GetTarget();
 
     void ViewPawn(Pawn* pawn);
 

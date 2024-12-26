@@ -56,7 +56,7 @@ void Material::SetShader(Shader* shader)
 
 void Material::SetCamera(Camera* camera)
 {
-	this->camera = camera;
+	this->camera = std::shared_ptr<Camera>(camera);
 }
 
 void Material::SetDiffuseMap(Image* diffuseMap)
@@ -309,7 +309,7 @@ Shader* Material::GetShader()
 	return shader;
 }
 
-Camera* Material::GetCamera()
+std::weak_ptr<Camera> Material::GetCamera()
 {
 	return camera;
 }

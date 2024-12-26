@@ -1,7 +1,10 @@
 #include "PlayerUtilities.h"
 
-void SetRaycastedObject(IGameObject*& raycastedObject, IGameObject*& target, Color* color)
-{
+void SetRaycastedObject(
+	std::shared_ptr<IGameObject>& raycastedObject, 
+	std::shared_ptr<IGameObject>& target, 
+	Color* color
+){
 	if (raycastedObject != nullptr &&
 		raycastedObject != target
 		) {

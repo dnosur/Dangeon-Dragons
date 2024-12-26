@@ -39,6 +39,7 @@ public:
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
         std::vector<IAnimation*> animations = {}
     );
+    ~Player() = default;
 
     Coord GetStartPos();
 

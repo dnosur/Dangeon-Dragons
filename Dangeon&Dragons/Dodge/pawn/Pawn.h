@@ -55,11 +55,11 @@ protected:
 
 	float damage;
 	float damageDistance;
-	IGameObject* damageObject;
+	std::shared_ptr<IGameObject> damageObject;
 
 	float viewDistance;
 	float interactiveDistance;
-	IGameObject* interactiveObject;
+	std::shared_ptr<IGameObject> interactiveObject;
 
 	bool isDead;
 	bool isPlayable;
