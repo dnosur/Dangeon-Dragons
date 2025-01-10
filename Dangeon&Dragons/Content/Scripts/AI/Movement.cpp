@@ -19,6 +19,6 @@ Movement::Movement(
 
 	this->direction = direction;
 	this->action = action;
-	this->animation = animation;
+	this->animation = std::unique_ptr<IAnimation>(animation);
 	this->position = position;
 }
