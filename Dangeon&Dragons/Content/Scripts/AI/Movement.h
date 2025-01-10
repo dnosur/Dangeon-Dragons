@@ -12,7 +12,7 @@ struct Movement
 	Directions direction;
 	Actions action;
 
-	IAnimation* animation;
+	std::unique_ptr<IAnimation> animation;
 
 	Coord position;
 
