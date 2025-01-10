@@ -30,7 +30,6 @@ class WonderWold
 	void Initialize();
 public:
 	WonderWold(Window* window, TileMap* tileMap, Coord pos = Coord());
-	~WonderWold() = default;
 
 	float moveSpeed = .4f;
 

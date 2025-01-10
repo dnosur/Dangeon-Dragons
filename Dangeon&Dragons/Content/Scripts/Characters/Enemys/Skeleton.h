@@ -8,7 +8,7 @@
 #include "../../AI/Movement.h"
 
 class Skeleton
-	: public Pawn
+	: public Pawn, public std::enable_shared_from_this<Skeleton>
 {
     std::weak_ptr<Pawn> target;
     float viewDistance;
@@ -60,7 +60,6 @@ public:
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
         std::vector<IAnimation*> animations = {}
     );
-    ~Skeleton() = default;
 
     Coord GetStartPos();
 
