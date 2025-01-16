@@ -1,9 +1,8 @@
 #include "TinyMap.h"
-#include "../figures/Circle.h"
 #include "../GameStatuses.h"
 #include "../animator/VertexAnimation.h"
 
-void TinyMap::MoveCollison(ICollision* collision, Coord* pos)
+void TinyMap::MoveCollison(std::shared_ptr<ICollision> collision, Coord* pos)
 {
 	if (collision == nullptr) {
 		return;
@@ -42,17 +41,15 @@ void TinyMap::Initialize()
 						continue;
 					}
 
-					Tileset* tileset = tileMap->tilesetsController.GetTilesetByTileId(tileId);
+					const std::shared_ptr<Tileset> tileset = tileMap->tilesetsController.GetTilesetByTileId(tileId).lock();
+					if (tileset == nullptr) {
+						continue;
+					}
 
 					Tile* tile = tileset->GetTileById(tileId);
 
-					ICollision* collision = (
-						tile == nullptr
-						? nullptr
-						: tile->GetCollision() != nullptr
-						? tile->GetCollision()->Clone()
-						: nullptr
-						);
+					const std::shared_ptr<ICollision> collision = tile ? tile->GetCollision().lock() : nullptr;
+					const std::shared_ptr<Animation> tileAnimation = tile ? tile->GetAnimation().lock() : nullptr;
 
 					Rect* rect = nullptr;
 					VertexAnimation* animation = nullptr;
@@ -60,8 +57,8 @@ void TinyMap::Initialize()
 					{
 						int ciclesCount = tile == nullptr
 							? 0
-							: tile->GetAnimation() != nullptr
-							? tile->GetAnimation()->FrameCount()
+							: tileAnimation != nullptr
+							? tileAnimation->FrameCount()
 							: 0;
 
 						Coord vertex1, vertex2;
@@ -110,25 +107,25 @@ void TinyMap::Initialize()
 									rect
 								);
 
-								tileId = tile->GetAnimation()->operator[](k)->tileId;
-								animation->AddFrame(tile->GetAnimation()->operator[](k)->duration, {
+								tileId = tileAnimation->operator[](k)->tileId;
+								animation->AddFrame(tileAnimation->operator[](k)->duration, {
 									textureVertex1,
 									textureVertex2
 									});
 
 								tileId = k + 1 < ciclesCount
-									? tile->GetAnimation()->operator[](k + 1)->tileId
+									? tileAnimation->operator[](k + 1)->tileId
 									: tileId;
 							}
 
 							if (rect != nullptr) {
-								animation->AddFrame(tile->GetAnimation()->operator[](k)->duration, {
+								animation->AddFrame(tileAnimation->operator[](k)->duration, {
 									textureVertex1,
 									textureVertex2
 									});
 
 								tileId = k + 1 < ciclesCount
-									? tile->GetAnimation()->operator[](k + 1)->tileId
+									? tileAnimation->operator[](k + 1)->tileId
 									: tileId;
 								continue;
 							}
@@ -152,17 +149,17 @@ void TinyMap::Initialize()
 					Coord rectPos = rect->GetPos();
 					MoveCollison(collision, &rectPos);
 
-					if (BoxCollision* boxCollision = dynamic_cast<BoxCollision*>(collision)) {
+					if (std::shared_ptr<BoxCollision> boxCollision = std::dynamic_pointer_cast<BoxCollision>(collision)) {
 						boxCollision->SetSize(boxCollision->GetSize() * Size(.7f, .7f));
+						rect->SetCollision(std::make_unique<BoxCollision>(*boxCollision));
 					}
 
-					rect->SetCollision(collision);
-					rect->GetMaterial()->SetDiffuseMap(new Image(tileset->GetImage()));
+					rect->GetMaterial().lock()->SetDiffuseMap(new Image(tileset->GetImage()));
 
 					if (collision) {
 						rect->HookOnCollisionEnter([](IGameObject* object, IGameObject* sender, GLFWwindow* window) {
 
-							});
+						});
 					}
 
 					gameObjects.push_back(
@@ -180,7 +177,12 @@ void TinyMap::Initialize()
 		std::cout << "Class: " << classes.GetName() << std::endl;
 		std::cout << "Size: " << classes.GetSize() << std::endl;
 
-		for (ICollision* collision : classes) {
+		for (std::weak_ptr<ICollision> item : classes) {
+			const std::shared_ptr<ICollision> collision = item.lock();
+			if (collision == nullptr) {
+				continue;
+			}
+
 			std::cout << "Collision: " << collision->GetRootTitle() << std::endl;
 
 			MoveCollison(collision);
@@ -195,8 +197,11 @@ void TinyMap::Initialize()
 				Color(1, 1, 1)
 			);
 
-			circle->SetCollision(collision);
+			if (std::shared_ptr<BoxCollision> boxCollision = std::dynamic_pointer_cast<BoxCollision>(collision)) {
+				circle->SetCollision(boxCollision);
+			}
 
+			//circle->SetCollision(collision);
 			circle->HookOnCollisionEnter([](IGameObject* object, IGameObject* sender, GLFWwindow* window) {
 				std::cout << object->GetTitle() << " collided with " << sender->GetTitle() << std::endl;
 			});
@@ -206,10 +211,10 @@ void TinyMap::Initialize()
 	}
 }
 
-TinyMap::TinyMap(Window* window, TileMap* tileMap, Coord pos)
+TinyMap::TinyMap(Window* window, std::unique_ptr<TileMap> tileMap, Coord pos)
 {
 	this->window = window;
-	this->tileMap = tileMap;
+	this->tileMap = std::move(tileMap);
 	this->pos = pos;
 
 	Initialize();
@@ -220,7 +225,7 @@ std::vector<IGameObject*> TinyMap::GetClassesByType(const char* type)
 	std::vector<IGameObject*> result = std::vector<IGameObject*>();
 
 	for (IGameObject*& object : gameClasses) {
-		if (!strcmp(object->GetCollision()->GetType(), type)) {
+		if (!strcmp(object->GetCollision().lock()->GetType(), type)) {
 			result.push_back(object);
 		}
 	}
@@ -233,7 +238,7 @@ std::vector<IGameObject*> TinyMap::GetClassesByName(const char* name)
 	std::vector<IGameObject*> classes;
 
 	for (IGameObject* object : gameClasses) {
-		if (!strcmp(object->GetCollision()->GetRootTitle(), name)) {
+		if (!strcmp(object->GetCollision().lock()->GetRootTitle(), name)) {
 			classes.push_back(object);
 		}
 	}
@@ -244,7 +249,7 @@ std::vector<IGameObject*> TinyMap::GetClassesByName(const char* name)
 IGameObject* TinyMap::GetClassByName(const char* name)
 {
 	for (IGameObject* object : gameClasses) {
-		if (!strcmp(object->GetCollision()->GetRootTitle(), name)) {
+		if (!strcmp(object->GetCollision().lock()->GetRootTitle(), name)) {
 			return object;
 		}
 	}
@@ -259,5 +264,5 @@ Window* TinyMap::GetWindow()
 
 TileMap* TinyMap::GetTileMap()
 {
-	return tileMap;
+	return tileMap.get();
 }

@@ -8,38 +8,34 @@ std::vector<std::shared_ptr <class Pawn>> GameObjects::pawns;
 
 void GameObjects::Add(IGameObject* gameObject)
 {
-	gameObjects.push_back(std::shared_ptr<IGameObject>(gameObject));
+	std::shared_ptr <IGameObject> obj = std::shared_ptr <IGameObject>(gameObject);
+	gameObjects.push_back(obj);
 
-	if (class Pawn* pawn = dynamic_cast<class Pawn*>(gameObject)) {
-		pawns.push_back(std::shared_ptr<class Pawn>(pawn));
+	if (std::shared_ptr <class Pawn> pawn = std::dynamic_pointer_cast<class Pawn>(obj)) {
+		pawns.push_back(pawn);
 	}
 }
 
 void GameObjects::Add(class Pawn* pawn)
 {
-	pawns.push_back(std::shared_ptr<class Pawn>(pawn));
+	std::shared_ptr <class Pawn> p = std::shared_ptr <class Pawn>(pawn);
+	pawns.push_back(p);
+	gameObjects.push_back(p);
+}
 
-	if (IGameObject* gameObject = dynamic_cast<IGameObject*>(pawn)) {
-		gameObjects.push_back(std::shared_ptr<IGameObject>(gameObject));
+void GameObjects::Add(std::shared_ptr<IGameObject> gameObject)
+{
+	gameObjects.push_back(gameObject);
+
+	if (std::shared_ptr<class Pawn> pawn = std::dynamic_pointer_cast<class Pawn>(gameObject)) {
+		pawns.push_back(pawn);
 	}
 }
 
-void GameObjects::Add(std::unique_ptr<IGameObject>& gameObject)
+void GameObjects::Add(std::shared_ptr<class Pawn> gameObject)
 {
-	gameObjects.push_back(std::shared_ptr<IGameObject>(gameObject.get()));
-
-	if (class Pawn* pawn = dynamic_cast<class Pawn*>(gameObject.get())) {
-		pawns.push_back(std::shared_ptr<class Pawn>(pawn));
-	}
-}
-
-void GameObjects::Add(std::unique_ptr<class Pawn>& gameObject)
-{
-	pawns.push_back(std::shared_ptr<class Pawn>(gameObject.get()));
-
-	if (IGameObject* pawn = dynamic_cast<IGameObject*>(gameObject.get())) {
-		gameObjects.push_back(std::shared_ptr<IGameObject>(pawn));
-	}
+	pawns.push_back(gameObject);
+	gameObjects.push_back(gameObject);
 }
 
 void GameObjects::Add(std::vector<IGameObject*>* gameObjects)
@@ -67,9 +63,9 @@ std::weak_ptr<IGameObject> GameObjects::GetByTitle(const char* title, Layer laye
 {
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
-		if (!strcmp(gameObjects[i]->GetTitle(), title) && 
+		if (!strcmp(gameObjects[i]->GetTitle(), title) &&
 			gameObjects[i]->GetLayer() == layer
-		)
+			)
 		{
 			return gameObjects[i];
 		}
@@ -113,4 +109,11 @@ std::vector<std::shared_ptr<class Pawn>>* GameObjects::GetAllPawns(Layer layer)
 		}
 	}
 	return result;
+}
+
+void GameObjects::Clear()
+{
+	pawns[0].reset();
+	gameObjects.clear();
+	pawns.clear();
 }

@@ -13,13 +13,13 @@
 #include "../../Utilities/RaycastUtilities.h"
 
 Skeleton::Skeleton(
-	const char* title, Window& window, ICollision* collision, 
-	Material* material, Directions moveDirection, Coord pos, Size size, 
+	const char* title, Window& window, std::shared_ptr<ICollision> collision, 
+	std::shared_ptr<Material> material, Directions moveDirection, Coord pos, Size size,
 	float speed, float maxSpeed, float minSpeed, float health, float maxHealth, 
 	bool isPlayable, bool isKinematic, bool isHidden, std::vector<IAnimation*> animations
 ) : Pawn(
-	title, window, collision,
-	material, moveDirection, pos, size,
+	title, window, std::move(collision),
+	std::move(material), moveDirection, pos, size,
 	speed, maxSpeed, minSpeed,
 	health, maxHealth, false, isKinematic,
 	isHidden, animations)
@@ -62,18 +62,12 @@ bool Skeleton::IsNear(Coord pos)
 			std::abs(pos.Y - this->pos.Y) <= damageDistance);
 }
 
-void Skeleton::SetTarget(std::shared_ptr<Pawn> target)
-{
-	this->target = target;
-	std::cout << this->target.lock().get()->GetTitle() << std::endl;
-}
-
-void Skeleton::SetTarget(std::weak_ptr<Pawn>& target)
+void Skeleton::SetTarget(std::weak_ptr<Pawn> target)
 {
 	this->target = target;
 }
 
-std::weak_ptr<class Pawn> Skeleton::GetTarget()
+class std::weak_ptr<class Pawn> Skeleton::GetTarget()
 {
 	return target;
 }
@@ -406,13 +400,18 @@ bool Skeleton::CheckForCollision(Coord position)
 	}
 
 	for (IGameObject* collisionObj : solidCollisionsObjects->GetValue()) {
-		std::vector<Coord> points = collisionObj->GetCollision()->GetPoints();
-
-		if (collisionObj == nullptr || collisionObj->GetCollision() == nullptr) {
+		const std::shared_ptr<ICollision> collision = collisionObj->GetCollision().lock();
+		if (collision == nullptr) {
 			continue;
 		}
 
-		if (collisionObj->GetCollision()->IsCollisionEnter(position, Size(24, 24))) {
+		std::vector<Coord> points = collision->GetPoints();
+
+		if (collisionObj == nullptr || collision == nullptr) {
+			continue;
+		}
+
+		if (collision->IsCollisionEnter(position, Size(24, 24))) {
 			return false;
 		}
 	}
@@ -454,15 +453,12 @@ void Skeleton::AIMovement()
 				ray.release();
 				return;
 			}
-			ray.release();
-
-			std::unique_ptr<Ray> rayToTarget = std::move(RayFactory::CreateRay(
-				new Coord(startPos),
-				new Coord(player.lock()->GetStartPos())
-			));
 
 			std::weak_ptr<IGameObject> target = Raycast::RaycastFirst(
-				rayToTarget
+			   std::move(RayFactory::CreateRay(
+					new Coord(startPos),
+					new Coord(player.lock()->GetStartPos())
+				))
 			);
 
 			if (target.lock() != player.lock()) {
@@ -470,7 +466,7 @@ void Skeleton::AIMovement()
 			}
 
 			std::cout << "Found player\n";
-			this->SetTarget(std::dynamic_pointer_cast<Pawn>(player.lock()));
+			this->SetTarget(player);
 		});
 
 		findTarget->Detach();
@@ -501,22 +497,16 @@ void Skeleton::AIMovement()
 	if (!findingPath && target.lock()) {
 		std::thread([this]() { 
 			std::lock_guard<std::mutex> lock(pathMutex);
-
-			std::shared_ptr<Pawn> target_ptr = target.lock();
-			if (target_ptr == nullptr) {
-				return;
-			}
-
 			Coord targetPos;
 
-			if (Player* player = dynamic_cast<Player*>(target_ptr.get())) {
+			if (Player* player = dynamic_cast<Player*>(target.lock().get())) {
 				targetPos = player->GetStartPos();
 			}
 			else {
-				targetPos = target_ptr->GetPos();
+				targetPos = target.lock()->GetPos();
 			}
 
-			std::unique_ptr<Ray> ray = RayFactory::CreateRay(&startPos, &targetPos);
+			std::unique_ptr<Ray> ray = std::move(RayFactory::CreateRay(&startPos, &targetPos));
 
 			if (ray == nullptr || ray->raySize > viewDistance) {
 				ray.release();

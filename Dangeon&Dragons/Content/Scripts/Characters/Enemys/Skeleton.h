@@ -8,7 +8,7 @@
 #include "../../AI/Movement.h"
 
 class Skeleton
-	: public Pawn, public std::enable_shared_from_this<Skeleton>
+	: public Pawn
 {
     std::weak_ptr<Pawn> target;
     float viewDistance;
@@ -55,7 +55,7 @@ class Skeleton
 public:
     Skeleton(
         const char* title, Window& window,
-        ICollision* collision, Material* material, Directions moveDirection,
+        std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
         Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
         std::vector<IAnimation*> animations = {}
@@ -69,9 +69,8 @@ public:
     bool IsNear(IGameObject& gameObject) override;
     bool IsNear(Coord pos) override;
 
-    void SetTarget(std::shared_ptr<Pawn> target);
-    void SetTarget(std::weak_ptr<Pawn>& target);
-    std::weak_ptr<Pawn> GetTarget();
+    void SetTarget(std::weak_ptr<Pawn> target);
+    std::weak_ptr<class Pawn> GetTarget();
 
     void ViewPawn(Pawn* pawn);
 

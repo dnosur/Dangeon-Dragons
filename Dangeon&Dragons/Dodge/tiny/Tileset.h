@@ -34,7 +34,6 @@ public:
 		int tileCount, int columns, const char* name, const char* source,
 		Image image, std::vector<Tile> tile, TilesetPropertiesController tilesetProperties
 	);
-	~Tileset();
 
 	int GetFirstgId();
 	int GetLastgId();

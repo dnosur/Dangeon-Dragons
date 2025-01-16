@@ -32,14 +32,14 @@ std::unique_ptr<Ray> RayFactory::CreateRay(
 		dir.X += raySize;
 	}
 
-	return std::move (std::unique_ptr<Ray>(new Ray(
+	return std::move(std::unique_ptr<Ray>(new Ray(
 		origin, new Coord(*origin + dir),
 		rayWidth
 	)));
 }
 
 std::unique_ptr<Ray> RayFactory::CreatePawnDirectionRay(
-	class Pawn* pawn, 
+	class Pawn* pawn,
 	float raySize, float rayWidth)
 {
 	return std::move(CreateRay(

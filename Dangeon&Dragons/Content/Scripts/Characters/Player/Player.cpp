@@ -307,37 +307,34 @@ void Player::Raycasting()
 	));
 
 	std::weak_ptr<IGameObject> interactiveCollision = Raycast::RaycastFirst(
-		interactiveRay
+		std::move(interactiveRay)
 	);
 
 	std::weak_ptr<IGameObject> damageCollision = Raycast::RaycastFirst(
-		damageRay
+		std::move(damageRay)
 	);
 
-	std::shared_ptr<IGameObject> lockedInteractiveCollision = interactiveCollision.lock();
-	std::shared_ptr<IGameObject> lockedDamageObject = damageCollision.lock();
 
-
-	if (lockedInteractiveCollision != nullptr &&
-		lockedInteractiveCollision->GetLayer() != Layer::MainPlayer &&
-		lockedInteractiveCollision->GetLayer() != Layer::Enemy
+	if (interactiveCollision.lock() != nullptr && 
+		interactiveCollision.lock()->GetLayer() != Layer::MainPlayer &&
+		interactiveCollision.lock()->GetLayer() != Layer::Enemy
 	) {
-		SetRaycastedObject(lockedInteractiveCollision, interactiveObject, new Color(.5f, 1, .5f));
+		SetRaycastedObject(interactiveCollision, interactiveObject, std::make_unique<Color>(.5f, 1, .5f));
 	}
-	else if(interactiveObject != nullptr) {
-		interactiveObject->GetMaterial()->SetDiffuse(Color(1, 1, 1));
-		interactiveObject = nullptr;
+	else if(interactiveObject.lock() != nullptr) {
+		interactiveObject.lock()->GetMaterial().lock()->SetDiffuse(Color(1, 1, 1));
+		interactiveObject.reset();
 	}
 
-	if (lockedDamageObject != nullptr &&
-		lockedInteractiveCollision->GetLayer() != Layer::MainPlayer &&
-		lockedDamageObject->GetLayer() == Layer::Enemy
+	if (damageCollision.lock() != nullptr && 
+		interactiveCollision.lock()->GetLayer() != Layer::MainPlayer &&
+		damageCollision.lock()->GetLayer() == Layer::Enemy
 	) {
-		SetRaycastedObject(lockedDamageObject, damageObject, new Color(.9f, .9f, .1f));
+		SetRaycastedObject(damageCollision, damageObject, std::make_unique<Color>(.9f, .9f, .1f));
 	}
-	else if(damageObject != nullptr) {
-		damageObject->GetMaterial()->SetDiffuse(Color(1, 1, 1));
-		damageObject = nullptr;
+	else if(damageObject.lock() != nullptr) {
+		damageObject.lock()->GetMaterial().lock()->SetDiffuse(Color(1, 1, 1));
+		interactiveObject.reset();
 	}
 }
 
@@ -353,13 +350,18 @@ bool Player::CheckForCollision()
 	}
 
 	for (IGameObject* collisionObj : solidCollisionsObjects->GetValue()) {
-		std::vector<Coord> points = collisionObj->GetCollision()->GetPoints();
-
-		if (collisionObj == nullptr || collisionObj->GetCollision() == nullptr) {
+		const std::shared_ptr<ICollision>& collision = collisionObj->GetCollision().lock();
+		if (!collision) {
 			continue;
 		}
 
-		if (collisionObj->GetCollision()->IsCollisionEnter(this)) {
+		std::vector<Coord> points = collision->GetPoints();
+
+		if (collisionObj == nullptr || collision == nullptr) {
+			continue;
+		}
+
+		if (collision->IsCollisionEnter(this)) {
 			return false;
 		}
 	}
@@ -375,13 +377,18 @@ bool Player::CheckForCollision(Coord pos, Size size)
 	}
 
 	for (IGameObject* collisionObj : solidCollisionsObjects->GetValue()) {
-		std::vector<Coord> points = collisionObj->GetCollision()->GetPoints();
-
-		if (collisionObj == nullptr || collisionObj->GetCollision() == nullptr) {
+		const std::shared_ptr<ICollision>& collision = collisionObj->GetCollision().lock();
+		if (!collision) {
 			continue;
 		}
 
-		if (collisionObj->GetCollision()->IsCollisionEnter(pos, size)) {
+		std::vector<Coord> points = collision->GetPoints();
+
+		if (collisionObj == nullptr || collision == nullptr) {
+			continue;
+		}
+
+		if (collision->IsCollisionEnter(pos, size)) {
 			return false;
 		}
 	}
@@ -465,14 +472,14 @@ void Player::LoadAudio()
 }
 
 Player::Player(
-	const char* title, Window& window, ICollision* collision,
-	Material* material, Directions moveDirection, Coord pos, Size size, 
+	const char* title, Window& window, std::shared_ptr<ICollision> collision,
+	std::shared_ptr<Material> material, Directions moveDirection, Coord pos, Size size,
 	float speed, float maxSpeed, float minSpeed, 
 	float health, float maxHealth, bool isPlayable, bool isKinematic, 
 	bool isHidden, std::vector<IAnimation*> animations)
 	: Pawn(
-		title, window, collision, 
-		material, moveDirection, pos, size, 
+		title, window, std::move(collision),
+		std::move(material), moveDirection, pos, size,
 		speed, maxSpeed, minSpeed, 
 		health, maxHealth, isPlayable, isKinematic, 
 		isHidden, animations)

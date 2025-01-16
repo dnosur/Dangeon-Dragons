@@ -25,8 +25,8 @@ protected:
 	OnCollisionEnter OnCollisionEnterHandler;
 
 	std::vector<Coord> vertexes;
-	ICollision* collision;
-	Material* material;
+	std::shared_ptr<ICollision> collision;
+	std::shared_ptr<Material> material;
 
 	Directions moveDirection;
 
@@ -55,11 +55,11 @@ protected:
 
 	float damage;
 	float damageDistance;
-	std::shared_ptr<IGameObject> damageObject;
+	std::weak_ptr<IGameObject> damageObject;
 
 	float viewDistance;
 	float interactiveDistance;
-	std::shared_ptr<IGameObject> interactiveObject;
+	std::weak_ptr<IGameObject> interactiveObject;
 
 	bool isDead;
 	bool isPlayable;
@@ -85,11 +85,12 @@ protected:
 public:
 	Pawn(
 		const char* title, Window& window,
-		ICollision* collision, Material* material, Directions moveDirection, 
+		std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
 		Coord pos, Size size, float speed, float maxSpeed, float minSpeed, 
 		float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
 		std::vector<IAnimation*> animations = {}
 	);
+	virtual ~Pawn() = default;
 
 	void SetMoveDirection(Directions moveDirection);
 
@@ -114,9 +115,9 @@ public:
 	void SetIsPlayable(bool isPlayable);
 	void SetIsHidden(bool isHidden);
 
-	void SetCollision(ICollision* collision);
+	void SetCollision(std::shared_ptr<ICollision> collision);
 
-	void SetMaterial(Material* material);
+	void SetMaterial(std::shared_ptr<Material> material);
 
 	void SetColor(Color color);
 
@@ -151,10 +152,10 @@ public:
 
 	Color GetColor();
 
-	Material* GetMaterial();
+	std::weak_ptr<Material> GetMaterial();
 	Directions GetMoveDirection();
 
-	ICollision* GetCollision();
+	std::weak_ptr<ICollision> GetCollision();
 
 	Color GetBaseColor();
 

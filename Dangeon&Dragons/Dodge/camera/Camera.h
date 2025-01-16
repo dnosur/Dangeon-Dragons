@@ -34,7 +34,7 @@ public:
 
 	Coord GetPosition() const;
 
-	void SetObservedObj(IGameObject* obj);
-	std::shared_ptr<IGameObject> GetObservedObj();
+	void SetObservedObj(std::shared_ptr<IGameObject> obj);
+	std::weak_ptr<IGameObject> GetObservedObj();
 };
 

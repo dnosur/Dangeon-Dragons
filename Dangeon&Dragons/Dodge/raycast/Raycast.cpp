@@ -1,7 +1,7 @@
-#include "Raycast.h"
+п»ї#include "Raycast.h"
 #include "../GameObjects.h"
 
-std::weak_ptr<IGameObject> Raycast::RaycastFirst(std::unique_ptr<Ray>& ray, bool debug, Color debugColor)
+std::weak_ptr<IGameObject> Raycast::RaycastFirst(std::unique_ptr<Ray> ray, bool debug, Color debugColor)
 {
 	if (debug) {
 		drawRay(ray, debugColor);
@@ -9,7 +9,7 @@ std::weak_ptr<IGameObject> Raycast::RaycastFirst(std::unique_ptr<Ray>& ray, bool
 
 	for (std::weak_ptr<IGameObject> object : *GameObjects::GetAll()) {
 		if (!object.lock()) {
-			continue; 
+			continue;
 		}
 
 		if (IsObjectBetween(ray, object)) {
@@ -19,7 +19,7 @@ std::weak_ptr<IGameObject> Raycast::RaycastFirst(std::unique_ptr<Ray>& ray, bool
 	return std::shared_ptr<IGameObject>(nullptr);
 }
 
-std::vector<std::weak_ptr<IGameObject>> Raycast::RaycastAll(std::unique_ptr<Ray>& ray, bool debug, Color debugColor)
+std::vector<std::weak_ptr<IGameObject>> Raycast::RaycastAll(std::unique_ptr<Ray> ray, bool debug, Color debugColor)
 {
 	if (debug) {
 		drawRay(ray, debugColor);
@@ -40,7 +40,7 @@ std::vector<std::weak_ptr<IGameObject>> Raycast::RaycastAll(std::unique_ptr<Ray>
 }
 
 bool Raycast::CheckRayAABBIntersection(
-	const Coord& rayOrigin, const Coord& rayDir, float rayWidth, 
+	const Coord& rayOrigin, const Coord& rayDir, float rayWidth,
 	double objLeft, double objRight, double objBottom, double objTop)
 {
 	double t1 = (objLeft - rayOrigin.X) / rayDir.X;
@@ -51,12 +51,12 @@ bool Raycast::CheckRayAABBIntersection(
 	double tMin = std::max(std::min(t1, t2), std::min(t3, t4));
 	double tMax = std::min(std::max(t1, t2), std::max(t3, t4));
 
-	// Проверка на пересечение
+	// ГЏГ°Г®ГўГҐГ°ГЄГ  Г­Г  ГЇГҐГ°ГҐГ±ГҐГ·ГҐГ­ГЁГҐ
 	if (tMax < 0 || tMin > tMax) {
-		return false; // Луч не пересекает объект
+		return false; // Г‹ГіГ· Г­ГҐ ГЇГҐГ°ГҐГ±ГҐГЄГ ГҐГІ Г®ГЎГєГҐГЄГІ
 	}
 
-	// Учитываем ширину луча (опционально)
+	// Г“Г·ГЁГІГ»ГўГ ГҐГ¬ ГёГЁГ°ГЁГ­Гі Г«ГіГ·Г  (Г®ГЇГ¶ГЁГ®Г­Г Г«ГјГ­Г®)
 	if (rayWidth > 0) {
 		double halfWidth = rayWidth / 2.0;
 
@@ -82,31 +82,31 @@ bool Raycast::CheckRayAABBIntersection(
 }
 
 bool Raycast::CheckRayPolygonIntersection(
-	const Coord& rayOrigin, const Coord& rayDir, 
+	const Coord& rayOrigin, const Coord& rayDir,
 	const std::vector<Coord>& polygon)
 {
 	size_t n = polygon.size();
 	if (n < 3) {
-		return false; // Многоугольник должен иметь хотя бы 3 вершины
+		return false; // ГЊГ­Г®ГЈГ®ГіГЈГ®Г«ГјГ­ГЁГЄ Г¤Г®Г«Г¦ГҐГ­ ГЁГ¬ГҐГІГј ГµГ®ГІГї ГЎГ» 3 ГўГҐГ°ГёГЁГ­Г»
 	}
 
 	for (size_t i = 0; i < n; ++i) {
 		Coord v1 = polygon[i];
 		Coord v2 = polygon[(i + 1) % n];
 
-		// Вычисляем пересечение луча с каждым ребром многоугольника
+		// Г‚Г»Г·ГЁГ±Г«ГїГҐГ¬ ГЇГҐГ°ГҐГ±ГҐГ·ГҐГ­ГЁГҐ Г«ГіГ·Г  Г± ГЄГ Г¦Г¤Г»Г¬ Г°ГҐГЎГ°Г®Г¬ Г¬Г­Г®ГЈГ®ГіГЈГ®Г«ГјГ­ГЁГЄГ 
 		double det = (v2.X - v1.X) * rayDir.Y - (v2.Y - v1.Y) * rayDir.X;
 		if (std::abs(det) < 1e-9) {
-			continue; // Луч параллелен ребру
+			continue; // Г‹ГіГ· ГЇГ Г°Г Г«Г«ГҐГ«ГҐГ­ Г°ГҐГЎГ°Гі
 		}
 
 		double t = ((rayOrigin.X - v1.X) * (v2.Y - v1.Y) - (rayOrigin.Y - v1.Y) * (v2.X - v1.X)) / det;
 		double u = ((rayOrigin.X - v1.X) * rayDir.Y - (rayOrigin.Y - v1.Y) * rayDir.X) / det;
 
 		if (t >= 0 && u >= 0 && u <= 1) {
-			return true; // Пересечение найдено
+			return true; // ГЏГҐГ°ГҐГ±ГҐГ·ГҐГ­ГЁГҐ Г­Г Г©Г¤ГҐГ­Г®
 		}
 	}
 
-	return false; // Пересечений нет
+	return false; // ГЏГҐГ°ГҐГ±ГҐГ·ГҐГ­ГЁГ© Г­ГҐГІ
 }

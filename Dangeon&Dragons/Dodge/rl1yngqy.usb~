@@ -15,8 +15,8 @@ public:
 	static void Add(IGameObject* gameObject);
 	static void Add(class Pawn* pawn);
 
-	static void Add(std::shared_ptr<IGameObject> gameObject);
-	static void Add(std::shared_ptr<class Pawn> pawn);
+	static void Add(std::unique_ptr<IGameObject>& gameObject);
+	static void Add(std::unique_ptr<class Pawn>& pawn);
 
 	static void Add(std::vector<IGameObject*>* gameObjects);
 

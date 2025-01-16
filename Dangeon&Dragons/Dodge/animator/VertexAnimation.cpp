@@ -75,7 +75,7 @@ void VertexAnimation::Play(Coord coord, Size size)
 		if (currentAnimationIndex >= 0 && currentAnimationIndex < frames.size())
 		{
 			// Используем ссылку на вектор, чтобы избежать создания копии
-			object->GetMaterial()->SetDiffuseMapVerticies(frames[currentAnimationIndex].second);
+			object->GetMaterial().lock()->SetDiffuseMapVerticies(frames[currentAnimationIndex].second);
 			delay = frames[currentAnimationIndex].first;
 		}
 	}
@@ -135,7 +135,7 @@ char* VertexAnimation::GetFolder()
 		return nullptr;
 	}
 
-	return object->GetMaterial()->GetDiffuseMap()->path;
+	return object->GetMaterial().lock()->GetDiffuseMap()->path;
 }
 
 void VertexAnimation::LoadFromFolder(char* folder)

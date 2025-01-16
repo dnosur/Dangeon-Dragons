@@ -59,33 +59,22 @@ void MainWindow::Update()
 {
     gameStatus = GameStatuses::Start;
 
-    std::unique_ptr<WonderWold> wonderWold = std::unique_ptr<WonderWold>(new WonderWold(
-        this,
+    std::unique_ptr<WonderWold> wonderWold = std::make_unique<WonderWold>(
+        this, 
         TinyXml::LoadMap(
-            "Content/Maps/world/world.tmx",
+            "Content/Maps/world/world.tmx", 
             "wonder_world"
         ),
         Coord(100, -400)
-    ));
+    );
 
-    std::vector<IGameObject*> solidCollisions = wonderWold.get()->GetClassesByType("SolidCollision");
+    std::vector<IGameObject*> solidCollisions = wonderWold->GetClassesByType("SolidCollision");
 
     if (!solidCollisions.empty()) {
         WindowPointerController::SetPointer(window, WindowPointer<std::vector<IGameObject*> >("SolidCollisions", &solidCollisions));
     }
 
     GameObjects::Add(&solidCollisions);
-
-  //  int *temp = new int(1);
-  //  std::weak_ptr<int> target;
-
-  //  {
-  //      std::unique_ptr<int> sample_ptr = std::unique_ptr<int>(temp);
-		//target = std::weak_ptr<int>(std::shared_ptr<int>(sample_ptr.get()));
-  //      std::cout << target.lock() << std::endl;
-  //  }
-
-  //  std::cout << target.lock() << std::endl;
 
     while (!glfwWindowShouldClose(GetWindow()) && !IsClosed())
     {
@@ -109,7 +98,7 @@ void MainWindow::Update()
         if (gameStatus == GameStatuses::End) {
         }
 
-        wonderWold.get()->Update();
+        wonderWold->Update();
 
         mouse.Update();
         keyboard.Update();
@@ -120,6 +109,5 @@ void MainWindow::Update()
         glfwPollEvents();
     }
 
-    wonderWold.release();
     CloseWindow();
 }

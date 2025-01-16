@@ -7,10 +7,10 @@
 
 void Camera::UpdateCamera()
 {
-    if (!observed.get()) return;
+    if (!observed) return;
 
     // Получаем позицию объекта (игрока) в пикселях
-    Coord playerPosition = observed.get()->GetPos();
+    Coord playerPosition = observed->GetPos();
 
     // Центрируем камеру относительно игрока
     position = playerPosition - Coord(size.width / 2.0, size.height / 2.0);
@@ -36,14 +36,14 @@ float Camera::GetPixelToGLFactorY()
 
 Coord Camera::GetOffset()
 {
-    if (!observed.get()) return Coord(0.0f, 0.0f);
+    if (!observed) return Coord(0.0f, 0.0f);
 
-    return position - observed.get()->GetPos();
+    return position - observed->GetPos();
 }
 
 void Camera::DropOffset()
 {
-    position = observed.get()->GetPos();
+    position = observed->GetPos();
 }
 
 Camera::Camera(const char* title, Size cameraSize, Size mapSize, Window* window)
@@ -75,13 +75,13 @@ Coord Camera::GetPosition() const
     return Coord(position.X, position.Y);
 }
 
-void Camera::SetObservedObj(IGameObject* obj)
+void Camera::SetObservedObj(std::shared_ptr<IGameObject> obj)
 {
-    this->observed = std::shared_ptr<IGameObject>(obj);
-    position = this->observed.get()->GetPos();
+    this->observed = obj;
+    position = this->observed->GetPos();
 }
 
-std::shared_ptr<IGameObject> Camera::GetObservedObj()
+std::weak_ptr<IGameObject> Camera::GetObservedObj()
 {
     return observed;
 }

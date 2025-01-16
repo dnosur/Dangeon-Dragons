@@ -5,10 +5,6 @@ BaseFigureMaterial::BaseFigureMaterial(Color ambient, Color diffuse, Color specu
 {
 }
 
-BaseFigureMaterial::~BaseFigureMaterial()
-{
-}
-
 void BaseFigureMaterial::Use(IGameObject* gameObject)
 {
 	if (shader == nullptr) {
