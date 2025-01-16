@@ -71,6 +71,10 @@ Tileset::Tileset(
 	this->tilesetProperties = tilesetProperties;
 }
 
+Tileset::~Tileset()
+{
+}
+
 int Tileset::GetFirstgId()
 {
 	return firstgId;

@@ -47,15 +47,15 @@ tinyxml2::XMLError TinyXml::ReadDoc(tinyxml2::XMLDocument& doc, const char* path
     return tinyxml2::XML_SUCCESS;
 }
 
-std::unique_ptr<TileMap> TinyXml::LoadMap(const char* path, const char* title)
+TileMap* TinyXml::LoadMap(const char* path, const char* title)
 {
 	tinyxml2::XMLDocument doc;
     if (TinyXml::ReadDoc(doc, path) != tinyxml2::XML_SUCCESS) {
-        return std::make_unique<TileMap>();
+        return new TileMap();
     }
 
     //Map
-    std::unique_ptr<TileMap> map = std::make_unique<TileMap>();
+    TileMap* map = new TileMap();
 
     tinyxml2::XMLElement* mapElement = doc.FirstChildElement("map");
     map->size.width = mapElement->IntAttribute("width");
@@ -107,6 +107,6 @@ std::unique_ptr<TileMap> TinyXml::LoadMap(const char* path, const char* title)
     map->classesController = objects;
     map->spriteLayersController = layersController;
 
-    return std::move(map);
+    return map;
 }
 

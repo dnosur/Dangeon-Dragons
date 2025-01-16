@@ -27,7 +27,7 @@ static class TinyXml
 	static const char* root_dir;
 public:
 	static tinyxml2::XMLError ReadDoc(tinyxml2::XMLDocument& doc, const char* path);
-	static std::unique_ptr<TileMap> LoadMap(const char* path, const char* title = "sampleMap");
+	static TileMap* LoadMap(const char* path, const char* title = "sampleMap");
 
 	static std::vector<Coord> ParsePolygon(std::string polygon, const Coord& offset);
 	static std::string GetPathToTileSource(std::string path);

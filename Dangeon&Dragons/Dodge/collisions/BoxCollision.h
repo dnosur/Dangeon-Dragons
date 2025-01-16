@@ -17,7 +17,6 @@ class BoxCollision :
 
 	std::vector<IGameObject*> gameObjects;
 public:
-	BoxCollision();
 	BoxCollision(Coord point,Size size, int root_id, char* root_title = nullptr, char* type = nullptr);
 	~BoxCollision();
 

@@ -1,10 +1,6 @@
 #include "BoxCollision.h"
 #include "../functions.h"
 
-BoxCollision::BoxCollision()
-{
-}
-
 BoxCollision::BoxCollision(Coord point, Size size, int root_id, char* root_title, char* type)
 {
 	this->point = point;
@@ -86,9 +82,12 @@ void BoxCollision::SetKinematic(bool kinematic)
 
 bool BoxCollision::IsCollisionEnter(IGameObject* gameObject)
 {
-    const std::shared_ptr<ICollision> collision = gameObject->GetCollision().lock();
+    if (!gameObject || !gameObject->GetCollision()) {
+        return false;
+    }
 
-    if (!gameObject || !collision) {
+    ICollision* otherCollision = gameObject->GetCollision();
+    if (otherCollision == this) {
         return false;
     }
 
@@ -99,7 +98,7 @@ bool BoxCollision::IsCollisionEnter(IGameObject* gameObject)
     float yMax1 = point.Y + size.height;
 
     // Проверяем, является ли другая коллизия "BoxCollision"
-    std::shared_ptr<BoxCollision> otherBoxCollision = std::dynamic_pointer_cast<BoxCollision>(collision);
+    auto* otherBoxCollision = dynamic_cast<BoxCollision*>(otherCollision);
     if (otherBoxCollision) {
         // Координаты другой коллизии
         float xMin2 = otherBoxCollision->point.X;
@@ -127,7 +126,7 @@ bool BoxCollision::IsCollisionEnter(IGameObject* gameObject)
     }
 
 
-    std::vector<Coord> otherPoints = collision->GetPoints();
+    std::vector<Coord> otherPoints = otherCollision->GetPoints();
     if (otherPoints.empty()) {
         return false;
     }

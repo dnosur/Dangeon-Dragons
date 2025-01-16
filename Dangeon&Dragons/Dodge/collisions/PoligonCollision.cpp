@@ -103,13 +103,11 @@ bool PoligonCollision::IsCollisionEnter(IGameObject* gameObject)
 		return false;
 	}
 
-	const std::shared_ptr<ICollision> gameObjectPtr = gameObject->GetCollision().lock();
-
-	if (gameObjectPtr == nullptr) {
+	if (gameObject->GetCollision() == nullptr) {
 		return false;
 	}
 
-	if (gameObjectPtr.get() == this) {
+	if (gameObject->GetCollision() == this) {
 		return true;
 	}
 
@@ -118,7 +116,12 @@ bool PoligonCollision::IsCollisionEnter(IGameObject* gameObject)
 		return false;
 	}
 
-	std::vector<Coord> otherPoints = gameObjectPtr->GetPoints();
+	ICollision* otherCollision = gameObject->GetCollision();
+	if (otherCollision == nullptr) {
+		return false;
+	}
+
+	std::vector<Coord> otherPoints = otherCollision->GetPoints();
 	if (otherPoints.empty()) {
 		return false;
 	}

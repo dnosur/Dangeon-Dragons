@@ -8,7 +8,7 @@ class TinyMap
 {
 protected:
 	Window* window;
-	std::unique_ptr<TileMap> tileMap;
+	TileMap* tileMap;
 
 	Coord pos;
 
@@ -17,13 +17,13 @@ protected:
 	std::vector<IGameObject*> gameObjects;
 	std::vector<IGameObject*> gameClasses;
 
-	void MoveCollison(std::shared_ptr<ICollision> collision, Coord* pos = nullptr);
+	void MoveCollison(ICollision* collision, Coord* pos = nullptr);
 
 	virtual void OnTriggerEnter(IGameObject* object, IGameObject* triggeredObject) = 0;
 
 	void Initialize();
 public:
-	TinyMap(Window* window, std::unique_ptr<TileMap>, Coord pos = Coord());
+	TinyMap(Window* window, TileMap* tileMap, Coord pos = Coord());
 	virtual ~TinyMap() = default;
 
 	virtual void Update() = 0;

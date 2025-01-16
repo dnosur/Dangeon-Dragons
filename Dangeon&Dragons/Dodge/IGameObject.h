@@ -47,11 +47,11 @@ __interface IGameObject
 
 	Size GetSize();
 
-	void SetMaterial(std::shared_ptr<Material> material);
+	void SetMaterial(Material* material);
 
-	std::weak_ptr<Material> GetMaterial();
-	void SetCollision(std::shared_ptr<ICollision> collision);
-	std::weak_ptr<ICollision> GetCollision();
+	Material* GetMaterial();
+	void SetCollision(ICollision* collision);
+	ICollision* GetCollision();
 
 	const char* GetTitle();
 	void SetTitle(const char* title);

@@ -32,22 +32,14 @@ std::unique_ptr<Ray> RayFactory::CreateRay(
 		dir.X += raySize;
 	}
 
-<<<<<<< Updated upstream
 	return std::move (std::unique_ptr<Ray>(new Ray(
-=======
-	return std::move(std::unique_ptr<Ray>(new Ray(
->>>>>>> Stashed changes
 		origin, new Coord(*origin + dir),
 		rayWidth
 	)));
 }
 
 std::unique_ptr<Ray> RayFactory::CreatePawnDirectionRay(
-<<<<<<< Updated upstream
 	class Pawn* pawn, 
-=======
-	class Pawn* pawn,
->>>>>>> Stashed changes
 	float raySize, float rayWidth)
 {
 	return std::move(CreateRay(
@@ -58,8 +50,4 @@ std::unique_ptr<Ray> RayFactory::CreatePawnDirectionRay(
 		),
 		raySize, rayWidth
 	));
-<<<<<<< Updated upstream
 }
-=======
-}
->>>>>>> Stashed changes

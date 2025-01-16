@@ -56,9 +56,10 @@ public:
 		std::vector<Coord> specularMapVerticies = std::vector<Coord>(),
 		std::vector<Coord> emissiveMapVerticies = std::vector<Coord>()
 	);
+	~Material();
 
 	void SetShader(Shader* shader);
-	void SetCamera(std::shared_ptr<Camera> camera);
+	void SetCamera(Camera* camera);
 	void SetDiffuseMap(Image* diffuseMap);
 	void SetNormalMap(Image* normalMap);
 	void SetSpecularMap(Image* specularMap);

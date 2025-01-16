@@ -1,4 +1,4 @@
-п»ї#pragma once
+#pragma once
 
 #include <vector>
 #include "../IGameObject.h"
@@ -9,13 +9,8 @@
 static class Raycast
 {
 public:
-<<<<<<< Updated upstream
 	static std::weak_ptr<IGameObject> RaycastFirst(std::unique_ptr<Ray>& ray, bool debug = false, Color debugColor = Color(1, 0, 0));
 	static std::vector<std::weak_ptr<IGameObject>> RaycastAll(std::unique_ptr<Ray>&, bool debug = false, Color debugColor = Color(1, 0, 0));
-=======
-	static std::weak_ptr<IGameObject> RaycastFirst(std::unique_ptr<Ray> ray, bool debug = false, Color debugColor = Color(1, 0, 0));
-	static std::vector<std::weak_ptr<IGameObject>> RaycastAll(std::unique_ptr<Ray>, bool debug = false, Color debugColor = Color(1, 0, 0));
->>>>>>> Stashed changes
 
 	template<typename T = IGameObject*>
 	static T* RaycastFirstDynamic(Ray* ray, bool debug = false, Color debugColor = Color(1, 0, 0));
@@ -24,15 +19,15 @@ public:
 	static std::vector<T*> RaycastAllDynamic(Ray* ray, bool debug = false, Color debugColor = Color(1, 0, 0));
 
 	//Helpers
-	// ГЏГ°Г®ГўГҐГ°ГЄГ  ГЇГҐГ°ГҐГ±ГҐГ·ГҐГ­ГЁГї Г«ГіГ·Г  Г± AABB
+	// Проверка пересечения луча с AABB
 	static bool CheckRayAABBIntersection(
 		const Coord& rayOrigin, const Coord& rayDir, float rayWidth,
 		double objLeft, double objRight, double objBottom, double objTop
 	);
 
-	// ГЏГ°Г®ГўГҐГ°ГЄГ  ГЇГҐГ°ГҐГ±ГҐГ·ГҐГ­ГЁГї Г«ГіГ·Г  Г± Г¬Г­Г®ГЈГ®ГіГЈГ®Г«ГјГ­ГЁГЄГ®Г¬
+	// Проверка пересечения луча с многоугольником
 	static bool CheckRayPolygonIntersection(
-		const Coord& rayOrigin, const Coord& rayDir,
+		const Coord& rayOrigin, const Coord& rayDir, 
 		const std::vector<Coord>& polygon
 	);
 };

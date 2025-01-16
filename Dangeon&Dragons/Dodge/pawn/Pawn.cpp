@@ -54,7 +54,7 @@ bool Pawn::MouseInRect(Mouse& mouse)
 
 Pawn::Pawn(
 	const char* title, Window& window,
-	std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
+	ICollision* collision, Material* material, Directions moveDirection,
 	Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
 	float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
 	std::vector<IAnimation*> animations
@@ -168,12 +168,12 @@ void Pawn::SetIsHidden(bool isHidden)
 	this->isHidden = isHidden;
 }
 
-void Pawn::SetCollision(std::shared_ptr<ICollision> collision)
+void Pawn::SetCollision(ICollision* collision)
 {
 	this->collision = collision;
 }
 
-void Pawn::SetMaterial(std::shared_ptr<Material> material)
+void Pawn::SetMaterial(Material* material)
 {
 	this->material = material;
 }
@@ -298,7 +298,7 @@ Color Pawn::GetColor()
 	return material->GetDiffuse();
 }
 
-std::weak_ptr<Material> Pawn::GetMaterial()
+Material* Pawn::GetMaterial()
 {
 	return material;
 }
@@ -308,7 +308,7 @@ Directions Pawn::GetMoveDirection()
 	return moveDirection;
 }
 
-std::weak_ptr<ICollision> Pawn::GetCollision()
+ICollision* Pawn::GetCollision()
 {
 	return collision;
 }

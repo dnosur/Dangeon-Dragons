@@ -7,17 +7,17 @@
 class Tile
 {
 	int id;
-	std::shared_ptr<ICollision> collision;
-	std::shared_ptr<Animation> animation;
+	ICollision* collision;
+	Animation* animation;
 
 	TilesetPropertiesController tilesetProperties;
 public:
 	Tile();
-	Tile(int id, std::shared_ptr<ICollision> collision, std::shared_ptr<Animation> animation = nullptr);
+	Tile(int id, ICollision* collision, Animation* animation = nullptr);
 
 	int GetId();
-	std::weak_ptr<ICollision> GetCollision();
-	std::weak_ptr<Animation> GetAnimation();
+	ICollision* GetCollision();
+	Animation* GetAnimation();
 
 	TilesetPropertiesController* GetTilesetProperties();
 	void SetTilesetProperties(TilesetPropertiesController tilesetProperties);

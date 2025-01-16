@@ -1,4 +1,4 @@
-﻿#include "functions.h"
+#include "functions.h"
 
 #include "IGameObject.h"
 #include "raycast/Ray.h"
@@ -117,8 +117,8 @@ Size MathSize(Size size, Size windowSize)
 Coord MathCoord(Coord coord, Size windowSize)
 {
 	return Coord(
-		static_cast<int>((float)(coord.X * (float)(windowSize.width / 1280.0f))),
-		static_cast<int>((float)(coord.Y * (float)(windowSize.height / 720.0f)))
+			static_cast<int>((float)(coord.X * (float)(windowSize.width / 1280.0f))),
+			static_cast<int>((float)(coord.Y * (float)(windowSize.height / 720.0f)))
 	);
 }
 
@@ -209,43 +209,41 @@ bool IsPointBetween(std::unique_ptr<Ray>& ray, Coord point)
 
 bool IsObjectBetween(Ray* ray, IGameObject* object, bool useCollision) {
 
-	// Êîîðäèíàòû ëó÷à
+		// ���������� ����
 	Coord rayOrigin = *ray->origin;
 	Coord rayEnd = *ray->direction;
 	Coord rayDir = { rayEnd.X - rayOrigin.X, rayEnd.Y - rayOrigin.Y, rayEnd.Z - rayOrigin.Z };
 
-	// Íîðìàëèçóåì âåêòîð íàïðàâëåíèÿ ëó÷à
+	// ����������� ������ ����������� ����
 	double magnitude = std::sqrt(rayDir.X * rayDir.X + rayDir.Y * rayDir.Y + rayDir.Z * rayDir.Z);
 	if (magnitude == 0) {
-		return false; // Íåêîððåêòíîå íàïðàâëåíèå
+		return false; // ������������ �����������
 	}
 	rayDir.X /= magnitude;
 	rayDir.Y /= magnitude;
 	rayDir.Z /= magnitude;
 
 	if (useCollision) {
-		if (std::shared_ptr<PoligonCollision> collision = std::dynamic_pointer_cast<PoligonCollision>(object->GetCollision().lock())) {
+		if (PoligonCollision* collision = dynamic_cast<PoligonCollision*>(object->GetCollision())) {
 			std::vector<Coord> polygonPoints = collision->GetPoints();
 
-			// Ïðîâåðÿåì ïåðåñå÷åíèå ëó÷à ñ ìíîãîóãîëüíèêîì
+			// ��������� ����������� ���� � ���������������
 			return Raycast::CheckRayPolygonIntersection(rayOrigin, rayDir, polygonPoints);
 		}
 	}
 
-	// Ïîëó÷àåì ïîçèöèþ è ðàçìåðû îáúåêòà
+	// �������� ������� � ������� �������
 	Coord objPos = object->GetPos();
 	Size objSize = object->GetSize();
 
 	if (useCollision) {
-		std::shared_ptr<BoxCollision> collision = std::dynamic_pointer_cast<BoxCollision>(
-			object->GetCollision().lock()
-		);
+		BoxCollision* collision = dynamic_cast<BoxCollision*>(object->GetCollision());
 
 		objPos = (collision != nullptr ? collision->GetPoints()[0] : objPos);
 		objSize = (collision != nullptr ? collision->GetSize() : objSize);
 	}
 
-	// Âû÷èñëÿåì AABB îáúåêòà
+	// ��������� AABB �������
 	double objLeft = objPos.X;
 	double objRight = objPos.X + objSize.width;
 	double objBottom = objPos.Y + objSize.height;
@@ -253,93 +251,22 @@ bool IsObjectBetween(Ray* ray, IGameObject* object, bool useCollision) {
 
 	if ((rayOrigin.X > objRight + ray->rayWidth && rayEnd.X > objRight + ray->rayWidth) ||
 		(rayOrigin.X < objLeft - ray->rayWidth && rayEnd.X < objLeft - ray->rayWidth)) {
-		return false; // Ëó÷ ïîëíîñòüþ ñïðàâà èëè ñëåâà îò îáúåêòà
+		return false; // ��� ��������� ������ ��� ����� �� �������
 	}
 
 	if ((rayOrigin.Y > objBottom + ray->rayWidth && rayEnd.Y > objBottom + ray->rayWidth) ||
 		(rayOrigin.Y < objTop - ray->rayWidth && rayEnd.Y < objTop - ray->rayWidth)) {
-		return false; // Ëó÷ ïîëíîñòüþ âûøå èëè íèæå îáúåêòà
+		return false; // ��� ��������� ���� ��� ���� �������
 	}
 
 	object->Draw();
 	return true;
 
-	//Ìåòîä AABB íå ïîíàäîáèëñÿ, íî íà áóäóùåå ïóñêàé áóäåò :)
+	//����� AABB �� �����������, �� �� ������� ������ ����� :)
 
-	// Ïðîâåðÿåì ïåðåñå÷åíèå ëó÷à ñ AABB
+	// ��������� ����������� ���� � AABB
 	return Raycast::CheckRayAABBIntersection(
-		rayOrigin, rayDir, ray->rayWidth,
-		objLeft, objRight, objBottom, objTop
-	);
-}
-
-bool IsObjectBetween(std::unique_ptr<Ray>& ray, std::weak_ptr<IGameObject>& object, bool useCollision)
-{
-	std::shared_ptr<IGameObject> shared_obj = object.lock();
-	if (!shared_obj) {
-		return false;
-	}
-
-	// Êîîðäèíàòû ëó÷à
-	Coord rayOrigin = *ray->origin;
-	Coord rayEnd = *ray->direction;
-	Coord rayDir = { rayEnd.X - rayOrigin.X, rayEnd.Y - rayOrigin.Y, rayEnd.Z - rayOrigin.Z };
-
-	// Íîðìàëèçóåì âåêòîð íàïðàâëåíèÿ ëó÷à
-	double magnitude = std::sqrt(rayDir.X * rayDir.X + rayDir.Y * rayDir.Y + rayDir.Z * rayDir.Z);
-	if (magnitude == 0) {
-		return false; // Íåêîððåêòíîå íàïðàâëåíèå
-	}
-	rayDir.X /= magnitude;
-	rayDir.Y /= magnitude;
-	rayDir.Z /= magnitude;
-
-	if (useCollision) {
-		if (std::shared_ptr<PoligonCollision> collision = std::dynamic_pointer_cast<PoligonCollision>(shared_obj->GetCollision().lock())) {
-			std::vector<Coord> polygonPoints = collision->GetPoints();
-
-			// Ïðîâåðÿåì ïåðåñå÷åíèå ëó÷à ñ ìíîãîóãîëüíèêîì
-			return Raycast::CheckRayPolygonIntersection(rayOrigin, rayDir, polygonPoints);
-		}
-	}
-
-	// Ïîëó÷àåì ïîçèöèþ è ðàçìåðû îáúåêòà
-	Coord objPos = shared_obj->GetPos();
-	Size objSize = shared_obj->GetSize();
-
-	if (useCollision) {
-		std::shared_ptr<BoxCollision> collision = std::dynamic_pointer_cast<BoxCollision>(
-			shared_obj->GetCollision().lock()
-		);
-
-		objPos = (collision != nullptr ? collision->GetPoints()[0] : objPos);
-		objSize = (collision != nullptr ? collision->GetSize() : objSize);
-	}
-
-	// Âû÷èñëÿåì AABB îáúåêòà
-	double objLeft = objPos.X;
-	double objRight = objPos.X + objSize.width;
-	double objBottom = objPos.Y + objSize.height;
-	double objTop = objPos.Y;
-
-	if ((rayOrigin.X > objRight + ray->rayWidth && rayEnd.X > objRight + ray->rayWidth) ||
-		(rayOrigin.X < objLeft - ray->rayWidth && rayEnd.X < objLeft - ray->rayWidth)) {
-		return false; // Ëó÷ ïîëíîñòüþ ñïðàâà èëè ñëåâà îò îáúåêòà
-	}
-
-	if ((rayOrigin.Y > objBottom + ray->rayWidth && rayEnd.Y > objBottom + ray->rayWidth) ||
-		(rayOrigin.Y < objTop - ray->rayWidth && rayEnd.Y < objTop - ray->rayWidth)) {
-		return false; // Ëó÷ ïîëíîñòüþ âûøå èëè íèæå îáúåêòà
-	}
-
-	shared_obj->Draw();
-	return true;
-
-	//Ìåòîä AABB íå ïîíàäîáèëñÿ, íî íà áóäóùåå ïóñêàé áóäåò :)
-
-	// Ïðîâåðÿåì ïåðåñå÷åíèå ëó÷à ñ AABB
-	return Raycast::CheckRayAABBIntersection(
-		rayOrigin, rayDir, ray->rayWidth,
+		rayOrigin, rayDir, ray->rayWidth, 
 		objLeft, objRight, objBottom, objTop
 	);
 }
