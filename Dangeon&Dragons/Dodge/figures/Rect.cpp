@@ -84,7 +84,7 @@ Rect::Rect(
     OnCollisionEnterHandler = nullptr;
     OnMouseClick = nullptr;
 
-    material = new BaseFigureMaterial();
+    material = std::make_unique<BaseFigureMaterial>();
     material->SetShader(
         new Shader(
             title, 
@@ -121,7 +121,7 @@ Rect::Rect(
     OnCollisionEnterHandler = nullptr;
     OnMouseClick = nullptr;
 
-    material = new BaseFigureMaterial();
+    material = std::make_unique<BaseFigureMaterial>();
     material->SetShader(
         new Shader(
             title,
@@ -157,7 +157,7 @@ Rect::Rect(
     OnCollisionEnterHandler = nullptr;
     OnMouseClick = nullptr;
 
-    material = new BaseFigureMaterial();
+    material = std::make_unique<BaseFigureMaterial>();
     material->SetShader(
         new Shader(
             title,
@@ -455,22 +455,22 @@ void Rect::SetPos(Coord pos)
     MathPos(pos);
 }
 
-void Rect::SetMaterial(Material* material)
+void Rect::SetMaterial(std::shared_ptr<Material> material)
 {
 	this->material = material;
 }
 
-Material* Rect::GetMaterial()
+std::weak_ptr<Material> Rect::GetMaterial()
 {
     return material;
 }
 
-void Rect::SetCollision(ICollision* collision)
+void Rect::SetCollision(std::shared_ptr<ICollision> collision)
 {
     this->collision = collision;
 }
 
-ICollision* Rect::GetCollision()
+std::weak_ptr<ICollision> Rect::GetCollision()
 {
     return collision;
 }
@@ -558,7 +558,7 @@ bool Rect::operator!=(const Rect& other) const
     return !(*this == other);
 }
 
-Rect& Rect::operator=(const Rect& other)
+Rect& Rect::operator=(const Rect&& other)
 {
     if (this == &other) {
         return *this;
@@ -579,7 +579,7 @@ Rect& Rect::operator=(const Rect& other)
     this->OnMouseOver = other.OnMouseOver;
     this->OnMouseClick = other.OnMouseClick;
 
-    this->material = other.material;
+    material = other.material;
 
     copyStr(other.title, this->title);
 

@@ -24,7 +24,6 @@ public:
 		Image* specularMap = nullptr,
 		Image* emissiveMap = nullptr
 	);
-	~BaseFigureMaterial();
 
 	void Use(IGameObject* gameObject) override;
 

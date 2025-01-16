@@ -34,27 +34,27 @@ Material::Material(
 	this->emissiveMapVerticies = emissiveMapVerticies;
 }
 
-Material::~Material()
-{
-	if (shader != nullptr) delete shader;
-
-	if (diffuseMap != nullptr) delete diffuseMap;
-	if (normalMap != nullptr) delete normalMap;
-	if (specularMap != nullptr) delete specularMap;
-	if (emissiveMap != nullptr) delete emissiveMap;
-
-	ClearVector<Coord>(diffuseMapVerticies);
-	ClearVector<Coord>(normalMapVerticies);
-	ClearVector<Coord>(specularMapVerticies);
-	ClearVector<Coord>(emissiveMapVerticies);
-}
+//Material::~Material()
+//{
+//	if (shader != nullptr) delete shader;
+//
+//	if (diffuseMap != nullptr) delete diffuseMap;
+//	if (normalMap != nullptr) delete normalMap;
+//	if (specularMap != nullptr) delete specularMap;
+//	if (emissiveMap != nullptr) delete emissiveMap;
+//
+//	ClearVector<Coord>(diffuseMapVerticies);
+//	ClearVector<Coord>(normalMapVerticies);
+//	ClearVector<Coord>(specularMapVerticies);
+//	ClearVector<Coord>(emissiveMapVerticies);
+//}
 
 void Material::SetShader(Shader* shader)
 {
 	this->shader = shader;
 }
 
-void Material::SetCamera(Camera* camera)
+void Material::SetCamera(std::shared_ptr<Camera> camera)
 {
 	this->camera = std::shared_ptr<Camera>(camera);
 }

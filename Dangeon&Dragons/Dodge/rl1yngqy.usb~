@@ -15,13 +15,8 @@ public:
 	static void Add(IGameObject* gameObject);
 	static void Add(class Pawn* pawn);
 
-<<<<<<< Updated upstream
 	static void Add(std::unique_ptr<IGameObject>& gameObject);
 	static void Add(std::unique_ptr<class Pawn>& pawn);
-=======
-	static void Add(std::shared_ptr<IGameObject> gameObject);
-	static void Add(std::shared_ptr<class Pawn> pawn);
->>>>>>> Stashed changes
 
 	static void Add(std::vector<IGameObject*>* gameObjects);
 
@@ -43,11 +38,8 @@ public:
 	static std::vector<std::shared_ptr <T>>* GetAllDynamic();
 	template <typename T>
 	static std::vector<std::shared_ptr <T>>* GetAllDynamic(Layer layer);
-<<<<<<< Updated upstream
-=======
 
 	static void Clear();
->>>>>>> Stashed changes
 
 	template <typename T>
 	bool Exists(T* gameObject);

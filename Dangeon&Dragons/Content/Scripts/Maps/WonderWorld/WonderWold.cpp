@@ -6,7 +6,11 @@
 
 void WonderWold::CreateCamera()
 {
+<<<<<<< Updated upstream
 	camera = std::unique_ptr<Camera>(new Camera(
+=======
+	camera = std::make_shared<Camera>(
+>>>>>>> Stashed changes
 		"Player",
 		Size(0, 0),
 		Size(1000, 1000),
@@ -16,7 +20,7 @@ void WonderWold::CreateCamera()
 
 void WonderWold::SpawnPlayer()
 {
-	Material* playerMaterial = new BaseFigureMaterial();
+	std::unique_ptr<Material> playerMaterial = std::make_unique<BaseFigureMaterial>();
 	IGameObject* playerSpawn = GetClassByName("PlayerSpawnPoint");
 
 	playerMaterial->SetShader(
@@ -40,14 +44,14 @@ void WonderWold::SpawnPlayer()
 	player = std::unique_ptr<Player>(new Player(
 		"Player",
 		*window,
-		new BoxCollision(
+		std::make_unique<BoxCollision>(
 			playerSpawn->GetPos(),
 			Size(24, 16),
 			-1,
 			(char*)"Player",
 			(char*)"Player"
 		),
-		playerMaterial,
+		std::move(playerMaterial),
 		Directions::DOWN,
 		playerSpawn->GetPos(),
 		Size(64, 64),
@@ -61,21 +65,30 @@ void WonderWold::SpawnPlayer()
 		false
 	));
 
+<<<<<<< Updated upstream
 	camera->SetObservedObj(player.get());
+=======
+
+	camera->SetObservedObj(std::shared_ptr<Player>(player.get()));
+>>>>>>> Stashed changes
 
 	WindowPointerController::SetPointer(
 		window->GetWindow(), 
 		WindowPointer<Player>("player", player.get())
 	);
 
+<<<<<<< Updated upstream
 	GameObjects::Add(player.get());
+=======
+	GameObjects::Add(std::shared_ptr<class Pawn>(player.get()));
+>>>>>>> Stashed changes
 }
 
 void WonderWold::SpawnSkeleton(Coord pos)
 {
 	for (IGameObject* spawn : GetClassesByName("SkeletonSpawnPoint")) {
 		//skeleton->SetTarget(player);
-		Material* skeletonMaterial = new BaseFigureMaterial();
+		std::unique_ptr<Material> skeletonMaterial = std::make_unique<BaseFigureMaterial>();
 		skeletonMaterial->SetShader(
 			new Shader(
 				"Skeleton",
@@ -96,17 +109,21 @@ void WonderWold::SpawnSkeleton(Coord pos)
 
 		skeletonMaterial->SetCamera(camera.get());
 
+<<<<<<< Updated upstream
 		std::unique_ptr<class Pawn> skeleton = std::unique_ptr<class Pawn>(new Skeleton(
+=======
+		std::unique_ptr<Skeleton> skeleton = std::make_unique<Skeleton>(
+>>>>>>> Stashed changes
 			"Skeleton",
 			*window,
-			new BoxCollision(
+			std::make_unique<BoxCollision>(
 				spawn->GetPos(),
 				Size(24, 16),
 				-1,
 				(char*)"Skeleton",
 				(char*)"Enemy"
 			),
-			skeletonMaterial,
+			std::move(skeletonMaterial),
 			Directions::DOWN,
 			spawn->GetPos(),
 			Size(64, 64),
@@ -120,7 +137,11 @@ void WonderWold::SpawnSkeleton(Coord pos)
 			false
 		));
 
+<<<<<<< Updated upstream
 		GameObjects::Add(skeleton);
+=======
+		GameObjects::Add(std::shared_ptr<class Pawn>(skeleton.get()));
+>>>>>>> Stashed changes
 		enemys.push_back(std::move(skeleton));
 	}
 }
@@ -154,20 +175,30 @@ void WonderWold::Initialize()
 	audioController.Play("wind", true);
 }
 
-WonderWold::WonderWold(Window* window, TileMap* tileMap, Coord pos)
-	: TinyMap(window, tileMap, pos)
+WonderWold::WonderWold(Window* window, std::unique_ptr<TileMap>  tileMap, Coord pos)
+	: TinyMap(window, std::move(tileMap), pos)
 {
 	Initialize();
 }
 
+<<<<<<< Updated upstream
 void WonderWold::SetCamera(Camera* camera)
 {
 	this->camera = std::unique_ptr<Camera>(camera);
+=======
+void WonderWold::SetCamera(std::unique_ptr<Camera> camera)
+{
+	this->camera = std::move(camera);
+>>>>>>> Stashed changes
 }
 
 void WonderWold::Update()
 {
+<<<<<<< Updated upstream
 	IGameObject* observed = camera.get()->GetObservedObj().get();
+=======
+	std::weak_ptr<IGameObject> observed = camera->GetObservedObj();
+>>>>>>> Stashed changes
 	Coord cameraOffset = camera->GetOffset();
 	bool cameraMove = cameraOffset.X != 0 || cameraOffset.Y != 0;
 
@@ -178,7 +209,7 @@ void WonderWold::Update()
 		}
 
 		animationController.Play(obj->GetTitle());
-		Coord distance = observed->GetDistanceTo(*obj);
+		Coord distance = observed.lock()->GetDistanceTo(*obj);
 
 		if (distance.X >= 500 || distance.X <= -838 ||
 			distance.Y >= 584|| distance.Y <= -200) {
@@ -195,11 +226,12 @@ void WonderWold::Update()
 				skeleton->SetPathOffset(cameraOffset);
 			}
 
-			if (pawn->GetCollision() == nullptr) {
+			const std::shared_ptr<ICollision> collision = pawn->GetCollision().lock();
+			if (collision == nullptr) {
 				continue;
 			}
 
-			pawn->GetCollision()->SetPoints({
+			collision->SetPoints({
 				pawn->GetPos()
 			});
 		}
@@ -207,7 +239,7 @@ void WonderWold::Update()
 		for (IGameObject* obj : gameClasses)
 		{
 			obj->SetPos(obj->GetPos() + cameraOffset);
-			obj->GetCollision()->SetPoints({
+			obj->GetCollision().lock()->SetPoints({
 				obj->GetPos()
 			});
 		}
@@ -219,9 +251,15 @@ void WonderWold::Update()
 void WonderWold::UpdatePawns()
 {
 	camera->DropOffset();
+<<<<<<< Updated upstream
 	for (std::unique_ptr<class Pawn>& enemy : enemys)
 	{
 		enemy->Update();
+=======
+	for (std::unique_ptr<class Pawn>& pawn : enemys)
+	{
+		pawn->Update();
+>>>>>>> Stashed changes
 	}
 
 	player->Update();

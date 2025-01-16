@@ -10,7 +10,11 @@ class WonderWold
 	: public TinyMap
 {
 	std::unique_ptr<Player> player;
+<<<<<<< Updated upstream
 	std::unique_ptr<Camera> camera;
+=======
+	std::shared_ptr<Camera> camera;
+>>>>>>> Stashed changes
 
 	std::vector<std::unique_ptr<class Pawn>> enemys;
 
@@ -29,11 +33,15 @@ class WonderWold
 
 	void Initialize();
 public:
+<<<<<<< Updated upstream
 	WonderWold(Window* window, TileMap* tileMap, Coord pos = Coord());
+=======
+	WonderWold(Window* window, std::unique_ptr<TileMap> tileMap, Coord pos = Coord());
+>>>>>>> Stashed changes
 
 	float moveSpeed = .4f;
 
-	void SetCamera(Camera* camera);
+	void SetCamera(std::unique_ptr<Camera> camera);
 
 	void Update() override;
 	void UpdatePawns();

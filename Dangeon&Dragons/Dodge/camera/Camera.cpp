@@ -75,13 +75,17 @@ Coord Camera::GetPosition() const
     return Coord(position.X, position.Y);
 }
 
-void Camera::SetObservedObj(IGameObject* obj)
+void Camera::SetObservedObj(std::shared_ptr<IGameObject> obj)
 {
     this->observed = std::shared_ptr<IGameObject>(obj);
     position = this->observed.get()->GetPos();
 }
 
+<<<<<<< Updated upstream
 std::shared_ptr<IGameObject> Camera::GetObservedObj()
+=======
+std::weak_ptr<IGameObject> Camera::GetObservedObj()
+>>>>>>> Stashed changes
 {
     return observed;
 }

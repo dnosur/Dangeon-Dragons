@@ -59,8 +59,13 @@ void MainWindow::Update()
 {
     gameStatus = GameStatuses::Start;
 
+<<<<<<< Updated upstream
     std::unique_ptr<WonderWold> wonderWold = std::unique_ptr<WonderWold>(new WonderWold(
         this,
+=======
+    std::unique_ptr<WonderWold> wonderWold = std::make_unique<WonderWold>(
+        this, 
+>>>>>>> Stashed changes
         TinyXml::LoadMap(
             "Content/Maps/world/world.tmx",
             "wonder_world"

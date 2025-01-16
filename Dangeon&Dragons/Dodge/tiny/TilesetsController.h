@@ -5,20 +5,24 @@
 
 class TilesetsController
 {
-	std::vector<Tileset*> tilesets;
+	std::vector<std::shared_ptr<Tileset>> tilesets;
 public:
 	TilesetsController();
-	TilesetsController(std::vector<Tileset*> tilesets);
+	TilesetsController(std::vector<std::shared_ptr<Tileset>> tilesets);
 	TilesetsController(tinyxml2::XMLElement* element, std::string path);
 	~TilesetsController();
 
-	static void LoadTilesets(tinyxml2::XMLElement* element, std::vector<Tileset*>& tilesets, std::string path);
-	static Tileset* LoadTileset(int firstgId, const char* path);
+	static void LoadTilesets(
+		tinyxml2::XMLElement* element, 
+		std::vector<std::shared_ptr<Tileset>>& tilesets, 
+		std::string path
+	);
+	static std::shared_ptr<Tileset> LoadTileset(int firstgId, const char* path);
 
 	int GetSize();
 
-	Tileset* GetTilesetByTileId(int tileId);
+	std::weak_ptr<Tileset> GetTilesetByTileId(int tileId);
 
-	Tileset* operator[](int index);
-	Tileset* operator[](const char* name);
+	std::weak_ptr<Tileset> operator[](int index);
+	std::weak_ptr<Tileset> operator[](const char* name);
 };

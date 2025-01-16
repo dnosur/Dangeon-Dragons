@@ -13,13 +13,13 @@
 #include "../../Utilities/RaycastUtilities.h"
 
 Skeleton::Skeleton(
-	const char* title, Window& window, ICollision* collision, 
-	Material* material, Directions moveDirection, Coord pos, Size size, 
+	const char* title, Window& window, std::shared_ptr<ICollision> collision, 
+	std::shared_ptr<Material> material, Directions moveDirection, Coord pos, Size size,
 	float speed, float maxSpeed, float minSpeed, float health, float maxHealth, 
 	bool isPlayable, bool isKinematic, bool isHidden, std::vector<IAnimation*> animations
 ) : Pawn(
-	title, window, collision,
-	material, moveDirection, pos, size,
+	title, window, std::move(collision),
+	std::move(material), moveDirection, pos, size,
 	speed, maxSpeed, minSpeed,
 	health, maxHealth, false, isKinematic,
 	isHidden, animations)
@@ -62,6 +62,7 @@ bool Skeleton::IsNear(Coord pos)
 			std::abs(pos.Y - this->pos.Y) <= damageDistance);
 }
 
+<<<<<<< Updated upstream
 void Skeleton::SetTarget(std::shared_ptr<Pawn> target)
 {
 	this->target = target;
@@ -69,11 +70,18 @@ void Skeleton::SetTarget(std::shared_ptr<Pawn> target)
 }
 
 void Skeleton::SetTarget(std::weak_ptr<Pawn>& target)
+=======
+void Skeleton::SetTarget(std::weak_ptr<Pawn> target)
+>>>>>>> Stashed changes
 {
 	this->target = target;
 }
 
+<<<<<<< Updated upstream
 std::weak_ptr<class Pawn> Skeleton::GetTarget()
+=======
+class std::weak_ptr<class Pawn> Skeleton::GetTarget()
+>>>>>>> Stashed changes
 {
 	return target;
 }
@@ -406,13 +414,18 @@ bool Skeleton::CheckForCollision(Coord position)
 	}
 
 	for (IGameObject* collisionObj : solidCollisionsObjects->GetValue()) {
-		std::vector<Coord> points = collisionObj->GetCollision()->GetPoints();
-
-		if (collisionObj == nullptr || collisionObj->GetCollision() == nullptr) {
+		const std::shared_ptr<ICollision> collision = collisionObj->GetCollision().lock();
+		if (collision == nullptr) {
 			continue;
 		}
 
-		if (collisionObj->GetCollision()->IsCollisionEnter(position, Size(24, 24))) {
+		std::vector<Coord> points = collision->GetPoints();
+
+		if (collisionObj == nullptr || collision == nullptr) {
+			continue;
+		}
+
+		if (collision->IsCollisionEnter(position, Size(24, 24))) {
 			return false;
 		}
 	}
@@ -456,6 +469,7 @@ void Skeleton::AIMovement()
 			}
 			ray.release();
 
+<<<<<<< Updated upstream
 			std::unique_ptr<Ray> rayToTarget = std::move(RayFactory::CreateRay(
 				new Coord(startPos),
 				new Coord(player.lock()->GetStartPos())
@@ -463,6 +477,13 @@ void Skeleton::AIMovement()
 
 			std::weak_ptr<IGameObject> target = Raycast::RaycastFirst(
 				rayToTarget
+=======
+			std::weak_ptr<IGameObject> target = Raycast::RaycastFirst(
+			   std::move(RayFactory::CreateRay(
+					new Coord(startPos),
+					new Coord(player.lock()->GetStartPos())
+				))
+>>>>>>> Stashed changes
 			);
 
 			if (target.lock() != player.lock()) {
@@ -509,6 +530,7 @@ void Skeleton::AIMovement()
 
 			Coord targetPos;
 
+<<<<<<< Updated upstream
 			if (Player* player = dynamic_cast<Player*>(target_ptr.get())) {
 				targetPos = player->GetStartPos();
 			}
@@ -517,6 +539,16 @@ void Skeleton::AIMovement()
 			}
 
 			std::unique_ptr<Ray> ray = RayFactory::CreateRay(&startPos, &targetPos);
+=======
+			if (Player* player = dynamic_cast<Player*>(target.lock().get())) {
+				targetPos = player->GetStartPos();
+			}
+			else {
+				targetPos = target.lock()->GetPos();
+			}
+
+			std::unique_ptr<Ray> ray = std::move(RayFactory::CreateRay(&startPos, &targetPos));
+>>>>>>> Stashed changes
 
 			if (ray == nullptr || ray->raySize > viewDistance) {
 				ray.release();

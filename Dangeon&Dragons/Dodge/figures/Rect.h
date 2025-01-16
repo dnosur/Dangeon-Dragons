@@ -18,7 +18,7 @@ class Rect :
     Coord vertex1;
     Coord vertex2;
 
-    ICollision* collision;
+    std::shared_ptr<ICollision> collision;
 
     Coord pos;
 
@@ -27,7 +27,7 @@ class Rect :
     Color color;
     Color baseColor;
 
-    Material* material;
+    std::shared_ptr<Material> material;
 
     Directions moveDirection;
 
@@ -84,12 +84,12 @@ public:
     void SetPos(std::vector<Coord> vertices);
     void SetPos(Coord pos);
 
-    void SetMaterial(Material* material);
+    void SetMaterial(std::shared_ptr<Material> material);
 
-    Material* GetMaterial();
+    std::weak_ptr<Material> GetMaterial();
 
-    void SetCollision(ICollision* collision);
-    ICollision* GetCollision();
+    void SetCollision(std::shared_ptr<ICollision> collision);
+    std::weak_ptr<ICollision> GetCollision();
 
     const char* GetTitle();
     void SetTitle(const char* title);
@@ -116,6 +116,6 @@ public:
 
     bool operator==(const Rect& other) const;
     bool operator!=(const Rect& other) const;
-    Rect& operator=(const Rect& other);
+    Rect& operator=(const Rect&& other);
 };
 

@@ -6,7 +6,7 @@ Tile::Tile()
 	collision = nullptr;
 }
 
-Tile::Tile(int id, ICollision* collision, Animation* animation)
+Tile::Tile(int id, std::shared_ptr<ICollision> collision, std::shared_ptr<Animation> animation)
 {
 	this->id = id;
 	this->collision = collision;
@@ -18,12 +18,12 @@ int Tile::GetId()
 	return id;
 }
 
-ICollision* Tile::GetCollision()
+std::weak_ptr<ICollision> Tile::GetCollision()
 {
 	return collision;
 }
 
-Animation* Tile::GetAnimation()
+std::weak_ptr<Animation> Tile::GetAnimation()
 {
 	return animation;
 }

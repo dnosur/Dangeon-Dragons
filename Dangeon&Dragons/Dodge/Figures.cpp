@@ -1,14 +1,14 @@
-#include "Figures.h"
+ï»¿#include "Figures.h"
 #include "functions.h"
 
 void drawCircle(float cx, float cy, float r, int num_segments) {
     glBegin(GL_TRIANGLE_FAN);
     glColor4f(.0f, 1.0f, .0f, 1.0f);
-    glVertex2f(cx, cy); 
+    glVertex2f(cx, cy);
     for (int i = 0; i <= num_segments; i++)
     {
         float theta = 2.0f * M_PI * float(i) / float(num_segments);
-        float x = r * cosf(theta);  
+        float x = r * cosf(theta);
         float y = r * sinf(theta);
         glVertex2f(x + cx, y + cy);
     }
@@ -29,15 +29,15 @@ void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3)
 {
     glBegin(GL_TRIANGLES);
     glVertex2f(x1, y1);
-    glVertex2f(x2, y2); 
-    glVertex2f(x3, y3); 
+    glVertex2f(x2, y2);
+    glVertex2f(x3, y3);
     glEnd();
 }
 
 void drawLine(Coord a, Coord b, Color color, int lineWidth)
 {
     glLineWidth(lineWidth);
-    // Âû÷èñëÿåì êîîðäèíàòû
+    // Ã‚Ã»Ã·Ã¨Ã±Ã«Ã¿Ã¥Ã¬ ÃªÃ®Ã®Ã°Ã¤Ã¨Ã­Ã Ã²Ã»
     glColor3f(color.r, color.g, color.b);
 
     Coord first = Coord(
@@ -50,7 +50,7 @@ void drawLine(Coord a, Coord b, Color color, int lineWidth)
         1.0f - 2.0f * b.Y / 720
     );
 
-    // Ðèñóåì ëèíèþ
+    // ÃÃ¨Ã±Ã³Ã¥Ã¬ Ã«Ã¨Ã­Ã¨Ã¾
     glBegin(GL_LINES);
     glVertex2f(first.X, first.Y);
     glVertex2f(second.X, second.Y);
@@ -60,7 +60,7 @@ void drawLine(Coord a, Coord b, Color color, int lineWidth)
 void drawRay(Ray*& ray, Color& color)
 {
     glLineWidth(ray->rayWidth);
-    // Âû÷èñëÿåì êîîðäèíàòû
+    // Ã‚Ã»Ã·Ã¨Ã±Ã«Ã¿Ã¥Ã¬ ÃªÃ®Ã®Ã°Ã¤Ã¨Ã­Ã Ã²Ã»
     glColor3f(color.r, color.g, color.b);
 
     Coord* first = new Coord(
@@ -73,7 +73,7 @@ void drawRay(Ray*& ray, Color& color)
         1.0f - 2.0f * ray->direction->Y / 720
     );
 
-    // Ðèñóåì ëèíèþ
+    // ÃÃ¨Ã±Ã³Ã¥Ã¬ Ã«Ã¨Ã­Ã¨Ã¾
     glBegin(GL_LINES);
     glVertex2f(first->X, first->Y);
     glVertex2f(second->X, second->Y);
@@ -83,4 +83,8 @@ void drawRay(Ray*& ray, Color& color)
 void drawRay(std::unique_ptr<Ray>& ray, Color& color)
 {
     drawRay(ray, color);
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes
