@@ -15,25 +15,25 @@ AudioController::AudioController()
 AudioController::AudioController(std::vector<std::shared_ptr<Audio>> sounds)
 {
 	Clear();
-	for (const std::shared_ptr<Audio>& sound : sounds) {
+	for (Audio*& sound : sounds) {
 		this->sounds.push_back(sound);
 	}
 }
 
 void AudioController::Play(const char* title, bool loop)
 {
-	std::weak_ptr<Audio> audio = (*this)[title];
-	if (!audio.expired() && audio.lock() != nullptr) {
-		audio.lock()->Play(loop);
+	Audio* audio = (*this)[title];
+	if (audio != nullptr) {
+		audio->Play(loop);
 	}
 }
 
 void AudioController::Load(const char* title, const char* path)
 {
-	sounds.push_back(std::make_shared<Audio>(title, path));
+	sounds.push_back(new Audio(title, path));
 }
 
-void AudioController::Load(std::shared_ptr<Audio> audio)
+void AudioController::Load(Audio* audio)
 {
 	sounds.push_back(audio);
 }
@@ -43,12 +43,12 @@ int AudioController::GetSize()
 	return sounds.size();
 }
 
-std::weak_ptr<Audio> AudioController::operator[](const char* title)
+Audio* AudioController::operator[](const char* title)
 {
-	for (const std::shared_ptr<Audio>& sound : sounds) {
+	for (Audio*& sound : sounds) {
 		if (!strcmp(sound->GetTitle(), title)) {
 			return sound;
 		}
 	}
-	return std::weak_ptr<Audio>();
+	return nullptr;
 }

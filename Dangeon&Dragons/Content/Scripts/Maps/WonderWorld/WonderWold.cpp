@@ -18,7 +18,7 @@ void WonderWold::SpawnPlayer()
 {
 	std::unique_ptr<Material> playerMaterial = std::make_unique<BaseFigureMaterial>();
 	std::weak_ptr<IGameObject> weakPlayerSpawn = GetClassByName("PlayerSpawnPoint");
-	const std::shared_ptr<IGameObject> playerSpawn = weakPlayerSpawn.lock();
+	const std::shared_ptr<IGameObject>& playerSpawn = weakPlayerSpawn.lock();
 
 	if (playerSpawn == nullptr) {
 		return;
@@ -79,7 +79,7 @@ void WonderWold::SpawnPlayer()
 void WonderWold::SpawnSkeleton(Coord pos)
 {
 	for (const std::weak_ptr<IGameObject>& weakSpawn : GetClassesByName("SkeletonSpawnPoint")) {
-		const std::shared_ptr<IGameObject> spawn = weakSpawn.lock();
+		const std::shared_ptr<IGameObject>& spawn = weakSpawn.lock();
 		if (spawn == nullptr) {
 			continue;
 		}
@@ -151,14 +151,14 @@ void WonderWold::Initialize()
 	SpawnPlayer();
 	SpawnSkeleton(Coord(450, 300));
 
-	Audio* main = new Audio("main", "Content/Sounds/WonderWorld/main.wav");
+	std::unique_ptr<Audio> main = std::make_unique<Audio>("main", "Content/Sounds/WonderWorld/main.wav");
 	main->SetVolume(0.05f);
 
-	Audio* wind = new Audio("wind", "Content/Sounds/WonderWorld/light-wind.wav");
+	std::unique_ptr<Audio> wind = std::make_unique<Audio>("wind", "Content/Sounds/WonderWorld/light-wind.wav");
 	wind->SetVolume(0.15f);
 
-	audioController.Load(main);
-	audioController.Load(wind);
+	audioController.Load(std::move(main));
+	audioController.Load(std::move(wind));
 
 	audioController.Play("main", true);
 	audioController.Play("wind", true);
@@ -201,11 +201,11 @@ void WonderWold::Update()
 	if (cameraMove) {
 		for (const std::shared_ptr<class Pawn>& pawn : enemys) {
 			pawn->SetPos(pawn->GetPos() + cameraOffset);
-			if (Skeleton* skeleton = dynamic_cast<Skeleton*>(pawn.get())) {
+			if (const std::shared_ptr<Skeleton>& skeleton = std::dynamic_pointer_cast<Skeleton>(pawn)) {
 				skeleton->SetPathOffset(cameraOffset);
 			}
 
-			const std::shared_ptr<ICollision> collision = pawn->GetCollision().lock();
+			const std::shared_ptr<ICollision>& collision = pawn->GetCollision().lock();
 			if (collision == nullptr) {
 				continue;
 			}

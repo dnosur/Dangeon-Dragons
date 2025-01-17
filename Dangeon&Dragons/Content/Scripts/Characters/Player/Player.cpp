@@ -283,7 +283,9 @@ void Player::Drag(Coord newPos)
 		return;
 	}
 
-	Audio* walk = audioController["walk-grass"];
+	std::weak_ptr<Audio> weakWalk = audioController["walk-grass"];
+	const std::shared_ptr<Audio>& walk = weakWalk.lock();
+
 	if (walk != nullptr && walk->GetState() != AudioStates::PLAYING) {
 		audioController.Play("walk-grass");
 	}
@@ -314,26 +316,31 @@ void Player::Raycasting()
 		std::move(damageRay)
 	);
 
+	const std::shared_ptr<IGameObject>& _interactiveCollision = interactiveCollision.lock();
+	const std::shared_ptr<IGameObject>& _interactiveObject = interactiveObject.lock();
 
-	if (interactiveCollision.lock() != nullptr && 
-		interactiveCollision.lock()->GetLayer() != Layer::MainPlayer &&
-		interactiveCollision.lock()->GetLayer() != Layer::Enemy
+	if (_interactiveCollision != nullptr &&
+		_interactiveCollision->GetLayer() != Layer::MainPlayer &&
+		_interactiveCollision->GetLayer() != Layer::Enemy
 	) {
 		SetRaycastedObject(interactiveCollision, interactiveObject, std::make_unique<Color>(.5f, 1, .5f));
 	}
-	else if(interactiveObject.lock() != nullptr) {
-		interactiveObject.lock()->GetMaterial().lock()->SetDiffuse(Color(1, 1, 1));
+	else if(_interactiveObject != nullptr) {
+		_interactiveObject->GetMaterial().lock()->SetDiffuse(Color(1, 1, 1));
 		interactiveObject.reset();
 	}
 
-	if (damageCollision.lock() != nullptr && 
-		interactiveCollision.lock()->GetLayer() != Layer::MainPlayer &&
-		damageCollision.lock()->GetLayer() == Layer::Enemy
+	const std::shared_ptr<IGameObject>& _damageCollision = damageCollision.lock();
+	const std::shared_ptr<IGameObject>& _damageObject = damageObject.lock();
+
+	if (_damageCollision != nullptr &&
+		_interactiveCollision->GetLayer() != Layer::MainPlayer &&
+		_damageCollision->GetLayer() == Layer::Enemy
 	) {
 		SetRaycastedObject(damageCollision, damageObject, std::make_unique<Color>(.9f, .9f, .1f));
 	}
-	else if(damageObject.lock() != nullptr) {
-		damageObject.lock()->GetMaterial().lock()->SetDiffuse(Color(1, 1, 1));
+	else if(_damageObject != nullptr) {
+		_damageObject->GetMaterial().lock()->SetDiffuse(Color(1, 1, 1));
 		interactiveObject.reset();
 	}
 }
@@ -465,10 +472,10 @@ const char* Player::GetAnimationName()
 
 void Player::LoadAudio()
 {
-	Audio* walkGrass = new Audio("walk-grass", "Content/Sounds/WonderWorld/walk-grass.wav");
+	std::unique_ptr<Audio> walkGrass = std::make_unique<Audio>("walk-grass", "Content/Sounds/WonderWorld/walk-grass.wav");
 	walkGrass->SetVolume(0.5f);
 
-	audioController.Load(walkGrass);
+	audioController.Load(std::move(walkGrass));
 }
 
 Player::Player(

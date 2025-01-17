@@ -275,7 +275,7 @@ bool IsObjectBetween(Ray* ray, IGameObject* object, bool useCollision) {
 
 bool IsObjectBetween(std::unique_ptr<Ray>& ray, std::weak_ptr<IGameObject>& object, bool useCollision)
 {
-	std::shared_ptr<IGameObject> shared_obj = object.lock();
+	const std::shared_ptr<IGameObject>& shared_obj = object.lock();
 	if (!shared_obj) {
 		return false;
 	}

@@ -5,19 +5,19 @@
 
 class AudioController
 {
-	std::vector<Audio*> sounds;
+	std::vector<std::shared_ptr<Audio>> sounds;
 
 	void Clear();
 public:
 	AudioController();
-	AudioController(std::vector<Audio*> sounds);
+	AudioController(std::vector<std::shared_ptr<Audio>> sounds);
 
 	void Play(const char* title, bool loop = false);
 
 	void Load(const char* title, const char* path);
-	void Load(Audio* audio);
+	void Load(std::shared_ptr<Audio> audio);
 
 	int GetSize();
 
-	Audio* operator[](const char* title);
+	std::weak_ptr<Audio> operator[](const char* title);
 };

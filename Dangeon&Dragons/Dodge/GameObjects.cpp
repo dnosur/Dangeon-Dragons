@@ -50,7 +50,7 @@ void GameObjects::Add(std::vector<std::weak_ptr<IGameObject>>* gameObjects)
 {
 	for (const std::weak_ptr<IGameObject>& gameObject : *gameObjects)
 	{
-		const std::shared_ptr<IGameObject> gameObjectPtr = gameObject.lock();
+		const std::shared_ptr<IGameObject>& gameObjectPtr = gameObject.lock();
 		if (gameObject.expired() || gameObjectPtr == nullptr) {
 			continue;
 		}

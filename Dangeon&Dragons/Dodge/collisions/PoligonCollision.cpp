@@ -103,7 +103,7 @@ bool PoligonCollision::IsCollisionEnter(IGameObject* gameObject)
 		return false;
 	}
 
-	const std::shared_ptr<ICollision> gameObjectPtr = gameObject->GetCollision().lock();
+	const std::shared_ptr<ICollision>& gameObjectPtr = gameObject->GetCollision().lock();
 
 	if (gameObjectPtr == nullptr) {
 		return false;

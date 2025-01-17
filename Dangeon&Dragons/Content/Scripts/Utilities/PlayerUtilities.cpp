@@ -6,14 +6,17 @@ void SetRaycastedObject(
 	std::unique_ptr<Color> color
 )
 {
-	if (raycastedObject.lock() != nullptr &&
-		raycastedObject.lock() != target.lock()
-		) {
-		if (target.lock() != nullptr) {
-			target.lock()->GetMaterial().lock()->SetDiffuse(Color(1, 1, 1));
+	const std::shared_ptr<IGameObject>& _raycastedObject = raycastedObject.lock();
+	const std::shared_ptr<IGameObject>& _target = target.lock();
+
+	if (_raycastedObject != nullptr &&
+		_raycastedObject != _target
+	) {
+		if (_target != nullptr) {
+			_target->GetMaterial().lock()->SetDiffuse(Color(1, 1, 1));
 		}
 
 		target = raycastedObject;
-		target.lock()->GetMaterial().lock()->SetDiffuse(*color);
+		_target->GetMaterial().lock()->SetDiffuse(*color);
 	}
 }

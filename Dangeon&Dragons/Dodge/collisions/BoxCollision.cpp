@@ -86,7 +86,7 @@ void BoxCollision::SetKinematic(bool kinematic)
 
 bool BoxCollision::IsCollisionEnter(IGameObject* gameObject)
 {
-    const std::shared_ptr<ICollision> collision = gameObject->GetCollision().lock();
+    const std::shared_ptr<ICollision>& collision = gameObject->GetCollision().lock();
 
     if (!gameObject || !collision) {
         return false;

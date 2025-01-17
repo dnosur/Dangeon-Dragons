@@ -32,7 +32,7 @@ void TinyMap::Initialize()
 
 		for (int chunk_id = 0; chunk_id < spriteLayer.GetChunksCount(); chunk_id++) {
 			std::weak_ptr<TinyChunk> weakChunk = spriteLayer[chunk_id];
-			const std::shared_ptr<TinyChunk> chunk = weakChunk.lock();
+			const std::shared_ptr<TinyChunk>& chunk = weakChunk.lock();
 
 			if (chunk == nullptr) {
 				continue;
@@ -46,15 +46,15 @@ void TinyMap::Initialize()
 						continue;
 					}
 
-					const std::shared_ptr<Tileset> tileset = tileMap->tilesetsController.GetTilesetByTileId(tileId).lock();
+					const std::shared_ptr<Tileset>& tileset = tileMap->tilesetsController.GetTilesetByTileId(tileId).lock();
 					if (tileset == nullptr) {
 						continue;
 					}
 
 					Tile* tile = tileset->GetTileById(tileId);
 
-					const std::shared_ptr<ICollision> collision = tile ? tile->GetCollision().lock() : nullptr;
-					const std::shared_ptr<Animation> tileAnimation = tile ? tile->GetAnimation().lock() : nullptr;
+					const std::shared_ptr<ICollision>& collision = tile ? tile->GetCollision().lock() : nullptr;
+					const std::shared_ptr<Animation>& tileAnimation = tile ? tile->GetAnimation().lock() : nullptr;
 
 					std::shared_ptr<Rect> rect = nullptr;
 					VertexAnimation* animation = nullptr;
@@ -183,7 +183,7 @@ void TinyMap::Initialize()
 		std::cout << "Size: " << classes.GetSize() << std::endl;
 
 		for (std::weak_ptr<ICollision> item : classes) {
-			const std::shared_ptr<ICollision> collision = item.lock();
+			const std::shared_ptr<ICollision>& collision = item.lock();
 			if (collision == nullptr) {
 				continue;
 			}
