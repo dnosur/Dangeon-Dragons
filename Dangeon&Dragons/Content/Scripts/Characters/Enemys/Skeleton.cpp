@@ -16,7 +16,7 @@ Skeleton::Skeleton(
 	const char* title, Window& window, std::shared_ptr<ICollision> collision, 
 	std::shared_ptr<Material> material, Directions moveDirection, Coord pos, Size size,
 	float speed, float maxSpeed, float minSpeed, float health, float maxHealth, 
-	bool isPlayable, bool isKinematic, bool isHidden, std::vector<IAnimation*> animations
+	bool isPlayable, bool isKinematic, bool isHidden, std::vector<std::shared_ptr<IAnimation>> animations
 ) : Pawn(
 	title, window, std::move(collision),
 	std::move(material), moveDirection, pos, size,
@@ -97,9 +97,9 @@ void Skeleton::Update()
 
 void Skeleton::LoadAnimations()
 {
-	playerImages = new SlicedImage(
-		material->GetDiffuseMap(),
-		{
+	std::unique_ptr<SlicedImage> playerImages = std::make_unique<SlicedImage>(
+		material->GetDiffuseMap().lock(),
+		std::vector<int>{
 			9, 9, 9, 9,
 			6, 6, 6, 6,
 			7, 7, 7, 7,
@@ -109,7 +109,7 @@ void Skeleton::LoadAnimations()
 		Size(64, 64)
 	);
 
-	for (VertexAnimation*& animation : playerImages->CreateVertexAnimations(
+	for (std::unique_ptr<VertexAnimation>& animation : playerImages->CreateVertexAnimations(
 		std::make_pair(
 			std::vector<const char*>({
 				"walk_top",
@@ -154,10 +154,10 @@ void Skeleton::LoadAnimations()
 		)
 	{
 		animation->SetGameObject(this);
-		animations.AddAnimation(animation);
+		animations.AddAnimation(std::move(animation));
 	}
 
-	animations["die"]->SetStopOnEnd(true);
+	animations["die"].lock()->SetStopOnEnd(true);
 }
 
 const char* Skeleton::GetAnimationName()
@@ -335,7 +335,10 @@ void Skeleton::Draw()
 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
-	const bool isHasDiffuseVertexs = material->GetDiffuseMapVerticies().size() >= 2 && material->GetDiffuseMap() != nullptr;
+	const bool isHasDiffuseVertexs = 
+		material->GetDiffuseMapVerticies().size() >= 2 && 
+		material->GetDiffuseMap().lock() != nullptr;
+
 	const Coord& textCoord1 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[0] : Coord(0, 0);
 	const Coord& textCoord2 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[1] : Coord(1, 1);
 
@@ -487,7 +490,7 @@ void Skeleton::AIMovement()
 		moveDirection = movement->direction;
 
 		SetPos(movement->position);
-		IAnimation* anim = movement->animation;
+		const std::shared_ptr<IAnimation>& anim = movement->animation;
 
 		if (anim == nullptr) {
 			return;
@@ -591,7 +594,7 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 			GetAnimationName(),
 			moveDirection,
 			action,
-			animations[GetAnimationName()],
+			animations[GetAnimationName()].lock(),
 			pos
 		),
 		0.0f, 
@@ -674,7 +677,7 @@ std::vector<Movement*> Skeleton::GetNeighbors(Coord position)
 				new Movement(
 					title, 
 					GetDirection(dir), Actions::Move,
-					animations[title], neighbor
+					animations[title].lock(), neighbor
 				)
 			);
 		}

@@ -56,7 +56,7 @@ public:
         std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
         Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
-        std::vector<IAnimation*> animations = {}
+        std::vector<std::shared_ptr<IAnimation>> animations = {}
     );
 
     void Initialize() override;

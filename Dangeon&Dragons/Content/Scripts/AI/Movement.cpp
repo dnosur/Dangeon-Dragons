@@ -11,7 +11,7 @@ Movement::Movement()
 
 Movement::Movement(
     std::string title, Directions direction, Actions action, 
-    IAnimation* animation, Coord position)
+	std::shared_ptr<IAnimation> animation, Coord position)
 {
 	this->title = title;
 	complete = false;

@@ -25,7 +25,7 @@ void WonderWold::SpawnPlayer()
 	}
 
 	playerMaterial->SetShader(
-		new Shader(
+		std::make_shared<Shader>(
 			"Player",
 			"Dodge/shaders/Test/vertex.vs",
 			"Dodge/shaders/Test/fragment.frag"
@@ -34,7 +34,7 @@ void WonderWold::SpawnPlayer()
 
 	playerMaterial->SetDiffuse(Color(1, 1, 1));
 	playerMaterial->SetDiffuseMap(
-		new Image(
+		std::make_shared<Image>(
 			ImagesController::LoadImg(
 				"Content/Assets/lpc_entry/males/player.png",
 				"Player"
@@ -87,7 +87,7 @@ void WonderWold::SpawnSkeleton(Coord pos)
 		//skeleton->SetTarget(player);
 		std::unique_ptr<Material> skeletonMaterial = std::make_unique<BaseFigureMaterial>();
 		skeletonMaterial->SetShader(
-			new Shader(
+			std::make_shared<Shader>(
 				"Skeleton",
 				"Dodge/shaders/Test/vertex.vs",
 				"Dodge/shaders/Test/fragment.frag"
@@ -96,7 +96,7 @@ void WonderWold::SpawnSkeleton(Coord pos)
 
 		skeletonMaterial->SetDiffuse(Color(1, 1, 1));
 		skeletonMaterial->SetDiffuseMap(
-			new Image(
+			std::make_shared<Image>(
 				ImagesController::LoadImg(
 					"Content/Assets/lpc_entry/males/skeleton.png",
 					"Skeleton"

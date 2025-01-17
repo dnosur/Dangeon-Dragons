@@ -1,7 +1,16 @@
 #include "BaseFigureMaterial.h"
 
-BaseFigureMaterial::BaseFigureMaterial(Color ambient, Color diffuse, Color specular, Color emissive, float shininess, float metalic, float roughness, float specularIntensity, float emissiveIntensity, Shader* shader, Image* diffuseMap, Image* normalMap, Image* specularMap, Image* emissiveMap)
-	: Material(ambient, diffuse, specular, emissive, shininess, metalic, roughness, specularIntensity, emissiveIntensity, shader, diffuseMap, normalMap, specularMap, emissiveMap)
+BaseFigureMaterial::BaseFigureMaterial(
+	Color ambient, Color diffuse, Color specular, Color emissive, 
+	float shininess, float metalic, float roughness, float specularIntensity, 
+	float emissiveIntensity, 
+
+	std::shared_ptr<Shader> shader, 
+	std::shared_ptr<Image> diffuseMap, 
+	std::shared_ptr<Image> normalMap, 
+	std::shared_ptr<Image> specularMap, 
+	std::shared_ptr<Image> emissiveMap
+) : Material(ambient, diffuse, specular, emissive, shininess, metalic, roughness, specularIntensity, emissiveIntensity, shader, diffuseMap, normalMap, specularMap, emissiveMap)
 {
 }
 

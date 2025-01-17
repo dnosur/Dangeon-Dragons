@@ -36,7 +36,7 @@ protected:
 	Coord pos;
 	Size size;
 
-	SlicedImage* playerImages;
+	std::unique_ptr<SlicedImage> playerImages;
 
 	Layer layer;
 
@@ -86,7 +86,7 @@ public:
 		std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
 		Coord pos, Size size, float speed, float maxSpeed, float minSpeed, 
 		float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
-		std::vector<IAnimation*> animations = {}
+		std::vector<std::shared_ptr<IAnimation>> animations = {}
 	);
 	virtual ~Pawn() = default;
 
@@ -121,8 +121,8 @@ public:
 
 	void SetColor(Color color);
 
-	void AddAnimation(IAnimation* animation);
-	void AddAnimations(std::vector<IAnimation*> animations);
+	void AddAnimation(std::shared_ptr<IAnimation> animation);
+	void AddAnimations(std::vector<std::shared_ptr<IAnimation>> animations);
 
 	void Damage(float damage);
 	void Die();

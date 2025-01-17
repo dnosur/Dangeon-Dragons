@@ -131,7 +131,7 @@ void VertexAnimation::Reverse()
 
 char* VertexAnimation::GetFolder()
 {
-	return object->GetMaterial().lock()->GetDiffuseMap()->path;
+	return object->GetMaterial().lock()->GetDiffuseMap().lock()->path;
 }
 
 void VertexAnimation::LoadFromFolder(char* folder)

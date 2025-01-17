@@ -10,9 +10,9 @@
 
 void Player::LoadAnimations()
 {
-	playerImages = new SlicedImage(
-		material->GetDiffuseMap(),
-		{
+	playerImages = std::make_unique<SlicedImage>(
+		material->GetDiffuseMap().lock(),
+		std::vector<int>{
 			7, 7, 7, 7,
 			8, 8, 8, 8,
 			9, 9, 9, 9,
@@ -24,7 +24,7 @@ void Player::LoadAnimations()
 		Size(64, 64)
 	);
 
-	for (VertexAnimation*& animation : playerImages->CreateVertexAnimations(
+	for (std::unique_ptr<VertexAnimation>& animation : playerImages->CreateVertexAnimations(
 		std::make_pair(
 			std::vector<const char*>({
 				"idle_top",
@@ -91,10 +91,10 @@ void Player::LoadAnimations()
 	)
 	{
 		animation->SetGameObject(this);
-		animations.AddAnimation(animation);
+		animations.AddAnimation(std::move(animation));
 	}
 
-	animations["die"]->SetStopOnEnd(true);
+	animations["die"].lock()->SetStopOnEnd(true);
 }
 
 void Player::Initialize()
@@ -128,7 +128,10 @@ void Player::Draw()
 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
-	const bool isHasDiffuseVertexs = material->GetDiffuseMapVerticies().size() >= 2 && material->GetDiffuseMap() != nullptr;
+	const bool isHasDiffuseVertexs = 
+		material->GetDiffuseMapVerticies().size() >= 2 && 
+		material->GetDiffuseMap().lock() != nullptr;
+
 	const Coord& textCoord1 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[0] : Coord(0, 0);
 	const Coord& textCoord2 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[1] : Coord(1, 1);
 
@@ -483,7 +486,7 @@ Player::Player(
 	std::shared_ptr<Material> material, Directions moveDirection, Coord pos, Size size,
 	float speed, float maxSpeed, float minSpeed, 
 	float health, float maxHealth, bool isPlayable, bool isKinematic, 
-	bool isHidden, std::vector<IAnimation*> animations)
+	bool isHidden, std::vector<std::shared_ptr<IAnimation>> animations)
 	: Pawn(
 		title, window, std::move(collision),
 		std::move(material), moveDirection, pos, size,
@@ -541,5 +544,5 @@ void Player::Update()
 	th->Join();
 	delete th;
 
-	animations[GetAnimationName()]->Play();
+	animations[GetAnimationName()].lock()->Play();
 }

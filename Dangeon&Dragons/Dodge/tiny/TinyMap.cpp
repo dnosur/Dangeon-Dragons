@@ -57,7 +57,7 @@ void TinyMap::Initialize()
 					const std::shared_ptr<Animation>& tileAnimation = tile ? tile->GetAnimation().lock() : nullptr;
 
 					std::shared_ptr<Rect> rect = nullptr;
-					VertexAnimation* animation = nullptr;
+					std::unique_ptr<VertexAnimation> animation = nullptr;
 
 					{
 						int ciclesCount = tile == nullptr
@@ -104,7 +104,7 @@ void TinyMap::Initialize()
 							textureVertex2 = Coord((float)atlasX * (float)tileU, 1.0f - ((float)atlasY * tileV));
 
 							if (animation == nullptr && ciclesCount > 0) {
-								animation = new VertexAnimation(
+								animation = std::make_unique<VertexAnimation>(
 									obj_title,
 									4,
 									true,
@@ -148,7 +148,7 @@ void TinyMap::Initialize()
 
 					if (animation != nullptr) {
 						animation->SetGameObject(rect.get());
-						animationController.AddAnimation(animation);
+						animationController.AddAnimation(std::move(animation));
 					}
 
 					Coord rectPos = rect->GetPos();
@@ -159,7 +159,7 @@ void TinyMap::Initialize()
 						rect->SetCollision(std::make_unique<BoxCollision>(*boxCollision));
 					}
 
-					rect->GetMaterial().lock()->SetDiffuseMap(new Image(tileset->GetImage()));
+					rect->GetMaterial().lock()->SetDiffuseMap(std::make_shared<Image>(tileset->GetImage()));
 
 					if (collision) {
 						rect->HookOnCollisionEnter([](IGameObject* object, IGameObject* sender, GLFWwindow* window) {

@@ -4,8 +4,13 @@ Material::Material(
 	Color ambient, Color diffuse, Color specular, Color emissive, 
 	float shininess, float metalic, float roughness, 
 	float specularIntensity, float emissiveIntensity, 
-	Shader* shader, 
-	Image* diffuseMap, Image* normalMap, Image* specularMap, Image* emissiveMap,
+	std::shared_ptr<Shader> shader,
+
+	std::shared_ptr<Image> diffuseMap, 
+	std::shared_ptr<Image> normalMap, 
+	std::shared_ptr<Image> specularMap, 
+	std::shared_ptr<Image> emissiveMap,
+
 	std::vector<Coord> diffuseMapVerticies, std::vector<Coord> normalMapVerticies,
 	std::vector<Coord> specularMapVerticies,std::vector<Coord> emissiveMapVerticies
 )
@@ -49,7 +54,7 @@ Material::Material(
 //	ClearVector<Coord>(emissiveMapVerticies);
 //}
 
-void Material::SetShader(Shader* shader)
+void Material::SetShader(std::shared_ptr<Shader> shader)
 {
 	this->shader = shader;
 }
@@ -59,22 +64,22 @@ void Material::SetCamera(std::shared_ptr<Camera> camera)
 	this->camera = camera;
 }
 
-void Material::SetDiffuseMap(Image* diffuseMap)
+void Material::SetDiffuseMap(std::shared_ptr<Image> diffuseMap)
 {
 	this->diffuseMap = diffuseMap;
 }
 
-void Material::SetNormalMap(Image* normalMap)
+void Material::SetNormalMap(std::shared_ptr<Image> normalMap)
 {
 	this->normalMap = normalMap;
 }
 
-void Material::SetSpecularMap(Image* specularMap)
+void Material::SetSpecularMap(std::shared_ptr<Image> specularMap)
 {
 	this->specularMap = specularMap;
 }
 
-void Material::SetEmissiveMap(Image* emissiveMap)
+void Material::SetEmissiveMap(std::shared_ptr<Image> emissiveMap)
 {
 	this->emissiveMap = emissiveMap;
 }
@@ -223,22 +228,22 @@ Color Material::GetDiffuse()
 }
 
 
-Image* Material::GetDiffuseMap()
+std::weak_ptr<Image> Material::GetDiffuseMap()
 {
 	return diffuseMap;
 }
 
-Image* Material::GetNormalMap()
+std::weak_ptr<Image> Material::GetNormalMap()
 {
 	return normalMap;
 }
 
-Image* Material::GetSpecularMap()
+std::weak_ptr<Image> Material::GetSpecularMap()
 {
 	return specularMap;
 }
 
-Image* Material::GetEmissiveMap()
+std::weak_ptr<Image> Material::GetEmissiveMap()
 {
 	return emissiveMap;
 }
@@ -304,7 +309,7 @@ Material& Material::operator=(const Material& other)
 }
 
 
-Shader* Material::GetShader()
+std::weak_ptr<Shader> Material::GetShader()
 {
 	return shader;
 }

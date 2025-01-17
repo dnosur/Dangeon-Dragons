@@ -45,7 +45,7 @@ bool SlicedImage::ValidateIndex(Coord& vertex_coord)
 	return true;
 }
 
-SlicedImage::SlicedImage(Image* image, std::vector<std::vector<std::pair<Coord, Coord>>> vertexes, Size frameSize)
+SlicedImage::SlicedImage(std::shared_ptr<Image> image, std::vector<std::vector<std::pair<Coord, Coord>>> vertexes, Size frameSize)
 {
 	this->image = image;
 	this->vertexes = vertexes;
@@ -53,7 +53,7 @@ SlicedImage::SlicedImage(Image* image, std::vector<std::vector<std::pair<Coord, 
 	this->Initilize();
 }
 
-SlicedImage::SlicedImage(Image* image, std::vector<int> widths, int height, Size frameSize)
+SlicedImage::SlicedImage(std::shared_ptr<Image> image, std::vector<int> widths, int height, Size frameSize)
 {
 	this->image = image;
 	this->frameSize = frameSize;
@@ -61,7 +61,7 @@ SlicedImage::SlicedImage(Image* image, std::vector<int> widths, int height, Size
 	Slice(widths, height);
 }
 
-SlicedImage::SlicedImage(Image* image, Size frameSize)
+SlicedImage::SlicedImage(std::shared_ptr<Image> image, Size frameSize)
 {
 	this->image = image;
 	this->frameSize = frameSize;
@@ -69,16 +69,16 @@ SlicedImage::SlicedImage(Image* image, Size frameSize)
 	Slice();
 }
 
-SlicedImage::~SlicedImage()
-{
-	if (image != nullptr) {
-		delete image;
-	}
-
-	if (!vertexes.empty()) {
-		vertexes.clear();
-	}
-}
+//SlicedImage::~SlicedImage()
+//{
+//	if (image != nullptr) {
+//		delete image;
+//	}
+//
+//	if (!vertexes.empty()) {
+//		vertexes.clear();
+//	}
+//}
 
 std::pair<Coord, Coord> SlicedImage::CalculateTextureVertexes(
 	Size tileSize, 
@@ -130,12 +130,12 @@ int SlicedImage::GetHeight()
 	return vertexes.size();
 }
 
-Image* SlicedImage::GetImage()
+std::weak_ptr<Image> SlicedImage::GetImage()
 {
 	return image;
 }
 
-void SlicedImage::SetImage(Image* image, bool copy)
+void SlicedImage::SetImage(std::shared_ptr<Image> image, bool copy)
 {
 	if (copy) {
 		*this->image = *image;
@@ -181,7 +181,7 @@ void SlicedImage::UseEmissiveMapVertexes(Material* material, Coord vertex_coord)
 	material->SetEmissiveMapVerticies(vertexes[vertex_coord.Y][vertex_coord.Y]);
 }
 
-VertexAnimation* SlicedImage::CreateVertexAnimation(int vertex_row_index)
+std::unique_ptr<VertexAnimation> SlicedImage::CreateVertexAnimation(int vertex_row_index)
 {
 	std::string name = "slice_" + generateRandomString(5);
 	return CreateVertexAnimation(
@@ -190,7 +190,7 @@ VertexAnimation* SlicedImage::CreateVertexAnimation(int vertex_row_index)
 	);
 }
 
-VertexAnimation* SlicedImage::CreateVertexAnimation(
+std::unique_ptr<VertexAnimation> SlicedImage::CreateVertexAnimation(
 	int vertex_row_index, 
 	std::pair<const char*, int> frame_setting
 )
@@ -212,14 +212,14 @@ VertexAnimation* SlicedImage::CreateVertexAnimation(
 		);
 	}
 
-	return new VertexAnimation(
+	return std::make_unique<VertexAnimation>(
 		frame_setting.first,
 		(int)(frames.size() * .7),
 		true, false, nullptr, frames
 	);
 }
 
-std::vector<VertexAnimation*> SlicedImage::CreateVertexAnimations()
+std::vector<std::unique_ptr<VertexAnimation>> SlicedImage::CreateVertexAnimations()
 {
 	std::vector<const char*> names;
 	std::vector<int> durations;
@@ -235,11 +235,11 @@ std::vector<VertexAnimation*> SlicedImage::CreateVertexAnimations()
 	);
 }
 
-std::vector<VertexAnimation*> SlicedImage::CreateVertexAnimations(
+std::vector<std::unique_ptr<VertexAnimation>> SlicedImage::CreateVertexAnimations(
 	std::pair<std::vector<const char*>, std::vector<int>> frames_settings
 )
 {
-	std::vector<VertexAnimation*> vertex_animations;
+	std::vector<std::unique_ptr<VertexAnimation>> vertex_animations;
 
 	for (int i = 0; i < vertexes.size(); i++) {
 		std::vector<std::pair<int, std::vector<Coord>>> frames;

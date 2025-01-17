@@ -86,14 +86,14 @@ Rect::Rect(
 
     material = std::make_unique<BaseFigureMaterial>();
     material->SetShader(
-        new Shader(
+        std::make_unique<Shader>(
             title, 
             "Dodge/shaders/Test/vertex.vs", 
             "Dodge/shaders/Test/fragment.frag"
         )
     );
     material->SetDiffuse(color);
-    material->SetDiffuseMap(new Image());
+    material->SetDiffuseMap(std::make_unique<Image>());
 
     this->moveDirection = moveDirection;
 
@@ -123,7 +123,7 @@ Rect::Rect(
 
     material = std::make_unique<BaseFigureMaterial>();
     material->SetShader(
-        new Shader(
+        std::make_unique<Shader>(
             title,
             "Dodge/shaders/Figures/vertex.vs",
             "Dodge/shaders/Figures/fragment.frag"
@@ -159,7 +159,7 @@ Rect::Rect(
 
     material = std::make_unique<BaseFigureMaterial>();
     material->SetShader(
-        new Shader(
+        std::make_unique<Shader>(
             title,
             "Dodge/shaders/Test/vertex.vs",
             "Dodge/shaders/Test/fragment.frag"
@@ -190,7 +190,9 @@ void Rect::Draw()
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
 
-    const bool isHasDiffuseVertexs = material->GetDiffuseMapVerticies().size() >= 2 && material->GetDiffuseMap() != nullptr;
+    const bool isHasDiffuseVertexs = 
+        material->GetDiffuseMapVerticies().size() >= 2 && 
+        material->GetDiffuseMap().lock() != nullptr;
     const Coord& textCoord1 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[0] : Coord(0, 0);
 	const Coord& textCoord2 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[1] : Coord(1, 1);
 
@@ -235,7 +237,9 @@ std::vector<float> Rect::GetVerticesByDirection(Rect& rect, Directions moveDirec
     Coord vertex1 = rect.GetVertices()[0];
     Coord vertex2 = rect.GetVertices()[1];
 
-    const bool isHasDiffuseVertexs = rect.material->GetDiffuseMapVerticies().size() >= 2 && rect.material->GetDiffuseMap() != nullptr;
+    const bool isHasDiffuseVertexs = 
+        rect.material->GetDiffuseMapVerticies().size() >= 2 && 
+        rect.material->GetDiffuseMap().lock() != nullptr;
     const Coord& textCoord1 = isHasDiffuseVertexs ? rect.material->GetDiffuseMapVerticies()[0] : Coord(0, 0);
     const Coord& textCoord2 = isHasDiffuseVertexs ? rect.material->GetDiffuseMapVerticies()[1] : Coord(1, 1);
 

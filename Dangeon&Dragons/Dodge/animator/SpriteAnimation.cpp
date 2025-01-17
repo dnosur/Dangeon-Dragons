@@ -258,7 +258,7 @@ void SpriteAnimation::Play(Coord coord, Size size)
 	frameSounds.Update(currentSpriteIndex);
 
 	if (currentSpriteIndex >= 0) {
-		currentFrameTitle = sprites[currentSpriteIndex];
+		currentFrameTitle.reset(sprites[currentSpriteIndex]);
 		sprites.DrawImage(currentFrameTitle->title, coord, size, window->GetSize(), Color(1, 1, 1), true);
 
 		if (rootTile != nullptr) {
@@ -312,17 +312,17 @@ void SpriteAnimation::Reverse()
 	reverse = !reverse;
 }
 
-void SpriteAnimation::SetRootTile(Image* image)
+void SpriteAnimation::SetRootTile(std::shared_ptr<Image> image)
 {
 	rootTile = image;
 }
 
-Image* SpriteAnimation::GetCurrentyFrame()
+std::shared_ptr<Image> SpriteAnimation::GetCurrentyFrame()
 {
 	return currentFrameTitle;
 }
 
-Image* SpriteAnimation::GetRootTile()
+std::shared_ptr<Image> SpriteAnimation::GetRootTile()
 {
 	return rootTile;
 }

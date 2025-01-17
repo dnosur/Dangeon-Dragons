@@ -57,7 +57,7 @@ Pawn::Pawn(
 	std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
 	Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
 	float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
-	std::vector<IAnimation*> animations
+	std::vector<std::shared_ptr<IAnimation>> animations
 ){
 	this->window = &window;
 
@@ -183,12 +183,12 @@ void Pawn::SetColor(Color color)
 	material->SetDiffuse(color);
 }
 
-void Pawn::AddAnimation(IAnimation* animation)
+void Pawn::AddAnimation(std::shared_ptr<IAnimation> animation)
 {
 	animations.AddAnimation(animation);
 }
 
-void Pawn::AddAnimations(std::vector<IAnimation*> animations)
+void Pawn::AddAnimations(std::vector<std::shared_ptr<IAnimation>> animations)
 {
 	this->animations.AddAnimations(animations);
 }
