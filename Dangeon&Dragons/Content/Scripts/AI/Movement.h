@@ -5,7 +5,7 @@
 
 struct Movement
 {
-	char* title;
+	std::string title;
 
 	bool complete;
 
@@ -18,7 +18,7 @@ struct Movement
 
 	Movement();
 	Movement(
-		const char* title, Directions direction, Actions action, 
+		std::string title, Directions direction, Actions action, 
 		IAnimation* animation, Coord position
 	);
 }; 

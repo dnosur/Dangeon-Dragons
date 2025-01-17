@@ -17,7 +17,12 @@ void WonderWold::CreateCamera()
 void WonderWold::SpawnPlayer()
 {
 	std::unique_ptr<Material> playerMaterial = std::make_unique<BaseFigureMaterial>();
-	IGameObject* playerSpawn = GetClassByName("PlayerSpawnPoint");
+	std::weak_ptr<IGameObject> weakPlayerSpawn = GetClassByName("PlayerSpawnPoint");
+	const std::shared_ptr<IGameObject> playerSpawn = weakPlayerSpawn.lock();
+
+	if (playerSpawn == nullptr) {
+		return;
+	}
 
 	playerMaterial->SetShader(
 		new Shader(
@@ -37,7 +42,7 @@ void WonderWold::SpawnPlayer()
 		)
 	);
 
-	player = std::unique_ptr<Player>(new Player(
+	player = std::make_shared<Player>(
 		"Player",
 		*window,
 		std::make_unique<BoxCollision>(
@@ -59,22 +64,26 @@ void WonderWold::SpawnPlayer()
 		true,
 		false,
 		false
-	));
+	);
 
-
-	camera->SetObservedObj(std::shared_ptr<Player>(player.get()));
+	camera->SetObservedObj(player);
 
 	WindowPointerController::SetPointer(
 		window->GetWindow(), 
 		WindowPointer<Player>("player", player.get())
 	);
 
-	GameObjects::Add(std::shared_ptr<class Pawn>(player.get()));
+	GameObjects::Add(std::dynamic_pointer_cast<class Pawn>(player));
 }
 
 void WonderWold::SpawnSkeleton(Coord pos)
 {
-	for (IGameObject* spawn : GetClassesByName("SkeletonSpawnPoint")) {
+	for (const std::weak_ptr<IGameObject>& weakSpawn : GetClassesByName("SkeletonSpawnPoint")) {
+		const std::shared_ptr<IGameObject> spawn = weakSpawn.lock();
+		if (spawn == nullptr) {
+			continue;
+		}
+
 		//skeleton->SetTarget(player);
 		std::unique_ptr<Material> skeletonMaterial = std::make_unique<BaseFigureMaterial>();
 		skeletonMaterial->SetShader(
@@ -97,7 +106,7 @@ void WonderWold::SpawnSkeleton(Coord pos)
 
 		skeletonMaterial->SetCamera(camera);
 
-		std::unique_ptr<Skeleton> skeleton = std::make_unique<Skeleton>(
+		std::shared_ptr<Skeleton> skeleton = std::make_unique<Skeleton>(
 			"Skeleton",
 			*window,
 			std::make_unique<BoxCollision>(
@@ -121,7 +130,7 @@ void WonderWold::SpawnSkeleton(Coord pos)
 			false
 		);
 
-		GameObjects::Add(std::shared_ptr<class Pawn>(skeleton.get()));
+		GameObjects::Add(std::dynamic_pointer_cast<class Pawn>(skeleton));
 		enemys.push_back(std::move(skeleton));
 	}
 }
@@ -172,7 +181,7 @@ void WonderWold::Update()
 	Coord cameraOffset = camera->GetOffset();
 	bool cameraMove = cameraOffset.X != 0 || cameraOffset.Y != 0;
 
-	for (IGameObject* obj : gameObjects)
+	for (const std::shared_ptr<IGameObject>& obj : gameObjects)
 	{
 		if (cameraMove) {
 			obj->SetPos(obj->GetPos() + cameraOffset);
@@ -190,7 +199,7 @@ void WonderWold::Update()
 	}
 
 	if (cameraMove) {
-		for (std::unique_ptr<class Pawn>& pawn : enemys) {
+		for (const std::shared_ptr<class Pawn>& pawn : enemys) {
 			pawn->SetPos(pawn->GetPos() + cameraOffset);
 			if (Skeleton* skeleton = dynamic_cast<Skeleton*>(pawn.get())) {
 				skeleton->SetPathOffset(cameraOffset);
@@ -206,7 +215,7 @@ void WonderWold::Update()
 			});
 		}
 
-		for (IGameObject* obj : gameClasses)
+		for (const std::shared_ptr<IGameObject>& obj : gameClasses)
 		{
 			obj->SetPos(obj->GetPos() + cameraOffset);
 			obj->GetCollision().lock()->SetPoints({
@@ -221,7 +230,7 @@ void WonderWold::Update()
 void WonderWold::UpdatePawns()
 {
 	camera->DropOffset();
-	for (std::unique_ptr<class Pawn>& pawn : enemys)
+	for (const std::shared_ptr<class Pawn>& pawn : enemys)
 	{
 		pawn->Update();
 	}

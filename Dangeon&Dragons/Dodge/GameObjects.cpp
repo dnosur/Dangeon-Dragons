@@ -46,6 +46,18 @@ void GameObjects::Add(std::vector<IGameObject*>* gameObjects)
 	}
 }
 
+void GameObjects::Add(std::vector<std::weak_ptr<IGameObject>>* gameObjects)
+{
+	for (const std::weak_ptr<IGameObject>& gameObject : *gameObjects)
+	{
+		const std::shared_ptr<IGameObject> gameObjectPtr = gameObject.lock();
+		if (gameObject.expired() || gameObjectPtr == nullptr) {
+			continue;
+		}
+		Add(gameObjectPtr);
+	}
+}
+
 std::weak_ptr<IGameObject> GameObjects::GetByTitle(const char* title)
 {
 	for (int i = 0; i < gameObjects.size(); i++)

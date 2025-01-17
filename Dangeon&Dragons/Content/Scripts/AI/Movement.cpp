@@ -3,7 +3,6 @@
 Movement::Movement()
 {
     complete = false;
-    title = nullptr;
 
 	action = Actions::Idle;
 	direction = Directions::DOWN;
@@ -11,10 +10,10 @@ Movement::Movement()
 }
 
 Movement::Movement(
-    const char* title, Directions direction, Actions action, 
+    std::string title, Directions direction, Actions action, 
     IAnimation* animation, Coord position)
 {
-	copyStr(title, this->title);
+	this->title = title;
 	complete = false;
 
 	this->direction = direction;

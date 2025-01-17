@@ -8,7 +8,7 @@
 #include "../../AI/Movement.h"
 
 class Skeleton
-	: public Pawn
+	: public Pawn, public std::enable_shared_from_this<Skeleton>
 {
     std::weak_ptr<Pawn> target;
     float viewDistance;
@@ -33,8 +33,6 @@ class Skeleton
     void LoadAudio() override;
 
     Directions GetDirection(Coord direction);
-
-    void Initialize() override;
     void Draw() override;
 
     void Move();
@@ -60,6 +58,8 @@ public:
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
         std::vector<IAnimation*> animations = {}
     );
+
+    void Initialize() override;
 
     Coord GetStartPos();
 

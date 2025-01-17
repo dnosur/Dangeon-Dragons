@@ -9,10 +9,10 @@
 class WonderWold 
 	: public TinyMap
 {
-	std::unique_ptr<Player> player;
+	std::shared_ptr<Player> player;
 	std::shared_ptr<Camera> camera;
 
-	std::vector<std::unique_ptr<class Pawn>> enemys;
+	std::vector<std::shared_ptr<class Pawn>> enemys;
 
 	AudioController audioController;
 

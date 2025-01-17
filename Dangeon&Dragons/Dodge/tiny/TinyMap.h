@@ -14,8 +14,8 @@ protected:
 
 	AnimationController animationController;
 
-	std::vector<IGameObject*> gameObjects;
-	std::vector<IGameObject*> gameClasses;
+	std::vector<std::shared_ptr<IGameObject>> gameObjects;
+	std::vector<std::shared_ptr<IGameObject>> gameClasses;
 
 	void MoveCollison(std::shared_ptr<ICollision> collision, Coord* pos = nullptr);
 
@@ -28,9 +28,9 @@ public:
 
 	virtual void Update() = 0;
 
-	std::vector<IGameObject*> GetClassesByType(const char* type);
-	std::vector<IGameObject*> GetClassesByName(const char* name);
-	IGameObject* GetClassByName(const char* name);
+	std::vector<std::weak_ptr<IGameObject>> GetClassesByType(const char* type);
+	std::vector<std::weak_ptr<IGameObject>> GetClassesByName(const char* name);
+	std::weak_ptr<IGameObject> GetClassByName(const char* name);
 
 	Window* GetWindow();
 	TileMap* GetTileMap();

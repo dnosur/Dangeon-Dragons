@@ -4,7 +4,7 @@
 #include <mutex>
 
 class Player :
-    public Pawn
+    public Pawn, public std::enable_shared_from_this<Player>
 {
     Keyboard* keyboard;
 
@@ -18,8 +18,6 @@ class Player :
     const char* GetAnimationName() override;
 
     void LoadAudio() override;
-
-    void Initialize() override;
 	void Draw() override;
 
     void Move();
@@ -39,6 +37,8 @@ public:
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
         std::vector<IAnimation*> animations = {}
     );
+
+    void Initialize() override;
 
     Coord GetStartPos();
 

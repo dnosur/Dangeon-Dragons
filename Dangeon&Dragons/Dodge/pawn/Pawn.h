@@ -72,8 +72,6 @@ protected:
 	virtual const char* GetAnimationName() = 0;
 
 	virtual void LoadAudio() = 0;
-
-	virtual void Initialize() = 0;
 	virtual void Draw() = 0;
 
 	void MathPos(std::vector<Coord> vertexes);
@@ -91,6 +89,8 @@ public:
 		std::vector<IAnimation*> animations = {}
 	);
 	virtual ~Pawn() = default;
+
+	virtual void Initialize() = 0;
 
 	void SetMoveDirection(Directions moveDirection);
 

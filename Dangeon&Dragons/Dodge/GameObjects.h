@@ -19,6 +19,7 @@ public:
 	static void Add(std::shared_ptr<class Pawn> pawn);
 
 	static void Add(std::vector<IGameObject*>* gameObjects);
+	static void Add(std::vector<std::weak_ptr<IGameObject>>* gameObjects);
 
 	static std::weak_ptr<IGameObject> GetByTitle(const char* title);
 	template <typename T>

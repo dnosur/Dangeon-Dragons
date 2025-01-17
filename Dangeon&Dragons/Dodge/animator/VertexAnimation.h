@@ -34,7 +34,9 @@ class VertexAnimation :
 	IGameObject* object;
 
 public:
-	VertexAnimation(const char* title, int frameRate, bool repeat, bool stopOnEnd, IGameObject* object, std::vector<
+	VertexAnimation(
+		const char* title, int frameRate, bool repeat, bool stopOnEnd, 
+		IGameObject* object, std::vector<
 		std::pair<int, std::vector<Coord>>> frames = {}
 	);
 

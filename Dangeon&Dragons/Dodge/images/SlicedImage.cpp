@@ -1,5 +1,7 @@
 #include "SlicedImage.h"
 
+#include "../pawn/Pawn.h"
+
 void SlicedImage::CalculateVertexes(int row_index, int start_column, int max_column)
 {
 	bool haveMaxColumn = max_column > 0;

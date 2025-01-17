@@ -27,7 +27,7 @@ VertexAnimation::VertexAnimation(
 
 void VertexAnimation::Play()
 {
-	Play(object->GetPos(), object->GetSize());
+	Play(object->GetPos(), _object->GetSize());
 }
 
 void VertexAnimation::Play(Coord coord, Size size)
@@ -36,7 +36,7 @@ void VertexAnimation::Play(Coord coord, Size size)
 		Restart();
 	}
 
-	if (end || pause) {
+	if (end || pause || object.expired()) {
 		return;
 	}
 
@@ -75,7 +75,7 @@ void VertexAnimation::Play(Coord coord, Size size)
 		if (currentAnimationIndex >= 0 && currentAnimationIndex < frames.size())
 		{
 			// Используем ссылку на вектор, чтобы избежать создания копии
-			object->GetMaterial().lock()->SetDiffuseMapVerticies(frames[currentAnimationIndex].second);
+			object.lock()->GetMaterial().lock()->SetDiffuseMapVerticies(frames[currentAnimationIndex].second);
 			delay = frames[currentAnimationIndex].first;
 		}
 	}
@@ -131,7 +131,12 @@ void VertexAnimation::Reverse()
 
 char* VertexAnimation::GetFolder()
 {
-	return object->GetMaterial().lock()->GetDiffuseMap()->path;
+	const std::shared_ptr<IGameObject> _object = object.lock();
+	if (object.expired() || _object == nullptr) {
+		return nullptr;
+	}
+
+	return _object->GetMaterial().lock()->GetDiffuseMap()->path;
 }
 
 void VertexAnimation::LoadFromFolder(char* folder)
@@ -200,12 +205,12 @@ int VertexAnimation::GetFramesCount()
 	return frames.size();
 }
 
-IGameObject* VertexAnimation::GetGameObject()
+std::weak_ptr<IGameObject> VertexAnimation::GetGameObject()
 {
 	return object;
 }
 
-void VertexAnimation::SetGameObject(IGameObject* object)
+void VertexAnimation::SetGameObject(std::weak_ptr<IGameObject> object)
 {
 	this->object = object;
 }

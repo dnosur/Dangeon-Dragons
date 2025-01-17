@@ -340,7 +340,7 @@ void Player::Raycasting()
 
 bool Player::CheckForCollision()
 {
-	WindowPointer<std::vector<IGameObject*>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<IGameObject*>>(
+	WindowPointer<std::vector<std::shared_ptr<IGameObject>>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<std::shared_ptr<IGameObject>>>(
 		window->GetWindow(), 
 		"SolidCollisions"
 	);
@@ -349,7 +349,7 @@ bool Player::CheckForCollision()
 		return true;
 	}
 
-	for (IGameObject* collisionObj : solidCollisionsObjects->GetValue()) {
+	for (const std::shared_ptr<IGameObject>& collisionObj : solidCollisionsObjects->GetValue()) {
 		const std::shared_ptr<ICollision>& collision = collisionObj->GetCollision().lock();
 		if (!collision) {
 			continue;
@@ -371,12 +371,12 @@ bool Player::CheckForCollision()
 
 bool Player::CheckForCollision(Coord pos, Size size)
 {
-	WindowPointer<std::vector<IGameObject*>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<IGameObject*>>(window->GetWindow(), "SolidCollisions");
+	WindowPointer<std::vector<std::shared_ptr<IGameObject>>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<std::shared_ptr<IGameObject>>>(window->GetWindow(), "SolidCollisions");
 	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().empty()) {
 		return true;
 	}
 
-	for (IGameObject* collisionObj : solidCollisionsObjects->GetValue()) {
+	for (const std::shared_ptr<IGameObject>& collisionObj : solidCollisionsObjects->GetValue()) {
 		const std::shared_ptr<ICollision>& collision = collisionObj->GetCollision().lock();
 		if (!collision) {
 			continue;

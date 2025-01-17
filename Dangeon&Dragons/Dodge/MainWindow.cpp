@@ -68,10 +68,15 @@ void MainWindow::Update()
         Coord(100, -400)
     );
 
-    std::vector<IGameObject*> solidCollisions = wonderWold->GetClassesByType("SolidCollision");
+    std::vector<std::weak_ptr<IGameObject>> solidCollisions = wonderWold->GetClassesByType("SolidCollision");
 
     if (!solidCollisions.empty()) {
-        WindowPointerController::SetPointer(window, WindowPointer<std::vector<IGameObject*> >("SolidCollisions", &solidCollisions));
+        WindowPointerController::SetPointer(
+            window, 
+            WindowPointer<std::vector<std::weak_ptr<IGameObject>>>(
+                "SolidCollisions", &solidCollisions
+            )
+        );
     }
 
     GameObjects::Add(&solidCollisions);
