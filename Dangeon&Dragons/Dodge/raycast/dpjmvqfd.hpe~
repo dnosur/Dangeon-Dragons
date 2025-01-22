@@ -4,8 +4,8 @@
 Ray::Ray(std::unique_ptr<Coord> origin, std::unique_ptr<Coord> direction, float rayWidth)
 {
 	this->origin = std::move(origin);
-	this->direction = std::move(direction);
+	this->direction = direction;
 	this->rayWidth = rayWidth;
 
-	raySize = CalculateDistanceRef(*this->origin, *this->direction);
+	raySize = CalculateDistanceRef(*origin, *direction);
 }

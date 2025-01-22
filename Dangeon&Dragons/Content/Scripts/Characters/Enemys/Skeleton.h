@@ -20,7 +20,7 @@ class Skeleton
     Coord offset;
 
     //В дальнейшем перенести в класс!
-    std::vector<Movement*> movements;
+    std::vector<std::shared_ptr<Movement>> movements;
 	int movementIndex;
 
     std::mutex pathMutex;
@@ -48,7 +48,7 @@ class Skeleton
     bool FindPath(Coord start, Coord goal);
     bool FindTarget();
 
-    std::vector<Movement*> GetNeighbors(Coord position);
+    std::vector<std::unique_ptr<Movement>> GetNeighbors(Coord position);
     bool IsWalkable(Coord position);
 public:
     Skeleton(

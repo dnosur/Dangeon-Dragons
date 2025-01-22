@@ -18,7 +18,7 @@ void WonderWold::SpawnPlayer()
 {
 	std::unique_ptr<Material> playerMaterial = std::make_unique<BaseFigureMaterial>();
 	std::weak_ptr<IGameObject> weakPlayerSpawn = GetClassByName("PlayerSpawnPoint");
-	const std::shared_ptr<IGameObject>& playerSpawn = weakPlayerSpawn.lock();
+	std::shared_ptr<IGameObject> playerSpawn = weakPlayerSpawn.lock();
 
 	if (playerSpawn == nullptr) {
 		return;
@@ -78,8 +78,8 @@ void WonderWold::SpawnPlayer()
 
 void WonderWold::SpawnSkeleton(Coord pos)
 {
-	for (const std::weak_ptr<IGameObject>& weakSpawn : GetClassesByName("SkeletonSpawnPoint")) {
-		const std::shared_ptr<IGameObject>& spawn = weakSpawn.lock();
+	for (std::weak_ptr<IGameObject>& weakSpawn : GetClassesByName("SkeletonSpawnPoint")) {
+		std::shared_ptr<IGameObject> spawn = weakSpawn.lock();
 		if (spawn == nullptr) {
 			continue;
 		}
@@ -132,6 +132,7 @@ void WonderWold::SpawnSkeleton(Coord pos)
 
 		GameObjects::Add(std::dynamic_pointer_cast<class Pawn>(skeleton));
 		enemys.push_back(std::move(skeleton));
+		return;
 	}
 }
 
@@ -181,7 +182,7 @@ void WonderWold::Update()
 	Coord cameraOffset = camera->GetOffset();
 	bool cameraMove = cameraOffset.X != 0 || cameraOffset.Y != 0;
 
-	for (const std::shared_ptr<IGameObject>& obj : gameObjects)
+	for (std::shared_ptr<IGameObject>& obj : gameObjects)
 	{
 		if (cameraMove) {
 			obj->SetPos(obj->GetPos() + cameraOffset);
@@ -199,13 +200,13 @@ void WonderWold::Update()
 	}
 
 	if (cameraMove) {
-		for (const std::shared_ptr<class Pawn>& pawn : enemys) {
+		for (std::shared_ptr<class Pawn>& pawn : enemys) {
 			pawn->SetPos(pawn->GetPos() + cameraOffset);
-			if (const std::shared_ptr<Skeleton>& skeleton = std::dynamic_pointer_cast<Skeleton>(pawn)) {
+			if (std::shared_ptr<Skeleton> skeleton = std::dynamic_pointer_cast<Skeleton>(pawn)) {
 				skeleton->SetPathOffset(cameraOffset);
 			}
 
-			const std::shared_ptr<ICollision>& collision = pawn->GetCollision().lock();
+			std::shared_ptr<ICollision> collision = pawn->GetCollision().lock();
 			if (collision == nullptr) {
 				continue;
 			}
@@ -215,7 +216,7 @@ void WonderWold::Update()
 			});
 		}
 
-		for (const std::shared_ptr<IGameObject>& obj : gameClasses)
+		for (std::shared_ptr<IGameObject>& obj : gameClasses)
 		{
 			obj->SetPos(obj->GetPos() + cameraOffset);
 			obj->GetCollision().lock()->SetPoints({
@@ -230,7 +231,7 @@ void WonderWold::Update()
 void WonderWold::UpdatePawns()
 {
 	camera->DropOffset();
-	for (const std::shared_ptr<class Pawn>& pawn : enemys)
+	for (std::shared_ptr<class Pawn>& pawn : enemys)
 	{
 		pawn->Update();
 	}

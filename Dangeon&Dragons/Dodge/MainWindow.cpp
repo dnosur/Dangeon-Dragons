@@ -79,6 +79,11 @@ void MainWindow::Update()
         );
     }
 
+    std::unique_ptr<Font> sampleFont = std::make_unique<Font>(
+        "Sample",
+        "Content/Fonts/Not Jam Glasgow 13/Not Jam Glasgow 13.ttf"
+    );
+
     GameObjects::Add(&solidCollisions);
 
     while (!glfwWindowShouldClose(GetWindow()) && !IsClosed())
@@ -104,6 +109,8 @@ void MainWindow::Update()
         }
 
         wonderWold->Update();
+
+        sampleFont->RenderText("Sample text!", Coord(100, 100), 1.0f, Color(1.0f, 1.0f, 1.0f));
 
         mouse.Update();
         keyboard.Update();

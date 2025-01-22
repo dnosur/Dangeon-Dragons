@@ -8,6 +8,7 @@ struct Vec2;
 struct alignas(16) Coord
 {
     Coord();
+
     constexpr Coord(const double X, const double Y, const double Z = 0.0);
     constexpr Coord(COORD coord);
 

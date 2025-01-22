@@ -495,4 +495,8 @@
   <ItemGroup>
     <Text Include="Dodge\project properties.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Dodge\shaders\Font\fragment.frag" />
+    <None Include="Dodge\shaders\Font\vertex.vs" />
+  </ItemGroup>
 </Project>

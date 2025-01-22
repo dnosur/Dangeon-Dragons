@@ -388,7 +388,7 @@ void Skeleton::Move()
 void Skeleton::Drag(Coord newPos)
 {
 	std::weak_ptr<Audio> weakWalk = audioController["walk"];
-	const std::shared_ptr<Audio>& walk = weakWalk.lock();
+	std::shared_ptr<Audio> walk = weakWalk.lock();
 	if (walk == nullptr) return;
 
 	if (walk != nullptr && walk->GetState() != AudioStates::PLAYING) {
@@ -405,8 +405,8 @@ bool Skeleton::CheckForCollision(Coord position)
 		return true;
 	}
 
-	for (const std::shared_ptr<IGameObject>& collisionObj : solidCollisionsObjects->GetValue()) {
-		const std::shared_ptr<ICollision>& collision = collisionObj->GetCollision().lock();
+	for (std::shared_ptr<IGameObject>& collisionObj : solidCollisionsObjects->GetValue()) {
+		std::shared_ptr<ICollision> collision = collisionObj->GetCollision().lock();
 		if (collision == nullptr) {
 			continue;
 		}
@@ -434,7 +434,7 @@ void Skeleton::AIMovement()
 {
 	if (isDead) return;
 
-	const std::shared_ptr<class Pawn>& _target = target.lock();
+	std::shared_ptr<class Pawn> _target = target.lock();
 
 	if (!movements.empty() && movements.size() == movementIndex) {
 		movements.clear();
@@ -448,15 +448,15 @@ void Skeleton::AIMovement()
 
 		Thread* findTarget = new Thread(nullptr, [&]() {
 			std::weak_ptr<Player> player = GameObjects::GetDynamicByTitle<Player>("Player");
-			const std::shared_ptr<Player>& _player = player.lock();
+			std::shared_ptr<Player> _player = player.lock();
 
 			if (_player == nullptr) {
 				return;
 			}
 
 			std::unique_ptr<Ray> ray = std::move(RayFactory::CreateRay(
-				new Coord(startPos),
-				new Coord(_player->GetStartPos())
+				std::move(std::make_unique<Coord>(startPos)),
+				std::move(std::make_unique<Coord>(_player->GetStartPos()))
 			));
 
 			if (ray == nullptr || ray->raySize > viewDistance) {
@@ -465,17 +465,15 @@ void Skeleton::AIMovement()
 			}
 
 			std::weak_ptr<IGameObject> target = Raycast::RaycastFirst(
-			   std::move(RayFactory::CreateRay(
-					new Coord(startPos),
-					new Coord(_player->GetStartPos())
-				))
+				RayFactory::CreateRay(
+					std::move(std::make_unique<Coord>(startPos)),
+					std::move(std::make_unique<Coord>(_player->GetStartPos()))
+				)
 			);
 
 			if (_target != _player) {
 				return;
 			}
-
-			std::cout << "Found player\n";
 			this->SetTarget(player);
 		});
 
@@ -484,13 +482,13 @@ void Skeleton::AIMovement()
 	}
 
 	if (!movements.empty()) {
-		Movement* movement = movements[movementIndex];
+		std::shared_ptr<Movement>& movement = movements[movementIndex];
 
 		action = movement->action;
 		moveDirection = movement->direction;
 
 		SetPos(movement->position);
-		const std::shared_ptr<IAnimation>& anim = movement->animation;
+		std::shared_ptr<IAnimation>& anim = movement->animation;
 
 		if (anim == nullptr) {
 			return;
@@ -509,14 +507,19 @@ void Skeleton::AIMovement()
 			std::lock_guard<std::mutex> lock(pathMutex);
 			Coord targetPos;
 
-			if (const std::shared_ptr<Player>& player = std::dynamic_pointer_cast<Player>(_target)) {
+			if (std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(_target)) {
 				targetPos = player->GetStartPos();
 			}
 			else {
 				targetPos = _target->GetPos();
 			}
 
-			std::unique_ptr<Ray> ray = std::move(RayFactory::CreateRay(&startPos, &targetPos));
+			std::unique_ptr<Ray> ray = std::move(
+				RayFactory::CreateRay(
+					std::move(std::make_unique<Coord>(startPos)),
+					std::move(std::make_unique<Coord>(targetPos))
+				)
+			);
 
 			if (ray == nullptr || ray->raySize > viewDistance) {
 				ray.release();
@@ -535,7 +538,6 @@ void Skeleton::AIMovement()
 		std::thread([this]() {
 			float wanderRadius = 100.0f;
 			Coord randomPosition = GenerateRandomPosition(GetPos(), wanderRadius);
-
 			std::lock_guard<std::mutex> lock(pathMutex);
 			FindPath(GetPos(), randomPosition);
 			findingPath = false;
@@ -578,7 +580,7 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 	findingPath = true;
 
 	//Текущий путь
-	std::priority_queue<Node*, std::vector<Node*>, CompareNodes> openList;
+	std::priority_queue<std::shared_ptr<Node>, std::vector<std::shared_ptr<Node>>, CompareNodes> openList;
 
 	//Закрытый
 	std::unordered_map<int, bool> closedList;
@@ -589,8 +591,8 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 	auto GetKey = [](Coord pos) { return pos.X * 10000 + pos.Y; };
 
 	//Начальная позиция
-	Node* startNode = new Node(
-		new Movement(
+	std::shared_ptr<Node> startNode = std::make_shared<Node>(
+		std::make_unique<Movement>(
 			GetAnimationName(),
 			moveDirection,
 			action,
@@ -605,7 +607,7 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 	openListCosts[GetKey(start)] = startNode->gCost;
 
 	while (!openList.empty()) {
-		Node* currentNode = openList.top();
+		std::shared_ptr<Node> currentNode = openList.top();
 		openList.pop();
 		if (closedList[GetKey(currentNode->movement->position)]) {
 			continue;
@@ -613,11 +615,14 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 
 		//Цель достигнута
 		if (Pawn::IsNear(currentNode->movement->position, goal, damageDistance - 10)) {
-			Node* node = currentNode;
+			std::shared_ptr<Node> node = currentNode;
+			int i = 0;
 			while (node != nullptr) {
 				movements.push_back(node->movement);
 				node = node->parent;
+				i++;
 			}
+
 			std::reverse(movements.begin(), movements.end());
 			return true;
 		}
@@ -625,8 +630,7 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 		closedList[GetKey(currentNode->movement->position)] = true;
 
 		//Проверяем все стороны движения
-		std::vector<Movement*> neighbors = GetNeighbors(currentNode->movement->position);
-		for (Movement*& neighbor : neighbors) {
+		for (std::unique_ptr<Movement>& neighbor : GetNeighbors(currentNode->movement->position)) {
 			Coord& neighborPos = neighbor->position;
 			int neighborKey = GetKey(neighborPos);
 
@@ -641,8 +645,14 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 				continue;
 			}
 
-			Node* neighborNode = new Node(neighbor, tentativeGCost, std::hypot(goal.X - neighborPos.X, goal.Y - neighborPos.Y), currentNode);
-			openList.push(neighborNode);
+			std::unique_ptr<Node> neighborNode = std::make_unique<Node>(
+				std::move(neighbor),
+				tentativeGCost, 
+				std::hypot(goal.X - neighborPos.X, goal.Y - neighborPos.Y), 
+				currentNode
+			);
+
+			openList.push(std::move(neighborNode));
 			openListCosts[neighborKey] = tentativeGCost;
 		}
 	}
@@ -655,9 +665,9 @@ bool Skeleton::FindTarget()
 	return true;
 }
 
-std::vector<Movement*> Skeleton::GetNeighbors(Coord position)
+std::vector<std::unique_ptr<Movement>> Skeleton::GetNeighbors(Coord position)
 {
-	std::vector<Movement*> neighbors;
+	std::vector<std::unique_ptr<Movement>> neighbors;
 	std::vector<Coord> directions = {
 		{ 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 }, // Основные направления
 		{ 1, 1 }, { 1, -1 }, { -1, 1 }, { -1, -1 } // Диагональные направления
@@ -674,7 +684,7 @@ std::vector<Movement*> Skeleton::GetNeighbors(Coord position)
 
 			const char* title = GetAnimationMovementName(dir);
 			neighbors.push_back(
-				new Movement(
+				std::make_unique<Movement>(
 					title, 
 					GetDirection(dir), Actions::Move,
 					animations[title].lock(), neighbor

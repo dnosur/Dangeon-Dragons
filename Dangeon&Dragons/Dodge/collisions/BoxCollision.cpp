@@ -86,7 +86,7 @@ void BoxCollision::SetKinematic(bool kinematic)
 
 bool BoxCollision::IsCollisionEnter(IGameObject* gameObject)
 {
-    const std::shared_ptr<ICollision>& collision = gameObject->GetCollision().lock();
+    std::shared_ptr<ICollision> collision = gameObject->GetCollision().lock();
 
     if (!gameObject || !collision) {
         return false;
@@ -132,7 +132,7 @@ bool BoxCollision::IsCollisionEnter(IGameObject* gameObject)
         return false;
     }
 
-    for (const Coord& p : otherPoints) {
+    for (Coord& p : otherPoints) {
         if (p.X >= xMin1 && p.X <= xMax1 && p.Y >= yMin1 && p.Y <= yMax1) {
             if (IsExist(gameObject)) {
                 return true;

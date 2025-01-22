@@ -5,7 +5,15 @@
 std::unique_ptr<Ray> CreateRayToTarget(Coord* origin, class Pawn* target, float rayWidth)
 {
     if (Player* player = dynamic_cast<Player*>(target)) {
-        return std::move(RayFactory::CreateRay(origin, new Coord(player->GetStartPos()), rayWidth));
+        return RayFactory::CreateRay(
+            std::move(std::make_unique<Coord>(*origin)),
+            std::move(std::make_unique<Coord>(player->GetStartPos())),
+            rayWidth
+        );
     }
-    return std::move(RayFactory::CreateRay(origin, new Coord(target->GetPos()), rayWidth));
+    return RayFactory::CreateRay(
+        std::move(std::make_unique<Coord>(*origin)),
+        std::move(std::make_unique<Coord>(target->GetPos())),
+        rayWidth
+    );
 }

@@ -6,8 +6,8 @@ void SetRaycastedObject(
 	std::unique_ptr<Color> color
 )
 {
-	const std::shared_ptr<IGameObject>& _raycastedObject = raycastedObject.lock();
-	const std::shared_ptr<IGameObject>& _target = target.lock();
+	std::shared_ptr<IGameObject> _raycastedObject = raycastedObject.lock();
+	std::shared_ptr<IGameObject> _target = target.lock();
 
 	if (_raycastedObject != nullptr &&
 		_raycastedObject != _target

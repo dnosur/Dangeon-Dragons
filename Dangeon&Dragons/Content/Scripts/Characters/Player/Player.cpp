@@ -287,7 +287,7 @@ void Player::Drag(Coord newPos)
 	}
 
 	std::weak_ptr<Audio> weakWalk = audioController["walk-grass"];
-	const std::shared_ptr<Audio>& walk = weakWalk.lock();
+	std::shared_ptr<Audio> walk = weakWalk.lock();
 
 	if (walk != nullptr && walk->GetState() != AudioStates::PLAYING) {
 		audioController.Play("walk-grass");
@@ -297,19 +297,23 @@ void Player::Drag(Coord newPos)
 
 void Player::Raycasting()
 {
-	std::unique_ptr<Ray> interactiveRay = std::move(RayFactory::CreateRay(
-		&startPos,
-		&moveDirection,
-		interactiveDistance,
-		20
-	));
+	std::unique_ptr<Ray> interactiveRay = std::move(
+		RayFactory::CreateRay(
+			std::move(std::make_unique<Coord>(startPos)),
+			std::move(std::make_unique<Directions>(moveDirection)),
+			interactiveDistance,
+			20
+		)
+	);
 
-	std::unique_ptr<Ray> damageRay = std::move(RayFactory::CreateRay(
-		&startPos,
-		&moveDirection,
-		damageDistance,
-		20
-	));
+	std::unique_ptr<Ray> damageRay = std::move(
+		RayFactory::CreateRay(
+			std::move(std::make_unique<Coord>(startPos)),
+			std::move(std::make_unique<Directions>(moveDirection)),
+			damageDistance,
+			20
+		)
+	);
 
 	std::weak_ptr<IGameObject> interactiveCollision = Raycast::RaycastFirst(
 		std::move(interactiveRay)
@@ -319,8 +323,8 @@ void Player::Raycasting()
 		std::move(damageRay)
 	);
 
-	const std::shared_ptr<IGameObject>& _interactiveCollision = interactiveCollision.lock();
-	const std::shared_ptr<IGameObject>& _interactiveObject = interactiveObject.lock();
+	std::shared_ptr<IGameObject> _interactiveCollision = interactiveCollision.lock();
+	std::shared_ptr<IGameObject> _interactiveObject = interactiveObject.lock();
 
 	if (_interactiveCollision != nullptr &&
 		_interactiveCollision->GetLayer() != Layer::MainPlayer &&
@@ -333,8 +337,8 @@ void Player::Raycasting()
 		interactiveObject.reset();
 	}
 
-	const std::shared_ptr<IGameObject>& _damageCollision = damageCollision.lock();
-	const std::shared_ptr<IGameObject>& _damageObject = damageObject.lock();
+	std::shared_ptr<IGameObject> _damageCollision = damageCollision.lock();
+	std::shared_ptr<IGameObject> _damageObject = damageObject.lock();
 
 	if (_damageCollision != nullptr &&
 		_interactiveCollision->GetLayer() != Layer::MainPlayer &&
@@ -359,8 +363,8 @@ bool Player::CheckForCollision()
 		return true;
 	}
 
-	for (const std::shared_ptr<IGameObject>& collisionObj : solidCollisionsObjects->GetValue()) {
-		const std::shared_ptr<ICollision>& collision = collisionObj->GetCollision().lock();
+	for (std::shared_ptr<IGameObject> collisionObj : solidCollisionsObjects->GetValue()) {
+		std::shared_ptr<ICollision> collision = collisionObj->GetCollision().lock();
 		if (!collision) {
 			continue;
 		}
@@ -386,8 +390,8 @@ bool Player::CheckForCollision(Coord pos, Size size)
 		return true;
 	}
 
-	for (const std::shared_ptr<IGameObject>& collisionObj : solidCollisionsObjects->GetValue()) {
-		const std::shared_ptr<ICollision>& collision = collisionObj->GetCollision().lock();
+	for (std::shared_ptr<IGameObject> collisionObj : solidCollisionsObjects->GetValue()) {
+		std::shared_ptr<ICollision> collision = collisionObj->GetCollision().lock();
 		if (!collision) {
 			continue;
 		}

@@ -224,7 +224,7 @@ std::vector<Image> ImagesController::GetImages()
 void ImagesController::SetImages(std::vector<Image> images)
 {
     Clear();
-    for (const Image& image : images) {
+    for (Image& image : images) {
         this->images.push_back(image);
     }
 }

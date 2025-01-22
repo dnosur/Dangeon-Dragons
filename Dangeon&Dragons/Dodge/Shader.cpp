@@ -1,5 +1,7 @@
 #include "Shader.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 void Shader::Load()
 {
     // 1. retrieve the vertex/fragment source code from filePath
@@ -203,9 +205,9 @@ void Shader::SetVec4(const char* name, float x, float y, float z, float w) const
 	glUniform4f(glGetUniformLocation(id, name), x, y, z, w);
 }
 
-void Shader::SetMat4(const char* name, Mat4 mat)
+void Shader::SetMat4(const char* name, glm::mat4& matrix) const
 {
-    glUniformMatrix4fv(glGetUniformLocation(id, name), 1, GL_FALSE, mat.elements);
+    glUniformMatrix4fv(glGetUniformLocation(id, name), 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 void Shader::SetColor(const char* name, Color color)

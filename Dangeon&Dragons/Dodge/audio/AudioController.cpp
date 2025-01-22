@@ -15,7 +15,7 @@ AudioController::AudioController()
 AudioController::AudioController(std::vector<std::shared_ptr<Audio>> sounds)
 {
 	Clear();
-	for (const std::shared_ptr<Audio>& sound : sounds) {
+	for (std::shared_ptr<Audio>& sound : sounds) {
 		this->sounds.push_back(sound);
 	}
 }
@@ -45,7 +45,7 @@ int AudioController::GetSize()
 
 std::weak_ptr<Audio> AudioController::operator[](const char* title)
 {
-	for (const std::shared_ptr<Audio>& sound : sounds) {
+	for (std::shared_ptr<Audio>& sound : sounds) {
 		if (!strcmp(sound->GetTitle(), title)) {
 			return sound;
 		}

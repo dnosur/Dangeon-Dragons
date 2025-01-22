@@ -3,7 +3,7 @@
 
 std::weak_ptr<IAnimation> AnimationController::GetByTitle(const char* title)
 {
-	for (const std::shared_ptr<IAnimation>& animation : animations) {
+	for (std::shared_ptr<IAnimation>& animation : animations) {
 		if (!strcmp(animation->GetTitle(), title)) {
 			return animation;
 		}
@@ -14,7 +14,7 @@ std::weak_ptr<IAnimation> AnimationController::GetByTitle(const char* title)
 std::weak_ptr<IAnimation> AnimationController::GetByTitle(const char* title, int& index)
 {
 	index = 0;
-	for (const std::shared_ptr<IAnimation>& animation : animations) {
+	for (std::shared_ptr<IAnimation>& animation : animations) {
 		if (!strcmp(animation->GetTitle(), title)) {
 			return animation;
 		}
@@ -75,15 +75,15 @@ void AnimationController::AddAnimation(std::shared_ptr<IAnimation> animation)
 
 void AnimationController::AddAnimations(std::vector<std::shared_ptr<IAnimation>> animations)
 {
-	for (const std::shared_ptr<IAnimation>& animation : animations) {
+	for (std::shared_ptr<IAnimation>& animation : animations) {
 		AddAnimation(animation);
 	}
 }
 
 void AnimationController::Play(int index)
 {
-	const std::weak_ptr<IAnimation>& weakAnimation = GetByIndex(index);
-	const std::shared_ptr<IAnimation>& animation = weakAnimation.lock();
+	std::weak_ptr<IAnimation> weakAnimation = GetByIndex(index);
+	std::shared_ptr<IAnimation> animation = weakAnimation.lock();
 
 	if (animation == nullptr || weakAnimation.expired()) {
 		return;
@@ -96,8 +96,8 @@ void AnimationController::Play(int index)
 
 void AnimationController::Play(int index, Coord pos, Size size)
 {
-	const std::weak_ptr<IAnimation>& weakAnimation = GetByIndex(index);
-	const std::shared_ptr<IAnimation>& animation = weakAnimation.lock();
+	std::weak_ptr<IAnimation> weakAnimation = GetByIndex(index);
+	std::shared_ptr<IAnimation> animation = weakAnimation.lock();
 
 	if (animation == nullptr || weakAnimation.expired()) {
 		return;
@@ -129,8 +129,8 @@ void AnimationController::PlayOnEnd(int index, Coord pos, Size size)
 bool AnimationController::Play(const char* title)
 {
 	int newIndex = 0;
-	const std::weak_ptr<IAnimation>& weakAnimation = GetByTitle(title, newIndex);
-	const std::shared_ptr<IAnimation>& animation = weakAnimation.lock();
+	std::weak_ptr<IAnimation> weakAnimation = GetByTitle(title, newIndex);
+	std::shared_ptr<IAnimation> animation = weakAnimation.lock();
 
 	if (animation == nullptr || weakAnimation.expired()) {
 		return false;
@@ -151,8 +151,8 @@ bool AnimationController::Play(const char* title)
 void AnimationController::Play(const char* title, Coord pos, Size size)
 {
 	int newIndex = 0;
-	const std::weak_ptr<IAnimation>& weakAnimation = GetByTitle(title, newIndex);
-	const std::shared_ptr<IAnimation>& animation = weakAnimation.lock();
+	std::weak_ptr<IAnimation> weakAnimation = GetByTitle(title, newIndex);
+	std::shared_ptr<IAnimation> animation = weakAnimation.lock();
 
 	if (animation == nullptr || weakAnimation.expired()) {
 		return;
@@ -185,7 +185,7 @@ void AnimationController::PlayOnEnd(const char* title, Coord pos, Size size)
 
 void AnimationController::PlayAll()
 {
-	for (const std::shared_ptr<IAnimation>& animation : animations) {
+	for (std::shared_ptr<IAnimation>& animation : animations) {
 		animation->Play();
 	}
 }

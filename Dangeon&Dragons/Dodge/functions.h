@@ -130,8 +130,8 @@ inline bool EqualTypes(T* a, T1* b)
 	return bPtr != nullptr && aPtr != nullptr;
 }
 
-float CalculateDistance(const Coord a, const Coord b);
-float CalculateDistanceRef(const Coord& a, const Coord& b);
+float CalculateDistance(Coord a, Coord b);
+float CalculateDistanceRef(Coord& a, Coord& b);
 
 float CalculateDistanceWithSize(Coord a, Coord b, Size bSIze);
 

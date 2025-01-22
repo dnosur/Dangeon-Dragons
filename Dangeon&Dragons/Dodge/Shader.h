@@ -13,6 +13,10 @@
 
 #include "math/Mat4.h"
 
+#include <glm/ext/matrix_float4x4.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
+
 class Shader
 {
 	unsigned int id;
@@ -46,7 +50,7 @@ public:
 	void SetVec3(const char* name, float x, float y, float z) const;
 	void SetVec4(const char* name, float x, float y, float z, float w) const;
 
-	void SetMat4(const char* name, Mat4 mat);
+	void SetMat4(const char* name, glm::mat4& matrix) const;
 
 	void SetColor(const char* name, Color color);
 

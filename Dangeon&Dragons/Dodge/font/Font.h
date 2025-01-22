@@ -12,23 +12,40 @@ struct Coord;
 #include "Character.h"
 #include "../Color.h"
 
+#include "../Shader.h"
+
 class Font
 {
 	char* title;
 	char* path;
 
 	Size size;
+	Size windowSize;
+
+	glm::mat4 projection;
 
 	std::map<char, Character> characters;
+
+	std::unique_ptr<Shader> shader;
 
 	bool loaded;
 
 	bool LoadFont();
 public:
-	Font(const char* title, const char* path, Size size = Size(14, 14));
+	Font(
+		const char* title, 
+		const char* path, 
+		Size windowSize = Size(1280, 720),
+		Size size = Size(14, 14)
+	);
 	~Font();
 
-	void RenderText(std::string text, Coord pos, float scale, Color color = Color(0, 0, 0));
+	void RenderText(
+		std::string text, 
+		Coord pos, 
+		float scale, 
+		Color color = Color(0, 0, 0)
+	);
 
 	bool IsLoaded();
 };

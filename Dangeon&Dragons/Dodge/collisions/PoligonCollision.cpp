@@ -103,7 +103,7 @@ bool PoligonCollision::IsCollisionEnter(IGameObject* gameObject)
 		return false;
 	}
 
-	const std::shared_ptr<ICollision>& gameObjectPtr = gameObject->GetCollision().lock();
+	std::shared_ptr<ICollision> gameObjectPtr = gameObject->GetCollision().lock();
 
 	if (gameObjectPtr == nullptr) {
 		return false;
@@ -125,7 +125,7 @@ bool PoligonCollision::IsCollisionEnter(IGameObject* gameObject)
 
 	bool res = false;
 
-	for (const Coord& p : otherPoints) {
+	for (Coord& p : otherPoints) {
 		if (IsPointInPolygon(p, polygonPoints)) {
 			res = true;
 			break;

@@ -122,12 +122,12 @@ Coord MathCoord(Coord coord, Size windowSize)
 	);
 }
 
-float CalculateDistance(const Coord a, const Coord b)
+float CalculateDistance(Coord a, Coord b)
 {
 	return CalculateDistanceRef(a, b);
 }
 
-float CalculateDistanceRef(const Coord& a, const Coord& b)
+float CalculateDistanceRef(Coord& a, Coord& b)
 {
 	float dx = a.X - b.X;
 	float dy = a.Y - b.Y;
@@ -275,7 +275,7 @@ bool IsObjectBetween(Ray* ray, IGameObject* object, bool useCollision) {
 
 bool IsObjectBetween(std::unique_ptr<Ray>& ray, std::weak_ptr<IGameObject>& object, bool useCollision)
 {
-	const std::shared_ptr<IGameObject>& shared_obj = object.lock();
+	std::shared_ptr<IGameObject> shared_obj = object.lock();
 	if (!shared_obj) {
 		return false;
 	}
