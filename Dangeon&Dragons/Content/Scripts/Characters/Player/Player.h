@@ -28,6 +28,8 @@ class Player :
     bool CheckForCollision();
     bool CheckForCollision(Coord pos, Size size);
 
+    void MathSide(double& sideSize, bool isWidth) override;
+
     void AIMovement() override;
 public:
     Player(
@@ -39,6 +41,8 @@ public:
     );
 
     void Initialize() override;
+
+    void SetSideSize(Sides sides) override;
 
     Coord GetStartPos();
 

@@ -44,6 +44,10 @@ class Rect :
     void MathPos(Coord& vertex1, Coord& vertex2);
     void MathPos(Coord& pos);
 
+    void MathSize(Size& size);
+
+    void MathSide(double& sideSize, bool isWidth);
+
     void Draw();
 public:
     Rect();
@@ -64,7 +68,10 @@ public:
     Coord GetPos();
     Coord GetOpenGlPos();
 
+    void SetSize(Size size);
     Size GetSize();
+
+    void SetSideSize(Sides sides);
 
     bool MouseHover(Mouse& mouse);
     bool MouseClick(Mouse& mouse);

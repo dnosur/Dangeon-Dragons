@@ -122,6 +122,25 @@ void Player::Initialize()
 	}
 }
 
+void Player::SetSideSize(Sides sides)
+{
+	if (sides.bottom != 0) {
+		MathSide(sides.bottom, false);
+	}
+
+	if (sides.top != 0) {
+		MathSide(sides.top, false);
+	}
+
+	if (sides.left != 0) {
+		MathSide(sides.left, true);
+	}
+
+	if (sides.right != 0) {
+		MathSide(sides.right, true);
+	}
+}
+
 void Player::Draw()
 {
 	material->Use(this);
@@ -408,6 +427,37 @@ bool Player::CheckForCollision(Coord pos, Size size)
 	}
 
 	return true;
+}
+
+void Player::MathSide(double& sideSize, bool isWidth)
+{
+	Coord& vertex1 = vertexes[0];
+	Coord& vertex2 = vertexes[1];
+
+	float glDelta = (float)sideSize / (float)window->GetSize().GetWidth() * 2.0f;
+
+	if (isWidth) {
+		if (sideSize > 0) {
+			vertex1.X += glDelta;
+		}
+		else {
+			vertex2.X -= glDelta;
+		}
+	}
+	else {
+		if (sideSize > 0) {
+			vertex1.Y += glDelta;
+		}
+		else {
+			vertex2.Y -= glDelta;
+		}
+	}
+
+	size.SetWidth((vertex1.X - vertex2.X) * window->GetSize().GetWidth() / 2.0f);
+	size.SetHeight((vertex1.Y - vertex2.Y) * window->GetSize().GetHeight() / 2.0f);
+
+	pos.X = window->GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
+	pos.Y = window->GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
 }
 
 void Player::AIMovement()

@@ -47,6 +47,18 @@ void Rect::MathPos(Coord& pos)
     vertex2.Y = glCenterY + glHeight / 2.0f;
 }
 
+void Rect::MathSize(Size& size)
+{
+    this->size = size;
+    MathPos(pos);
+}
+
+void Rect::MathSide(double& sideSize, bool isWidth)
+{
+
+
+}
+
 Rect::Rect()
 {
     title = (char*)"Undefined";
@@ -72,7 +84,7 @@ Rect::Rect(
     Directions moveDirection
 )
 {
-    copyStr(title, this->title);
+    CopyStr(title, this->title);
 
     this->window = &window;
     this->size = size;
@@ -93,7 +105,7 @@ Rect::Rect(
         )
     );
     material->SetDiffuse(color);
-    material->SetDiffuseMap(std::make_unique<Image>());
+    material->SetDiffuseMap(ImagesController::GetDafaultImage().lock());
 
     this->moveDirection = moveDirection;
 
@@ -110,7 +122,7 @@ Rect::Rect(
     Color color, Directions moveDirection
 )
 {
-    copyStr(title, this->title);
+    CopyStr(title, this->title);
 
     this->window = &window;
     this->color = baseColor = color;
@@ -146,7 +158,7 @@ Rect::Rect(
     Color color, Directions moveDirection
 )
 {
-    copyStr(title, this->title);
+    CopyStr(title, this->title);
 
     this->window = &window;
     this->color = baseColor = color;
@@ -375,9 +387,67 @@ Coord Rect::GetOpenGlPos()
     return Coord(window->PixelToGLX(pos.X), window->PixelToGLY(pos.Y));
 }
 
+void Rect::SetSize(Size size)
+{
+    MathSize(size);
+}
+
 Size Rect::GetSize()
 {
     return size;
+}
+
+void Rect::SetSideSize(Sides sides)
+{
+    if (sides.bottom != 0) {
+        float glDelta = abs((float)sides.bottom / (float)window->GetSize().GetWidth() * 2.0f);
+
+        if (sides.bottom > 0) {
+            vertex1.Y -= glDelta;
+        }
+        else {
+            vertex1.Y += glDelta;
+        }
+    }
+
+    if (sides.top != 0) {
+        float glDelta = abs((float)sides.top / (float)window->GetSize().GetWidth() * 2.0f);
+
+        if (sides.top > 0) {
+            vertex2.Y += glDelta;
+        }
+        else {
+            vertex2.Y -= glDelta;
+        }
+    }
+
+    if (sides.left != 0) {
+        float glDelta = abs((float)sides.left / (float)window->GetSize().GetWidth() * 2.0f);
+
+        if (sides.left > 0) {
+            vertex2.X -= glDelta;
+        }
+        else {
+            vertex2.X += glDelta;
+        }
+    }
+
+    if (sides.right != 0) {
+        float glDelta = abs((float)sides.right / (float)window->GetSize().GetWidth() * 2.0f);
+
+        if (sides.right > 0) {
+            vertex1.X += glDelta;
+        }
+        else {
+            vertex1.X -= glDelta;
+        }
+    }
+
+    size.SetWidth((vertex1.X - vertex2.X) * window->GetSize().GetWidth() / 2.0f);
+    size.SetHeight((vertex1.Y - vertex2.Y) * window->GetSize().GetHeight() / 2.0f);
+
+    pos.X = window->GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
+    pos.Y = window->GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
 }
 
 bool Rect::MouseHover(Mouse& mouse)
@@ -486,7 +556,7 @@ const char* Rect::GetTitle()
 
 void Rect::SetTitle(const char* title)
 {
-    copyStr(title, this->title);
+    CopyStr(title, this->title);
 }
 
 void Rect::SetMoveDirection(Directions moveDirection)
@@ -585,7 +655,7 @@ Rect& Rect::operator=(const Rect&& other)
 
     material = other.material;
 
-    copyStr(other.title, this->title);
+    CopyStr(other.title, this->title);
 
     return *this;
 }

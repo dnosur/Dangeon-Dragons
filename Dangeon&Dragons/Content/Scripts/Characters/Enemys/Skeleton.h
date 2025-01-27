@@ -41,6 +41,8 @@ class Skeleton
     bool CheckForCollision(Coord position);
     bool CheckForCollision();
 
+    void MathSide(double& sideSize, bool isWidth);
+
     void AIMovement() override;
 
     Coord GenerateRandomPosition(Coord center, float radius);
@@ -60,6 +62,8 @@ public:
     );
 
     void Initialize() override;
+
+    void SetSideSize(Sides sides) override;
 
     Coord GetStartPos();
 
