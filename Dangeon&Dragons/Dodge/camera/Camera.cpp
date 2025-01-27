@@ -48,7 +48,7 @@ void Camera::DropOffset()
 
 Camera::Camera(const char* title, Size cameraSize, Size mapSize, Window* window)
     : size(cameraSize), mapSize(mapSize), window(window), observed(nullptr){
-    copyStr(
+    CopyStr(
         title,
         this->title
     );

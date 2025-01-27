@@ -40,6 +40,12 @@ void Pawn::MathPos(Coord& pos)
 	vertexes = std::vector<Coord>({ vertex1, vertex2 });
 }
 
+void Pawn::MathSize(Size& size)
+{
+	this->size = size;
+	MathPos(pos);
+}
+
 bool Pawn::MouseInRect(Mouse& mouse)
 {
 	Coord& vertex1 = vertexes[0];
@@ -110,12 +116,12 @@ void Pawn::RotateToDirection(Directions direction)
 
 void Pawn::SetTitle(const char* title)
 {
-	copyStr(title, this->title);
+	CopyStr(title, this->title);
 }
 
 void Pawn::SetSize(Size size)
 {
-	this->size = size;
+	MathSize(size);
 }
 
 void Pawn::SetSpeed(float speed)

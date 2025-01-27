@@ -9,6 +9,7 @@
 #include "../Content/Scripts/Characters/Enemys/Skeleton.h"
 
 #include "../Dodge/GameObjects.h"
+#include "../Content/Scripts/UI/HpBar/HpBar.h"
 
 MainWindow::MainWindow(): Window()
 {
@@ -34,6 +35,10 @@ void MainWindow::Initialize()
     std::cout << GetCurrentUser() << std::endl;
 
     gameStatus = GameStatuses::Initialize;
+
+    ImagesController::SetDefaultImage(std::make_unique<Image>(
+        ImagesController::LoadImg("Content/Images/defaultObj.jpg", "default")
+    ));
 
     images.Load("Content/Images/Background/ground.png", "ground");
 
@@ -80,17 +85,23 @@ void MainWindow::Update()
     }
 
     std::unique_ptr<Font> sampleFont = std::make_unique<Font>(
-        "Sample",
-        "Content/Fonts/Not Jam Glasgow 13/Not Jam Glasgow 13.ttf"
+        "NotJamGlasgow",
+        "Content/Fonts/Not Jam Glasgow 13/Not Jam Glasgow 16.ttf",
+        GetSize()
     );
 
     GameObjects::Add(&solidCollisions);
+
+    std::unique_ptr<HpBar> hpBar = std::make_unique<HpBar>(*this);
+
+    bool down = false;
 
     while (!glfwWindowShouldClose(GetWindow()) && !IsClosed())
     {
         FillBackground();
         glClear(GL_COLOR_BUFFER_BIT);
 
+        //glEnable(GL_CULL_FACE);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -109,8 +120,9 @@ void MainWindow::Update()
         }
 
         wonderWold->Update();
+        hpBar->Update();
 
-        sampleFont->RenderText("Sample text!", Coord(100, 100), 1.0f, Color(1.0f, 1.0f, 1.0f));
+        sampleFont->RenderText("123!", Coord(100, 100), 4.0f, Color(1.0f, .0f, .0f, .5f));
 
         mouse.Update();
         keyboard.Update();

@@ -34,8 +34,8 @@ Tileset::Tileset(
 
 	this->image = image;
 
-	copyStr(name, this->name);
-	copyStr(source, this->source);
+	CopyStr(name, this->name);
+	CopyStr(source, this->source);
 
 	this->tiles = tiles;
 
@@ -63,8 +63,8 @@ Tileset::Tileset(
 
 	this->image = image;
 
-	copyStr(name, this->name);
-	copyStr(source, this->source);
+	CopyStr(name, this->name);
+	CopyStr(source, this->source);
 
 	this->tiles = tiles;
 

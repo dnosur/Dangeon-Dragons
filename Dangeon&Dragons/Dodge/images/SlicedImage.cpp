@@ -104,9 +104,28 @@ std::pair<Coord, Coord> SlicedImage::CalculateTextureVertexes(
 	};
 }
 
+std::pair<Coord, Coord> SlicedImage::CalculateTextureVertexes(
+	Size tileSize, 
+	Size textureSize, 
+	Coord vertex_coord
+)
+{
+	const Size imageIndexSize = Size(
+		std::roundf(textureSize.width / tileSize.width),
+		std::roundf(textureSize.height / tileSize.height)
+	);
+
+	return CalculateTextureVertexes(
+		tileSize,
+		textureSize,
+		imageIndexSize.width,
+		vertex_coord.Y * imageIndexSize.width + vertex_coord.X
+	);
+}
+
 void SlicedImage::Slice(std::vector<int> widths, int height)
 {
-for (int i = 0; i < height; i++) {
+	for (int i = 0; i < height; i++) {
 		CalculateVertexes(i, 0, widths[i]);
 	}
 }
@@ -183,7 +202,7 @@ void SlicedImage::UseEmissiveMapVertexes(Material* material, Coord vertex_coord)
 
 std::unique_ptr<VertexAnimation> SlicedImage::CreateVertexAnimation(int vertex_row_index)
 {
-	std::string name = "slice_" + generateRandomString(5);
+	std::string name = "slice_" + GenerateRandomString(5);
 	return CreateVertexAnimation(
 		vertex_row_index, 
 		std::make_pair(name.c_str(), 1)
@@ -225,7 +244,7 @@ std::vector<std::unique_ptr<VertexAnimation>> SlicedImage::CreateVertexAnimation
 	std::vector<int> durations;
 
 	for (int i = 0; i < vertexes.size(); i++) {
-		std::string name = "slice_" + generateRandomString(5);
+		std::string name = "slice_" + GenerateRandomString(5);
 		names.push_back(name.c_str());
 		durations.push_back(300);
 	}

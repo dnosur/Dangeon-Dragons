@@ -21,25 +21,25 @@ struct Ray;
 
 __interface IGameObject;
 
-void clear();
-void pause();
+void Clear();
+void Pause();
 
-void gotoxy(int X, int Y);
-void gotoxy(COORD coord);
+void GoToXY(int X, int Y);
+void GoToXY(COORD coord);
 
 void DrawSymbol(Coord coord, char symbol, Size windowSize, const Color color = Color(1, 0, 0));
 void DrawSymbols(Coord coord, char* symbols, Size windowSize, const Color color = Color(1, 0, 0));
-void copyStr(char* origin, char*& destination);
-void copyStr(const char* origin, char*& destination);
+void CopyStr(char* origin, char*& destination);
+void CopyStr(const char* origin, char*& destination);
 
-COORD getxy();
-void getxy(int& x, int& y);
+COORD GetXY();
+void GetXY(int& x, int& y);
 
 Size MathSize(Size size, Size windowSize);
 Coord MathCoord(Coord coord, Size windowSize);
 
 template <typename T>
-void copyArray(T** origin, T** destination);
+void CopyArray(T** origin, T** destination);
 
 template <typename T>
 void ClearVector(std::vector<T>& vector);
@@ -63,7 +63,7 @@ template <typename T, typename T1>
 bool EqualTypes(T* a, T1* b);
 
 template<typename T>
-inline void copyArray(T** origin, T** destination)
+inline void CopyArray(T** origin, T** destination)
 {
 	*destination = *origin;
 }
@@ -154,6 +154,8 @@ bool IsPointBetween(std::unique_ptr<Ray>& ray, Coord point);
 bool IsObjectBetween(Ray* ray, IGameObject* object, bool useCollision = true);
 bool IsObjectBetween(std::unique_ptr<Ray>& ray, std::weak_ptr<IGameObject>& object, bool useCollision = true);
 
-std::string generateRandomString(int length);
+double MathPercentsValue(double num, double percent);
+
+std::string GenerateRandomString(int length);
 
 const char* GetCurrentUser();

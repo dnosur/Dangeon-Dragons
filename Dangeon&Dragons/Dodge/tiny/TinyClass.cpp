@@ -3,7 +3,7 @@
 TinyClass::TinyClass(int id, const char* name, std::vector<std::shared_ptr<ICollision>> objects)
 {
 	this->id = id;
-	copyStr(name, this->name);
+	CopyStr(name, this->name);
 	this->objects = objects;
 }
 
@@ -11,7 +11,7 @@ TinyClass::TinyClass(tinyxml2::XMLElement* element)
 {
 	id = element->IntAttribute("id");
 	const char* name = element->Attribute("name");
-	copyStr(name, this->name);
+	CopyStr(name, this->name);
 
 	GetObjects(element, objects);
 }

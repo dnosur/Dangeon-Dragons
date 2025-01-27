@@ -38,7 +38,7 @@ inline WindowPointer<T>::WindowPointer()
 template<typename T>
 inline WindowPointer<T>::WindowPointer(const char* title, T* value)
 {
-	copyStr(title, this->title);
+	CopyStr(title, this->title);
 
 	this->value = value;
 	undefined = false;
@@ -86,7 +86,7 @@ inline WindowPointer<T>& WindowPointer<T>::operator=(const WindowPointer& other)
 	if (this != &other)
 	{
 		value = other.value;
-		copyStr(other.title, this->title);
+		CopyStr(other.title, this->title);
 		undefined = other.undefined;
 	}
 	return *this;

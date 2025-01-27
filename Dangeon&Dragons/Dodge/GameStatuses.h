@@ -1,5 +1,5 @@
 #pragma once
-enum GameStatuses {
+enum class GameStatuses {
 	Stop = 0,
 	Initialize = 1,
 	Start = 2,

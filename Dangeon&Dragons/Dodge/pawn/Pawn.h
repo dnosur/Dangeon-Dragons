@@ -77,6 +77,10 @@ protected:
 	void MathPos(std::vector<Coord> vertexes);
 	void MathPos(Coord& pos);
 
+	void MathSize(Size& size);
+
+	virtual void MathSide(double& sideSize, bool isWidth) = 0;
+
 	bool MouseInRect(Mouse& mouse);
 
 	virtual void AIMovement() = 0;
@@ -102,6 +106,8 @@ public:
 	void SetTitle(const char* title);
 
 	void SetSize(Size size);
+
+	virtual void SetSideSize(Sides sides) = 0;
 
 	void SetSpeed(float speed);
 	void SetMaxSpeed(float maxSpeed);

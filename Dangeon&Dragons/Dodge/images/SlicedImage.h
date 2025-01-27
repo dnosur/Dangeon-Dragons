@@ -39,6 +39,12 @@ public:
 		int columnIndex
 	);
 
+	static std::pair<Coord, Coord> CalculateTextureVertexes(
+		Size tileSize, 
+		Size textureSize, 
+		Coord vertex_coord
+	);
+
 	void Slice(std::vector<int> widths, int height);
 	void Slice(Size size);
 	void Slice();

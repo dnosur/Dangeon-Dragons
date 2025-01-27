@@ -1,5 +1,7 @@
 #include "ImagesController.h"
 
+std::shared_ptr<Image> ImagesController::defaultImage;
+
 int ImagesController::GetIndexByTitle(char* title)
 {
     int index = 0;
@@ -151,6 +153,16 @@ Image ImagesController::LoadImg(const char* path, const char* title)
             "Dodge/shaders/Image/imageVertex.vs",
             "Dodge/shaders/Image/imageFragment.frag"
         ));
+}
+
+void ImagesController::SetDefaultImage(std::unique_ptr<Image> image)
+{
+    defaultImage = std::move(image);
+}
+
+std::weak_ptr<Image> ImagesController::GetDafaultImage()
+{
+    return defaultImage;
 }
 
 void ImagesController::Load(const char* path, const char* title, Shader* shader)

@@ -37,13 +37,13 @@ void AnimationController::DropPrevAnim(std::shared_ptr<IAnimation> currentAnim)
 	return;
 
 	if (prevAnim == nullptr) {
-		copyStr(currentAnim->GetTitle(), prevAnim);
+		CopyStr(currentAnim->GetTitle(), prevAnim);
 		return;
 	}
 
 	if (strcmp(currentAnim->GetTitle(), prevAnim)) {
 		animations[currentIndex]->Stop();
-		copyStr(currentAnim->GetTitle(), prevAnim);
+		CopyStr(currentAnim->GetTitle(), prevAnim);
 	}
 }
 

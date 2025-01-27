@@ -44,7 +44,7 @@ public:
 		std::string text, 
 		Coord pos, 
 		float scale, 
-		Color color = Color(0, 0, 0)
+		Color color = Color()
 	);
 
 	bool IsLoaded();

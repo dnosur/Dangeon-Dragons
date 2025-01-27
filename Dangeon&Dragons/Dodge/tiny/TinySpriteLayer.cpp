@@ -17,7 +17,7 @@ TinySpriteLayer::TinySpriteLayer(
 	Coord offset
 ){
 	this->id = id;
-	copyStr(name, this->name);
+	CopyStr(name, this->name);
 	this->size = size;
 }
 
@@ -33,7 +33,7 @@ TinySpriteLayer::TinySpriteLayer(tinyxml2::XMLElement* element)
 	id = element->IntAttribute("id");
 
 	const char* name = element->Attribute("name");
-	copyStr(name, this->name);
+	CopyStr(name, this->name);
 
 	size = Size(element->DoubleAttribute("width"), element->DoubleAttribute("height"));
 	offset = Coord(element->DoubleAttribute("offsetx"), element->DoubleAttribute("offsety"));

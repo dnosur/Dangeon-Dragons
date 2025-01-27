@@ -69,8 +69,8 @@ Font::Font(
     Size size
 )
 {
-	copyStr(title, this->title);
-	copyStr(path, this->path);
+	CopyStr(title, this->title);
+	CopyStr(path, this->path);
 
     this->size = size;
     this->windowSize = windowSize;
@@ -86,8 +86,8 @@ Font::Font(
 
     shader = std::make_unique<Shader>(
         title,
-        "shaders/Font/vertex.vs", 
-        "shaders/Font/fragment.frag"
+        "Dodge/shaders/Font/vertex.vs", 
+        "Dodge/shaders/Font/fragment.frag"
     );
 
 	LoadFont();
@@ -112,7 +112,7 @@ void Font::RenderText(std::string text, Coord pos, float scale, Color color)
     glBindVertexArray(0);
 
     shader->Use();
-    shader->SetVec3("textColor", color.r, color.g, color.b);
+    shader->SetVec4("textColor", color.r, color.g, color.b, color.a);
     shader->SetMat4("projection", projection);
 
     glActiveTexture(GL_TEXTURE0);

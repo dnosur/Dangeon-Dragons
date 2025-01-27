@@ -61,15 +61,15 @@ std::unique_ptr<TileMap> TinyXml::LoadMap(const char* path, const char* title)
     map->size.width = mapElement->IntAttribute("width");
     map->size.height = mapElement->IntAttribute("height"); 
 
-    copyStr(title, map->title);
+    CopyStr(title, map->title);
 
     map->infinite = mapElement->BoolAttribute("infinite");
 
 	map->nextLayerId = mapElement->IntAttribute("nextlayerid");
 	map->nextObjectId = mapElement->IntAttribute("nextobjectid");
 
-    copyStr(mapElement->Attribute("orientation"), map->orientation);
-	copyStr(mapElement->Attribute("renderorder"), map->renderOreder);
+    CopyStr(mapElement->Attribute("orientation"), map->orientation);
+	CopyStr(mapElement->Attribute("renderorder"), map->renderOreder);
 
 	map->tileSize.height = mapElement->IntAttribute("tileheight");
 	map->tileSize.width = mapElement->IntAttribute("tilewidth");

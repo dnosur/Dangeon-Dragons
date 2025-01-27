@@ -21,8 +21,8 @@ PoligonCollision::PoligonCollision(std::vector<Coord> points, int root_id, char*
 
 	SetLayer(Layer::Collision);
 
-	copyStr(root_title, this->root_title);
-	copyStr(type, this->type);
+	CopyStr(root_title, this->root_title);
+	CopyStr(type, this->type);
 }
 
 bool PoligonCollision::IsPointInPolygon(const Coord& point, const std::vector<Coord>& polygon)
@@ -195,8 +195,8 @@ PoligonCollision& PoligonCollision::operator=(const PoligonCollision& other)
 {
 	if (this != &other)
 	{
-		copyStr(other.root_title, root_title);
-		copyStr(other.type, type);
+		CopyStr(other.root_title, root_title);
+		CopyStr(other.type, type);
 
 		points = other.points;
 		root_id = other.root_id;

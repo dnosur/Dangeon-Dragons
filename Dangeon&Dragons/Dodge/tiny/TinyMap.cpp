@@ -69,7 +69,7 @@ void TinyMap::Initialize()
 						Coord vertex1, vertex2;
 						Coord textureVertex1, textureVertex2;
 
-						std::string random_str = generateRandomString(5);
+						std::string random_str = GenerateRandomString(5);
 						const char* obj_title = random_str.c_str();
 
 						for (int k = 0; k < (ciclesCount ? ciclesCount : 1); k++) {

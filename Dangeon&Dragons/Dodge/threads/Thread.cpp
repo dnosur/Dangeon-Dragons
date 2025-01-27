@@ -22,7 +22,7 @@ void Thread::RemoveThread()
 }
 Thread::Thread(const char* title)
 {
-	copyStr(title, this->title);
+	CopyStr(title, this->title);
 
 	m = nullptr;
 	t = nullptr;
@@ -33,7 +33,7 @@ Thread::Thread(
 	std::function<void()> func
 )
 {
-	copyStr(title, this->title);
+	CopyStr(title, this->title);
 	m = new std::mutex();
 	t = new std::thread([this, func]() {
 		std::lock_guard<std::mutex> lock(*m);

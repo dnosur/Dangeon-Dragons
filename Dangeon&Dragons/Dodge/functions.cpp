@@ -8,21 +8,21 @@
 #include "collisions/PoligonCollision.h"
 #include "collisions/BoxCollision.h"
 
-void clear() {
+void Clear() {
 	system("cls");
 }
 
-void pause() {
+void Pause() {
 	_getch();
 }
 
-void gotoxy(int X, int Y)
+void GoToXY(int X, int Y)
 {
 	COORD coord = { X, Y };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-void gotoxy(COORD coord)
+void GoToXY(COORD coord)
 {
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
@@ -76,7 +76,7 @@ void DrawSymbols(Coord coord, char* symbols, Size windowSize, const Color color)
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void copyStr(char* origin, char*& destination)
+void CopyStr(char* origin, char*& destination)
 {
 	if (origin == nullptr) {
 		return;
@@ -86,7 +86,7 @@ void copyStr(char* origin, char*& destination)
 	strcpy_s(destination, strlen(origin) + 1, origin);
 }
 
-void copyStr(const char* origin, char*& destination)
+void CopyStr(const char* origin, char*& destination)
 {
 	if (origin == nullptr) {
 		return;
@@ -96,7 +96,7 @@ void copyStr(const char* origin, char*& destination)
 	strcpy_s(destination, strlen(origin) + 1, origin);
 }
 
-void getxy(int& x, int& y) {
+void GetXY(int& x, int& y) {
 	CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo;
 	HANDLE hStd = GetStdHandle(STD_OUTPUT_HANDLE);
 	if (!GetConsoleScreenBufferInfo(hStd, &screenBufferInfo))
@@ -344,7 +344,7 @@ bool IsObjectBetween(std::unique_ptr<Ray>& ray, std::weak_ptr<IGameObject>& obje
 	);
 }
 
-std::string generateRandomString(int length)
+std::string GenerateRandomString(int length)
 {
 	const std::string characters =
 		"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -375,7 +375,7 @@ const char* GetCurrentUser()
 	return username_char;
 }
 
-COORD getxy() {
+COORD GetXY() {
 	CONSOLE_SCREEN_BUFFER_INFO screenBufferInfo;
 	HANDLE hStd = GetStdHandle(STD_OUTPUT_HANDLE);
 	if (!GetConsoleScreenBufferInfo(hStd, &screenBufferInfo))

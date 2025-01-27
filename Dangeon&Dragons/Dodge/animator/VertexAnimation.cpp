@@ -7,7 +7,7 @@ VertexAnimation::VertexAnimation(
 	std::vector<std::pair<int, std::vector<Coord>>> frames
 )
 {
-	copyStr(title, this->title);
+	CopyStr(title, this->title);
 
 	this->frameRate = frameRate;
 	this->repeat = repeat;

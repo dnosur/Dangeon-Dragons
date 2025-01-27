@@ -16,8 +16,8 @@ BoxCollision::BoxCollision(Coord point, Size size, int root_id, char* root_title
 
     SetLayer(Layer::Collision);
 
-    copyStr(root_title, this->root_title);
-    copyStr(type, this->type);
+    CopyStr(root_title, this->root_title);
+    CopyStr(type, this->type);
 }
 
 BoxCollision::~BoxCollision()
