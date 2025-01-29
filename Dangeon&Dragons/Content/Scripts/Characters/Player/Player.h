@@ -4,11 +4,11 @@
 #include <mutex>
 
 class Player :
-    public Pawn
+    public Pawn, public std::enable_shared_from_this<Player>
 {
     Keyboard* keyboard;
 
-    //Позиция на экране для отрисовки
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     Coord startPos;
     Coord startPosVertexes[2];
 
@@ -18,8 +18,6 @@ class Player :
     std::string_view GetAnimationName() override;
 
     void LoadAudio() override;
-
-    void Initialize() override;
 	void Draw() override;
 
     void Move();
@@ -29,6 +27,8 @@ class Player :
 
     bool CheckForCollision();
     bool CheckForCollision(Coord pos, Size size);
+
+    void MathSide(double& sideSize, bool isWidth) override;
 
     void AIMovement() override;
 
@@ -41,6 +41,10 @@ public:
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
         std::vector<std::shared_ptr<IAnimation>> animations = {}
     );
+
+    void Initialize() override;
+
+    void SetSideSize(Sides sides) override;
 
     Coord GetStartPos();
 

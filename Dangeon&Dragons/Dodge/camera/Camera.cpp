@@ -9,17 +9,17 @@ void Camera::UpdateCamera()
 {
     if (!observed) return;
 
-    // Получаем позицию объекта (игрока) в пикселях
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ) пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     Coord playerPosition = observed->GetPos();
 
-    // Центрируем камеру относительно игрока
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     position = playerPosition - Coord(size.width / 2.0, size.height / 2.0);
 
-    // Ограничиваем движение камеры границами карты
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     position.X = Max<double>(0.0, Min<double>(position.X, mapSize.width - size.width));
     position.Y = Max<double>(0.0, Min<double>(position.Y, mapSize.height - size.height));
 
-    // Отладка
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     std::cout << "Player: " << playerPosition.X << " " << playerPosition.Y << std::endl;
     std::cout << "Camera Position (pixels): " << position.X << ", " << position.Y << std::endl;
 }
@@ -58,12 +58,12 @@ void Camera::Update()
 
 
 Mat4 Camera::GetViewMatrix() const {
-    // Матрица вида: сдвиг сцены относительно позиции камеры
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     return Mat4::Translate(Vec2(-position.X, -position.Y));
 }
 
 Mat4 Camera::GetProjectionMatrix() const {
-    // Ортографическая проекция
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     return Mat4::Ortho(0.0f, size.width, size.height, 0.0f);
 }
 

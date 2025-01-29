@@ -74,7 +74,7 @@ void VertexAnimation::Play(Coord coord, Size size)
 
 		if (currentAnimationIndex >= 0 && currentAnimationIndex < frames.size())
 		{
-			// Используем ссылку на вектор, чтобы избежать создания копии
+			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 			object->GetMaterial().lock()->SetDiffuseMapVerticies(frames[currentAnimationIndex].second);
 			delay = frames[currentAnimationIndex].first;
 		}

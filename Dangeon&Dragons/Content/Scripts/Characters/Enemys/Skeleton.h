@@ -19,7 +19,7 @@ class Skeleton
     Coord startPosVertexes[2];
     Coord offset;
 
-    //В дальнейшем перенести в класс!
+    //пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ!
     std::vector<std::shared_ptr<Movement>> movements;
 	int movementIndex;
 
