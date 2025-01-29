@@ -1,9 +1,11 @@
 #pragma once
 #include "IAnimation.h"
+#include "unordered_map"
 
 class AnimationController
 {
-	std::vector<std::shared_ptr<IAnimation>> animations;
+	std::unordered_map<std::string, std::shared_ptr<IAnimation>> animations;
+
 	std::string prevAnim;
 
 	std::weak_ptr<IAnimation> GetByTitle(std::string_view title);

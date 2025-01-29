@@ -3,33 +3,32 @@
 
 std::weak_ptr<IAnimation> AnimationController::GetByTitle(std::string_view title)
 {
-	for (std::shared_ptr<IAnimation>& animation : animations) {
-		if (animation->GetTitle() == title) {
-			return animation;
-		}
+	auto it = animations.find(std::string(title));
+	if (it != animations.end()) {
+		return it->second;
 	}
+
 	return std::weak_ptr<SpriteAnimation>();
 }
 
 std::weak_ptr<IAnimation> AnimationController::GetByTitle(std::string_view title, int& index)
 {
-	index = 0;
-	for (std::shared_ptr<IAnimation>& animation : animations) {
-		if (animation->GetTitle() == title) {
-			return animation;
-		}
-		index++;
+	auto it = animations.find(std::string(title));
+	if (it == animations.end()) {
+		index = -1;
+		return std::weak_ptr<IAnimation>(); 
 	}
-	index = -1;
-	return std::weak_ptr<SpriteAnimation>();
+
+	index = std::distance(animations.begin(), it);
+
+	return it->second; 
 }
 
 std::weak_ptr<IAnimation> AnimationController::GetByIndex(int index)
 {
-	if (index < 0 || index >= animations.size()) {
-		return std::weak_ptr<SpriteAnimation>();
-	}
-	return animations[index];
+	auto it = animations.begin();
+	std::advance(it, index);
+	return it->second;
 }
 
 void AnimationController::DropPrevAnim(std::shared_ptr<IAnimation> currentAnim)
@@ -41,8 +40,10 @@ void AnimationController::DropPrevAnim(std::shared_ptr<IAnimation> currentAnim)
 		return;
 	}
 
-	if (currentAnim->GetTitle() != prevAnim) {
-		animations[currentIndex]->Stop();
+	std::shared_ptr<IAnimation> prev = GetByIndex(currentIndex).lock();
+
+	if (currentAnim->GetTitle() != prevAnim && prev) {
+		prev->Stop();
 		prevAnim = currentAnim->GetTitle();
 	}
 }
@@ -54,7 +55,9 @@ AnimationController::AnimationController()
 
 AnimationController::AnimationController(std::vector<std::shared_ptr<IAnimation>> animations)
 {
-	this->animations = animations;
+	for (std::shared_ptr<IAnimation>& animation : animations) {
+		AddAnimation(animation);
+	}
 	currentIndex = -1;
 }
 
@@ -64,7 +67,7 @@ void AnimationController::AddAnimation(std::shared_ptr<IAnimation> animation)
 	std::shared_ptr<IAnimation> same = weakSame.lock();
 
 	if (same == nullptr || weakSame.expired()) {
-		animations.push_back(animation);
+		animations[animation->GetTitleString()] = std::move(animation);
 		return;
 	}
 
@@ -183,8 +186,8 @@ void AnimationController::PlayOnEnd(std::string_view title, Coord pos, Size size
 
 void AnimationController::PlayAll()
 {
-	for (std::shared_ptr<IAnimation>& animation : animations) {
-		animation->Play();
+	for (auto& animation : animations) {
+		animation.second->Play();
 	}
 }
 
@@ -200,7 +203,12 @@ int AnimationController::GetCurrentIndex()
 
 bool AnimationController::IsAnimationEnd()
 {
-	return currentIndex < 0 || !animations.size() || animations.operator[](currentIndex)->IsEnd();
+	std::shared_ptr<IAnimation> animation = GetByIndex(currentIndex).lock();
+	if (animation == nullptr) {
+		return true;
+	}
+
+	return currentIndex < 0 || !animations.size() || animation->IsEnd();
 }
 
 std::weak_ptr<IAnimation> AnimationController::operator[](std::string_view title)
