@@ -22,11 +22,7 @@ void Thread::RemoveThread()
 }
 Thread::Thread(std::string title)
 {
-<<<<<<< Updated upstream
-	copyStr(title, this->title);
-=======
 	this->title = title;
->>>>>>> Stashed changes
 
 	m = nullptr;
 	t = nullptr;
@@ -37,12 +33,8 @@ Thread::Thread(
 	std::function<void()> func
 )
 {
-<<<<<<< Updated upstream
-	copyStr(title, this->title);
-=======
 	this->title = title;
 
->>>>>>> Stashed changes
 	m = new std::mutex();
 	t = new std::thread([this, func]() {
 		std::lock_guard<std::mutex> lock(*m);

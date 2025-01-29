@@ -1,5 +1,7 @@
 #pragma once
+#include <memory>
 #include <vector>
+#include "IGameObject.h"
 
 __interface IGameObject;
 class Pawn;
@@ -7,23 +9,18 @@ enum Layer;
 
 static class GameObjects
 {
-	static std::vector<IGameObject*> gameObjects;
-	static std::vector<class Pawn*> pawns;
+	static std::vector<std::shared_ptr<IGameObject>> gameObjects;
+	static std::vector<std::shared_ptr<class Pawn>> pawns;
 public:
 	static void Add(IGameObject* gameObject);
 	static void Add(class Pawn* pawn);
 
+	static void Add(std::shared_ptr<IGameObject> gameObject);
+	static void Add(std::shared_ptr<class Pawn> pawn);
+
 	static void Add(std::vector<IGameObject*>* gameObjects);
+	static void Add(std::vector<std::weak_ptr<IGameObject>>* gameObjects);
 
-<<<<<<< Updated upstream
-	static IGameObject* GetByTitle(const char* title);
-	template <typename T>
-	static T* GetDynamicByTitle(const char* title);
-
-	static IGameObject* GetByTitle(const char* title, Layer layer);
-	template <typename T>
-	static T* GetDynamicByTitle(const char* title, Layer layer);
-=======
 	static std::weak_ptr<IGameObject> GetByTitle(std::string title);
 	template <typename T>
 	static std::weak_ptr<T> GetDynamicByTitle(std::string title);
@@ -31,35 +28,25 @@ public:
 	static std::weak_ptr<IGameObject> GetByTitle(std::string title, Layer layer);
 	template <typename T>
 	static std::weak_ptr<T>  GetDynamicByTitle(std::string title, Layer layer);
->>>>>>> Stashed changes
 
-	static std::vector<IGameObject*>* GetAll();
-	static std::vector<IGameObject*>* GetAll(Layer layer);
+	static std::vector<std::shared_ptr<IGameObject>>* GetAll();
+	static std::vector<std::shared_ptr<IGameObject>>* GetAll(Layer layer);
 
-	static std::vector<class Pawn*>* GetAllPawns();
-	static std::vector<class Pawn*>* GetAllPawns(Layer layer);
+	static std::vector<std::shared_ptr<class Pawn>>* GetAllPawns();
+	static std::vector<std::shared_ptr<class Pawn>>* GetAllPawns(Layer layer);
 
 	template <typename T>
-	static std::vector<T*>* GetAllDynamic();
+	static std::vector<std::shared_ptr <T>>* GetAllDynamic();
 	template <typename T>
-	static std::vector<T*>* GetAllDynamic(Layer layer);
+	static std::vector<std::shared_ptr <T>>* GetAllDynamic(Layer layer);
+
+	static void Clear();
 
 	template <typename T>
 	bool Exists(T* gameObject);
 };
 
 template<typename T>
-<<<<<<< Updated upstream
-inline T* GameObjects::GetDynamicByTitle(const char* title)
-{
-	return dynamic_cast<T*>(GetByTitle(title));
-}
-
-template<typename T>
-inline T* GameObjects::GetDynamicByTitle(const char* title, Layer layer)
-{
-	return dynamic_cast<T*>(GetByTitle(title, layer));
-=======
 inline std::weak_ptr<T> GameObjects::GetDynamicByTitle(std::string title)
 {
 	for (int i = 0; i < gameObjects.size(); i++)
@@ -89,16 +76,15 @@ inline std::weak_ptr<T> GameObjects::GetDynamicByTitle(std::string title, Layer 
 		}
 	}
 	return std::shared_ptr<T>(nullptr);
->>>>>>> Stashed changes
 }
 
 template<typename T>
-inline std::vector<T*>* GameObjects::GetAllDynamic()
+inline std::vector<std::shared_ptr <T>>* GameObjects::GetAllDynamic()
 {
-	std::vector<T*>* temp = new std::vector<T*>;
-	for (IGameObject* gameObject : gameObjects)
+	std::vector<std::shared_ptr <T>>* temp = new std::vector<std::shared_ptr <T>>();
+	for (IGameObject*& gameObject : gameObjects)
 	{
-		T* casted = dynamic_cast<T*>(gameObject);
+		auto casted = std::dynamic_pointer_cast<T>(gameObject);
 		if (casted)
 		{
 			temp->push_back(casted);
@@ -108,12 +94,12 @@ inline std::vector<T*>* GameObjects::GetAllDynamic()
 }
 
 template<typename T>
-inline std::vector<T*>* GameObjects::GetAllDynamic(Layer layer)
+inline std::vector<std::shared_ptr <T>>* GameObjects::GetAllDynamic(Layer layer)
 {
-	std::vector<T*>* temp = new std::vector<T*>;
+	std::vector<std::shared_ptr <T>>* temp = new std::vector<std::shared_ptr <T>>();
 	for (IGameObject* gameObject : GetAll(layer))
 	{
-		T* casted = dynamic_cast<T*>(gameObject);
+		auto casted = std::dynamic_pointer_cast<T>(gameObject);
 		if (casted)
 		{
 			temp->push_back(casted);

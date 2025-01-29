@@ -2,10 +2,10 @@
 
 TilesetsController::TilesetsController()
 {
-	tilesets = std::vector<Tileset*>();
+	tilesets = std::vector<std::shared_ptr<Tileset>>();
 }
 
-TilesetsController::TilesetsController(std::vector<Tileset*> tilesets)
+TilesetsController::TilesetsController(std::vector<std::shared_ptr<Tileset>> tilesets)
 {
 	this->tilesets = tilesets;
 }
@@ -19,7 +19,7 @@ TilesetsController::~TilesetsController()
 {
 }
 
-void TilesetsController::LoadTilesets(tinyxml2::XMLElement* element, std::vector<Tileset*>& tilesets, std::string path)
+void TilesetsController::LoadTilesets(tinyxml2::XMLElement* element, std::vector<std::shared_ptr<Tileset>>& tilesets, std::string path)
 {
 	for (tinyxml2::XMLElement* tileset = element->FirstChildElement("tileset");
 		tileset != nullptr;
@@ -42,11 +42,7 @@ void TilesetsController::LoadTilesets(tinyxml2::XMLElement* element, std::vector
 	}
 }
 
-<<<<<<< Updated upstream
-Tileset* TilesetsController::LoadTileset(int firstgId, const char* path)
-=======
 std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, std::string path)
->>>>>>> Stashed changes
 {
     tinyxml2::XMLDocument doc;
     if (TinyXml::ReadDoc(doc, path) != tinyxml2::XML_SUCCESS) {
@@ -100,9 +96,9 @@ std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, std::stri
         //animation
         tinyxml2::XMLElement* animation = tileset->FirstChildElement("animation");
 
-        Animation* animation_obj = nullptr;
+        std::shared_ptr<Animation> animation_obj = nullptr;
         if (animation != nullptr) {
-            animation_obj = new Animation(animation);
+            animation_obj = std::make_shared<Animation>(animation);
         }
         //Object group
         tinyxml2::XMLElement* objectGroup = tileset->FirstChildElement("objectgroup");
@@ -166,7 +162,7 @@ std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, std::stri
         if (polygon == nullptr) {
             Tile tile = Tile(
                 tile_id,
-                new BoxCollision(
+                std::make_shared<BoxCollision>(
                     object_pos,
                     object_size,
                     object_id,
@@ -186,7 +182,7 @@ std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, std::stri
 
         Tile tile = Tile(
             tile_id,
-            new PoligonCollision(
+            std::make_shared<PoligonCollision>(
                 TinyXml::ParsePolygon(polygon->Attribute("points"), object_pos),
                 object_id,
                 object_name,
@@ -202,7 +198,7 @@ std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, std::stri
         );
     }
 
-    return new Tileset(
+    return std::make_shared<Tileset>(
         firstgId, tileWidth, tileHeight, width, height,
         tileCount, columns, name, source.c_str(), 
         image_obj, tiles, tilesetProperties
@@ -214,17 +210,17 @@ int TilesetsController::GetSize()
 	return tilesets.size();
 }
 
-Tileset* TilesetsController::GetTilesetByTileId(int tileId)
+std::weak_ptr<Tileset> TilesetsController::GetTilesetByTileId(int tileId)
 {
-    for (Tileset* tileset : tilesets) {
+    for (std::shared_ptr<Tileset> tileset : tilesets) {
 		if (tileset->IsContains(tileId)) {
 			return tileset;
 		}
 	}
-	return nullptr;
+	return std::make_shared<Tileset>();
 }
 
-Tileset* TilesetsController::operator[](int index)
+std::weak_ptr<Tileset> TilesetsController::operator[](int index)
 {
 	for (int i = 0; i < tilesets.size(); i++)
 	{
@@ -233,14 +229,10 @@ Tileset* TilesetsController::operator[](int index)
 			return tilesets[i];
 		}
 	}
-	return nullptr;
+	return std::make_shared<Tileset>();
 }
 
-<<<<<<< Updated upstream
-Tileset* TilesetsController::operator[](const char* name)
-=======
 std::weak_ptr<Tileset> TilesetsController::operator[](std::string name)
->>>>>>> Stashed changes
 {
 	for (int i = 0; i < tilesets.size(); i++)
 	{
@@ -249,5 +241,5 @@ std::weak_ptr<Tileset> TilesetsController::operator[](std::string name)
 			return tilesets[i];
 		}
 	}
-	return nullptr;
+	return std::make_shared<Tileset>();
 }

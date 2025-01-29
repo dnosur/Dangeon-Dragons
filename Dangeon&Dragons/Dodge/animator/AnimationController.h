@@ -3,31 +3,23 @@
 
 class AnimationController
 {
-<<<<<<< Updated upstream
-	std::vector<IAnimation*> animations;
-	char* prevAnim;
-
-	IAnimation* GetByTitle(const char* title);
-	IAnimation* GetByTitle(const char* title, int& index);
-=======
 	std::vector<std::shared_ptr<IAnimation>> animations;
 	std::string prevAnim;
 
 	std::weak_ptr<IAnimation> GetByTitle(std::string_view title);
 	std::weak_ptr<IAnimation> GetByTitle(std::string_view title, int& index);
->>>>>>> Stashed changes
 
-	IAnimation* GetByIndex(int index);
+	std::weak_ptr<IAnimation> GetByIndex(int index);
 
-	void DropPrevAnim(IAnimation* currentAnim);
+	void DropPrevAnim(std::shared_ptr<IAnimation> currentAnim);
 
 	int currentIndex;
 public:
 	AnimationController();
-	AnimationController(std::vector<IAnimation*> animations);
+	AnimationController(std::vector<std::shared_ptr<IAnimation>> animations);
 
-	void AddAnimation(IAnimation* animation);
-	void AddAnimations(std::vector<IAnimation*> animations);
+	void AddAnimation(std::shared_ptr<IAnimation> animation);
+	void AddAnimations(std::vector<std::shared_ptr<IAnimation>> animations);
 
 	void Play(int index);
 	void Play(int index, Coord pos, Size size);
@@ -47,13 +39,6 @@ public:
 
 	bool IsAnimationEnd();
 
-<<<<<<< Updated upstream
-	IAnimation* operator[](const char* title);
-	IAnimation* operator[](int index);
-};
-
-=======
 	std::weak_ptr<IAnimation> operator[](std::string_view title);
 	std::weak_ptr<IAnimation> operator[](int index);
 };
->>>>>>> Stashed changes

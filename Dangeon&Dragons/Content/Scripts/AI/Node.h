@@ -8,21 +8,26 @@
 
 // Структура узла для A*
 struct Node {
-    Movement* movement;
+    std::shared_ptr<Movement> movement;
     float gCost; // Стоимость пути от начальной точки
     float hCost; // Эвристическая стоимость до цели
     float fCost() const { return gCost + hCost; } // Общая стоимость
-    Node* parent;
+    std::shared_ptr<Node> parent;
 
-    Node(Movement* movement, float gCost, float hCost, Node* parent = nullptr)
+    Node(std::shared_ptr<Movement> movement,
+        float gCost, float hCost, 
+        std::shared_ptr<Node> parent = nullptr
+    )
         : movement(movement), gCost(gCost), hCost(hCost), parent(parent) {}
 
-    ~Node() {
-        delete parent;
-    };
+    //~Node() {
+    //    delete parent;
+    //};
 };
 
 // Сравнение узлов для приоритетной очереди
 struct CompareNodes {
-    bool operator()(Node* a, Node* b) { return a->fCost() > b->fCost(); }
+    bool operator()(std::shared_ptr<Node> a, std::shared_ptr<Node> b) { 
+        return a->fCost() > b->fCost(); 
+    }
 };

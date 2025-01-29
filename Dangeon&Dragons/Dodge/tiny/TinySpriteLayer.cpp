@@ -15,14 +15,7 @@ TinySpriteLayer::TinySpriteLayer(
 	Size size, 
 	int** tileIds, 
 	Coord offset
-<<<<<<< Updated upstream
-){
-	this->id = id;
-	copyStr(name, this->name);
-	this->size = size;
-=======
 ): id(id), name(name), size(size), offset(offset){
->>>>>>> Stashed changes
 }
 
 TinySpriteLayer::TinySpriteLayer(tinyxml2::XMLElement* element)
@@ -36,13 +29,8 @@ TinySpriteLayer::TinySpriteLayer(tinyxml2::XMLElement* element)
 
 	id = element->IntAttribute("id");
 
-<<<<<<< Updated upstream
-	const char* name = element->Attribute("name");
-	copyStr(name, this->name);
-=======
 	std::string name = element->Attribute("name");
 	this->name = name;
->>>>>>> Stashed changes
 
 	size = Size(element->DoubleAttribute("width"), element->DoubleAttribute("height"));
 	offset = Coord(element->DoubleAttribute("offsetx"), element->DoubleAttribute("offsety"));
@@ -59,7 +47,10 @@ bool TinySpriteLayer::Undefined()
 	return id < 0 && name.empty() && size == Size(0, 0) && !chunks.size();
 }
 
-void TinySpriteLayer::GetSprites(tinyxml2::XMLElement* element, std::vector<TinyChunk*>& chunks)
+void TinySpriteLayer::GetSprites(
+	tinyxml2::XMLElement* element, 
+	std::vector<std::shared_ptr<TinyChunk>>& chunks
+)
 {
 	int height = element->IntAttribute("height");
 	int width = element->IntAttribute("width");
@@ -77,7 +68,7 @@ void TinySpriteLayer::GetSprites(tinyxml2::XMLElement* element, std::vector<Tiny
 		child != nullptr;
 		child = child->NextSiblingElement("chunk")
 		) {
-		chunks.push_back(new TinyChunk(child));
+		chunks.push_back(std::make_shared<TinyChunk>(child));
 
 		std::cout << "chunk " << child->IntAttribute("x") << " " << child->IntAttribute("y") << std::endl;
 		for (int i = 0; i < chunks[chunks.size() - 1]->size.height; i++) {
@@ -152,10 +143,10 @@ int TinySpriteLayer::GetChunksCount()
 	return chunks.size();
 }
 
-TinyChunk* TinySpriteLayer::operator[](int index)
+std::weak_ptr<TinyChunk> TinySpriteLayer::operator[](int index)
 {
 	if (index < 0 || index >= chunks.size()) {
-		return nullptr;
+		return std::make_shared<TinyChunk>();
 	}
 	return chunks[index];
 }

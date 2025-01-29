@@ -19,8 +19,8 @@ class SpriteAnimation
 
 	Window* window;
 
-	Image* currentFrameTitle;
-	Image* rootTile;
+	std::shared_ptr<Image> currentFrameTitle;
+	std::shared_ptr<Image> rootTile;
 
 	Timer timer;
 
@@ -91,10 +91,10 @@ public:
 	void Restart();
 	void Reverse();
 
-	void SetRootTile(Image* image);
+	void SetRootTile(std::shared_ptr<Image> image);
 
-	Image* GetCurrentyFrame();
-	Image* GetRootTile();
+	std::shared_ptr<Image> GetCurrentyFrame();
+	std::shared_ptr<Image> GetRootTile();
 
 	IAnimation* Clone();
 

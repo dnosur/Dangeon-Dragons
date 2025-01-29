@@ -12,7 +12,7 @@ TinyChunk::TinyChunk(Coord coord, Size size, int** tileIds)
 {
 	this->coord = coord;
 	this->size = size;
-	copyArray<int>(tileIds, this->tileIds);
+	CopyArray<int>(tileIds, this->tileIds);
 }
 
 TinyChunk::TinyChunk(tinyxml2::XMLElement* element)
@@ -60,7 +60,7 @@ TinyChunk& TinyChunk::operator=(const TinyChunk& other)
 	if (this != &other) {
 		coord = other.coord;
 		size = other.size;
-		copyArray<int>(other.tileIds, tileIds);
+		CopyArray<int>(other.tileIds, tileIds);
 	}
 	return *this;
 }

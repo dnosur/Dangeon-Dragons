@@ -4,8 +4,6 @@
 #include "Window.h"
 
 #include "figures/Rect.h"
-#include "figures/Triangle.h"
-#include "figures/Circle.h"
 
 #include "Figures.h"
 #include "WindowPointerController.h"

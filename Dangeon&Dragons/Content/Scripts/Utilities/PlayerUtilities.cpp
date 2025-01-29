@@ -1,15 +1,22 @@
 #include "PlayerUtilities.h"
 
-void SetRaycastedObject(IGameObject*& raycastedObject, IGameObject*& target, Color* color)
+void SetRaycastedObject(
+	std::weak_ptr<IGameObject> raycastedObject, 
+	std::weak_ptr<IGameObject> target, 
+	std::unique_ptr<Color> color
+)
 {
-	if (raycastedObject != nullptr &&
-		raycastedObject != target
-		) {
-		if (target != nullptr) {
-			target->GetMaterial()->SetDiffuse(Color(1, 1, 1));
+	std::shared_ptr<IGameObject> _raycastedObject = raycastedObject.lock();
+	std::shared_ptr<IGameObject> _target = target.lock();
+
+	if (_raycastedObject != nullptr &&
+		_raycastedObject != _target
+	) {
+		if (_target != nullptr) {
+			_target->GetMaterial().lock()->SetDiffuse(Color(1, 1, 1));
 		}
 
 		target = raycastedObject;
-		target->GetMaterial()->SetDiffuse(*color);
+		_target->GetMaterial().lock()->SetDiffuse(*color);
 	}
 }

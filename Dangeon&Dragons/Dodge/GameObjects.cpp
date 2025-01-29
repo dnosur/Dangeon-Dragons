@@ -1,39 +1,51 @@
 #include "GameObjects.h"
 
-#include "IGameObject.h"
 #include "Layers.h"
 #include "pawn/Pawn.h"
 
-std::vector<IGameObject*> GameObjects::gameObjects;
-std::vector<class Pawn*> GameObjects::pawns;
+std::vector<std::shared_ptr <IGameObject>> GameObjects::gameObjects;
+std::vector<std::shared_ptr <class Pawn>> GameObjects::pawns;
 
 void GameObjects::Add(IGameObject* gameObject)
 {
-	gameObjects.push_back(gameObject);
+	std::shared_ptr <IGameObject> obj = std::shared_ptr <IGameObject>(gameObject);
+	gameObjects.push_back(obj);
 
-	if (class Pawn* pawn = dynamic_cast<class Pawn*>(gameObject))
-	{
+	if (std::shared_ptr <class Pawn> pawn = std::dynamic_pointer_cast<class Pawn>(obj)) {
 		pawns.push_back(pawn);
 	}
 }
 
 void GameObjects::Add(class Pawn* pawn)
 {
-	pawns.push_back(pawn);
-	gameObjects.push_back(pawn);
+	std::shared_ptr <class Pawn> p = std::shared_ptr <class Pawn>(pawn);
+	pawns.push_back(p);
+	gameObjects.push_back(p);
+}
+
+void GameObjects::Add(std::shared_ptr<IGameObject> gameObject)
+{
+	gameObjects.push_back(gameObject);
+
+	if (std::shared_ptr<class Pawn> pawn = std::dynamic_pointer_cast<class Pawn>(gameObject)) {
+		pawns.push_back(pawn);
+	}
+}
+
+void GameObjects::Add(std::shared_ptr<class Pawn> gameObject)
+{
+	pawns.push_back(gameObject);
+	gameObjects.push_back(gameObject);
 }
 
 void GameObjects::Add(std::vector<IGameObject*>* gameObjects)
 {
-	for (IGameObject* gameObject : *gameObjects)
+	for (IGameObject*& gameObject : *gameObjects)
 	{
 		Add(gameObject);
 	}
 }
 
-<<<<<<< Updated upstream
-IGameObject* GameObjects::GetByTitle(const char* title)
-=======
 void GameObjects::Add(std::vector<std::weak_ptr<IGameObject>>* gameObjects)
 {
 	for (std::weak_ptr<IGameObject>& gameObject : *gameObjects)
@@ -47,7 +59,6 @@ void GameObjects::Add(std::vector<std::weak_ptr<IGameObject>>* gameObjects)
 }
 
 std::weak_ptr<IGameObject> GameObjects::GetByTitle(std::string title)
->>>>>>> Stashed changes
 {
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
@@ -56,61 +67,65 @@ std::weak_ptr<IGameObject> GameObjects::GetByTitle(std::string title)
 			return gameObjects[i];
 		}
 	}
-	return nullptr;
+
+	return std::shared_ptr<IGameObject>(nullptr);
 }
 
-<<<<<<< Updated upstream
-IGameObject* GameObjects::GetByTitle(const char* title, Layer layer)
-{
-	for (int i = 0; i < gameObjects.size(); i++)
-	{
-		if (!strcmp(gameObjects[i]->GetTitle(), title) && 
-=======
 std::weak_ptr<IGameObject> GameObjects::GetByTitle(std::string title, Layer layer)
 {
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
 		if (gameObjects[i]->GetTitle() == title &&
->>>>>>> Stashed changes
 			gameObjects[i]->GetLayer() == layer
-		)
+			)
 		{
 			return gameObjects[i];
 		}
 	}
-	return nullptr;
+	return std::shared_ptr<IGameObject>(nullptr);
 }
 
-std::vector<IGameObject*>* GameObjects::GetAll()
+std::vector<std::shared_ptr <IGameObject>>* GameObjects::GetAll()
 {
 	return &gameObjects;
 }
 
-std::vector<IGameObject*>* GameObjects::GetAll(Layer layer)
+std::vector<std::shared_ptr <IGameObject>>* GameObjects::GetAll(Layer layer)
 {
+	std::vector<std::shared_ptr <IGameObject>>* result = new std::vector<std::shared_ptr <IGameObject>>{};
+
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
 		if (gameObjects[i]->GetLayer() == layer)
 		{
-			return &gameObjects;
+			result->push_back(gameObjects[i]);
 		}
 	}
-	return nullptr;
+	return result;
 }
 
-std::vector<class Pawn*>* GameObjects::GetAllPawns()
+std::vector<std::shared_ptr<class Pawn>>* GameObjects::GetAllPawns()
 {
 	return &pawns;
 }
 
-std::vector<class Pawn*>* GameObjects::GetAllPawns(Layer layer)
+std::vector<std::shared_ptr<class Pawn>>* GameObjects::GetAllPawns(Layer layer)
 {
+	std::vector<std::shared_ptr <class Pawn>>* result = new std::vector<std::shared_ptr <class Pawn>>{};
+
 	for (int i = 0; i < pawns.size(); i++)
 	{
 		if (pawns[i]->GetLayer() == layer)
 		{
-			return &pawns;
+			result->push_back(pawns[i]);
 		}
 	}
-	return nullptr;
+	return result;
+}
+
+void GameObjects::Clear()
+{
+	pawns[0].reset();
+	gameObjects.clear();
+	pawns.clear();
 }

@@ -10,9 +10,9 @@
 
 void Player::LoadAnimations()
 {
-	playerImages = new SlicedImage(
-		material->GetDiffuseMap(),
-		{
+	playerImages = std::make_unique<SlicedImage>(
+		material->GetDiffuseMap().lock(),
+		std::vector<int>{
 			7, 7, 7, 7,
 			8, 8, 8, 8,
 			9, 9, 9, 9,
@@ -24,7 +24,7 @@ void Player::LoadAnimations()
 		Size(64, 64)
 	);
 
-	for (VertexAnimation*& animation : playerImages->CreateVertexAnimations(
+	for (std::unique_ptr<VertexAnimation>& animation : playerImages->CreateVertexAnimations(
 		std::make_pair(
 			std::vector<std::string>({
 				"idle_top",
@@ -91,10 +91,10 @@ void Player::LoadAnimations()
 	)
 	{
 		animation->SetGameObject(this);
-		animations.AddAnimation(animation);
+		animations.AddAnimation(std::move(animation));
 	}
 
-	animations["die"]->SetStopOnEnd(true);
+	animations["die"].lock()->SetStopOnEnd(true);
 }
 
 void Player::Initialize()
@@ -122,13 +122,35 @@ void Player::Initialize()
 	}
 }
 
+void Player::SetSideSize(Sides sides)
+{
+	if (sides.bottom != 0) {
+		MathSide(sides.bottom, false);
+	}
+
+	if (sides.top != 0) {
+		MathSide(sides.top, false);
+	}
+
+	if (sides.left != 0) {
+		MathSide(sides.left, true);
+	}
+
+	if (sides.right != 0) {
+		MathSide(sides.right, true);
+	}
+}
+
 void Player::Draw()
 {
 	material->Use(this);
 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
-	const bool isHasDiffuseVertexs = material->GetDiffuseMapVerticies().size() >= 2 && material->GetDiffuseMap() != nullptr;
+	const bool isHasDiffuseVertexs = 
+		material->GetDiffuseMapVerticies().size() >= 2 && 
+		material->GetDiffuseMap().lock() != nullptr;
+
 	const Coord& textCoord1 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[0] : Coord(0, 0);
 	const Coord& textCoord2 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[1] : Coord(1, 1);
 
@@ -283,7 +305,9 @@ void Player::Drag(Coord newPos)
 		return;
 	}
 
-	Audio* walk = audioController["walk-grass"];
+	std::weak_ptr<Audio> weakWalk = audioController["walk-grass"];
+	std::shared_ptr<Audio> walk = weakWalk.lock();
+
 	if (walk != nullptr && walk->GetState() != AudioStates::PLAYING) {
 		audioController.Play("walk-grass");
 	}
@@ -292,55 +316,64 @@ void Player::Drag(Coord newPos)
 
 void Player::Raycasting()
 {
-	Ray* interactiveRay = RayFactory::CreateRay(
-		&startPos,
-		&moveDirection,
-		interactiveDistance,
-		20
+	std::unique_ptr<Ray> interactiveRay = std::move(
+		RayFactory::CreateRay(
+			std::move(std::make_unique<Coord>(startPos)),
+			std::move(std::make_unique<Directions>(moveDirection)),
+			interactiveDistance,
+			20
+		)
 	);
 
-	Ray* damageRay = RayFactory::CreateRay(
-		&startPos,
-		&moveDirection,
-		damageDistance,
-		20
+	std::unique_ptr<Ray> damageRay = std::move(
+		RayFactory::CreateRay(
+			std::move(std::make_unique<Coord>(startPos)),
+			std::move(std::make_unique<Directions>(moveDirection)),
+			damageDistance,
+			20
+		)
 	);
 
-	IGameObject* interactiveCollision = Raycast::RaycastFirst(
-		interactiveRay
+	std::weak_ptr<IGameObject> interactiveCollision = Raycast::RaycastFirst(
+		std::move(interactiveRay)
 	);
 
-	IGameObject* damageCollision = Raycast::RaycastFirst(
-		damageRay
+	std::weak_ptr<IGameObject> damageCollision = Raycast::RaycastFirst(
+		std::move(damageRay)
 	);
 
+	std::shared_ptr<IGameObject> _interactiveCollision = interactiveCollision.lock();
+	std::shared_ptr<IGameObject> _interactiveObject = interactiveObject.lock();
 
-	if (interactiveCollision != nullptr && 
-		interactiveCollision->GetLayer() != Layer::MainPlayer && 
-		interactiveCollision->GetLayer() != Layer::Enemy
+	if (_interactiveCollision != nullptr &&
+		_interactiveCollision->GetLayer() != Layer::MainPlayer &&
+		_interactiveCollision->GetLayer() != Layer::Enemy
 	) {
-		SetRaycastedObject(interactiveCollision, interactiveObject, new Color(.5f, 1, .5f));
+		SetRaycastedObject(interactiveCollision, interactiveObject, std::make_unique<Color>(.5f, 1, .5f));
 	}
-	else if(interactiveObject != nullptr) {
-		interactiveObject->GetMaterial()->SetDiffuse(Color(1, 1, 1));
-		interactiveObject = nullptr;
+	else if(_interactiveObject != nullptr) {
+		_interactiveObject->GetMaterial().lock()->SetDiffuse(Color(1, 1, 1));
+		interactiveObject.reset();
 	}
 
-	if (damageCollision != nullptr && 
-		interactiveCollision->GetLayer() != Layer::MainPlayer && 
-		damageCollision->GetLayer() == Layer::Enemy
+	std::shared_ptr<IGameObject> _damageCollision = damageCollision.lock();
+	std::shared_ptr<IGameObject> _damageObject = damageObject.lock();
+
+	if (_damageCollision != nullptr &&
+		_interactiveCollision->GetLayer() != Layer::MainPlayer &&
+		_damageCollision->GetLayer() == Layer::Enemy
 	) {
-		SetRaycastedObject(damageCollision, damageObject, new Color(.9f, .9f, .1f));
+		SetRaycastedObject(damageCollision, damageObject, std::make_unique<Color>(.9f, .9f, .1f));
 	}
-	else if(damageObject != nullptr) {
-		damageObject->GetMaterial()->SetDiffuse(Color(1, 1, 1));
-		damageObject = nullptr;
+	else if(_damageObject != nullptr) {
+		_damageObject->GetMaterial().lock()->SetDiffuse(Color(1, 1, 1));
+		interactiveObject.reset();
 	}
 }
 
 bool Player::CheckForCollision()
 {
-	WindowPointer<std::vector<IGameObject*>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<IGameObject*>>(
+	WindowPointer<std::vector<std::shared_ptr<IGameObject>>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<std::shared_ptr<IGameObject>>>(
 		window->GetWindow(), 
 		"SolidCollisions"
 	);
@@ -349,14 +382,19 @@ bool Player::CheckForCollision()
 		return true;
 	}
 
-	for (IGameObject* collisionObj : solidCollisionsObjects->GetValue()) {
-		std::vector<Coord> points = collisionObj->GetCollision()->GetPoints();
-
-		if (collisionObj == nullptr || collisionObj->GetCollision() == nullptr) {
+	for (std::shared_ptr<IGameObject> collisionObj : solidCollisionsObjects->GetValue()) {
+		std::shared_ptr<ICollision> collision = collisionObj->GetCollision().lock();
+		if (!collision) {
 			continue;
 		}
 
-		if (collisionObj->GetCollision()->IsCollisionEnter(this)) {
+		std::vector<Coord> points = collision->GetPoints();
+
+		if (collisionObj == nullptr || collision == nullptr) {
+			continue;
+		}
+
+		if (collision->IsCollisionEnter(this)) {
 			return false;
 		}
 	}
@@ -366,24 +404,60 @@ bool Player::CheckForCollision()
 
 bool Player::CheckForCollision(Coord pos, Size size)
 {
-	WindowPointer<std::vector<IGameObject*>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<IGameObject*>>(window->GetWindow(), "SolidCollisions");
+	WindowPointer<std::vector<std::shared_ptr<IGameObject>>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<std::shared_ptr<IGameObject>>>(window->GetWindow(), "SolidCollisions");
 	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().empty()) {
 		return true;
 	}
 
-	for (IGameObject* collisionObj : solidCollisionsObjects->GetValue()) {
-		std::vector<Coord> points = collisionObj->GetCollision()->GetPoints();
-
-		if (collisionObj == nullptr || collisionObj->GetCollision() == nullptr) {
+	for (std::shared_ptr<IGameObject> collisionObj : solidCollisionsObjects->GetValue()) {
+		std::shared_ptr<ICollision> collision = collisionObj->GetCollision().lock();
+		if (!collision) {
 			continue;
 		}
 
-		if (collisionObj->GetCollision()->IsCollisionEnter(pos, size)) {
+		std::vector<Coord> points = collision->GetPoints();
+
+		if (collisionObj == nullptr || collision == nullptr) {
+			continue;
+		}
+
+		if (collision->IsCollisionEnter(pos, size)) {
 			return false;
 		}
 	}
 
 	return true;
+}
+
+void Player::MathSide(double& sideSize, bool isWidth)
+{
+	Coord& vertex1 = vertexes[0];
+	Coord& vertex2 = vertexes[1];
+
+	float glDelta = (float)sideSize / (float)window->GetSize().GetWidth() * 2.0f;
+
+	if (isWidth) {
+		if (sideSize > 0) {
+			vertex1.X += glDelta;
+		}
+		else {
+			vertex2.X -= glDelta;
+		}
+	}
+	else {
+		if (sideSize > 0) {
+			vertex1.Y += glDelta;
+		}
+		else {
+			vertex2.Y -= glDelta;
+		}
+	}
+
+	size.SetWidth((vertex1.X - vertex2.X) * window->GetSize().GetWidth() / 2.0f);
+	size.SetHeight((vertex1.Y - vertex2.Y) * window->GetSize().GetHeight() / 2.0f);
+
+	pos.X = window->GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
+	pos.Y = window->GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
 }
 
 void Player::AIMovement()
@@ -455,26 +529,21 @@ std::string_view Player::GetAnimationName()
 
 void Player::LoadAudio()
 {
-	Audio* walkGrass = new Audio("walk-grass", "Content/Sounds/WonderWorld/walk-grass.wav");
+	std::unique_ptr<Audio> walkGrass = std::make_unique<Audio>("walk-grass", "Content/Sounds/WonderWorld/walk-grass.wav");
 	walkGrass->SetVolume(0.5f);
 
-	audioController.Load(walkGrass);
+	audioController.Load(std::move(walkGrass));
 }
 
 Player::Player(
-<<<<<<< Updated upstream
-	const char* title, Window& window, ICollision* collision,
-	Material* material, Directions moveDirection, Coord pos, Size size, 
-=======
 	std::string title, Window& window, std::shared_ptr<ICollision> collision,
 	std::shared_ptr<Material> material, Directions moveDirection, Coord pos, Size size,
->>>>>>> Stashed changes
 	float speed, float maxSpeed, float minSpeed, 
 	float health, float maxHealth, bool isPlayable, bool isKinematic, 
-	bool isHidden, std::vector<IAnimation*> animations)
+	bool isHidden, std::vector<std::shared_ptr<IAnimation>> animations)
 	: Pawn(
-		title, window, collision, 
-		material, moveDirection, pos, size, 
+		title, window, std::move(collision),
+		std::move(material), moveDirection, pos, size,
 		speed, maxSpeed, minSpeed, 
 		health, maxHealth, isPlayable, isKinematic, 
 		isHidden, animations)
@@ -529,5 +598,5 @@ void Player::Update()
 	th->Join();
 	delete th;
 
-	animations[GetAnimationName()]->Play();
+	animations[GetAnimationName()].lock()->Play();
 }

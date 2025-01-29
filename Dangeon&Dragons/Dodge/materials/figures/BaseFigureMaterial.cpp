@@ -1,11 +1,16 @@
 #include "BaseFigureMaterial.h"
 
-BaseFigureMaterial::BaseFigureMaterial(Color ambient, Color diffuse, Color specular, Color emissive, float shininess, float metalic, float roughness, float specularIntensity, float emissiveIntensity, Shader* shader, Image* diffuseMap, Image* normalMap, Image* specularMap, Image* emissiveMap)
-	: Material(ambient, diffuse, specular, emissive, shininess, metalic, roughness, specularIntensity, emissiveIntensity, shader, diffuseMap, normalMap, specularMap, emissiveMap)
-{
-}
+BaseFigureMaterial::BaseFigureMaterial(
+	Color ambient, Color diffuse, Color specular, Color emissive, 
+	float shininess, float metalic, float roughness, float specularIntensity, 
+	float emissiveIntensity, 
 
-BaseFigureMaterial::~BaseFigureMaterial()
+	std::shared_ptr<Shader> shader, 
+	std::shared_ptr<Image> diffuseMap, 
+	std::shared_ptr<Image> normalMap, 
+	std::shared_ptr<Image> specularMap, 
+	std::shared_ptr<Image> emissiveMap
+) : Material(ambient, diffuse, specular, emissive, shininess, metalic, roughness, specularIntensity, emissiveIntensity, shader, diffuseMap, normalMap, specularMap, emissiveMap)
 {
 }
 
@@ -60,8 +65,8 @@ void BaseFigureMaterial::Use(IGameObject* gameObject)
 
 		Coord cameraOffsetPosition = camera->GetPosition();
 		shader->SetVec3("camera.cameraOffsetPosition", cameraOffsetPosition.X, cameraOffsetPosition.Y, 0.0f);
-		shader->SetMat4("camera.view", camera->GetViewMatrix());
-		shader->SetMat4("camera.projection", camera->GetProjectionMatrix());
+		//shader->SetMat4("camera.view", camera->GetViewMatrix());
+		//shader->SetMat4("camera.projection", camera->GetProjectionMatrix());
 	}
 }
 

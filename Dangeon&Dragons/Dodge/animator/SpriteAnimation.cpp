@@ -39,13 +39,8 @@ SpriteAnimation::SpriteAnimation(
 	std::vector<FrameSound> frameSounds
 )
 {
-<<<<<<< Updated upstream
-	copyStr((char*)title, this->title);
-	copyStr((char*)folder, this->folder);
-=======
 	this->title = title;
 	this->folder = folder;
->>>>>>> Stashed changes
 
 	play = pause = repeat = stopOnEnd = end = false;
 	currentSpriteIndex = -1;
@@ -65,13 +60,8 @@ SpriteAnimation::SpriteAnimation(
 	std::string folder, int frameRate, Window* window, bool revere,
 	std::vector<FrameSound> frameSounds
 ){
-<<<<<<< Updated upstream
-	copyStr((char*)title, this->title);
-	copyStr((char*)folder, this->folder);
-=======
 	this->title = title;
 	this->folder = folder;
->>>>>>> Stashed changes
 
 	this->pos = pos;
 	this->size = size;
@@ -94,11 +84,7 @@ SpriteAnimation::SpriteAnimation(
 	int frameRate, Window* window, bool revere,
 	std::vector<FrameSound> frameSounds)
 {
-<<<<<<< Updated upstream
-	copyStr((char*)title, this->title);
-=======
 	this->title = title;
->>>>>>> Stashed changes
 	SetSprites(sprites);
 	folder = nullptr;
 
@@ -121,11 +107,7 @@ SpriteAnimation::SpriteAnimation(
 	Window* window, bool revere, std::vector<FrameSound> frameSounds
 )
 {
-<<<<<<< Updated upstream
-	copyStr((char*)title, this->title);
-=======
 	this->title = title;
->>>>>>> Stashed changes
 	SetSprites(sprites);
 
 	this->pos = pos;
@@ -153,11 +135,7 @@ void SpriteAnimation::SetWindow(Window* window)
 
 void SpriteAnimation::SetTitle(std::string title)
 {
-<<<<<<< Updated upstream
-	copyStr(title, this->title);
-=======
 	this->title = title;
->>>>>>> Stashed changes
 }
 
 std::string_view SpriteAnimation::GetTitle()
@@ -187,11 +165,7 @@ std::string_view SpriteAnimation::GetFolder()
 
 void SpriteAnimation::LoadFromFolder(std::string folder)
 {
-<<<<<<< Updated upstream
-	copyStr(folder, this->folder);
-=======
 	this->folder = folder;
->>>>>>> Stashed changes
 	LoadSpritesFromFolder();
 }
 
@@ -289,7 +263,7 @@ void SpriteAnimation::Play(Coord coord, Size size)
 	frameSounds.Update(currentSpriteIndex);
 
 	if (currentSpriteIndex >= 0) {
-		currentFrameTitle = sprites[currentSpriteIndex];
+		currentFrameTitle.reset(sprites[currentSpriteIndex]);
 		sprites.DrawImage(currentFrameTitle->title, coord, size, window->GetSize(), Color(1, 1, 1), true);
 
 		if (rootTile != nullptr) {
@@ -343,17 +317,17 @@ void SpriteAnimation::Reverse()
 	reverse = !reverse;
 }
 
-void SpriteAnimation::SetRootTile(Image* image)
+void SpriteAnimation::SetRootTile(std::shared_ptr<Image> image)
 {
 	rootTile = image;
 }
 
-Image* SpriteAnimation::GetCurrentyFrame()
+std::shared_ptr<Image> SpriteAnimation::GetCurrentyFrame()
 {
 	return currentFrameTitle;
 }
 
-Image* SpriteAnimation::GetRootTile()
+std::shared_ptr<Image> SpriteAnimation::GetRootTile()
 {
 	return rootTile;
 }
@@ -386,13 +360,8 @@ bool SpriteAnimation::operator=(const SpriteAnimation& other)
 
 		this->timer = other.timer;
 
-<<<<<<< Updated upstream
-		copyStr(other.folder, this->folder);
-		copyStr(other.title, this->title);
-=======
 		this->folder = other.folder;
 		this->title = other.title;
->>>>>>> Stashed changes
 	}
 	return false;
 }

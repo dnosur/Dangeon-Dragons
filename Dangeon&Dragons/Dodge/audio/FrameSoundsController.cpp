@@ -34,7 +34,7 @@ void FrameSoundsController::SetFrameSounds(std::vector<FrameSound> frameSounds)
 	}
 
 	Clear();
-	for (const FrameSound& frame : frameSounds) {
+	for (FrameSound& frame : frameSounds) {
 		this->frameSounds.push_back(frame);
 	}
 }

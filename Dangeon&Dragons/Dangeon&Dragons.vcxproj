@@ -134,9 +134,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Content\Scripts\UI\HpBar\HpBar.cpp" />
     <ClCompile Include="Dodge\camera\Camera.cpp" />
     <ClCompile Include="Dodge\animator\AnimationsFactory.cpp" />
     <ClCompile Include="Dodge\Layers.h" />
+    <ClCompile Include="Dodge\Sides.cpp" />
     <ClCompile Include="Dodge\tiny\Animation\Animation.cpp" />
     <ClCompile Include="Dodge\animator\VertexAnimation.cpp" />
     <ClCompile Include="Dodge\animator\AnimationController.cpp" />
@@ -210,10 +212,12 @@
     <ClCompile Include="Content\Scripts\Utilities\RaycastUtilities.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Content\Scripts\UI\HpBar\HpBar.h" />
     <ClInclude Include="Dodge\audio\AudioStates.h" />
     <ClInclude Include="Dodge\camera\Camera.h" />
     <ClInclude Include="Dodge\animator\AnimationsFactory.h" />
     <ClInclude Include="Dodge\pawn\Actions.h" />
+    <ClInclude Include="Dodge\Sides.h" />
     <ClInclude Include="Dodge\tiny\Animation\Animation.h" />
     <ClInclude Include="Dodge\animator\VertexAnimation.h" />
     <ClInclude Include="Dodge\animator\AnimationController.h" />

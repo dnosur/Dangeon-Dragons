@@ -17,14 +17,13 @@ public:
 		float specularIntensity = 1.0f,
 		float emissiveIntensity = 1.0f,
 
-		Shader* shader = nullptr,
+		std::shared_ptr<Shader> shader = nullptr,
 
-		Image* diffuseMap = nullptr,
-		Image* normalMap = nullptr,
-		Image* specularMap = nullptr,
-		Image* emissiveMap = nullptr
+		std::shared_ptr<Image> diffuseMap = nullptr,
+		std::shared_ptr<Image> normalMap = nullptr,
+		std::shared_ptr<Image> specularMap = nullptr,
+		std::shared_ptr<Image> emissiveMap = nullptr
 	);
-	~BaseFigureMaterial();
 
 	void Use(IGameObject* gameObject) override;
 

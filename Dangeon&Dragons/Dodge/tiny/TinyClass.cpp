@@ -1,38 +1,22 @@
 #include "TinyClass.h"
 
-<<<<<<< Updated upstream
-TinyClass::TinyClass(int id, const char* name, std::vector<ICollision*> objects)
-{
-	this->id = id;
-	copyStr(name, this->name);
-=======
 TinyClass::TinyClass(int id, std::string name, std::vector<std::shared_ptr<ICollision>> objects)
 {
 	this->id = id;
 	this->name = name;
->>>>>>> Stashed changes
 	this->objects = objects;
 }
 
 TinyClass::TinyClass(tinyxml2::XMLElement* element)
 {
 	id = element->IntAttribute("id");
-<<<<<<< Updated upstream
-	const char* name = element->Attribute("name");
-	copyStr(name, this->name);
-=======
 	std::string name = element->Attribute("name");
 	this->name = name;
->>>>>>> Stashed changes
 
 	GetObjects(element, objects);
 }
 
-TinyClass::~TinyClass()
-{
-}
-
-void TinyClass::GetObjects(tinyxml2::XMLElement* element, std::vector<ICollision*>& objects)
+void TinyClass::GetObjects(tinyxml2::XMLElement* element, std::vector<std::shared_ptr<ICollision>>& objects)
 {
 	tinyxml2::XMLElement* objectGroup = element->FirstChildElement("objectgroup");
 	if (objectGroup == nullptr)
@@ -60,7 +44,7 @@ void TinyClass::GetObjects(tinyxml2::XMLElement* element, std::vector<ICollision
 			if (polygon == nullptr)
 			{
 				objects.push_back(
-					new BoxCollision(
+					std::make_shared<BoxCollision>(
 						coord,
 						size,
 						object_id,
@@ -72,7 +56,7 @@ void TinyClass::GetObjects(tinyxml2::XMLElement* element, std::vector<ICollision
 			}
 
 			objects.push_back(
-				new PoligonCollision(
+				std::make_shared<PoligonCollision>(
 					TinyXml::ParsePolygon(
 						polygon->Attribute("points"),
 						coord
@@ -86,12 +70,12 @@ void TinyClass::GetObjects(tinyxml2::XMLElement* element, std::vector<ICollision
 	}
 }
 
-std::vector<ICollision*>::iterator TinyClass::begin()
+std::vector<std::shared_ptr<ICollision>>::iterator TinyClass::begin()
 {
 	return objects.begin();
 }
 
-std::vector<ICollision*>::iterator TinyClass::end()
+std::vector<std::shared_ptr<ICollision>>::iterator TinyClass::end()
 {
 	return objects.end();
 }
@@ -111,11 +95,11 @@ int TinyClass::GetSize()
 	return objects.size();
 }
 
-ICollision* TinyClass::operator[](int index)
+std::weak_ptr<ICollision> TinyClass::operator[](int index)
 {
 	if (index < 0 || index >= objects.size())
 	{
-		return nullptr;
+		return std::make_shared<BoxCollision>();
 	}
 	return objects[index];
 }

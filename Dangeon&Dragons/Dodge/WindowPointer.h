@@ -38,11 +38,7 @@ inline WindowPointer<T>::WindowPointer()
 template<typename T>
 inline WindowPointer<T>::WindowPointer(std::string title, T* value)
 {
-<<<<<<< Updated upstream
-	copyStr(title, this->title);
-=======
 	this->title = title;
->>>>>>> Stashed changes
 
 	this->value = value;
 	undefined = false;
@@ -90,11 +86,7 @@ inline WindowPointer<T>& WindowPointer<T>::operator=(const WindowPointer& other)
 	if (this != &other)
 	{
 		value = other.value;
-<<<<<<< Updated upstream
-		copyStr(other.title, this->title);
-=======
 		title = other.title;
->>>>>>> Stashed changes
 		undefined = other.undefined;
 	}
 	return *this;

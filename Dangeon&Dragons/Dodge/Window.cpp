@@ -46,11 +46,7 @@ Window::Window()
 Window::Window(Size size, std::string title, Color backgroundColor, GLFWmonitor* monitor, GLFWwindow* share)
 {
     this->size = size;
-<<<<<<< Updated upstream
-    copyStr(title, this->title);
-=======
     this->title = title;
->>>>>>> Stashed changes
 
     this->share = share;
     this->monitor = monitor;

@@ -46,18 +46,9 @@ void Camera::DropOffset()
     position = observed->GetPos();
 }
 
-<<<<<<< Updated upstream
-Camera::Camera(const char* title, Size cameraSize, Size mapSize, Window* window)
-    : size(cameraSize), mapSize(mapSize), window(window), observed(nullptr){
-    copyStr(
-        title,
-        this->title
-    );
-=======
 Camera::Camera(std::string title, Size cameraSize, Size mapSize, Window* window)
     : size(cameraSize), mapSize(mapSize), window(window), observed(nullptr), title(title) 
 {
->>>>>>> Stashed changes
 }
 
 void Camera::Update()
@@ -81,13 +72,13 @@ Coord Camera::GetPosition() const
     return Coord(position.X, position.Y);
 }
 
-void Camera::SetObservedObj(IGameObject* obj)
+void Camera::SetObservedObj(std::shared_ptr<IGameObject> obj)
 {
     this->observed = obj;
     position = this->observed->GetPos();
 }
 
-IGameObject* Camera::GetObservedObj()
+std::weak_ptr<IGameObject> Camera::GetObservedObj()
 {
     return observed;
 }

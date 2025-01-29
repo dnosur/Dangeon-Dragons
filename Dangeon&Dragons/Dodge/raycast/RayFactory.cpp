@@ -1,17 +1,23 @@
 #include "RayFactory.h"
 
-Ray* RayFactory::CreateRay(Coord* origin, Coord* direction, float rayWidth)
+std::unique_ptr<Ray> RayFactory::CreateRay(
+	std::unique_ptr<Coord> origin,
+	std::unique_ptr<Coord> direction,
+	float rayWidth
+)
 {
 	if (origin == nullptr || direction == nullptr) {
 		return nullptr;
 	}
 
-	return new Ray(origin, direction, rayWidth);
+	return std::make_unique<Ray>(std::move(origin), std::move(direction), rayWidth);
 }
 
-Ray* RayFactory::CreateRay(
-	Coord* origin, Directions* direction,
-	float raySize, float rayWidth
+std::unique_ptr<Ray> RayFactory::CreateRay(
+	std::unique_ptr<Coord> origin,
+	std::unique_ptr<Directions> direction,
+	float raySize, 
+	float rayWidth
 )
 {
 	Coord dir;
@@ -32,20 +38,22 @@ Ray* RayFactory::CreateRay(
 		dir.X += raySize;
 	}
 
-	return new Ray(
-		origin, new Coord(*origin + dir),
+	return std::make_unique<Ray>(
+		std::move(origin),
+		std::move(std::make_unique<Coord>(*origin + dir)),
 		rayWidth
 	);
 }
 
-Ray* RayFactory::CreatePawnDirectionRay(
-	class Pawn* pawn, 
+std::unique_ptr<Ray> RayFactory::CreatePawnDirectionRay(
+	class Pawn*& pawn,
 	float raySize, float rayWidth)
 {
 	return CreateRay(
-		new Coord(
+		std::make_unique<Coord>(
 			pawn->GetPos()
-		), new Directions(
+		), 
+		std::make_unique<Directions>(
 			pawn->GetMoveDirection()
 		),
 		raySize, rayWidth

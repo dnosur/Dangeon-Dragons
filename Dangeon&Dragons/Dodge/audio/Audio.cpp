@@ -52,13 +52,8 @@ Audio::Audio(
     bool loop
 )
 {
-<<<<<<< Updated upstream
-    copyStr(title, this->title);
-    copyStr(path, this->path);
-=======
     this->title = title;
     this->path = path;
->>>>>>> Stashed changes
     Load();
 
     state = AudioStates::FINISHED;
@@ -184,13 +179,8 @@ Audio& Audio::operator=(const Audio& other)
         source = other.source;
         buffer = other.buffer;
 
-<<<<<<< Updated upstream
-        copyStr(other.title, title);
-        copyStr(other.path, path);
-=======
         title = other.title;
         path = other.path;
->>>>>>> Stashed changes
     }
     return *this;
 }

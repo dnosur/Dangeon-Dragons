@@ -1,9 +1,8 @@
 #include "TinyMap.h"
-#include "../figures/Circle.h"
 #include "../GameStatuses.h"
 #include "../animator/VertexAnimation.h"
 
-void TinyMap::MoveCollison(ICollision* collision, Coord* pos)
+void TinyMap::MoveCollison(std::shared_ptr<ICollision> collision, Coord* pos)
 {
 	if (collision == nullptr) {
 		return;
@@ -32,7 +31,12 @@ void TinyMap::Initialize()
 		std::cout << "Layer: " << spriteLayer.GetName() << std::endl;
 
 		for (int chunk_id = 0; chunk_id < spriteLayer.GetChunksCount(); chunk_id++) {
-			TinyChunk* chunk = spriteLayer[chunk_id];
+			std::weak_ptr<TinyChunk> weakChunk = spriteLayer[chunk_id];
+			std::shared_ptr<TinyChunk> chunk = weakChunk.lock();
+
+			if (chunk == nullptr) {
+				continue;
+			}
 
 			for (int i = 0; i < chunk->size.height; i++) {
 				for (int j = 0; j < chunk->size.width; j++) {
@@ -42,38 +46,31 @@ void TinyMap::Initialize()
 						continue;
 					}
 
-					Tileset* tileset = tileMap->tilesetsController.GetTilesetByTileId(tileId);
+					std::shared_ptr<Tileset> tileset = tileMap->tilesetsController.GetTilesetByTileId(tileId).lock();
+					if (tileset == nullptr) {
+						continue;
+					}
 
 					Tile* tile = tileset->GetTileById(tileId);
 
-					ICollision* collision = (
-						tile == nullptr
-						? nullptr
-						: tile->GetCollision() != nullptr
-						? tile->GetCollision()->Clone()
-						: nullptr
-						);
+					std::shared_ptr<ICollision> collision = tile ? tile->GetCollision().lock() : nullptr;
+					std::shared_ptr<Animation> tileAnimation = tile ? tile->GetAnimation().lock() : nullptr;
 
-					Rect* rect = nullptr;
-					VertexAnimation* animation = nullptr;
+					std::shared_ptr<Rect> rect = nullptr;
+					std::unique_ptr<VertexAnimation> animation = nullptr;
 
 					{
 						int ciclesCount = tile == nullptr
 							? 0
-							: tile->GetAnimation() != nullptr
-							? tile->GetAnimation()->FrameCount()
+							: tileAnimation != nullptr
+							? tileAnimation->FrameCount()
 							: 0;
 
 						Coord vertex1, vertex2;
 						Coord textureVertex1, textureVertex2;
 
-<<<<<<< Updated upstream
-						std::string random_str = generateRandomString(5);
-						const char* obj_title = random_str.c_str();
-=======
 						std::string random_str = GenerateRandomString(5);
 						std::string obj_title = random_str.c_str();
->>>>>>> Stashed changes
 
 						for (int k = 0; k < (ciclesCount ? ciclesCount : 1); k++) {
 
@@ -107,38 +104,38 @@ void TinyMap::Initialize()
 							textureVertex2 = Coord((float)atlasX * (float)tileU, 1.0f - ((float)atlasY * tileV));
 
 							if (animation == nullptr && ciclesCount > 0) {
-								animation = new VertexAnimation(
+								animation = std::make_unique<VertexAnimation>(
 									obj_title,
 									4,
 									true,
 									false,
-									rect
+									rect.get()
 								);
 
-								tileId = tile->GetAnimation()->operator[](k)->tileId;
-								animation->AddFrame(tile->GetAnimation()->operator[](k)->duration, {
+								tileId = tileAnimation->operator[](k)->tileId;
+								animation->AddFrame(tileAnimation->operator[](k)->duration, {
 									textureVertex1,
 									textureVertex2
 									});
 
 								tileId = k + 1 < ciclesCount
-									? tile->GetAnimation()->operator[](k + 1)->tileId
+									? tileAnimation->operator[](k + 1)->tileId
 									: tileId;
 							}
 
 							if (rect != nullptr) {
-								animation->AddFrame(tile->GetAnimation()->operator[](k)->duration, {
+								animation->AddFrame(tileAnimation->operator[](k)->duration, {
 									textureVertex1,
 									textureVertex2
 									});
 
 								tileId = k + 1 < ciclesCount
-									? tile->GetAnimation()->operator[](k + 1)->tileId
+									? tileAnimation->operator[](k + 1)->tileId
 									: tileId;
 								continue;
 							}
 
-							rect = new Rect(
+							rect = std::make_shared<Rect>(
 								obj_title,
 								*window,
 								vertex1,
@@ -150,24 +147,24 @@ void TinyMap::Initialize()
 					}
 
 					if (animation != nullptr) {
-						animation->SetGameObject(rect);
-						animationController.AddAnimation(animation);
+						animation->SetGameObject(rect.get());
+						animationController.AddAnimation(std::move(animation));
 					}
 
 					Coord rectPos = rect->GetPos();
 					MoveCollison(collision, &rectPos);
 
-					if (BoxCollision* boxCollision = dynamic_cast<BoxCollision*>(collision)) {
+					if (std::shared_ptr<BoxCollision> boxCollision = std::dynamic_pointer_cast<BoxCollision>(collision)) {
 						boxCollision->SetSize(boxCollision->GetSize() * Size(.7f, .7f));
+						rect->SetCollision(std::make_unique<BoxCollision>(*boxCollision));
 					}
 
-					rect->SetCollision(collision);
-					rect->GetMaterial()->SetDiffuseMap(new Image(tileset->GetImage()));
+					rect->GetMaterial().lock()->SetDiffuseMap(std::make_shared<Image>(tileset->GetImage()));
 
 					if (collision) {
 						rect->HookOnCollisionEnter([](IGameObject* object, IGameObject* sender, GLFWwindow* window) {
 
-							});
+						});
 					}
 
 					gameObjects.push_back(
@@ -185,28 +182,31 @@ void TinyMap::Initialize()
 		std::cout << "Class: " << classes.GetName() << std::endl;
 		std::cout << "Size: " << classes.GetSize() << std::endl;
 
-		for (ICollision* collision : classes) {
+		for (std::weak_ptr<ICollision> item : classes) {
+			std::shared_ptr<ICollision> collision = item.lock();
+			if (collision == nullptr) {
+				continue;
+			}
+
 			std::cout << "Collision: " << collision->GetRootTitle() << std::endl;
 
 			MoveCollison(collision);
 			std::ostringstream oss;
 			oss << collision->GetRootId() << "_" << collision->GetType();
 
-<<<<<<< Updated upstream
-			Rect* circle = new Rect(
-				name.c_str(),
-=======
 			std::shared_ptr<Rect> circle = std::make_shared<Rect>(
 				oss.str(),
->>>>>>> Stashed changes
 				*window,
 				collision->GetPoints()[0],
 				Size(35, 35),
 				Color(1, 1, 1)
 			);
 
-			circle->SetCollision(collision);
+			if (std::shared_ptr<BoxCollision> boxCollision = std::dynamic_pointer_cast<BoxCollision>(collision)) {
+				circle->SetCollision(boxCollision);
+			}
 
+			//circle->SetCollision(collision);
 			circle->HookOnCollisionEnter([](IGameObject* object, IGameObject* sender, GLFWwindow* window) {
 				std::cout << object->GetTitle() << " collided with " << sender->GetTitle() << std::endl;
 			});
@@ -216,30 +216,21 @@ void TinyMap::Initialize()
 	}
 }
 
-TinyMap::TinyMap(Window* window, TileMap* tileMap, Coord pos)
+TinyMap::TinyMap(Window* window, std::unique_ptr<TileMap> tileMap, Coord pos)
 {
 	this->window = window;
-	this->tileMap = tileMap;
+	this->tileMap = std::move(tileMap);
 	this->pos = pos;
 
 	Initialize();
 }
 
-<<<<<<< Updated upstream
-std::vector<IGameObject*> TinyMap::GetClassesByType(const char* type)
-=======
 std::vector<std::weak_ptr<IGameObject>> TinyMap::GetClassesByType(std::string type)
->>>>>>> Stashed changes
 {
-	std::vector<IGameObject*> result = std::vector<IGameObject*>();
+	std::vector<std::weak_ptr<IGameObject>> result = std::vector<std::weak_ptr<IGameObject>>();
 
-<<<<<<< Updated upstream
-	for (IGameObject*& object : gameClasses) {
-		if (!strcmp(object->GetCollision()->GetType(), type)) {
-=======
 	for (std::shared_ptr<IGameObject>& object : gameClasses) {
 		if (object->GetCollision().lock()->GetType() == type) {
->>>>>>> Stashed changes
 			result.push_back(object);
 		}
 	}
@@ -247,21 +238,12 @@ std::vector<std::weak_ptr<IGameObject>> TinyMap::GetClassesByType(std::string ty
 	return result;
 }
 
-<<<<<<< Updated upstream
-std::vector<IGameObject*> TinyMap::GetClassesByName(const char* name)
-=======
 std::vector<std::weak_ptr<IGameObject>> TinyMap::GetClassesByName(std::string name)
->>>>>>> Stashed changes
 {
-	std::vector<IGameObject*> classes;
+	std::vector<std::weak_ptr<IGameObject>> classes;
 
-<<<<<<< Updated upstream
-	for (IGameObject* object : gameClasses) {
-		if (!strcmp(object->GetCollision()->GetRootTitle(), name)) {
-=======
 	for (std::shared_ptr<IGameObject>& object : gameClasses) {
 		if (object->GetCollision().lock()->GetRootTitle() == name) {
->>>>>>> Stashed changes
 			classes.push_back(object);
 		}
 	}
@@ -269,22 +251,15 @@ std::vector<std::weak_ptr<IGameObject>> TinyMap::GetClassesByName(std::string na
 	return classes;
 }
 
-<<<<<<< Updated upstream
-IGameObject* TinyMap::GetClassByName(const char* name)
-{
-	for (IGameObject* object : gameClasses) {
-		if (!strcmp(object->GetCollision()->GetRootTitle(), name)) {
-=======
 std::weak_ptr<IGameObject> TinyMap::GetClassByName(std::string name)
 {
 	for (std::shared_ptr<IGameObject>& object : gameClasses) {
 		if (object->GetCollision().lock()->GetRootTitle() == name) {
->>>>>>> Stashed changes
 			return object;
 		}
 	}
 
-	return nullptr;
+	return std::weak_ptr<Rect>();
 }
 
 Window* TinyMap::GetWindow()
@@ -294,5 +269,5 @@ Window* TinyMap::GetWindow()
 
 TileMap* TinyMap::GetTileMap()
 {
-	return tileMap;
+	return tileMap.get();
 }

@@ -31,13 +31,8 @@ Tileset::Tileset(
 
 	this->image = image;
 
-<<<<<<< Updated upstream
-	copyStr(name, this->name);
-	copyStr(source, this->source);
-=======
 	this->name = name;
 	this->source = source;
->>>>>>> Stashed changes
 
 	this->tiles = tiles;
 
@@ -65,21 +60,12 @@ Tileset::Tileset(
 
 	this->image = image;
 
-<<<<<<< Updated upstream
-	copyStr(name, this->name);
-	copyStr(source, this->source);
-=======
 	this->name = name;
 	this->source = source;
->>>>>>> Stashed changes
 
 	this->tiles = tiles;
 
 	this->tilesetProperties = tilesetProperties;
-}
-
-Tileset::~Tileset()
-{
 }
 
 int Tileset::GetFirstgId()

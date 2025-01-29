@@ -9,10 +9,10 @@
 class WonderWold 
 	: public TinyMap
 {
-	Player* player;
-	Camera* camera;
+	std::shared_ptr<Player> player;
+	std::shared_ptr<Camera> camera;
 
-	std::vector<class Pawn*> enemys;
+	std::vector<std::shared_ptr<class Pawn>> enemys;
 
 	AudioController audioController;
 
@@ -29,12 +29,11 @@ class WonderWold
 
 	void Initialize();
 public:
-	WonderWold(Window* window, TileMap* tileMap, Coord pos = Coord());
-	~WonderWold();
+	WonderWold(Window* window, std::unique_ptr<TileMap> tileMap, Coord pos = Coord());
 
 	float moveSpeed = .4f;
 
-	void SetCamera(Camera* camera);
+	void SetCamera(std::unique_ptr<Camera> camera);
 
 	void Update() override;
 	void UpdatePawns();

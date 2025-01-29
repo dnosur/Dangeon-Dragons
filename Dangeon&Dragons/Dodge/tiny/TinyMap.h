@@ -8,35 +8,29 @@ class TinyMap
 {
 protected:
 	Window* window;
-	TileMap* tileMap;
+	std::unique_ptr<TileMap> tileMap;
 
 	Coord pos;
 
 	AnimationController animationController;
 
-	std::vector<IGameObject*> gameObjects;
-	std::vector<IGameObject*> gameClasses;
+	std::vector<std::shared_ptr<IGameObject>> gameObjects;
+	std::vector<std::shared_ptr<IGameObject>> gameClasses;
 
-	void MoveCollison(ICollision* collision, Coord* pos = nullptr);
+	void MoveCollison(std::shared_ptr<ICollision> collision, Coord* pos = nullptr);
 
 	virtual void OnTriggerEnter(IGameObject* object, IGameObject* triggeredObject) = 0;
 
 	void Initialize();
 public:
-	TinyMap(Window* window, TileMap* tileMap, Coord pos = Coord());
+	TinyMap(Window* window, std::unique_ptr<TileMap>, Coord pos = Coord());
 	virtual ~TinyMap() = default;
 
 	virtual void Update() = 0;
 
-<<<<<<< Updated upstream
-	std::vector<IGameObject*> GetClassesByType(const char* type);
-	std::vector<IGameObject*> GetClassesByName(const char* name);
-	IGameObject* GetClassByName(const char* name);
-=======
 	std::vector<std::weak_ptr<IGameObject>> GetClassesByType(std::string type);
 	std::vector<std::weak_ptr<IGameObject>> GetClassesByName(std::string name);
 	std::weak_ptr<IGameObject> GetClassByName(std::string name);
->>>>>>> Stashed changes
 
 	Window* GetWindow();
 	TileMap* GetTileMap();

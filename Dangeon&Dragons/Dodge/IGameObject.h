@@ -3,6 +3,7 @@
 #include "Layers.h"
 
 #include "collisions/ICollision.h"
+#include "Sides.h"
 
 class Material;
 class CollisionsController;
@@ -44,13 +45,16 @@ __interface IGameObject
 
 	Color GetBaseColor();
 
+	void SetSize(Size size);
 	Size GetSize();
 
-	void SetMaterial(Material* material);
+	void SetSideSize(Sides sides);
 
-	Material* GetMaterial();
-	void SetCollision(ICollision* collision);
-	ICollision* GetCollision();
+	void SetMaterial(std::shared_ptr<Material> material);
+
+	std::weak_ptr<Material> GetMaterial();
+	void SetCollision(std::shared_ptr<ICollision> collision);
+	std::weak_ptr<ICollision> GetCollision();
 
 	std::string_view GetTitle();
 	void SetTitle(std::string title);

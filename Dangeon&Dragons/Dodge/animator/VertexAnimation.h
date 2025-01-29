@@ -34,13 +34,9 @@ class VertexAnimation :
 	IGameObject* object;
 
 public:
-<<<<<<< Updated upstream
-	VertexAnimation(const char* title, int frameRate, bool repeat, bool stopOnEnd, IGameObject* object, std::vector<
-=======
 	VertexAnimation(
 		std::string title, int frameRate, bool repeat, bool stopOnEnd, 
 		IGameObject* object, std::vector<
->>>>>>> Stashed changes
 		std::pair<int, std::vector<Coord>>> frames = {}
 	);
 

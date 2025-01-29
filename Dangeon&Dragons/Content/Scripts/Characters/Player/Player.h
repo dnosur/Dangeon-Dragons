@@ -35,16 +35,11 @@ class Player :
     void MathSide(double& sideSize, bool isWidth);
 public:
     Player(
-<<<<<<< Updated upstream
-        const char* title, Window& window,
-        ICollision* collision, Material* material, Directions moveDirection,
-=======
         std::string title, Window& window,
         std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
->>>>>>> Stashed changes
         Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
-        std::vector<IAnimation*> animations = {}
+        std::vector<std::shared_ptr<IAnimation>> animations = {}
     );
 
     Coord GetStartPos();

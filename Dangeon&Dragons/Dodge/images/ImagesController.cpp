@@ -1,12 +1,8 @@
 #include "ImagesController.h"
 
-<<<<<<< Updated upstream
-int ImagesController::GetIndexByTitle(char* title)
-=======
 std::shared_ptr<Image> ImagesController::defaultImage;
 
 int ImagesController::GetIndexByTitle(std::string& title)
->>>>>>> Stashed changes
 {
     int index = 0;
     for (Image& img : images) {
@@ -159,9 +155,6 @@ Image ImagesController::LoadImg(std::string path, std::string title)
         ));
 }
 
-<<<<<<< Updated upstream
-void ImagesController::Load(const char* path, const char* title, Shader* shader)
-=======
 void ImagesController::SetDefaultImage(std::unique_ptr<Image> image)
 {
     defaultImage = std::move(image);
@@ -173,7 +166,6 @@ std::weak_ptr<Image> ImagesController::GetDafaultImage()
 }
 
 void ImagesController::Load(std::string path, std::string title, Shader* shader)
->>>>>>> Stashed changes
 {
     Image image = ImagesController::LoadImg(path, title);
     if (shader != nullptr) {
@@ -244,7 +236,7 @@ std::vector<Image> ImagesController::GetImages()
 void ImagesController::SetImages(std::vector<Image> images)
 {
     Clear();
-    for (const Image& image : images) {
+    for (Image& image : images) {
         this->images.push_back(image);
     }
 }

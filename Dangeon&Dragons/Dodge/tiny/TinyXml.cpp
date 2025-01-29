@@ -47,42 +47,29 @@ tinyxml2::XMLError TinyXml::ReadDoc(tinyxml2::XMLDocument& doc, std::string path
     return tinyxml2::XML_SUCCESS;
 }
 
-<<<<<<< Updated upstream
-TileMap* TinyXml::LoadMap(const char* path, const char* title)
-=======
 std::unique_ptr<TileMap> TinyXml::LoadMap(std::string path, std::string title)
->>>>>>> Stashed changes
 {
 	tinyxml2::XMLDocument doc;
     if (TinyXml::ReadDoc(doc, path) != tinyxml2::XML_SUCCESS) {
-        return new TileMap();
+        return std::make_unique<TileMap>();
     }
 
     //Map
-    TileMap* map = new TileMap();
+    std::unique_ptr<TileMap> map = std::make_unique<TileMap>();
 
     tinyxml2::XMLElement* mapElement = doc.FirstChildElement("map");
     map->size.width = mapElement->IntAttribute("width");
     map->size.height = mapElement->IntAttribute("height"); 
 
-<<<<<<< Updated upstream
-    copyStr(title, map->title);
-=======
     map->title = title;
->>>>>>> Stashed changes
 
     map->infinite = mapElement->BoolAttribute("infinite");
 
 	map->nextLayerId = mapElement->IntAttribute("nextlayerid");
 	map->nextObjectId = mapElement->IntAttribute("nextobjectid");
 
-<<<<<<< Updated upstream
-    copyStr(mapElement->Attribute("orientation"), map->orientation);
-	copyStr(mapElement->Attribute("renderorder"), map->renderOreder);
-=======
     map->orientation = mapElement->Attribute("orientation");
     map->renderOreder = mapElement->Attribute("renderorder");
->>>>>>> Stashed changes
 
 	map->tileSize.height = mapElement->IntAttribute("tileheight");
 	map->tileSize.width = mapElement->IntAttribute("tilewidth");
@@ -120,6 +107,6 @@ std::unique_ptr<TileMap> TinyXml::LoadMap(std::string path, std::string title)
     map->classesController = objects;
     map->spriteLayersController = layersController;
 
-    return map;
+    return std::move(map);
 }
 

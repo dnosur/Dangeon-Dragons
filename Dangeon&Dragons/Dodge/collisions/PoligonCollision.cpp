@@ -21,13 +21,8 @@ PoligonCollision::PoligonCollision(std::vector<Coord> points, int root_id, std::
 
 	SetLayer(Layer::Collision);
 
-<<<<<<< Updated upstream
-	copyStr(root_title, this->root_title);
-	copyStr(type, this->type);
-=======
 	this->root_title = root_title;
 	this->type = type;
->>>>>>> Stashed changes
 }
 
 bool PoligonCollision::IsPointInPolygon(const Coord& point, const std::vector<Coord>& polygon)
@@ -108,11 +103,13 @@ bool PoligonCollision::IsCollisionEnter(IGameObject* gameObject)
 		return false;
 	}
 
-	if (gameObject->GetCollision() == nullptr) {
+	std::shared_ptr<ICollision> gameObjectPtr = gameObject->GetCollision().lock();
+
+	if (gameObjectPtr == nullptr) {
 		return false;
 	}
 
-	if (gameObject->GetCollision() == this) {
+	if (gameObjectPtr.get() == this) {
 		return true;
 	}
 
@@ -121,19 +118,14 @@ bool PoligonCollision::IsCollisionEnter(IGameObject* gameObject)
 		return false;
 	}
 
-	ICollision* otherCollision = gameObject->GetCollision();
-	if (otherCollision == nullptr) {
-		return false;
-	}
-
-	std::vector<Coord> otherPoints = otherCollision->GetPoints();
+	std::vector<Coord> otherPoints = gameObjectPtr->GetPoints();
 	if (otherPoints.empty()) {
 		return false;
 	}
 
 	bool res = false;
 
-	for (const Coord& p : otherPoints) {
+	for (Coord& p : otherPoints) {
 		if (IsPointInPolygon(p, polygonPoints)) {
 			res = true;
 			break;
@@ -203,13 +195,8 @@ PoligonCollision& PoligonCollision::operator=(const PoligonCollision& other)
 {
 	if (this != &other)
 	{
-<<<<<<< Updated upstream
-		copyStr(other.root_title, root_title);
-		copyStr(other.type, type);
-=======
 		root_title = other.root_title;
 		type = other.type;
->>>>>>> Stashed changes
 
 		points = other.points;
 		root_id = other.root_id;

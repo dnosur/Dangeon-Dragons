@@ -18,7 +18,7 @@ class Rect :
     Coord vertex1;
     Coord vertex2;
 
-    ICollision* collision;
+    std::shared_ptr<ICollision> collision;
 
     Coord pos;
 
@@ -27,7 +27,7 @@ class Rect :
     Color color;
     Color baseColor;
 
-    Material* material;
+    std::shared_ptr<Material> material;
 
     Directions moveDirection;
 
@@ -43,6 +43,10 @@ class Rect :
 
     void MathPos(Coord& vertex1, Coord& vertex2);
     void MathPos(Coord& pos);
+
+    void MathSize(Size& size);
+
+    void MathSide(double& sideSize, bool isWidth);
 
     void Draw();
 public:
@@ -64,7 +68,10 @@ public:
     const Coord& GetPos();
     const Coord& GetOpenGlPos();
 
+    void SetSize(Size size);
     Size GetSize();
+
+    void SetSideSize(Sides sides);
 
     bool MouseHover(Mouse& mouse);
     bool MouseClick(Mouse& mouse);
@@ -83,12 +90,12 @@ public:
     void SetPos(std::vector<Coord> vertices);
     void SetPos(Coord pos);
 
-    void SetMaterial(Material* material);
+    void SetMaterial(std::shared_ptr<Material> material);
 
-    Material* GetMaterial();
+    std::weak_ptr<Material> GetMaterial();
 
-    void SetCollision(ICollision* collision);
-    ICollision* GetCollision();
+    void SetCollision(std::shared_ptr<ICollision> collision);
+    std::weak_ptr<ICollision> GetCollision();
 
     std::string_view GetTitle();
     void SetTitle(std::string title);
@@ -115,6 +122,6 @@ public:
 
     bool operator==(const Rect& other) const;
     bool operator!=(const Rect& other) const;
-    Rect& operator=(const Rect& other);
+    Rect& operator=(const Rect&& other);
 };
 

@@ -10,7 +10,7 @@ class Camera
 	Size size;      // Размер области видимости камеры в пикселях
 	Size mapSize;   // Размер карты в пикселях
 
-	IGameObject* observed;
+	std::shared_ptr<IGameObject> observed;
 
 	std::string title;
 
@@ -34,7 +34,7 @@ public:
 
 	Coord GetPosition() const;
 
-	void SetObservedObj(IGameObject* obj);
-	IGameObject* GetObservedObj();
+	void SetObservedObj(std::shared_ptr<IGameObject> obj);
+	std::weak_ptr<IGameObject> GetObservedObj();
 };
 

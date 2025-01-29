@@ -1,15 +1,11 @@
 #include "BoxCollision.h"
 #include "../functions.h"
 
-<<<<<<< Updated upstream
-BoxCollision::BoxCollision(Coord point, Size size, int root_id, char* root_title, char* type)
-=======
 BoxCollision::BoxCollision()
 {
 }
 
 BoxCollision::BoxCollision(Coord point, Size size, int root_id, std::string root_title, std::string type)
->>>>>>> Stashed changes
 {
 	this->point = point;
 	this->size = size;
@@ -20,13 +16,8 @@ BoxCollision::BoxCollision(Coord point, Size size, int root_id, std::string root
 
     SetLayer(Layer::Collision);
 
-<<<<<<< Updated upstream
-    copyStr(root_title, this->root_title);
-    copyStr(type, this->type);
-=======
     this->root_title = root_title;
     this->type = type;
->>>>>>> Stashed changes
 }
 
 BoxCollision::~BoxCollision()
@@ -95,12 +86,9 @@ void BoxCollision::SetKinematic(bool kinematic)
 
 bool BoxCollision::IsCollisionEnter(IGameObject* gameObject)
 {
-    if (!gameObject || !gameObject->GetCollision()) {
-        return false;
-    }
+    std::shared_ptr<ICollision> collision = gameObject->GetCollision().lock();
 
-    ICollision* otherCollision = gameObject->GetCollision();
-    if (otherCollision == this) {
+    if (!gameObject || !collision) {
         return false;
     }
 
@@ -111,7 +99,7 @@ bool BoxCollision::IsCollisionEnter(IGameObject* gameObject)
     float yMax1 = point.Y + size.height;
 
     // Проверяем, является ли другая коллизия "BoxCollision"
-    auto* otherBoxCollision = dynamic_cast<BoxCollision*>(otherCollision);
+    std::shared_ptr<BoxCollision> otherBoxCollision = std::dynamic_pointer_cast<BoxCollision>(collision);
     if (otherBoxCollision) {
         // Координаты другой коллизии
         float xMin2 = otherBoxCollision->point.X;
@@ -139,12 +127,12 @@ bool BoxCollision::IsCollisionEnter(IGameObject* gameObject)
     }
 
 
-    std::vector<Coord> otherPoints = otherCollision->GetPoints();
+    std::vector<Coord> otherPoints = collision->GetPoints();
     if (otherPoints.empty()) {
         return false;
     }
 
-    for (const Coord& p : otherPoints) {
+    for (Coord& p : otherPoints) {
         if (p.X >= xMin1 && p.X <= xMax1 && p.Y >= yMin1 && p.Y <= yMax1) {
             if (IsExist(gameObject)) {
                 return true;
