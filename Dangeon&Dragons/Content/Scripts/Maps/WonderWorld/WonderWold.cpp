@@ -184,8 +184,6 @@ void WonderWold::Update()
 	Coord cameraOffset = camera->GetOffset();
 	bool cameraMove = cameraOffset.X != 0 || cameraOffset.Y != 0;
 
-	std::cout << "1\n";
-
 	for (std::shared_ptr<IGameObject>& obj : gameObjects)
 	{
 		if (cameraMove) {
@@ -208,8 +206,6 @@ void WonderWold::Update()
 
 		obj->Update();
 	}
-
-	std::cout << "2\n";
 
 	if (cameraMove) {
 		for (std::shared_ptr<class Pawn>& pawn : enemys) {
@@ -239,8 +235,6 @@ void WonderWold::Update()
 		}
 	}
 
-	std::cout << "3\n";
-
 	UpdatePawns();
 }
 
@@ -251,8 +245,6 @@ void WonderWold::UpdatePawns()
 	{
 		pawn->Update();
 	}
-
-	std::cout << "4\n";
 
 	player->Update();
 }
