@@ -84,7 +84,7 @@ Rect::Rect(
     Directions moveDirection
 )
 {
-    title = this->title;
+    this->title = title;
 
     this->window = &window;
     this->size = size;
@@ -122,7 +122,7 @@ Rect::Rect(
     Color color, Directions moveDirection
 )
 {
-    title = this->title;
+    this->title = title;
 
     this->window = &window;
     this->color = baseColor = color;
@@ -158,7 +158,7 @@ Rect::Rect(
     Color color, Directions moveDirection
 )
 {
-    title = this->title;
+    this->title = title;
 
     this->window = &window;
     this->color = baseColor = color;
