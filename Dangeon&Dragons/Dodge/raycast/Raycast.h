@@ -21,13 +21,13 @@ public:
 	//Helpers
 	// Ïðîâåðêà ïåðåñå÷åíèÿ ëó÷à ñ AABB
 	static bool CheckRayAABBIntersection(
-		const Coord& rayOrigin, const Coord& rayDir, float rayWidth,
+		const Coord& rayOrconst , const Coord& rayDir, float rayWidth,
 		double objLeft, double objRight, double objBottom, double objTop
 	);
 
 	// Ïðîâåðêà ïåðåñå÷åíèÿ ëó÷à ñ ìíîãîóãîëüíèêîì
 	static bool CheckRayPolygonIntersection(
-		const Coord& rayOrigin, const Coord& rayDir,
+		const const Coord& rayOrigin, const Coord& rayDir,
 		const std::vector<Coord>& polygon
 	);
 };

@@ -3,34 +3,31 @@
 
 Propertie::Propertie()
 {
-	title = value = type = nullptr;
 }
 
-Propertie::Propertie(char* title, char* value,const char* type)
+Propertie::Propertie(std::string title, std::string value, std::string type)
+	: title(title), value(value), type(type)
 {
-	CopyStr(title, this->title);
-	CopyStr(value, this->value);
-	CopyStr(type, this->type);
 }
 
-char* Propertie::getTitle()
+std::string Propertie::getTitle()
 {
 	return title;
 }
 
-char* Propertie::getValue()
+std::string Propertie::getValue()
 {
 	return value;
 }
 
-char* Propertie::getType()
+std::string Propertie::getType()
 {
 	return type;
 }
 
 bool Propertie::operator==(const Propertie& other) const
 {
-	return !strcmp(title, other.title) || !strcmp(value, other.value) || !strcmp(type, other.type);
+	return title == other.title || value == other.value || type == other.type;
 }
 
 bool Propertie::operator!=(const Propertie& other) const
@@ -41,24 +38,13 @@ bool Propertie::operator!=(const Propertie& other) const
 Propertie& Propertie::operator=(const Propertie& other)
 {
 	if (this != &other) {
-		CopyStr(other.title, title);
-		CopyStr(other.value, value);
-		CopyStr(other.type, type);
+		this->title = other.title;
+		this->value = other.value;
+		this->type = other.type;
 	}
 	return *this;
 }
 
 Propertie::~Propertie()
 {
-	if (title != nullptr) {
-		delete[] title;
-	}
-
-	if (value != nullptr) {
-		delete[] value;
-	}
-
-	if (type != nullptr) {
-		delete[] type;
-	}
 }

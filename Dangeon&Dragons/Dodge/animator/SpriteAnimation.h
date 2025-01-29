@@ -24,9 +24,9 @@ class SpriteAnimation
 
 	Timer timer;
 
-	char* title;
+	std::string title;
 
-	char* folder;
+	std::string folder;
 	int frameRate;
 
 	float timePassed;
@@ -47,21 +47,23 @@ class SpriteAnimation
 public:
 	SpriteAnimation();
 
-	SpriteAnimation(const char* title, const char* folder, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
-	SpriteAnimation(const char* title, Coord pos, Size size, const char* folder, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
-	SpriteAnimation(const char* title, std::vector<Image> sprites, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
-	SpriteAnimation(const char* title, Coord pos, Size size, std::vector<Image> sprites, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
+	SpriteAnimation(std::string title, std::string folder, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
+	SpriteAnimation(std::string title, Coord pos, Size size, std::string folder, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
+	SpriteAnimation(std::string title, std::vector<Image> sprites, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
+	SpriteAnimation(std::string title, Coord pos, Size size, std::vector<Image> sprites, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
 
 	void SetWindow(Window* window);
 
-	void SetTitle(char* title);
-	char* GetTitle();
+	void SetTitle(std::string title);
+	std::string_view GetTitle();
+
+	std::string GetStringTitle();
 
 	std::vector<Image> GetSprites();
 	void SetSprites(std::vector<Image> sprites);
 
-	char* GetFolder();
-	void LoadFromFolder(char* folder);
+	std::string_view GetFolder();
+	void LoadFromFolder(std::string folder);
 
 	int GetFrameRate();
 	void SetFrameRate(int frameRate);

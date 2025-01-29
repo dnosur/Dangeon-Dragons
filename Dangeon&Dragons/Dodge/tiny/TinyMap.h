@@ -28,9 +28,9 @@ public:
 
 	virtual void Update() = 0;
 
-	std::vector<std::weak_ptr<IGameObject>> GetClassesByType(const char* type);
-	std::vector<std::weak_ptr<IGameObject>> GetClassesByName(const char* name);
-	std::weak_ptr<IGameObject> GetClassByName(const char* name);
+	std::vector<std::weak_ptr<IGameObject>> GetClassesByType(std::string type);
+	std::vector<std::weak_ptr<IGameObject>> GetClassesByName(std::string name);
+	std::weak_ptr<IGameObject> GetClassByName(std::string name);
 
 	Window* GetWindow();
 	TileMap* GetTileMap();

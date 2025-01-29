@@ -3,27 +3,26 @@
 TileMap::TileMap()
 {
 	size = Size(0, 0);
-	title = nullptr;
 
 	undefined = true;
 }
 
 TileMap::TileMap(
-	const char* title, Size size, Size tileSize, 
-	char* orientation, char* renderOreder, int infinite, 
+	std::string title, Size size, Size tileSize, 
+	std::string orientation, std::string renderOreder, int infinite,
 	int nextLayerId, int nextObjectId, 
 	TilesetsController tilesetsController, 
 	TinyClassController classesController, 
 	TinySrpiteLayersController spriteLayersController
 )
 {
-	CopyStr(title, this->title);
+	this->title = title;
 
 	this->size = size;
 	this->tileSize = tileSize;
 
-	CopyStr(orientation, this->orientation);
-	CopyStr(renderOreder, this->renderOreder);
+	this->orientation = orientation;
+	this->renderOreder = renderOreder;
 
 	this->infinite = infinite;
 	this->nextLayerId = nextLayerId;
@@ -36,7 +35,7 @@ TileMap::TileMap(
 
 bool TileMap::operator==(const TileMap& other) const
 {
-	return !strcmp(this->title, other.title) && other.undefined == undefined;
+	return title == other.title && other.undefined == undefined;
 }
 
 bool TileMap::operator!=(const TileMap& other) const
@@ -48,13 +47,13 @@ TileMap& TileMap::operator=(const TileMap& other)
 {
 	if (this != &other)
 	{
-		CopyStr(other.title, title);
+		title = other.title;
 
 		size = other.size;
 		tileSize = other.tileSize;
 
-		CopyStr(other.orientation, orientation);
-		CopyStr(other.renderOreder, renderOreder);
+		orientation = other.orientation;
+		renderOreder = other.renderOreder;
 
 		infinite = other.infinite;
 		nextLayerId = other.nextLayerId;

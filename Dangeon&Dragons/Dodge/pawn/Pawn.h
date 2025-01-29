@@ -42,7 +42,7 @@ protected:
 
 	Actions action;
 
-	char* title;
+	std::string title;
 
 	float speed;
 	float maxSpeed;
@@ -69,7 +69,7 @@ protected:
 	bool kinematic;
 
 	virtual void LoadAnimations() = 0;
-	virtual const char* GetAnimationName() = 0;
+	virtual std::string_view GetAnimationName() = 0;
 
 	virtual void LoadAudio() = 0;
 	virtual void Draw() = 0;
@@ -86,7 +86,7 @@ protected:
 	virtual void AIMovement() = 0;
 public:
 	Pawn(
-		const char* title, Window& window,
+		std::string title, Window& window,
 		std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
 		Coord pos, Size size, float speed, float maxSpeed, float minSpeed, 
 		float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
@@ -103,7 +103,7 @@ public:
 
 	void RotateToDirection(Directions direction);
 
-	void SetTitle(const char* title);
+	void SetTitle(std::string title);
 
 	void SetSize(Size size);
 
@@ -148,9 +148,9 @@ public:
 	void HookOnCollisionEnter(OnCollisionEnter handler);
 
 	Window* GetWindow();
+	const Coord& GetPos();
 
-	Coord GetPos();
-	Coord GetOpenGlPos();
+	const Coord& GetOpenGlPos();
 
 	std::vector<Coord> GetVertices();
 
@@ -180,7 +180,7 @@ public:
 	float GetMaxSpeed();
 	float GetMinSpeed();
 
-	const char* GetTitle();
+	std::string_view GetTitle();
 
 	float GetHealth();
 	float GetMaxHealth();
@@ -190,7 +190,7 @@ public:
 	bool GetIsPlayable();
 	bool GetIsHidden();
 
-	virtual Coord GetDistanceTo(IGameObject& gameObject) = 0;
+	virtual const Coord& GetDistanceTo(IGameObject& gameObject) = 0;
 	virtual float GetFloatDistanceTo(IGameObject& gameObject) = 0;
 
 	virtual bool IsNear(IGameObject& gameObject) = 0;

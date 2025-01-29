@@ -75,11 +75,11 @@ TinySpriteLayer* TinySrpiteLayersController::operator[](int index)
 	return &spriteLayers[index];
 }
 
-TinySpriteLayer* TinySrpiteLayersController::operator[](const char* name)
+TinySpriteLayer* TinySrpiteLayersController::operator[](std::string name)
 {
 	for (int i = 0; i < spriteLayers.size(); i++)
 	{
-		if (strcmp(spriteLayers[i].GetName(), name) == 0)
+		if (spriteLayers[i].GetName() == name)
 		{
 			return &spriteLayers[i];
 		}

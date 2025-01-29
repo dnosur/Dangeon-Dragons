@@ -2,9 +2,6 @@
 
 Tileset::Tileset()
 {
-	memset(name, 0, sizeof(name));
-	memset(source, 0, sizeof(source));
-
 	firstgId = 0;
 	lastgId = 0;
 	tileWidth = 0;
@@ -34,8 +31,8 @@ Tileset::Tileset(
 
 	this->image = image;
 
-	CopyStr(name, this->name);
-	CopyStr(source, this->source);
+	this->name = name;
+	this->source = source;
 
 	this->tiles = tiles;
 
@@ -44,7 +41,7 @@ Tileset::Tileset(
 
 Tileset::Tileset(
 	int firstgId, int tileWidth, int tileHeight, int width, int height,
-	int tileCount, int columns, const char* name,const char* source,
+	int tileCount, int columns, std::string name,std::string source,
 	Image image, std::vector<Tile> tiles, TilesetPropertiesController tilesetProperties
 ) {
 	std::cout << source << std::endl;
@@ -63,8 +60,8 @@ Tileset::Tileset(
 
 	this->image = image;
 
-	CopyStr(name, this->name);
-	CopyStr(source, this->source);
+	this->name = name;
+	this->source = source;
 
 	this->tiles = tiles;
 
@@ -111,12 +108,12 @@ int Tileset::GetColumns()
 	return columns;
 }
 
-char* Tileset::GetName()
+std::string Tileset::GetName()
 {
 	return name;
 }
 
-char* Tileset::GetSource()
+std::string Tileset::GetSource()
 {
 	return source;
 }

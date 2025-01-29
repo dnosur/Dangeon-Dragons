@@ -5,8 +5,8 @@ class PoligonCollision
 	: public ICollision
 {
 	int root_id;
-	char* root_title;
-	char* type;
+	std::string root_title;
+	std::string type;
 
 	Layer layer;
 
@@ -16,14 +16,14 @@ class PoligonCollision
 	std::vector<IGameObject*> gameObjects;
 public:
 	PoligonCollision();
-	PoligonCollision(std::vector<Coord> points, int root_id, char* root_title = nullptr, char* type = nullptr);
+	PoligonCollision(std::vector<Coord> points, int root_id, std::string root_title = "empty", std::string type = "empty");
 
 	static bool IsPointInPolygon(const Coord& point, const std::vector<Coord>& polygon);
 
 	int GetRootId();
 
-	char* GetRootTitle();
-	char* GetType();
+	std::string_view GetRootTitle();
+	std::string_view GetType();
 
 	std::vector<Coord> GetPoints();
 	void SetPoints(std::vector<Coord> points);

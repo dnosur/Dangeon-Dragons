@@ -16,8 +16,8 @@ struct Coord;
 
 class Font
 {
-	char* title;
-	char* path;
+	std::string title;
+	std::string path;
 
 	Size size;
 	Size windowSize;
@@ -33,8 +33,8 @@ class Font
 	bool LoadFont();
 public:
 	Font(
-		const char* title, 
-		const char* path, 
+		std::string title, 
+		std::string path, 
 		Size windowSize = Size(1280, 720),
 		Size size = Size(14, 14)
 	);

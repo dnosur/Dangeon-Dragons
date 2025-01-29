@@ -6,16 +6,16 @@ template <typename T>
 struct WindowPointer
 {
 private:
-	char* title;
+	std::string title;
 	T* value;
 	bool undefined;
 
 public:
 
 	WindowPointer();
-	WindowPointer(const char* title, T* value);
+	WindowPointer(std::string title, T* value);
 
-	const char* GetTitle();
+	std::string_view GetTitle();
 
 	void SetValue(T* value);
 	T& GetValue();
@@ -30,22 +30,22 @@ public:
 template<typename T>
 inline WindowPointer<T>::WindowPointer()
 {
-	title = (char*)"Undefined";
+	title = "Undefined";
 	value = nullptr;
 	undefined = true;
 }
 
 template<typename T>
-inline WindowPointer<T>::WindowPointer(const char* title, T* value)
+inline WindowPointer<T>::WindowPointer(std::string title, T* value)
 {
-	CopyStr(title, this->title);
+	this->title = title;
 
 	this->value = value;
 	undefined = false;
 }
 
 template<typename T>
-inline const char* WindowPointer<T>::GetTitle()
+inline std::string_view WindowPointer<T>::GetTitle()
 {
 	return title;
 }
@@ -71,7 +71,7 @@ inline const bool WindowPointer<T>::IsUndefined()
 template<typename T>
 inline bool WindowPointer<T>::operator==(const WindowPointer& other) const
 {
-	return value == other.value && strcmp(title, other.title) && undefined == other.undefined;
+	return value == other.value && title == other.title && undefined == other.undefined;
 }
 
 template<typename T>
@@ -86,7 +86,7 @@ inline WindowPointer<T>& WindowPointer<T>::operator=(const WindowPointer& other)
 	if (this != &other)
 	{
 		value = other.value;
-		CopyStr(other.title, this->title);
+		title = other.title;
 		undefined = other.undefined;
 	}
 	return *this;

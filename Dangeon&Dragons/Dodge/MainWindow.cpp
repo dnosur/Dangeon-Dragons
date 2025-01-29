@@ -16,7 +16,7 @@ MainWindow::MainWindow(): Window()
     gameStatus = GameStatuses::End;
 }
 
-MainWindow::MainWindow(Size size, const char* title, Color backgroundColor, GLFWmonitor* monitor, GLFWwindow* share):
+MainWindow::MainWindow(Size size, std::string title, Color backgroundColor, GLFWmonitor* monitor, GLFWwindow* share):
     Window(size, title, backgroundColor, monitor, share) {
     gameStatus = GameStatuses::Stop;
 }
@@ -42,8 +42,8 @@ void MainWindow::Initialize()
 
     images.Load("Content/Images/Background/ground.png", "ground");
 
-    //const char* sample = "123";
-    //std::unique_ptr<const char*> title;
+    //std::string sample = "123";
+    //std::unique_ptr<std::string> title;
     //title.reset(&sample);
 
     WindowPointerController::SetPointer(window, WindowPointer<Mouse>("Mouse", &mouse));

@@ -8,7 +8,7 @@
 class TinySpriteLayer
 {
 	int id;
-	char* name;
+	std::string name;
 	Size size;
 
 	Coord offset;
@@ -16,7 +16,7 @@ class TinySpriteLayer
 	std::vector<std::shared_ptr<TinyChunk>> chunks;
 public:
 	TinySpriteLayer();
-	TinySpriteLayer(int id, const char* name, Size size, int** tileIds, Coord offset = Coord(0, 0));
+	TinySpriteLayer(int id, std::string name, Size size, int** tileIds, Coord offset = Coord(0, 0));
 	TinySpriteLayer(tinyxml2::XMLElement* element);
 	~TinySpriteLayer();
 
@@ -26,7 +26,7 @@ public:
 	static void LoadChunkIds(std::string data, int**& ids, Size size);
 
 	int GetId();
-	char* GetName();
+	std::string GetName();
 	Size GetSize();
 
 	int GetChunksCount();

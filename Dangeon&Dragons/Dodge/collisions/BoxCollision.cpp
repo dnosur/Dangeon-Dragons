@@ -5,7 +5,7 @@ BoxCollision::BoxCollision()
 {
 }
 
-BoxCollision::BoxCollision(Coord point, Size size, int root_id, char* root_title, char* type)
+BoxCollision::BoxCollision(Coord point, Size size, int root_id, std::string root_title, std::string type)
 {
 	this->point = point;
 	this->size = size;
@@ -16,8 +16,8 @@ BoxCollision::BoxCollision(Coord point, Size size, int root_id, char* root_title
 
     SetLayer(Layer::Collision);
 
-    CopyStr(root_title, this->root_title);
-    CopyStr(type, this->type);
+    this->root_title = root_title;
+    this->type = type;
 }
 
 BoxCollision::~BoxCollision()
@@ -29,12 +29,12 @@ int BoxCollision::GetRootId()
 	return root_id;
 }
 
-char* BoxCollision::GetRootTitle()
+std::string_view BoxCollision::GetRootTitle()
 {
 	return root_title;
 }
 
-char* BoxCollision::GetType()
+std::string_view BoxCollision::GetType()
 {
 	return type;
 }
@@ -92,35 +92,35 @@ bool BoxCollision::IsCollisionEnter(IGameObject* gameObject)
         return false;
     }
 
-    // Координаты текущей коллизии
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     float xMin1 = point.X;
     float yMin1 = point.Y;
     float xMax1 = point.X + size.width;
     float yMax1 = point.Y + size.height;
 
-    // Проверяем, является ли другая коллизия "BoxCollision"
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ "BoxCollision"
     std::shared_ptr<BoxCollision> otherBoxCollision = std::dynamic_pointer_cast<BoxCollision>(collision);
     if (otherBoxCollision) {
-        // Координаты другой коллизии
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         float xMin2 = otherBoxCollision->point.X;
         float yMin2 = otherBoxCollision->point.Y;
         float xMax2 = otherBoxCollision->point.X + otherBoxCollision->size.width;
         float yMax2 = otherBoxCollision->point.Y + otherBoxCollision->size.height;
 
-        // Проверяем пересечение
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         bool isIntersecting = !(xMax1 < xMin2 || xMax2 < xMin1 || yMax1 < yMin2 || yMax2 < yMin1);
 
-        // Проверяем вложение одного прямоугольника в другой
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         bool isInside = (xMin2 >= xMin1 && xMax2 <= xMax1 && yMin2 >= yMin1 && yMax2 <= yMax1) ||
             (xMin1 >= xMin2 && xMax1 <= xMax2 && yMin1 >= yMin2 && yMax1 <= yMax2);
 
         if (isIntersecting || isInside) {
-            // Проверяем, если объект уже зарегистрирован
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             if (IsExist(gameObject)) {
                 return true;
             }
 
-            // Добавляем объект в список коллизий
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             gameObjects.push_back(gameObject);
             return true;
         }
@@ -170,22 +170,22 @@ bool BoxCollision::IsCollisionExit(IGameObject* gameObject)
 
 bool BoxCollision::IsCollisionEnter(Coord point, Size size)
 {
-    // Координаты текущей коллизии
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     float xMin1 = this->point.X;
     float yMin1 = this->point.Y;
     float xMax1 = this->point.X + this->size.width;
     float yMax1 = this->point.Y + this->size.height;
 
-    // Координаты другой коллизии
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     float xMin2 = point.X;
     float yMin2 = point.Y;
     float xMax2 = point.X + size.width;
     float yMax2 = point.Y + size.height;
 
-    // Проверяем пересечение
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     bool isIntersecting = !(xMax1 < xMin2 || xMax2 < xMin1 || yMax1 < yMin2 || yMax2 < yMin1);
 
-    // Проверяем вложение одного прямоугольника в другой
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     bool isInside = (xMin2 >= xMin1 && xMax2 <= xMax1 && yMin2 >= yMin1 && yMax2 <= yMax1) ||
         (xMin1 >= xMin2 && xMax1 <= xMax2 && yMin1 >= yMin2 && yMax1 <= yMax2);
 
@@ -199,8 +199,8 @@ bool BoxCollision::IsExist(IGameObject* gameObject)
 
 bool BoxCollision::operator==(const BoxCollision& other) const
 {
-	return !strcmp(root_title, other.root_title) &&
-		!strcmp(type, other.type) &&
+	return root_title == other.root_title &&
+		type == other.type &&
 		point == other.point &&
 		root_id == other.root_id;
 }
@@ -219,11 +219,8 @@ BoxCollision& BoxCollision::operator=(const BoxCollision& other)
 
 		root_id = other.root_id;
 
-        free(root_title);
-        free(type);
-
-        root_title = strdup(other.root_title);
-        type = strdup(other.type);
+        root_title = other.root_title;
+        type = other.type;
 	}
 	return *this;
 }

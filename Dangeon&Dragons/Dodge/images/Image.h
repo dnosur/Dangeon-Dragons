@@ -6,8 +6,8 @@
 
 struct Image
 {
-	char* title;
-	char* path;
+	std::string title;
+	std::string path;
 
 	GLuint image;
 	Shader* shader;
@@ -17,7 +17,7 @@ struct Image
 	Coord vertexes[2];
 
 	Image();
-	Image(const char* title, const char* path, GLint image, Size size, Shader* shader);
+	Image(std::string title, std::string path, GLint image, Size size, Shader* shader);
 	~Image();
 
 	bool operator==(const Image& other) const;

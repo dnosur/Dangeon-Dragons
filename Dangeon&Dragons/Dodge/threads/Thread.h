@@ -4,15 +4,15 @@
 
 class Thread
 {
-	char* title;
+	std::string title;
 
 	std::mutex* m;
 	std::thread* t;
 
 	void RemoveThread();
 public:
-	Thread(const char* title = nullptr);
-	Thread(const char* title, std::function<void()> func);
+	Thread(std::string title = nullptr);
+	Thread(std::string title, std::function<void()> func);
 	~Thread();
 
 	bool Start(std::function<void()> func);
@@ -20,7 +20,7 @@ public:
 	void Join();
 	void Detach();
 
-	const char* GetTitle();
+	std::string_view GetTitle();
 
 	bool IsJoinable();
 	bool operator==(Thread* thread);

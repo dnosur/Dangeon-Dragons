@@ -30,7 +30,7 @@ protected:
 
 	Color backgroundColor;
 
-	char* title;
+	std::string title;
 	bool closed;
 
 	void MakeWindow();
@@ -39,7 +39,7 @@ protected:
 public:
 
 	Window();
-	Window(Size size, const char* title, Color backgroundColor = Color(1, 1, 1), GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
+	Window(Size size, std::string title, Color backgroundColor = Color(1, 1, 1), GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
 	~Window();
 
 	GLFWwindow* GetWindow();
@@ -47,7 +47,7 @@ public:
 	GLFWwindow* GetShare();
 
 	Size GetSize();
-	char* GetTitle();
+	std::string GetTitle();
 
 	virtual void Initialize();
 	virtual void Update();

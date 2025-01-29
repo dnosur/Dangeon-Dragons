@@ -59,7 +59,7 @@ bool Pawn::MouseInRect(Mouse& mouse)
 }
 
 Pawn::Pawn(
-	const char* title, Window& window,
+	std::string title, Window& window,
 	std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
 	Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
 	float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
@@ -114,9 +114,9 @@ void Pawn::RotateToDirection(Directions direction)
 {
 }
 
-void Pawn::SetTitle(const char* title)
+void Pawn::SetTitle(std::string title)
 {
-	CopyStr(title, this->title);
+	this->title = title;
 }
 
 void Pawn::SetSize(Size size)
@@ -279,12 +279,12 @@ Window* Pawn::GetWindow()
 	return window;
 }
 
-Coord Pawn::GetPos()
+const Coord& Pawn::GetPos()
 {
 	return pos;
 }
 
-Coord Pawn::GetOpenGlPos()
+const Coord& Pawn::GetOpenGlPos()
 {
 	return Coord(window->PixelToGLX(pos.X), window->PixelToGLY(pos.Y));
 }
@@ -364,7 +364,7 @@ float Pawn::GetMinSpeed()
 	return minSpeed;
 }
 
-const char* Pawn::GetTitle()
+std::string_view Pawn::GetTitle()
 {
 	return title;
 }

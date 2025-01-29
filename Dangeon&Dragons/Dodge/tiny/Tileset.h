@@ -15,8 +15,8 @@ class Tileset
 	int width;
 	int height;
 
-	char* name;
-	char* source;
+	std::string name;
+	std::string source;
 
 	Image image;
 	std::vector<Tile> tiles;
@@ -31,7 +31,7 @@ public:
 
 	Tileset(
 		int firstgId, int tileWidth, int tileHeight, int width, int height,
-		int tileCount, int columns, const char* name, const char* source,
+		int tileCount, int columns, std::string name, std::string source,
 		Image image, std::vector<Tile> tile, TilesetPropertiesController tilesetProperties
 	);
 
@@ -47,8 +47,8 @@ public:
 	int GetTileCount();
 	int GetColumns();
 
-	char* GetName();
-	char* GetSource();
+	std::string GetName();
+	std::string GetSource();
 
 	Tile* GetTileById(int id);
 

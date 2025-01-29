@@ -10,9 +10,9 @@ public:
 	static void AddThread(Thread* thread);
 
 	static Thread* GetThread(const int id);
-	static Thread* GetThread(const char* title);
+	static Thread* GetThread(std::string_view title);
 
-	static void RemoveThread(const char* title);
+	static void RemoveThread(std::string_view title);
 	static void RemoveThread(const int id);
 
 	static void Clear();

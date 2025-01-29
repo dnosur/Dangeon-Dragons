@@ -70,7 +70,7 @@ void TinyMap::Initialize()
 						Coord textureVertex1, textureVertex2;
 
 						std::string random_str = GenerateRandomString(5);
-						const char* obj_title = random_str.c_str();
+						std::string obj_title = random_str.c_str();
 
 						for (int k = 0; k < (ciclesCount ? ciclesCount : 1); k++) {
 
@@ -191,11 +191,11 @@ void TinyMap::Initialize()
 			std::cout << "Collision: " << collision->GetRootTitle() << std::endl;
 
 			MoveCollison(collision);
-			std::string name = "";
-			name += std::to_string(collision->GetRootId()) + "_" + collision->GetType();
+			std::ostringstream oss;
+			oss << collision->GetRootId() << "_" << collision->GetType();
 
 			std::shared_ptr<Rect> circle = std::make_shared<Rect>(
-				name.c_str(),
+				oss.str(),
 				*window,
 				collision->GetPoints()[0],
 				Size(35, 35),
@@ -225,12 +225,12 @@ TinyMap::TinyMap(Window* window, std::unique_ptr<TileMap> tileMap, Coord pos)
 	Initialize();
 }
 
-std::vector<std::weak_ptr<IGameObject>> TinyMap::GetClassesByType(const char* type)
+std::vector<std::weak_ptr<IGameObject>> TinyMap::GetClassesByType(std::string type)
 {
 	std::vector<std::weak_ptr<IGameObject>> result = std::vector<std::weak_ptr<IGameObject>>();
 
 	for (std::shared_ptr<IGameObject>& object : gameClasses) {
-		if (!strcmp(object->GetCollision().lock()->GetType(), type)) {
+		if (object->GetCollision().lock()->GetType() == type) {
 			result.push_back(object);
 		}
 	}
@@ -238,12 +238,12 @@ std::vector<std::weak_ptr<IGameObject>> TinyMap::GetClassesByType(const char* ty
 	return result;
 }
 
-std::vector<std::weak_ptr<IGameObject>> TinyMap::GetClassesByName(const char* name)
+std::vector<std::weak_ptr<IGameObject>> TinyMap::GetClassesByName(std::string name)
 {
 	std::vector<std::weak_ptr<IGameObject>> classes;
 
 	for (std::shared_ptr<IGameObject>& object : gameClasses) {
-		if (!strcmp(object->GetCollision().lock()->GetRootTitle(), name)) {
+		if (object->GetCollision().lock()->GetRootTitle() == name) {
 			classes.push_back(object);
 		}
 	}
@@ -251,10 +251,10 @@ std::vector<std::weak_ptr<IGameObject>> TinyMap::GetClassesByName(const char* na
 	return classes;
 }
 
-std::weak_ptr<IGameObject> TinyMap::GetClassByName(const char* name)
+std::weak_ptr<IGameObject> TinyMap::GetClassByName(std::string name)
 {
 	for (std::shared_ptr<IGameObject>& object : gameClasses) {
-		if (!strcmp(object->GetCollision().lock()->GetRootTitle(), name)) {
+		if (object->GetCollision().lock()->GetRootTitle() == name) {
 			return object;
 		}
 	}

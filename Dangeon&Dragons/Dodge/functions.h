@@ -158,4 +158,4 @@ double MathPercentsValue(double num, double percent);
 
 std::string GenerateRandomString(int length);
 
-const char* GetCurrentUser();
+std::string GetCurrentUser();

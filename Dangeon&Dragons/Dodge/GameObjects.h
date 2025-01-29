@@ -21,13 +21,13 @@ public:
 	static void Add(std::vector<IGameObject*>* gameObjects);
 	static void Add(std::vector<std::weak_ptr<IGameObject>>* gameObjects);
 
-	static std::weak_ptr<IGameObject> GetByTitle(const char* title);
+	static std::weak_ptr<IGameObject> GetByTitle(std::string title);
 	template <typename T>
-	static std::weak_ptr<T> GetDynamicByTitle(const char* title);
+	static std::weak_ptr<T> GetDynamicByTitle(std::string title);
 
-	static std::weak_ptr<IGameObject> GetByTitle(const char* title, Layer layer);
+	static std::weak_ptr<IGameObject> GetByTitle(std::string title, Layer layer);
 	template <typename T>
-	static std::weak_ptr<T>  GetDynamicByTitle(const char* title, Layer layer);
+	static std::weak_ptr<T>  GetDynamicByTitle(std::string title, Layer layer);
 
 	static std::vector<std::shared_ptr<IGameObject>>* GetAll();
 	static std::vector<std::shared_ptr<IGameObject>>* GetAll(Layer layer);
@@ -47,11 +47,11 @@ public:
 };
 
 template<typename T>
-inline std::weak_ptr<T> GameObjects::GetDynamicByTitle(const char* title)
+inline std::weak_ptr<T> GameObjects::GetDynamicByTitle(std::string title)
 {
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
-		if (!strcmp(gameObjects[i]->GetTitle(), title))
+		if (gameObjects[i]->GetTitle() == title)
 		{
 			if (auto casted = std::dynamic_pointer_cast<T>(gameObjects[i])) {
 				return casted;
@@ -62,11 +62,11 @@ inline std::weak_ptr<T> GameObjects::GetDynamicByTitle(const char* title)
 }
 
 template<typename T>
-inline std::weak_ptr<T> GameObjects::GetDynamicByTitle(const char* title, Layer layer)
+inline std::weak_ptr<T> GameObjects::GetDynamicByTitle(std::string title, Layer layer)
 {
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
-		if (!strcmp(gameObjects[i]->GetTitle(), title) &&
+		if (gameObjects[i]->GetTitle() == title &&
 			gameObjects[i]->GetLayer() == layer
 			)
 		{

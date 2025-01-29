@@ -1,7 +1,7 @@
 #include "StringPropertie.h"
 
-StringPropertie::StringPropertie(char* name, char* value)
-	: Propertie(name, value, (char*)"string")
+StringPropertie::StringPropertie(std::string title, std::string value)
+	: Propertie(title, value, "string")
 {
 }
 

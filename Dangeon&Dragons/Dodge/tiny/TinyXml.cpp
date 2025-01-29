@@ -1,7 +1,7 @@
 #include "TinyXml.h"
 #include "TileMap.h"
 
-const char* TinyXml::root_dir = "Content/";
+std::string TinyXml::root_dir = "Content/";
 
 std::string TinyXml::GetPathToTileSource(std::string path)
 {
@@ -38,16 +38,16 @@ std::vector<Coord> TinyXml::ParsePolygon(std::string polygon, const Coord& offse
     return coords;
 }
 
-tinyxml2::XMLError TinyXml::ReadDoc(tinyxml2::XMLDocument& doc, const char* path)
+tinyxml2::XMLError TinyXml::ReadDoc(tinyxml2::XMLDocument& doc, std::string path)
 {
-    if (doc.LoadFile(path) != tinyxml2::XML_SUCCESS) {
+    if (doc.LoadFile(path.c_str()) != tinyxml2::XML_SUCCESS) {
         std::cerr << "Failed to load map file." << std::endl;
         return tinyxml2::XML_ERROR_FILE_READ_ERROR;
     }
     return tinyxml2::XML_SUCCESS;
 }
 
-std::unique_ptr<TileMap> TinyXml::LoadMap(const char* path, const char* title)
+std::unique_ptr<TileMap> TinyXml::LoadMap(std::string path, std::string title)
 {
 	tinyxml2::XMLDocument doc;
     if (TinyXml::ReadDoc(doc, path) != tinyxml2::XML_SUCCESS) {
@@ -61,15 +61,15 @@ std::unique_ptr<TileMap> TinyXml::LoadMap(const char* path, const char* title)
     map->size.width = mapElement->IntAttribute("width");
     map->size.height = mapElement->IntAttribute("height"); 
 
-    CopyStr(title, map->title);
+    map->title = title;
 
     map->infinite = mapElement->BoolAttribute("infinite");
 
 	map->nextLayerId = mapElement->IntAttribute("nextlayerid");
 	map->nextObjectId = mapElement->IntAttribute("nextobjectid");
 
-    CopyStr(mapElement->Attribute("orientation"), map->orientation);
-	CopyStr(mapElement->Attribute("renderorder"), map->renderOreder);
+    map->orientation = mapElement->Attribute("orientation");
+    map->renderOreder = mapElement->Attribute("renderorder");
 
 	map->tileSize.height = mapElement->IntAttribute("tileheight");
 	map->tileSize.width = mapElement->IntAttribute("tilewidth");

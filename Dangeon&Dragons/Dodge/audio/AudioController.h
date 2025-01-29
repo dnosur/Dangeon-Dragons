@@ -12,12 +12,12 @@ public:
 	AudioController();
 	AudioController(std::vector<std::shared_ptr<Audio>> sounds);
 
-	void Play(const char* title, bool loop = false);
+	void Play(std::string_view title, bool loop = false);
 
-	void Load(const char* title, const char* path);
+	void Load(std::string title, std::string path);
 	void Load(std::shared_ptr<Audio> audio);
 
 	int GetSize();
 
-	std::weak_ptr<Audio> operator[](const char* title);
+	std::weak_ptr<Audio> operator[](std::string_view title);
 };

@@ -10,7 +10,7 @@ bool Font::LoadFont()
     }
 
     FT_Face face;
-    if (FT_New_Face(ft, path, 0, &face)) {
+    if (FT_New_Face(ft, path.c_str(), 0, &face)) {
 		std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
         return false;
     }
@@ -63,14 +63,14 @@ bool Font::LoadFont()
 }
 
 Font::Font(
-    const char* title, 
-    const char* path, 
+    std::string title, 
+    std::string path, 
     Size windowSize, 
     Size size
 )
 {
-	CopyStr(title, this->title);
-	CopyStr(path, this->path);
+    this->title = title;
+    this->path = path;
 
     this->size = size;
     this->windowSize = windowSize;

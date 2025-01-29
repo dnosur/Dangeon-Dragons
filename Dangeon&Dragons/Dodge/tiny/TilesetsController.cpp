@@ -26,8 +26,8 @@ void TilesetsController::LoadTilesets(tinyxml2::XMLElement* element, std::vector
 		tileset = tileset->NextSiblingElement("tileset")
 		) {
 
-		const char* source = tileset->Attribute("source");
-		if (source) {
+		std::string source = tileset->Attribute("source");
+		if (!source.empty()) {
 			std::string pth = fs::path(path).parent_path().string() + "/";
 			tilesets.push_back(
 				LoadTileset(
@@ -42,7 +42,7 @@ void TilesetsController::LoadTilesets(tinyxml2::XMLElement* element, std::vector
 	}
 }
 
-std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, const char* path)
+std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, std::string path)
 {
     tinyxml2::XMLDocument doc;
     if (TinyXml::ReadDoc(doc, path) != tinyxml2::XML_SUCCESS) {
@@ -50,7 +50,7 @@ std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, const cha
     } 
 
     tinyxml2::XMLElement* tilesetElement = doc.FirstChildElement("tileset");
-    const char* name = tilesetElement->Attribute("name");
+    std::string name = tilesetElement->Attribute("name");
 
     int tileWidth = tilesetElement->IntAttribute("tilewidth");
     int tileHeight = tilesetElement->IntAttribute("tileheight");
@@ -132,8 +132,20 @@ std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, const cha
         }
 
         int object_id = object->IntAttribute("id");
-        const char* object_name = object->Attribute("name");
-        const char* object_type = object->Attribute("type");
+        std::string object_name = "";
+        std::string object_type = "";
+
+        {
+            const char* temp_name = object->Attribute("name");
+            const char* temp_type = object->Attribute("type");
+
+            if (temp_name != nullptr) {
+				object_name = temp_name;
+			}
+			if (temp_type != nullptr) {
+				object_type = temp_type;
+			}
+        }
 
         Coord object_pos = {
             object->DoubleAttribute("x"),
@@ -154,8 +166,8 @@ std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, const cha
                     object_pos,
                     object_size,
                     object_id,
-                    (char*)object_name,
-                    (char*)object_type
+                    object_name,
+                    object_type
                 ),
                 animation_obj
             );
@@ -173,8 +185,8 @@ std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, const cha
             std::make_shared<PoligonCollision>(
                 TinyXml::ParsePolygon(polygon->Attribute("points"), object_pos),
                 object_id,
-                (char*)object_name,
-                (char*)object_type
+                object_name,
+                object_type
             ),
             animation_obj
         );
@@ -220,11 +232,11 @@ std::weak_ptr<Tileset> TilesetsController::operator[](int index)
 	return std::make_shared<Tileset>();
 }
 
-std::weak_ptr<Tileset> TilesetsController::operator[](const char* name)
+std::weak_ptr<Tileset> TilesetsController::operator[](std::string name)
 {
 	for (int i = 0; i < tilesets.size(); i++)
 	{
-		if (strcmp(tilesets[i]->GetName(), name) == 0)
+		if (tilesets[i]->GetName() == name)
 		{
 			return tilesets[i];
 		}

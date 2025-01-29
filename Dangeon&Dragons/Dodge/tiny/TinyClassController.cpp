@@ -57,11 +57,11 @@ TinyClass* TinyClassController::GetById(int id)
 	return nullptr;
 }
 
-TinyClass* TinyClassController::operator[](const char* name)
+TinyClass* TinyClassController::operator[](std::string name)
 {
 	for (int i = 0; i < classes.size(); i++)
 	{
-		if (strcmp(classes[i].GetName(), name) == 0)
+		if (classes[i].GetName() == name)
 		{
 			return &classes[i];
 		}

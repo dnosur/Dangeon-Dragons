@@ -58,11 +58,11 @@ void GameObjects::Add(std::vector<std::weak_ptr<IGameObject>>* gameObjects)
 	}
 }
 
-std::weak_ptr<IGameObject> GameObjects::GetByTitle(const char* title)
+std::weak_ptr<IGameObject> GameObjects::GetByTitle(std::string title)
 {
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
-		if (!strcmp(gameObjects[i]->GetTitle(), title))
+		if (gameObjects[i]->GetTitle() == title)
 		{
 			return gameObjects[i];
 		}
@@ -71,11 +71,11 @@ std::weak_ptr<IGameObject> GameObjects::GetByTitle(const char* title)
 	return std::shared_ptr<IGameObject>(nullptr);
 }
 
-std::weak_ptr<IGameObject> GameObjects::GetByTitle(const char* title, Layer layer)
+std::weak_ptr<IGameObject> GameObjects::GetByTitle(std::string title, Layer layer)
 {
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
-		if (!strcmp(gameObjects[i]->GetTitle(), title) &&
+		if (gameObjects[i]->GetTitle() == title &&
 			gameObjects[i]->GetLayer() == layer
 			)
 		{

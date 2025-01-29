@@ -14,15 +14,15 @@ public:
 
 	int GetSize();
 
-	ICollision* GetCollisionByTitle(char* root_title);
+	ICollision* GetCollisionByTitle(std::string root_title);
 
-	std::vector<ICollision*> GetCollisionsByTitle(char* root_title);
+	std::vector<ICollision*> GetCollisionsByTitle(std::string root_title);
 
-	std::vector<ICollision*> GetCollisionByType(char* type);
+	std::vector<ICollision*> GetCollisionByType(std::string type);
 
-	int CountCollisionsWithTitle(char* root_title);
+	int CountCollisionsWithTitle(std::string root_title);
 
-	int CountCollisionsWithType(char* type);
+	int CountCollisionsWithType(std::string type);
 
 	void PushCollision(ICollision* collision);
 

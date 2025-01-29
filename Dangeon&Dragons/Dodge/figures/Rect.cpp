@@ -17,14 +17,14 @@ void Rect::MathPos(Coord& vertex1, Coord& vertex2)
     float width = (vertex2.X - vertex1.X) * (window->GetSize().GetWidth() / 2.0f);
     float height = (vertex2.Y - vertex1.Y) * (window->GetSize().GetHeight() / 2.0f);
 
-    // Размер определяется на основе разницы координат
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     size = Size(round(std::abs(width)), round(std::abs(height)));
 
-    // Находим центр в OpenGL-координатах
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ OpenGL-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     float centerX_GL = (vertex1.X + vertex2.X) / 2.0f;
     float centerY_GL = (vertex1.Y + vertex2.Y) / 2.0f;
 
-    // Преобразуем OpenGL-координаты в пиксели
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ OpenGL-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     pos = Coord(
         ((centerX_GL + 1.0f) / 2.0f) * (float)window->GetSize().GetWidth(),
         ((1.0f - (centerY_GL + 1.0f) / 2.0f) * (float)window->GetSize().GetHeight())
@@ -78,13 +78,13 @@ Rect::Rect()
 }
 
 Rect::Rect(
-    const char* title,
+    std::string title,
     Window& window, Coord
     pos, Size size, Color color, 
     Directions moveDirection
 )
 {
-    CopyStr(title, this->title);
+    title = this->title;
 
     this->window = &window;
     this->size = size;
@@ -116,13 +116,13 @@ Rect::Rect(
 }
 
 Rect::Rect(
-    const char* title, 
+    std::string title, 
     Window& window, 
     Coord vertex1, Coord vertex2, 
     Color color, Directions moveDirection
 )
 {
-    CopyStr(title, this->title);
+    title = this->title;
 
     this->window = &window;
     this->color = baseColor = color;
@@ -151,14 +151,14 @@ Rect::Rect(
 }
 
 Rect::Rect(
-    const char* title, 
+    std::string title, 
     Window& window, 
     Coord vertex1, Coord vertex2, 
     Coord textureVertex1, Coord textureVertex2, 
     Color color, Directions moveDirection
 )
 {
-    CopyStr(title, this->title);
+    title = this->title;
 
     this->window = &window;
     this->color = baseColor = color;
@@ -320,15 +320,15 @@ std::vector<float> Rect::GetVerticesByDirection(Rect& rect, Directions moveDirec
 
 void Rect::RotateToDirection(Directions direction)
 {
-    // Матрица поворотов в зависимости от текущего и целевого направления
-    if (moveDirection == direction) return; // Уже в нужном направлении
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    if (moveDirection == direction) return; // пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
-    // Определяем угол поворота
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     if ((moveDirection == Directions::RIGHT && direction == Directions::LEFT) ||
         (moveDirection == Directions::LEFT && direction == Directions::RIGHT) ||
         (moveDirection == Directions::UP && direction == Directions::DOWN) ||
         (moveDirection == Directions::DOWN && direction == Directions::UP)) {
-        // Разворот на 180 градусов
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 180 пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         std::swap(vertex1.X, vertex2.X);
         std::swap(vertex1.Y, vertex2.Y);
     }
@@ -336,7 +336,7 @@ void Rect::RotateToDirection(Directions direction)
         (moveDirection == Directions::UP && direction == Directions::LEFT) ||
         (moveDirection == Directions::LEFT && direction == Directions::DOWN) ||
         (moveDirection == Directions::DOWN && direction == Directions::RIGHT)) {
-        // Поворот на 90 градусов против часовой стрелки
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 90 пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         float centerX = (vertex1.X + vertex2.X) / 2;
         float centerY = (vertex1.Y + vertex2.Y) / 2;
 
@@ -356,7 +356,7 @@ void Rect::RotateToDirection(Directions direction)
         (moveDirection == Directions::DOWN && direction == Directions::LEFT) ||
         (moveDirection == Directions::LEFT && direction == Directions::UP) ||
         (moveDirection == Directions::UP && direction == Directions::RIGHT)) {
-        // Поворот на 90 градусов по часовой стрелке
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ 90 пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         float centerX = (vertex1.X + vertex2.X) / 2;
         float centerY = (vertex1.Y + vertex2.Y) / 2;
 
@@ -373,16 +373,16 @@ void Rect::RotateToDirection(Directions direction)
         vertex2.Y = -tempX + centerY;
     }
 
-    // Обновляем направление
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     moveDirection = direction;
 }
 
-Coord Rect::GetPos()
+const Coord& Rect::GetPos()
 {
     return pos;
 }
 
-Coord Rect::GetOpenGlPos()
+const Coord& Rect::GetOpenGlPos()
 {
     return Coord(window->PixelToGLX(pos.X), window->PixelToGLY(pos.Y));
 }
@@ -549,14 +549,14 @@ std::weak_ptr<ICollision> Rect::GetCollision()
     return collision;
 }
 
-const char* Rect::GetTitle()
+std::string_view Rect::GetTitle()
 {
     return title;
 }
 
-void Rect::SetTitle(const char* title)
+void Rect::SetTitle(std::string title)
 {
-    CopyStr(title, this->title);
+    this->title = title;
 }
 
 void Rect::SetMoveDirection(Directions moveDirection)
@@ -594,9 +594,10 @@ void Rect::SetKinematic(bool kinematic)
     this->kinematic = kinematic;
 }
 
-Coord Rect::GetDistanceTo(IGameObject& gameObject)
+const Coord& Rect::GetDistanceTo(IGameObject& gameObject)
 {
-    return gameObject.GetPos() - pos;
+    Coord temp = gameObject.GetPos();
+    return temp - pos;
 }
 
 void Rect::HookMouseHover(MouseHoverHandler handler)
@@ -624,7 +625,7 @@ bool Rect::operator==(const Rect& other) const
     return window == other.window && pos == other.pos && 
         vertex1 == other.vertex1 && vertex2 == other.vertex2 && size == other.size &&
         color == other.color && baseColor == other.baseColor && material == other.material &&
-        !strcmp(title, other.title);
+        title == other.title;
 }
 
 bool Rect::operator!=(const Rect& other) const
@@ -655,7 +656,7 @@ Rect& Rect::operator=(const Rect&& other)
 
     material = other.material;
 
-    CopyStr(other.title, this->title);
+    this->title = other.title;
 
     return *this;
 }

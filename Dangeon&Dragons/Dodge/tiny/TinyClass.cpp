@@ -1,17 +1,17 @@
 #include "TinyClass.h"
 
-TinyClass::TinyClass(int id, const char* name, std::vector<std::shared_ptr<ICollision>> objects)
+TinyClass::TinyClass(int id, std::string name, std::vector<std::shared_ptr<ICollision>> objects)
 {
 	this->id = id;
-	CopyStr(name, this->name);
+	this->name = name;
 	this->objects = objects;
 }
 
 TinyClass::TinyClass(tinyxml2::XMLElement* element)
 {
 	id = element->IntAttribute("id");
-	const char* name = element->Attribute("name");
-	CopyStr(name, this->name);
+	std::string name = element->Attribute("name");
+	this->name = name;
 
 	GetObjects(element, objects);
 }
@@ -37,8 +37,8 @@ void TinyClass::GetObjects(tinyxml2::XMLElement* element, std::vector<std::share
 			const Size size = Size(object->DoubleAttribute("width"), object->DoubleAttribute("height"));
 
 			const int object_id = object->IntAttribute("id");
-			const char* object_name = object->Attribute("name");
-			const char* object_type = object->Attribute("type");
+			std::string object_name = object->Attribute("name");
+			std::string object_type = object->Attribute("type");
 
 			tinyxml2::XMLElement* polygon = object->FirstChildElement("polygon");
 			if (polygon == nullptr)
@@ -48,8 +48,8 @@ void TinyClass::GetObjects(tinyxml2::XMLElement* element, std::vector<std::share
 						coord,
 						size,
 						object_id,
-						(char*)object_name,
-						(char*)object_type
+						object_name,
+						object_type
 					)
 				);
 				continue;
@@ -62,8 +62,8 @@ void TinyClass::GetObjects(tinyxml2::XMLElement* element, std::vector<std::share
 						coord
 					),
 					object_id,
-					(char*)object_name,
-					(char*)object_type
+					object_name,
+					object_type
 				)
 			);
 		}
@@ -85,7 +85,7 @@ int TinyClass::GetId()
 	return id;
 }
 
-char* TinyClass::GetName()
+std::string TinyClass::GetName()
 {
 	return name;
 }

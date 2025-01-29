@@ -35,10 +35,10 @@ int TilesetPropertiesController::GetSize()
 	return tilesetProperties.size();
 }
 
-Propertie* TilesetPropertiesController::operator[](const char* name)
+Propertie* TilesetPropertiesController::operator[](std::string name)
 {
 	for (Propertie*& propertie : tilesetProperties) {
-		if (!strcmp(propertie->getTitle(), name)) {
+		if (propertie->getTitle() == name) {
 			return propertie;
 		}
 	}

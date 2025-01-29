@@ -23,17 +23,17 @@ Thread* GameThreads::GetThread(const int id)
 	return (*GameThreads::threads)[id];
 }
 
-Thread* GameThreads::GetThread(const char* title)
+Thread* GameThreads::GetThread(std::string_view title)
 {
 	for(Thread* thread : *GameThreads::threads) {
-		if (!strcmp(thread->GetTitle(), title)) {
+		if (thread->GetTitle() == title) {
 			return thread;
 		}
 	}
 	return nullptr;
 }
 
-void GameThreads::RemoveThread(const char* title)
+void GameThreads::RemoveThread(std::string_view title)
 {
 	Thread* t = GetThread(title);
 

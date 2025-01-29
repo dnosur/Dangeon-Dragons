@@ -7,7 +7,7 @@ class StringPropertie :
     public Propertie
 {
 public:
-	StringPropertie(char* name, char* value);
+	StringPropertie(std::string title, std::string value);
 
 	std::string getStrValue();
 };

@@ -1,19 +1,20 @@
 #pragma once
+#include <string>
 
 class Propertie
 {
 protected:
-	char* title;
-	char* value;
-	char* type;
+	std::string title;
+	std::string value;
+	std::string type;
 public:
 	Propertie();
-	Propertie(char* title, char* value, const char* type);
+	Propertie(std::string title, std::string value, std::string type);
 	~Propertie();
 
-	char* getTitle();
-	char* getValue();
-	char* getType();
+	std::string getTitle();
+	std::string getValue();
+	std::string getType();
 
 	bool operator==(const Propertie& other) const;
 	bool operator!=(const Propertie& other) const;

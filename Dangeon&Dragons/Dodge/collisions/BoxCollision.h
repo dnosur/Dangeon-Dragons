@@ -5,8 +5,8 @@ class BoxCollision :
     public ICollision
 {
 	int root_id;
-	char* root_title;
-	char* type;
+	std::string root_title;
+	std::string type;
 
 	Coord point;
 	Size size;
@@ -18,13 +18,13 @@ class BoxCollision :
 	std::vector<IGameObject*> gameObjects;
 public:
 	BoxCollision();
-	BoxCollision(Coord point,Size size, int root_id, char* root_title = nullptr, char* type = nullptr);
+	BoxCollision(Coord point,Size size, int root_id, std::string root_title = "empty", std::string type = "empty");
 	~BoxCollision();
 
 	int GetRootId();
 
-	char* GetRootTitle();
-	char* GetType();
+	std::string_view GetRootTitle();
+	std::string_view GetType();
 
 	BoxCollision* Clone() const override;
 

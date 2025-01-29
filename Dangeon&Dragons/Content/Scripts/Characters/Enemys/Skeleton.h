@@ -19,7 +19,7 @@ class Skeleton
     Coord startPosVertexes[2];
     Coord offset;
 
-    //В дальнейшем перенести в класс!
+    //пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ!
     std::vector<std::shared_ptr<Movement>> movements;
 	int movementIndex;
 
@@ -27,8 +27,8 @@ class Skeleton
     bool findingPath;
 
     void LoadAnimations() override;
-    const char* GetAnimationName() override;
-    const char* GetAnimationMovementName(Coord direction);
+    std::string_view GetAnimationName() override;
+    std::string_view GetAnimationMovementName(Coord direction);
 
     void LoadAudio() override;
 
@@ -54,7 +54,7 @@ class Skeleton
     bool IsWalkable(Coord position);
 public:
     Skeleton(
-        const char* title, Window& window,
+        std::string title, Window& window,
         std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
         Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
@@ -67,7 +67,7 @@ public:
 
     Coord GetStartPos();
 
-    Coord GetDistanceTo(IGameObject& gameObject) override;
+    const Coord& GetDistanceTo(IGameObject& gameObject) override;
     float GetFloatDistanceTo(IGameObject& gameObject) override;
 
     bool IsNear(IGameObject& gameObject) override;

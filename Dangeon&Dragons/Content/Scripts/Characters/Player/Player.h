@@ -8,14 +8,14 @@ class Player :
 {
     Keyboard* keyboard;
 
-    //Позиция на экране для отрисовки
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     Coord startPos;
     Coord startPosVertexes[2];
 
     std::mutex* raycastMutex;
 
     void LoadAnimations() override;
-    const char* GetAnimationName() override;
+    std::string_view GetAnimationName() override;
 
     void LoadAudio() override;
 	void Draw() override;
@@ -31,9 +31,11 @@ class Player :
     void MathSide(double& sideSize, bool isWidth) override;
 
     void AIMovement() override;
+
+    void MathSide(double& sideSize, bool isWidth);
 public:
     Player(
-        const char* title, Window& window,
+        std::string title, Window& window,
         std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
         Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
@@ -46,7 +48,9 @@ public:
 
     Coord GetStartPos();
 
-    Coord GetDistanceTo(IGameObject& gameObject) override;
+    void SetSideSize(Sides sides);
+
+    const Coord& GetDistanceTo(IGameObject& gameObject) override;
     float GetFloatDistanceTo(IGameObject& gameObject) override;
 
     bool IsNear(IGameObject& gameObject) override;

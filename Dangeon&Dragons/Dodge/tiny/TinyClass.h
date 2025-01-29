@@ -6,11 +6,11 @@
 class TinyClass
 {
 	int id;
-	char* name;
+	std::string name;
 
 	std::vector<std::shared_ptr<ICollision>> objects;
 public:
-	TinyClass(int id, const char* name, std::vector<std::shared_ptr<ICollision>> objects);
+	TinyClass(int id, std::string name, std::vector<std::shared_ptr<ICollision>> objects);
 	TinyClass(tinyxml2::XMLElement* element);
 
 	static void GetObjects(tinyxml2::XMLElement* element, std::vector<std::shared_ptr<ICollision>>& objects);
@@ -19,7 +19,7 @@ public:
 	std::vector<std::shared_ptr<ICollision>>::iterator end();
 
 	int GetId();
-	char* GetName();
+	std::string GetName();
 	int GetSize();
 
 	std::weak_ptr<ICollision> operator[](int index);

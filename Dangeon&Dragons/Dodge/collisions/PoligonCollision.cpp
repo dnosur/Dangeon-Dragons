@@ -12,7 +12,7 @@ PoligonCollision::PoligonCollision()
 	SetLayer(Layer::Undefined);
 }
 
-PoligonCollision::PoligonCollision(std::vector<Coord> points, int root_id, char* root_title, char* type)
+PoligonCollision::PoligonCollision(std::vector<Coord> points, int root_id, std::string root_title, std::string type)
 {
 	this->root_id = root_id;
 	this->points = points;
@@ -21,8 +21,8 @@ PoligonCollision::PoligonCollision(std::vector<Coord> points, int root_id, char*
 
 	SetLayer(Layer::Collision);
 
-	CopyStr(root_title, this->root_title);
-	CopyStr(type, this->type);
+	this->root_title = root_title;
+	this->type = type;
 }
 
 bool PoligonCollision::IsPointInPolygon(const Coord& point, const std::vector<Coord>& polygon)
@@ -48,12 +48,12 @@ int PoligonCollision::GetRootId()
 	return root_id;
 }
 
-char* PoligonCollision::GetRootTitle()
+std::string_view PoligonCollision::GetRootTitle()
 {
 	return root_title;
 }
 
-char* PoligonCollision::GetType()
+std::string_view PoligonCollision::GetType()
 {
 	return type;
 }
@@ -180,8 +180,8 @@ bool PoligonCollision::IsExist(IGameObject* gameObject)
 
 bool PoligonCollision::operator==(const PoligonCollision& other) const
 {
-	return !strcmp(root_title, other.root_title) &&
-		!strcmp(type, other.type) &&
+	return root_title == other.root_title &&
+		type == other.type &&
 		points == other.points && 
 		root_id == other.root_id;
 }
@@ -195,8 +195,8 @@ PoligonCollision& PoligonCollision::operator=(const PoligonCollision& other)
 {
 	if (this != &other)
 	{
-		CopyStr(other.root_title, root_title);
-		CopyStr(other.type, type);
+		root_title = other.root_title;
+		type = other.type;
 
 		points = other.points;
 		root_id = other.root_id;

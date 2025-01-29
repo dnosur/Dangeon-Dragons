@@ -15,7 +15,7 @@ class VertexAnimation :
 
     Timer* timer;
 
-	char* title;
+	std::string title;
 
 	int frameRate;
 
@@ -35,7 +35,7 @@ class VertexAnimation :
 
 public:
 	VertexAnimation(
-		const char* title, int frameRate, bool repeat, bool stopOnEnd, 
+		std::string title, int frameRate, bool repeat, bool stopOnEnd, 
 		IGameObject* object, std::vector<
 		std::pair<int, std::vector<Coord>>> frames = {}
 	);
@@ -54,8 +54,8 @@ public:
 	void Restart();
 	void Reverse();
 
-	char* GetFolder();
-	void LoadFromFolder(char* folder);
+	std::string_view GetFolder();
+	void LoadFromFolder(std::string folder);
 
 	int GetFrameRate();
 	void SetFrameRate(int frameRate);
@@ -66,8 +66,11 @@ public:
 	bool IsStopOnEnd();
 	void SetStopOnEnd(bool stopOnEnd);
 
-	void SetTitle(char* title);
-	char* GetTitle();
+	void SetTitle(std::string title);
+	std::string_view GetTitle();
+
+	std::string GetStringTitle();
+
 
 	void AddFrame(int waitTime, std::vector<Coord> vertexes);
 	void AddFrame(std::pair<int, std::vector<Coord>> frame);

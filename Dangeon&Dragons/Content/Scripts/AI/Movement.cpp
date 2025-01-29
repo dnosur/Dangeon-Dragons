@@ -10,7 +10,7 @@ Movement::Movement()
 }
 
 Movement::Movement(
-    std::string title, Directions direction, Actions action, 
+    std::string_view title, Directions direction, Actions action,
 	std::shared_ptr<IAnimation> animation, Coord position)
 {
 	this->title = title;

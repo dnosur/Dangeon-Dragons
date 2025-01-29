@@ -1,7 +1,7 @@
 #include "AnimationsFactory.h"
 
 std::shared_ptr<VertexAnimation> AnimationsFactory::CreateVertexAnimation(
-    const char* title, 
+    std::string title, 
     int frameRate, bool repeat, bool stopOnEnd, 
     std::shared_ptr<IGameObject> object, std::vector<std::pair<int, std::vector<Coord>>> frames)
 {
@@ -9,7 +9,7 @@ std::shared_ptr<VertexAnimation> AnimationsFactory::CreateVertexAnimation(
 }
 
 std::shared_ptr<SpriteAnimation> AnimationsFactory::CreateSpriteAnimation(
-    const char* title, const char* folder, int frameRate, 
+    std::string title, std::string folder, int frameRate, 
     Window* window, bool revere, std::vector<FrameSound> frameSounds)
 {
     return std::make_shared<SpriteAnimation>(
@@ -18,7 +18,7 @@ std::shared_ptr<SpriteAnimation> AnimationsFactory::CreateSpriteAnimation(
 }
 
 std::shared_ptr<SpriteAnimation> AnimationsFactory::CreateSpriteAnimation(
-    const char* title, Coord pos, Size size, const char* folder, 
+    std::string title, Coord pos, Size size, std::string folder, 
     int frameRate, Window* window, bool revere, std::vector<FrameSound> frameSounds)
 {
     return std::make_shared<SpriteAnimation>(
@@ -27,7 +27,7 @@ std::shared_ptr<SpriteAnimation> AnimationsFactory::CreateSpriteAnimation(
 }
 
 std::shared_ptr<SpriteAnimation> AnimationsFactory::CreateSpriteAnimation(
-    const char* title, std::vector<Image> sprites, int frameRate, 
+    std::string title, std::vector<Image> sprites, int frameRate, 
     Window* window, bool revere, std::vector<FrameSound> frameSounds)
 {
     return std::make_shared<SpriteAnimation>(
@@ -36,7 +36,7 @@ std::shared_ptr<SpriteAnimation> AnimationsFactory::CreateSpriteAnimation(
 }
 
 std::shared_ptr<SpriteAnimation> AnimationsFactory::CreateSpriteAnimation(
-    const char* title, Coord pos, Size size, std::vector<Image> sprites, 
+    std::string title, Coord pos, Size size, std::vector<Image> sprites, 
     int frameRate, Window* window, bool revere, std::vector<FrameSound> frameSounds)
 {
     return std::make_shared<SpriteAnimation>(

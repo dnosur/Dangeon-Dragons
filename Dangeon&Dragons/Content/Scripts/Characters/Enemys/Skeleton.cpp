@@ -13,9 +13,9 @@
 #include "../../Utilities/RaycastUtilities.h"
 
 Skeleton::Skeleton(
-	const char* title, Window& window, std::shared_ptr<ICollision> collision, 
+	std::string title, Window& window, std::shared_ptr<ICollision> collision,
 	std::shared_ptr<Material> material, Directions moveDirection, Coord pos, Size size,
-	float speed, float maxSpeed, float minSpeed, float health, float maxHealth, 
+	float speed, float maxSpeed, float minSpeed, float health, float maxHealth,
 	bool isPlayable, bool isKinematic, bool isHidden, std::vector<std::shared_ptr<IAnimation>> animations
 ) : Pawn(
 	title, window, std::move(collision),
@@ -32,9 +32,10 @@ Coord Skeleton::GetStartPos()
 	return startPos;
 }
 
-Coord Skeleton::GetDistanceTo(IGameObject& gameObject)
+const Coord& Skeleton::GetDistanceTo(IGameObject& gameObject)
 {
-	return gameObject.GetPos() - pos;
+	Coord temp = gameObject.GetPos();
+	return temp - pos;
 }
 
 float Skeleton::GetFloatDistanceTo(IGameObject& gameObject)
@@ -93,7 +94,7 @@ void Skeleton::Update()
 	AIMovement();
 	Draw();
 	//animations[GetAnimationName()]->Play();
-}
+};
 
 void Skeleton::LoadAnimations()
 {
@@ -111,7 +112,7 @@ void Skeleton::LoadAnimations()
 
 	for (std::unique_ptr<VertexAnimation>& animation : playerImages->CreateVertexAnimations(
 		std::make_pair(
-			std::vector<const char*>({
+			std::vector<std::string>({
 				"walk_top",
 				"walk_right",
 				"walk_down",
@@ -160,7 +161,7 @@ void Skeleton::LoadAnimations()
 	animations["die"].lock()->SetStopOnEnd(true);
 }
 
-const char* Skeleton::GetAnimationName()
+std::string_view Skeleton::GetAnimationName()
 {
 	if (action == Actions::Dead) {
 		return "die";
@@ -223,7 +224,7 @@ const char* Skeleton::GetAnimationName()
 	return "idle_down";
 }
 
-const char* Skeleton::GetAnimationMovementName(Coord direction)
+std::string_view Skeleton::GetAnimationMovementName(Coord direction)
 {
 	if (direction == Coord(1, 0)) {
 		return "walk_right";
@@ -551,7 +552,7 @@ void Skeleton::AIMovement()
 		return;
 	}
 
-	//Движение к цели
+	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
 	if (!findingPath && _target) {
 		std::thread([this, _target]() { 
 			std::lock_guard<std::mutex> lock(pathMutex);
@@ -583,7 +584,7 @@ void Skeleton::AIMovement()
 		return;
 	}
 
-	//Буждание
+	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (!findingPath && !_target) {
 		std::thread([this]() {
 			float wanderRadius = 100.0f;
@@ -607,8 +608,8 @@ Coord Skeleton::GenerateRandomPosition(Coord center, float radius)
 	int num1 = distribution(gen);
 	int num2 = distribution(gen);
 
-	float angle = static_cast<float>(num1) / RAND_MAX * 2 * M_PI; // Случайный угол
-	float distance = static_cast<float>(num2) / RAND_MAX * radius; // Случайное расстояние в пределах радиуса
+	float angle = static_cast<float>(num1) / RAND_MAX * 2 * M_PI; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+	float distance = static_cast<float>(num2) / RAND_MAX * radius; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	float offsetX = distance * cos(angle);
 	float offsetY = distance * sin(angle);
 
@@ -617,9 +618,9 @@ Coord Skeleton::GenerateRandomPosition(Coord center, float radius)
 		static_cast<double>(center.Y + offsetY)
 	};
 
-	// Убедимся, что позиция проходима
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (!IsWalkable(randomPosition)) {
-		return GenerateRandomPosition(center, radius); // Рекурсивно ищем другую позицию
+		return GenerateRandomPosition(center, radius); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	}
 
 	return randomPosition;
@@ -629,18 +630,18 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 {
 	findingPath = true;
 
-	//Текущий путь
+	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 	std::priority_queue<std::shared_ptr<Node>, std::vector<std::shared_ptr<Node>>, CompareNodes> openList;
 
-	//Закрытый
+	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	std::unordered_map<int, bool> closedList;
 
-	//Все пути
+	//пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 	std::unordered_map<int, float> openListCosts;
 
 	auto GetKey = [](Coord pos) { return pos.X * 10000 + pos.Y; };
 
-	//Начальная позиция
+	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	std::shared_ptr<Node> startNode = std::make_shared<Node>(
 		std::make_unique<Movement>(
 			GetAnimationName(),
@@ -663,7 +664,7 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 			continue;
 		}
 
-		//Цель достигнута
+		//пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		if (Pawn::IsNear(currentNode->movement->position, goal, damageDistance - 10)) {
 			std::shared_ptr<Node> node = currentNode;
 			int i = 0;
@@ -679,17 +680,17 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 
 		closedList[GetKey(currentNode->movement->position)] = true;
 
-		//Проверяем все стороны движения
+		//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		for (std::unique_ptr<Movement>& neighbor : GetNeighbors(currentNode->movement->position)) {
 			Coord& neighborPos = neighbor->position;
 			int neighborKey = GetKey(neighborPos);
 
 			if (closedList[neighborKey]) continue;
 
-			//Рассчитываем стоимость пути до соседа
+			//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 			float tentativeGCost = currentNode->gCost + std::hypot(neighborPos.X - currentNode->movement->position.X, neighborPos.Y - currentNode->movement->position.Y);
 
-			//Ищим уже существующий более оптимальный путь
+			//пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 			if (openListCosts.find(neighborKey) != openListCosts.end() && 
 				tentativeGCost >= openListCosts[neighborKey]) {
 				continue;
@@ -719,8 +720,8 @@ std::vector<std::unique_ptr<Movement>> Skeleton::GetNeighbors(Coord position)
 {
 	std::vector<std::unique_ptr<Movement>> neighbors;
 	std::vector<Coord> directions = {
-		{ 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 }, // Основные направления
-		{ 1, 1 }, { 1, -1 }, { -1, 1 }, { -1, -1 } // Диагональные направления
+		{ 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 }, // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+		{ 1, 1 }, { 1, -1 }, { -1, 1 }, { -1, -1 } // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	};
 
 	for (Coord& dir : directions) {
@@ -729,10 +730,10 @@ std::vector<std::unique_ptr<Movement>> Skeleton::GetNeighbors(Coord position)
 			position.Y + ((speed) * 0.1f) * dir.Y 
 		};
 
-		if (IsWalkable(neighbor)) { // Проверяем, можно ли пройти
+		if (IsWalkable(neighbor)) { // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 			//std::make_pair(GetAnimationMovementName(dir), neighbor)
 
-			const char* title = GetAnimationMovementName(dir);
+			std::string_view title = GetAnimationMovementName(dir);
 			neighbors.push_back(
 				std::make_unique<Movement>(
 					title, 
@@ -748,5 +749,5 @@ std::vector<std::unique_ptr<Movement>> Skeleton::GetNeighbors(Coord position)
 
 bool Skeleton::IsWalkable(Coord position)
 {
-	return CheckForCollision(position); // Ваш метод проверки препятствий
+	return CheckForCollision(position); // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 }

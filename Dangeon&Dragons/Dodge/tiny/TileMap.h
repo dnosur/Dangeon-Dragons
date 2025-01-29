@@ -13,15 +13,15 @@ struct TileMap
 	Size size;
 	Size tileSize;
 
-	char* orientation;
-	char* renderOreder;
+	std::string orientation;
+	std::string renderOreder;
 
 	int infinite;
 
 	int nextLayerId;
 	int nextObjectId;
 
-	char* title;
+	std::string title;
 
 	TilesetsController tilesetsController;
 	TinyClassController classesController;
@@ -31,8 +31,8 @@ struct TileMap
 
 	TileMap();
 	TileMap(
-		const char* title, Size size, Size tileSize,
-		char* orientation, char* renderOreder,
+		std::string title, Size size, Size tileSize,
+		std::string orientation, std::string renderOreder,
 		int infinite,
 		int nextLayerId, int nextObjectId,
 		TilesetsController tilesetsController,

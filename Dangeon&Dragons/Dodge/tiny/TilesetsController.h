@@ -17,12 +17,12 @@ public:
 		std::vector<std::shared_ptr<Tileset>>& tilesets, 
 		std::string path
 	);
-	static std::shared_ptr<Tileset> LoadTileset(int firstgId, const char* path);
+	static std::shared_ptr<Tileset> LoadTileset(int firstgId, std::string path);
 
 	int GetSize();
 
 	std::weak_ptr<Tileset> GetTilesetByTileId(int tileId);
 
 	std::weak_ptr<Tileset> operator[](int index);
-	std::weak_ptr<Tileset> operator[](const char* name);
+	std::weak_ptr<Tileset> operator[](std::string name);
 };

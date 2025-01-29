@@ -27,7 +27,7 @@ PoligonCollision* PoligonCollisionsController::GetCollisionByTitle(char* root_ti
 {
 	for (PoligonCollision& collision : collisions)
 	{
-		if (!strcmp(collision.GetRootTitle(), root_title))
+		if (collision.GetRootTitle() == root_title)
 		{
 			return &collision;
 		}
@@ -46,7 +46,7 @@ PoligonCollision* PoligonCollisionsController::GetCollisionsByTitle(char* root_t
 			return temp;
 		}
 
-		if (!strcmp(collision.GetRootTitle(), root_title))
+		if (collision.GetRootTitle() == root_title)
 		{
 			temp[index] = collision;
 			index++;
@@ -59,7 +59,7 @@ PoligonCollision* PoligonCollisionsController::GetCollisionByType(char* type)
 {
 	for (PoligonCollision& collision : collisions)
 	{
-		if (!strcmp(collision.GetType(), type))
+		if (collision.GetType() == type)
 		{
 			return &collision;
 		}
@@ -78,7 +78,7 @@ PoligonCollision* PoligonCollisionsController::GetCollisionsByType(char* type)
 			return temp;
 		}
 
-		if (!strcmp(collision.GetType(), type))
+		if (collision.GetType() == type)
 		{
 			temp[index] = collision;
 			index++;
@@ -92,7 +92,7 @@ int PoligonCollisionsController::CountCollisionsWithTitle(char* root_title)
 	int count = 0;
 	for (PoligonCollision& collision : collisions)
 	{
-		if (!strcmp(collision.GetRootTitle(), root_title))
+		if (collision.GetRootTitle() == root_title)
 		{
 			count++;
 		}
@@ -105,7 +105,7 @@ int PoligonCollisionsController::CountCollisionsWithType(char* type)
 	int count = 0;
 	for (PoligonCollision& collision : collisions)
 	{
-		if (!strcmp(collision.GetType(), type))
+		if (collision.GetType() == type)
 		{
 			count++;
 		}

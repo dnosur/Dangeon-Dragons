@@ -7,8 +7,8 @@ __interface ICollision
 {
 	int GetRootId();
 
-	char* GetRootTitle();
-	char* GetType();
+	std::string_view GetRootTitle();
+	std::string_view GetType();
 
 	std::vector<Coord> GetPoints();
 	void SetPoints(std::vector<Coord> points);

@@ -1,5 +1,6 @@
 #include "HpBar.h"
 #include "../../../../Dodge/images/SlicedImage.h"
+#include "../../../../Dodge/Sides.h"
 
 void HpBar::Draw() const
 {

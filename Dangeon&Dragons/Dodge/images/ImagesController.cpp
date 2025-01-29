@@ -2,11 +2,13 @@
 
 std::shared_ptr<Image> ImagesController::defaultImage;
 
-int ImagesController::GetIndexByTitle(char* title)
+std::shared_ptr<Image> ImagesController::defaultImage;
+
+int ImagesController::GetIndexByTitle(std::string& title)
 {
     int index = 0;
     for (Image& img : images) {
-        if (!strcmp(title, img.title)) {
+        if (title == img.title) {
             return index;
         }
         index++;
@@ -17,7 +19,7 @@ int ImagesController::GetIndexByTitle(char* title)
 
 void ImagesController::ChangeIfExist(Image image)
 {
-    if (image.title == nullptr) {
+    if (image.title.empty()) {
         return;
     }
 
@@ -41,18 +43,18 @@ void ImagesController::Draw(Image& item, Coord& position, Color& color, Size& wi
     float normW = (size.width / (float)windowSize.GetWidth()) * 2.0f;
     float normH = (size.height / (float)windowSize.GetHeight()) * 2.0f;
 
-    // Вершины и текстурные координаты
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     float vertices[] = {
-        // Позиции           // Текстурные координаты
-        normX, normY, 0.0f,                 0.0f, 0.0f,  // Левый нижний угол
-        normX + normW, normY, 0.0f,         1.0f, 0.0f,  // Правый нижний угол
-        normX + normW, normY + normH, 0.0f, 1.0f, 1.0f,  // Правый верхний угол
-        normX, normY + normH, 0.0f,         0.0f, 1.0f   // Левый верхний угол
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ           // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        normX, normY, 0.0f,                 0.0f, 0.0f,  // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+        normX + normW, normY, 0.0f,         1.0f, 0.0f,  // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+        normX + normW, normY + normH, 0.0f, 1.0f, 1.0f,  // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+        normX, normY + normH, 0.0f,         0.0f, 1.0f   // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     };
 
     unsigned int indices[] = {
-        0, 1, 2, // Первый треугольник
-        2, 3, 0  // Второй треугольник
+        0, 1, 2, // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        2, 3, 0  // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     };
 
     unsigned int VAO, VBO, EBO;
@@ -103,7 +105,7 @@ void ImagesController::Draw(Image& item, Coord& position, Color& color, Size& wi
     glUseProgram(0);
 }
 
-Image ImagesController::LoadImg(const char* path, const char* title)
+Image ImagesController::LoadImg(std::string path, std::string title)
 {
     GLuint textureID;
     glGenTextures(1, &textureID);
@@ -112,7 +114,7 @@ Image ImagesController::LoadImg(const char* path, const char* title)
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true);
 
-    unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
     if (!data) {
         std::cout << "stbi_load error: " << stbi_failure_reason() << std::endl;
     }
@@ -165,7 +167,7 @@ std::weak_ptr<Image> ImagesController::GetDafaultImage()
     return defaultImage;
 }
 
-void ImagesController::Load(const char* path, const char* title, Shader* shader)
+void ImagesController::Load(std::string path, std::string title, Shader* shader)
 {
     Image image = ImagesController::LoadImg(path, title);
     if (shader != nullptr) {
@@ -176,7 +178,7 @@ void ImagesController::Load(const char* path, const char* title, Shader* shader)
 }
 
 void ImagesController::LoadAndDrawImage(
-    const char* path, const char* title, 
+    std::string path, std::string title, 
     Shader* shader, Coord position, 
     Size size, Size windowSize
 )
@@ -201,10 +203,10 @@ void ImagesController::LoadAndDrawImage(
 
     shader->Use();
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 0.0f); glVertex2f(position.X, position.Y); // Левый нижний угол
-    glTexCoord2f(1.0f, 0.0f); glVertex2f(position.X + size.width, position.Y); // Правый нижний угол
-    glTexCoord2f(1.0f, 1.0f); glVertex2f(position.X + size.width, position.Y + size.height); // Правый верхний угол
-    glTexCoord2f(0.0f, 1.0f); glVertex2f(position.X, position.Y + size.height); // Левый верхний угол
+    glTexCoord2f(0.0f, 0.0f); glVertex2f(position.X, position.Y); // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+    glTexCoord2f(1.0f, 0.0f); glVertex2f(position.X + size.width, position.Y); // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+    glTexCoord2f(1.0f, 1.0f); glVertex2f(position.X + size.width, position.Y + size.height); // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+    glTexCoord2f(0.0f, 1.0f); glVertex2f(position.X, position.Y + size.height); // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     glEnd();
 
 
@@ -218,9 +220,9 @@ void ImagesController::LoadAndDrawImage(
     ChangeIfExist(image_obj);
 }
 
-void ImagesController::DrawImage(const char* title, Coord position, Size size, Size windowSize, Color color, bool reverse)
+void ImagesController::DrawImage(std::string title, Coord position, Size size, Size windowSize, Color color, bool reverse)
 {
-    const int index = GetIndexByTitle((char*)title);
+    const int index = GetIndexByTitle(title);
     if (index < 0) {
         return;
     }
@@ -262,10 +264,10 @@ Image* ImagesController::operator[](int index)
     return &images[index];
 }
 
-Image* ImagesController::operator[](const char* title)
+Image* ImagesController::operator[](std::string title)
 {
     for (Image& image : images) {
-        if (!strcmp(title, image.title)) {
+        if (title == image.title) {
             return &image;
         }
     }

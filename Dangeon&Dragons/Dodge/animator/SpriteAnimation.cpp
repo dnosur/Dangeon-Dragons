@@ -34,13 +34,13 @@ SpriteAnimation::SpriteAnimation()
 }
 
 SpriteAnimation::SpriteAnimation(
-	const char* title, const char* folder, int frameRate, 
+	std::string title, std::string folder, int frameRate, 
 	Window* window, bool revere, 
 	std::vector<FrameSound> frameSounds
 )
 {
-	CopyStr((char*)title, this->title);
-	CopyStr((char*)folder, this->folder);
+	this->title = title;
+	this->folder = folder;
 
 	play = pause = repeat = stopOnEnd = end = false;
 	currentSpriteIndex = -1;
@@ -56,12 +56,12 @@ SpriteAnimation::SpriteAnimation(
 }
 
 SpriteAnimation::SpriteAnimation(
-	const char* title, Coord pos, Size size, 
-	const char* folder, int frameRate, Window* window, bool revere,
+	std::string title, Coord pos, Size size, 
+	std::string folder, int frameRate, Window* window, bool revere,
 	std::vector<FrameSound> frameSounds
 ){
-	CopyStr((char*)title, this->title);
-	CopyStr((char*)folder, this->folder);
+	this->title = title;
+	this->folder = folder;
 
 	this->pos = pos;
 	this->size = size;
@@ -80,11 +80,11 @@ SpriteAnimation::SpriteAnimation(
 }
 
 SpriteAnimation::SpriteAnimation(
-	const char* title, std::vector<Image> sprites, 
+	std::string title, std::vector<Image> sprites, 
 	int frameRate, Window* window, bool revere,
 	std::vector<FrameSound> frameSounds)
 {
-	CopyStr((char*)title, this->title);
+	this->title = title;
 	SetSprites(sprites);
 	folder = nullptr;
 
@@ -102,12 +102,12 @@ SpriteAnimation::SpriteAnimation(
 }
 
 SpriteAnimation::SpriteAnimation(
-	const char* title, Coord pos, Size size,
+	std::string title, Coord pos, Size size,
 	std::vector<Image> sprites, int frameRate, 
 	Window* window, bool revere, std::vector<FrameSound> frameSounds
 )
 {
-	CopyStr((char*)title, this->title);
+	this->title = title;
 	SetSprites(sprites);
 
 	this->pos = pos;
@@ -133,12 +133,17 @@ void SpriteAnimation::SetWindow(Window* window)
 	this->window = window;
 }
 
-void SpriteAnimation::SetTitle(char* title)
+void SpriteAnimation::SetTitle(std::string title)
 {
-	CopyStr(title, this->title);
+	this->title = title;
 }
 
-char* SpriteAnimation::GetTitle()
+std::string_view SpriteAnimation::GetTitle()
+{
+	return title;
+}
+
+std::string SpriteAnimation::GetStringTitle()
 {
 	return title;
 }
@@ -153,14 +158,14 @@ void SpriteAnimation::SetSprites(std::vector<Image> sprites)
 	this->sprites.SetImages(sprites);
 }
 
-char* SpriteAnimation::GetFolder()
+std::string_view SpriteAnimation::GetFolder()
 {
 	return folder;
 }
 
-void SpriteAnimation::LoadFromFolder(char* folder)
+void SpriteAnimation::LoadFromFolder(std::string folder)
 {
-	CopyStr(folder, this->folder);
+	this->folder = folder;
 	LoadSpritesFromFolder();
 }
 
@@ -355,8 +360,8 @@ bool SpriteAnimation::operator=(const SpriteAnimation& other)
 
 		this->timer = other.timer;
 
-		CopyStr(other.folder, this->folder);
-		CopyStr(other.title, this->title);
+		this->folder = other.folder;
+		this->title = other.title;
 	}
 	return false;
 }

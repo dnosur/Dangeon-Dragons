@@ -19,8 +19,8 @@ __interface IAnimation
 	void Restart();
 	void Reverse();
 
-	char* GetFolder();
-	void LoadFromFolder(char* folder);
+	std::string_view GetFolder();
+	void LoadFromFolder(std::string folder);
 
 	int GetFrameRate();
 	void SetFrameRate(int frameRate);
@@ -31,8 +31,10 @@ __interface IAnimation
 	bool IsStopOnEnd();
 	void SetStopOnEnd(bool stopOnEnd);
 
-	void SetTitle(char* title);
-	char* GetTitle();
+	void SetTitle(std::string title);
+	std::string_view GetTitle();
+
+	std::string GetStringTitle();
 
 	IAnimation* Clone();
 };

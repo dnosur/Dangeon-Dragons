@@ -11,14 +11,11 @@ TinySpriteLayer::TinySpriteLayer()
 
 TinySpriteLayer::TinySpriteLayer(
 	int id, 
-	const char* name, 
+	std::string name, 
 	Size size, 
 	int** tileIds, 
 	Coord offset
-){
-	this->id = id;
-	CopyStr(name, this->name);
-	this->size = size;
+): id(id), name(name), size(size), offset(offset){
 }
 
 TinySpriteLayer::TinySpriteLayer(tinyxml2::XMLElement* element)
@@ -32,8 +29,8 @@ TinySpriteLayer::TinySpriteLayer(tinyxml2::XMLElement* element)
 
 	id = element->IntAttribute("id");
 
-	const char* name = element->Attribute("name");
-	CopyStr(name, this->name);
+	std::string name = element->Attribute("name");
+	this->name = name;
 
 	size = Size(element->DoubleAttribute("width"), element->DoubleAttribute("height"));
 	offset = Coord(element->DoubleAttribute("offsetx"), element->DoubleAttribute("offsety"));
@@ -47,7 +44,7 @@ TinySpriteLayer::~TinySpriteLayer()
 
 bool TinySpriteLayer::Undefined()
 {
-	return id < 0 && name == nullptr && size == Size(0, 0) && !chunks.size();
+	return id < 0 && name.empty() && size == Size(0, 0) && !chunks.size();
 }
 
 void TinySpriteLayer::GetSprites(
@@ -131,7 +128,7 @@ int TinySpriteLayer::GetId()
 	return id;
 }
 
-char* TinySpriteLayer::GetName()
+std::string TinySpriteLayer::GetName()
 {
 	return name;
 }

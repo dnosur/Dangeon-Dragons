@@ -140,7 +140,7 @@ void WonderWold::OnTriggerEnter(IGameObject* object, IGameObject* triggeredObjec
 {
 }
 
-Propertie* WonderWold::GetObjectPropertie(const char* propertie_name, IGameObject* object)
+Propertie* WonderWold::GetObjectPropertie(std::string propertie_name, IGameObject* object)
 {
 	return nullptr;
 }
@@ -179,17 +179,27 @@ void WonderWold::SetCamera(std::unique_ptr<Camera> camera)
 void WonderWold::Update()
 {
 	std::weak_ptr<IGameObject> observed = camera->GetObservedObj();
+	std::shared_ptr<IGameObject> lockedObserved = observed.lock();
+
 	Coord cameraOffset = camera->GetOffset();
 	bool cameraMove = cameraOffset.X != 0 || cameraOffset.Y != 0;
+
+	std::cout << "1\n";
 
 	for (std::shared_ptr<IGameObject>& obj : gameObjects)
 	{
 		if (cameraMove) {
-			obj->SetPos(obj->GetPos() + cameraOffset);
+			Coord temp = obj->GetPos();
+			obj->SetPos(temp + cameraOffset);
 		}
 
 		animationController.Play(obj->GetTitle());
-		Coord distance = observed.lock()->GetDistanceTo(*obj);
+
+		if (lockedObserved == nullptr) {
+			continue;
+		}
+
+		const Coord& distance = lockedObserved->GetDistanceTo(*obj);
 
 		if (distance.X >= 500 || distance.X <= -838 ||
 			distance.Y >= 584|| distance.Y <= -200) {
@@ -199,9 +209,12 @@ void WonderWold::Update()
 		obj->Update();
 	}
 
+	std::cout << "2\n";
+
 	if (cameraMove) {
 		for (std::shared_ptr<class Pawn>& pawn : enemys) {
-			pawn->SetPos(pawn->GetPos() + cameraOffset);
+			Coord temp = pawn->GetPos();
+			pawn->SetPos(temp + cameraOffset);
 			if (std::shared_ptr<Skeleton> skeleton = std::dynamic_pointer_cast<Skeleton>(pawn)) {
 				skeleton->SetPathOffset(cameraOffset);
 			}
@@ -218,12 +231,15 @@ void WonderWold::Update()
 
 		for (std::shared_ptr<IGameObject>& obj : gameClasses)
 		{
-			obj->SetPos(obj->GetPos() + cameraOffset);
+			Coord temp = obj->GetPos();
+			obj->SetPos(temp + cameraOffset);
 			obj->GetCollision().lock()->SetPoints({
 				obj->GetPos()
 			});
 		}
 	}
+
+	std::cout << "3\n";
 
 	UpdatePawns();
 }
@@ -235,6 +251,8 @@ void WonderWold::UpdatePawns()
 	{
 		pawn->Update();
 	}
+
+	std::cout << "4\n";
 
 	player->Update();
 }
