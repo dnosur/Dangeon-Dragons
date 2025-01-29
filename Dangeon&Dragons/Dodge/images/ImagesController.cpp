@@ -2,8 +2,6 @@
 
 std::shared_ptr<Image> ImagesController::defaultImage;
 
-std::shared_ptr<Image> ImagesController::defaultImage;
-
 int ImagesController::GetIndexByTitle(std::string& title)
 {
     int index = 0;

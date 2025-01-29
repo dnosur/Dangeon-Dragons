@@ -32,7 +32,6 @@ class Player :
 
     void AIMovement() override;
 
-    void MathSide(double& sideSize, bool isWidth);
 public:
     Player(
         std::string title, Window& window,
@@ -47,8 +46,6 @@ public:
     void SetSideSize(Sides sides) override;
 
     Coord GetStartPos();
-
-    void SetSideSize(Sides sides);
 
     const Coord& GetDistanceTo(IGameObject& gameObject) override;
     float GetFloatDistanceTo(IGameObject& gameObject) override;
