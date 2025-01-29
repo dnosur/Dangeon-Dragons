@@ -67,8 +67,13 @@ void TinyMap::Initialize()
 						Coord vertex1, vertex2;
 						Coord textureVertex1, textureVertex2;
 
+<<<<<<< Updated upstream
 						std::string random_str = generateRandomString(5);
 						const char* obj_title = random_str.c_str();
+=======
+						std::string random_str = GenerateRandomString(5);
+						std::string obj_title = random_str.c_str();
+>>>>>>> Stashed changes
 
 						for (int k = 0; k < (ciclesCount ? ciclesCount : 1); k++) {
 
@@ -184,11 +189,16 @@ void TinyMap::Initialize()
 			std::cout << "Collision: " << collision->GetRootTitle() << std::endl;
 
 			MoveCollison(collision);
-			std::string name = "";
-			name += std::to_string(collision->GetRootId()) + "_" + collision->GetType();
+			std::ostringstream oss;
+			oss << collision->GetRootId() << "_" << collision->GetType();
 
+<<<<<<< Updated upstream
 			Rect* circle = new Rect(
 				name.c_str(),
+=======
+			std::shared_ptr<Rect> circle = std::make_shared<Rect>(
+				oss.str(),
+>>>>>>> Stashed changes
 				*window,
 				collision->GetPoints()[0],
 				Size(35, 35),
@@ -215,12 +225,21 @@ TinyMap::TinyMap(Window* window, TileMap* tileMap, Coord pos)
 	Initialize();
 }
 
+<<<<<<< Updated upstream
 std::vector<IGameObject*> TinyMap::GetClassesByType(const char* type)
+=======
+std::vector<std::weak_ptr<IGameObject>> TinyMap::GetClassesByType(std::string type)
+>>>>>>> Stashed changes
 {
 	std::vector<IGameObject*> result = std::vector<IGameObject*>();
 
+<<<<<<< Updated upstream
 	for (IGameObject*& object : gameClasses) {
 		if (!strcmp(object->GetCollision()->GetType(), type)) {
+=======
+	for (std::shared_ptr<IGameObject>& object : gameClasses) {
+		if (object->GetCollision().lock()->GetType() == type) {
+>>>>>>> Stashed changes
 			result.push_back(object);
 		}
 	}
@@ -228,12 +247,21 @@ std::vector<IGameObject*> TinyMap::GetClassesByType(const char* type)
 	return result;
 }
 
+<<<<<<< Updated upstream
 std::vector<IGameObject*> TinyMap::GetClassesByName(const char* name)
+=======
+std::vector<std::weak_ptr<IGameObject>> TinyMap::GetClassesByName(std::string name)
+>>>>>>> Stashed changes
 {
 	std::vector<IGameObject*> classes;
 
+<<<<<<< Updated upstream
 	for (IGameObject* object : gameClasses) {
 		if (!strcmp(object->GetCollision()->GetRootTitle(), name)) {
+=======
+	for (std::shared_ptr<IGameObject>& object : gameClasses) {
+		if (object->GetCollision().lock()->GetRootTitle() == name) {
+>>>>>>> Stashed changes
 			classes.push_back(object);
 		}
 	}
@@ -241,10 +269,17 @@ std::vector<IGameObject*> TinyMap::GetClassesByName(const char* name)
 	return classes;
 }
 
+<<<<<<< Updated upstream
 IGameObject* TinyMap::GetClassByName(const char* name)
 {
 	for (IGameObject* object : gameClasses) {
 		if (!strcmp(object->GetCollision()->GetRootTitle(), name)) {
+=======
+std::weak_ptr<IGameObject> TinyMap::GetClassByName(std::string name)
+{
+	for (std::shared_ptr<IGameObject>& object : gameClasses) {
+		if (object->GetCollision().lock()->GetRootTitle() == name) {
+>>>>>>> Stashed changes
 			return object;
 		}
 	}

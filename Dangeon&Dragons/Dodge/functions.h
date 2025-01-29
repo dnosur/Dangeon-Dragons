@@ -154,4 +154,10 @@ bool IsObjectBetween(Ray* ray, IGameObject* object, bool useCollision = true);
 
 std::string generateRandomString(int length);
 
+<<<<<<< Updated upstream
 const char* GetCurrentUser();
+=======
+std::string GenerateRandomString(int length);
+
+std::string GetCurrentUser();
+>>>>>>> Stashed changes

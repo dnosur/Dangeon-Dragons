@@ -28,9 +28,15 @@ public:
 
 	virtual void Update() = 0;
 
+<<<<<<< Updated upstream
 	std::vector<IGameObject*> GetClassesByType(const char* type);
 	std::vector<IGameObject*> GetClassesByName(const char* name);
 	IGameObject* GetClassByName(const char* name);
+=======
+	std::vector<std::weak_ptr<IGameObject>> GetClassesByType(std::string type);
+	std::vector<std::weak_ptr<IGameObject>> GetClassesByName(std::string name);
+	std::weak_ptr<IGameObject> GetClassByName(std::string name);
+>>>>>>> Stashed changes
 
 	Window* GetWindow();
 	TileMap* GetTileMap();

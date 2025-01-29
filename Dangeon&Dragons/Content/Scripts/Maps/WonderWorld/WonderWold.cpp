@@ -130,7 +130,7 @@ void WonderWold::OnTriggerEnter(IGameObject* object, IGameObject* triggeredObjec
 {
 }
 
-Propertie* WonderWold::GetObjectPropertie(const char* propertie_name, IGameObject* object)
+Propertie* WonderWold::GetObjectPropertie(std::string propertie_name, IGameObject* object)
 {
 	return nullptr;
 }
@@ -173,18 +173,40 @@ void WonderWold::SetCamera(Camera* camera)
 
 void WonderWold::Update()
 {
+<<<<<<< Updated upstream
 	IGameObject* observed = camera->GetObservedObj();
 	Coord cameraOffset = camera->GetOffset();
 	bool cameraMove = cameraOffset.X != 0 || cameraOffset.Y != 0;
 
 	for (IGameObject* obj : gameObjects)
+=======
+	std::weak_ptr<IGameObject> observed = camera->GetObservedObj();
+	std::shared_ptr<IGameObject> lockedObserved = observed.lock();
+
+	Coord cameraOffset = camera->GetOffset();
+	bool cameraMove = cameraOffset.X != 0 || cameraOffset.Y != 0;
+
+	std::cout << "1\n";
+
+	for (std::shared_ptr<IGameObject>& obj : gameObjects)
+>>>>>>> Stashed changes
 	{
 		if (cameraMove) {
-			obj->SetPos(obj->GetPos() + cameraOffset);
+			Coord temp = obj->GetPos();
+			obj->SetPos(temp + cameraOffset);
 		}
 
 		animationController.Play(obj->GetTitle());
+<<<<<<< Updated upstream
 		Coord distance = observed->GetDistanceTo(*obj);
+=======
+
+		if (lockedObserved == nullptr) {
+			continue;
+		}
+
+		const Coord& distance = lockedObserved->GetDistanceTo(*obj);
+>>>>>>> Stashed changes
 
 		if (distance.X >= 500 || distance.X <= -838 ||
 			distance.Y >= 584|| distance.Y <= -200) {
@@ -194,10 +216,19 @@ void WonderWold::Update()
 		obj->Update();
 	}
 
+	std::cout << "2\n";
+
 	if (cameraMove) {
+<<<<<<< Updated upstream
 		for (class Pawn* pawn : enemys) {
 			pawn->SetPos(pawn->GetPos() + cameraOffset);
 			if (Skeleton* skeleton = dynamic_cast<Skeleton*>(pawn)) {
+=======
+		for (std::shared_ptr<class Pawn>& pawn : enemys) {
+			Coord temp = pawn->GetPos();
+			pawn->SetPos(temp + cameraOffset);
+			if (std::shared_ptr<Skeleton> skeleton = std::dynamic_pointer_cast<Skeleton>(pawn)) {
+>>>>>>> Stashed changes
 				skeleton->SetPathOffset(cameraOffset);
 			}
 
@@ -212,12 +243,20 @@ void WonderWold::Update()
 
 		for (IGameObject* obj : gameClasses)
 		{
+<<<<<<< Updated upstream
 			obj->SetPos(obj->GetPos() + cameraOffset);
 			obj->GetCollision()->SetPoints({
+=======
+			Coord temp = obj->GetPos();
+			obj->SetPos(temp + cameraOffset);
+			obj->GetCollision().lock()->SetPoints({
+>>>>>>> Stashed changes
 				obj->GetPos()
 			});
 		}
 	}
+
+	std::cout << "3\n";
 
 	UpdatePawns();
 }
@@ -229,6 +268,8 @@ void WonderWold::UpdatePawns()
 	{
 		obj->Update();
 	}
+
+	std::cout << "4\n";
 
 	player->Update();
 }

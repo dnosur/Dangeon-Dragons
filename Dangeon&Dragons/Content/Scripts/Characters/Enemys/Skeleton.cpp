@@ -13,10 +13,17 @@
 #include "../../Utilities/RaycastUtilities.h"
 
 Skeleton::Skeleton(
+<<<<<<< Updated upstream
 	const char* title, Window& window, ICollision* collision, 
 	Material* material, Directions moveDirection, Coord pos, Size size, 
 	float speed, float maxSpeed, float minSpeed, float health, float maxHealth, 
 	bool isPlayable, bool isKinematic, bool isHidden, std::vector<IAnimation*> animations
+=======
+	std::string title, Window& window, std::shared_ptr<ICollision> collision,
+	std::shared_ptr<Material> material, Directions moveDirection, Coord pos, Size size,
+	float speed, float maxSpeed, float minSpeed, float health, float maxHealth,
+	bool isPlayable, bool isKinematic, bool isHidden, std::vector<std::shared_ptr<IAnimation>> animations
+>>>>>>> Stashed changes
 ) : Pawn(
 	title, window, collision,
 	material, moveDirection, pos, size,
@@ -32,9 +39,10 @@ Coord Skeleton::GetStartPos()
 	return startPos;
 }
 
-Coord Skeleton::GetDistanceTo(IGameObject& gameObject)
+const Coord& Skeleton::GetDistanceTo(IGameObject& gameObject)
 {
-	return gameObject.GetPos() - pos;
+	Coord temp = gameObject.GetPos();
+	return temp - pos;
 }
 
 float Skeleton::GetFloatDistanceTo(IGameObject& gameObject)
@@ -93,7 +101,7 @@ void Skeleton::Update()
 	AIMovement();
 	Draw();
 	//animations[GetAnimationName()]->Play();
-}
+};
 
 void Skeleton::LoadAnimations()
 {
@@ -111,7 +119,7 @@ void Skeleton::LoadAnimations()
 
 	for (VertexAnimation*& animation : playerImages->CreateVertexAnimations(
 		std::make_pair(
-			std::vector<const char*>({
+			std::vector<std::string>({
 				"walk_top",
 				"walk_right",
 				"walk_down",
@@ -160,7 +168,7 @@ void Skeleton::LoadAnimations()
 	animations["die"]->SetStopOnEnd(true);
 }
 
-const char* Skeleton::GetAnimationName()
+std::string_view Skeleton::GetAnimationName()
 {
 	if (action == Actions::Dead) {
 		return "die";
@@ -223,7 +231,7 @@ const char* Skeleton::GetAnimationName()
 	return "idle_down";
 }
 
-const char* Skeleton::GetAnimationMovementName(Coord direction)
+std::string_view Skeleton::GetAnimationMovementName(Coord direction)
 {
 	if (direction == Coord(1, 0)) {
 		return "walk_right";
@@ -657,7 +665,7 @@ std::vector<Movement*> Skeleton::GetNeighbors(Coord position)
 		if (IsWalkable(neighbor)) { // Проверяем, можно ли пройти
 			//std::make_pair(GetAnimationMovementName(dir), neighbor)
 
-			const char* title = GetAnimationMovementName(dir);
+			std::string_view title = GetAnimationMovementName(dir);
 			neighbors.push_back(
 				new Movement(
 					title, 

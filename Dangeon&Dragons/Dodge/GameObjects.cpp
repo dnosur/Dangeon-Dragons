@@ -31,11 +31,27 @@ void GameObjects::Add(std::vector<IGameObject*>* gameObjects)
 	}
 }
 
+<<<<<<< Updated upstream
 IGameObject* GameObjects::GetByTitle(const char* title)
+=======
+void GameObjects::Add(std::vector<std::weak_ptr<IGameObject>>* gameObjects)
+{
+	for (std::weak_ptr<IGameObject>& gameObject : *gameObjects)
+	{
+		std::shared_ptr<IGameObject> gameObjectPtr = gameObject.lock();
+		if (gameObject.expired() || gameObjectPtr == nullptr) {
+			continue;
+		}
+		Add(gameObjectPtr);
+	}
+}
+
+std::weak_ptr<IGameObject> GameObjects::GetByTitle(std::string title)
+>>>>>>> Stashed changes
 {
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
-		if (!strcmp(gameObjects[i]->GetTitle(), title))
+		if (gameObjects[i]->GetTitle() == title)
 		{
 			return gameObjects[i];
 		}
@@ -43,11 +59,19 @@ IGameObject* GameObjects::GetByTitle(const char* title)
 	return nullptr;
 }
 
+<<<<<<< Updated upstream
 IGameObject* GameObjects::GetByTitle(const char* title, Layer layer)
 {
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
 		if (!strcmp(gameObjects[i]->GetTitle(), title) && 
+=======
+std::weak_ptr<IGameObject> GameObjects::GetByTitle(std::string title, Layer layer)
+{
+	for (int i = 0; i < gameObjects.size(); i++)
+	{
+		if (gameObjects[i]->GetTitle() == title &&
+>>>>>>> Stashed changes
 			gameObjects[i]->GetLayer() == layer
 		)
 		{

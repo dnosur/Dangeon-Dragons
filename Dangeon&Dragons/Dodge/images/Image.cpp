@@ -2,24 +2,18 @@
 
 Image::Image()
 {
-	path = title = nullptr;
 	image = -1;
 	shader = new Shader();
 }
 
-Image::Image(const char* title, const char* path, GLint image, Size size, Shader* shader)
+Image::Image(
+	std::string title, 
+	std::string path, 
+	GLint image, 
+	Size size, 
+	Shader* shader
+) : title(title), path(path), image(image), shader(shader), size(size)
 {
-	this->title = new char[strlen(title) + 1];
-	strcpy_s(this->title, strlen(title) + 1, title);
-
-	this->path = new char[strlen(path) + 1];
-	strcpy_s(this->path, strlen(path) + 1, path);
-
-	this->image = image;
-
-	this->size = size;
-
-	this->shader = shader;
 }
 
 Image::~Image()
@@ -28,8 +22,8 @@ Image::~Image()
 
 bool Image::operator==(const Image& other) const
 {
-	return !strcmp(other.title, this->title) && 
-		!strcmp(other.path, this->path) && 
+	return other.title == this->title && 
+		other.path == this->path &&
 		other.image == image && 
 		other.shader == shader;
 }
@@ -45,12 +39,9 @@ Image& Image::operator=(const Image& other)
         return *this;
     }
 
-    this->title = new char[strlen(other.title) + 1];
-    strcpy_s(this->title, strlen(other.title) + 1, other.title);
-
-
-	this->path = new char[strlen(other.path) + 1];
-	strcpy_s(this->path, strlen(other.path) + 1, other.path);
+	this->title = other.title;
+	this->path = other.path;
+	this->size = other.size;
 
 	this->image = other.image;
 	this->shader = other.shader;

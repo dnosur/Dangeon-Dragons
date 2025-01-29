@@ -15,7 +15,7 @@ class Player :
     std::mutex* raycastMutex;
 
     void LoadAnimations() override;
-    const char* GetAnimationName() override;
+    std::string_view GetAnimationName() override;
 
     void LoadAudio() override;
 
@@ -31,10 +31,17 @@ class Player :
     bool CheckForCollision(Coord pos, Size size);
 
     void AIMovement() override;
+
+    void MathSide(double& sideSize, bool isWidth);
 public:
     Player(
+<<<<<<< Updated upstream
         const char* title, Window& window,
         ICollision* collision, Material* material, Directions moveDirection,
+=======
+        std::string title, Window& window,
+        std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
+>>>>>>> Stashed changes
         Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
         std::vector<IAnimation*> animations = {}
@@ -42,7 +49,9 @@ public:
 
     Coord GetStartPos();
 
-    Coord GetDistanceTo(IGameObject& gameObject) override;
+    void SetSideSize(Sides sides);
+
+    const Coord& GetDistanceTo(IGameObject& gameObject) override;
     float GetFloatDistanceTo(IGameObject& gameObject) override;
 
     bool IsNear(IGameObject& gameObject) override;

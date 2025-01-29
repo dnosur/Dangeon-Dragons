@@ -1,7 +1,15 @@
 #include "BoxCollision.h"
 #include "../functions.h"
 
+<<<<<<< Updated upstream
 BoxCollision::BoxCollision(Coord point, Size size, int root_id, char* root_title, char* type)
+=======
+BoxCollision::BoxCollision()
+{
+}
+
+BoxCollision::BoxCollision(Coord point, Size size, int root_id, std::string root_title, std::string type)
+>>>>>>> Stashed changes
 {
 	this->point = point;
 	this->size = size;
@@ -12,8 +20,13 @@ BoxCollision::BoxCollision(Coord point, Size size, int root_id, char* root_title
 
     SetLayer(Layer::Collision);
 
+<<<<<<< Updated upstream
     copyStr(root_title, this->root_title);
     copyStr(type, this->type);
+=======
+    this->root_title = root_title;
+    this->type = type;
+>>>>>>> Stashed changes
 }
 
 BoxCollision::~BoxCollision()
@@ -25,12 +38,12 @@ int BoxCollision::GetRootId()
 	return root_id;
 }
 
-char* BoxCollision::GetRootTitle()
+std::string_view BoxCollision::GetRootTitle()
 {
 	return root_title;
 }
 
-char* BoxCollision::GetType()
+std::string_view BoxCollision::GetType()
 {
 	return type;
 }
@@ -198,8 +211,8 @@ bool BoxCollision::IsExist(IGameObject* gameObject)
 
 bool BoxCollision::operator==(const BoxCollision& other) const
 {
-	return !strcmp(root_title, other.root_title) &&
-		!strcmp(type, other.type) &&
+	return root_title == other.root_title &&
+		type == other.type &&
 		point == other.point &&
 		root_id == other.root_id;
 }
@@ -218,11 +231,8 @@ BoxCollision& BoxCollision::operator=(const BoxCollision& other)
 
 		root_id = other.root_id;
 
-        free(root_title);
-        free(type);
-
-        root_title = strdup(other.root_title);
-        type = strdup(other.type);
+        root_title = other.root_title;
+        type = other.type;
 	}
 	return *this;
 }

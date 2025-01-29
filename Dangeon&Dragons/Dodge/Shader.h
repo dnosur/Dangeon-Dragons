@@ -26,7 +26,7 @@ class Shader
 	void CheckCompileErrors(unsigned int shader, std::string type);
 public:
 	Shader();
-	Shader(const char* title, const char* vertexPath, const char* fragmentPath);
+	Shader(std::string title, std::string vertexPath, std::string fragmentPath);
 	~Shader();
 
 	unsigned int GetID();
@@ -41,7 +41,7 @@ public:
 
 	void SetBool(const char* name, bool value) const;
 	void SetInt(const char* name, int value) const;
-    void SetFloat(const char* name, float value) const;
+	void SetFloat(const char* name, float value) const;
 	void SetVec2(const char* name, float x, float y) const;
 	void SetVec3(const char* name, float x, float y, float z) const;
 	void SetVec4(const char* name, float x, float y, float z, float w) const;

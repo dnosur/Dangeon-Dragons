@@ -22,11 +22,11 @@ int CollisionsController::GetSize()
 	return collisions.size();
 }
 
-ICollision* CollisionsController::GetCollisionByTitle(char* root_title)
+ICollision* CollisionsController::GetCollisionByTitle(std::string root_title)
 {
 	for (ICollision*& collision : collisions)
 	{
-		if (!strcmp(collision->GetRootTitle(), root_title))
+		if (collision->GetRootTitle() == root_title)
 		{
 			return collision;
 		}
@@ -34,7 +34,7 @@ ICollision* CollisionsController::GetCollisionByTitle(char* root_title)
 	return nullptr;
 }
 
-std::vector<ICollision*> CollisionsController::GetCollisionsByTitle(char* root_title)
+std::vector<ICollision*> CollisionsController::GetCollisionsByTitle(std::string root_title)
 {
 	if (!CountCollisionsWithTitle(root_title)) {
 		return std::vector<ICollision*>();
@@ -43,7 +43,7 @@ std::vector<ICollision*> CollisionsController::GetCollisionsByTitle(char* root_t
 	std::vector<ICollision*> temp;
 	for (ICollision*& collision : collisions)
 	{
-		if (!strcmp(collision->GetRootTitle(), root_title))
+		if (collision->GetRootTitle() == root_title)
 		{
 			temp.push_back(collision);
 		}
@@ -51,7 +51,7 @@ std::vector<ICollision*> CollisionsController::GetCollisionsByTitle(char* root_t
 	return temp;
 }
 
-std::vector<ICollision*> CollisionsController::GetCollisionByType(char* type)
+std::vector<ICollision*> CollisionsController::GetCollisionByType(std::string type)
 {
 	if (!CountCollisionsWithType(type)) {
 		return std::vector<ICollision*>();
@@ -60,7 +60,7 @@ std::vector<ICollision*> CollisionsController::GetCollisionByType(char* type)
 	std::vector<ICollision*> temp;
 	for (ICollision*& collision : collisions)
 	{
-		if (!strcmp(collision->GetType(), type))
+		if (collision->GetType() == type)
 		{
 			temp.push_back(collision);
 		}
@@ -68,12 +68,12 @@ std::vector<ICollision*> CollisionsController::GetCollisionByType(char* type)
 	return temp;
 }
 
-int CollisionsController::CountCollisionsWithTitle(char* root_title)
+int CollisionsController::CountCollisionsWithTitle(std::string root_title)
 {
 	int count = 0;
 	for (ICollision*& collision : collisions)
 	{
-		if (!strcmp(collision->GetRootTitle(), root_title))
+		if (collision->GetRootTitle() == root_title)
 		{
 			count++;
 		}
@@ -81,12 +81,12 @@ int CollisionsController::CountCollisionsWithTitle(char* root_title)
 	return count;
 }
 
-int CollisionsController::CountCollisionsWithType(char* type)
+int CollisionsController::CountCollisionsWithType(std::string type)
 {
 	int count = 0;
 	for (ICollision*& collision : collisions)
 	{
-		if (!strcmp(collision->GetType(), type))
+		if (collision->GetType() == type)
 		{
 			count++;
 		}

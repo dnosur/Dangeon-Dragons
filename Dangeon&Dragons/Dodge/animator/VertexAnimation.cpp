@@ -1,9 +1,19 @@
 #include "VertexAnimation.h"
 #include "../Material.h"
 
+<<<<<<< Updated upstream
 VertexAnimation::VertexAnimation(const char* title, int frameRate, bool repeat, bool stopOnEnd, IGameObject* object, std::vector<std::pair<int, std::vector<Coord>>> frames)
 {
 	copyStr(title, this->title);
+=======
+VertexAnimation::VertexAnimation(
+	std::string title, int frameRate, bool repeat, bool stopOnEnd, 
+	IGameObject* object,
+	std::vector<std::pair<int, std::vector<Coord>>> frames
+)
+{
+	this->title = title;
+>>>>>>> Stashed changes
 
 	this->frameRate = frameRate;
 	this->repeat = repeat;
@@ -129,7 +139,7 @@ void VertexAnimation::Reverse()
 	reverse = !reverse;
 }
 
-char* VertexAnimation::GetFolder()
+std::string_view VertexAnimation::GetFolder()
 {
 	if (object == nullptr) {
 		return nullptr;
@@ -138,7 +148,7 @@ char* VertexAnimation::GetFolder()
 	return object->GetMaterial()->GetDiffuseMap()->path;
 }
 
-void VertexAnimation::LoadFromFolder(char* folder)
+void VertexAnimation::LoadFromFolder(std::string folder)
 {
 }
 
@@ -172,12 +182,17 @@ void VertexAnimation::SetStopOnEnd(bool stopOnEnd)
 	this->stopOnEnd = stopOnEnd;
 }
 
-void VertexAnimation::SetTitle(char* title)
+void VertexAnimation::SetTitle(std::string title)
 {
 	this->title = title;
 }
 
-char* VertexAnimation::GetTitle()
+std::string_view VertexAnimation::GetTitle()
+{
+	return title;
+}
+
+std::string VertexAnimation::GetStringTitle()
 {
 	return title;
 }

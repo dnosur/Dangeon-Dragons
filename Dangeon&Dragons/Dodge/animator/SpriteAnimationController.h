@@ -5,8 +5,8 @@ class SpriteAnimationController
 {
 	std::vector<SpriteAnimation> animations;
 
-	SpriteAnimation* GetByTitle(const char* title);
-	SpriteAnimation* GetByTitle(const char* title, int& index);
+	SpriteAnimation* GetByTitle(std::string_view title);
+	SpriteAnimation* GetByTitle(std::string_view title, int& index);
 
 	SpriteAnimation* GetByIndex(int index);
 
@@ -23,10 +23,10 @@ public:
 	void PlayOnEnd(int index);
 	void PlayOnEnd(int index, Coord pos, Size size);
 
-	void Play(const char* title);
-	void Play(const char* title, Coord pos, Size size);
-	void PlayOnEnd(const char* title);
-	void PlayOnEnd(const char* title, Coord pos, Size size);
+	void Play(std::string_view title);
+	void Play(std::string_view title, Coord pos, Size size);
+	void PlayOnEnd(std::string_view title);
+	void PlayOnEnd(std::string_view title, Coord pos, Size size);
 
 	void PlayAll();
 
@@ -37,6 +37,6 @@ public:
 	bool IsAnimationEnd();
 
 	SpriteAnimation* operator[](int index);
-	SpriteAnimation* operator[](const char* title);
+	SpriteAnimation* operator[](std::string_view title);
 };
 

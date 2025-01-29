@@ -15,7 +15,7 @@ public:
 	static void SetPointer(GLFWwindow* window, WindowPointer<T> pointer);
 
 	template <typename T>
-	static WindowPointer<T>* GetValue(GLFWwindow* window, const char* title);
+	static WindowPointer<T>* GetValue(GLFWwindow* window, std::string_view title);
 };
 
 template<typename T>
@@ -36,7 +36,7 @@ inline void WindowPointerController::SetPointer(GLFWwindow* window, WindowPointe
 	}
 
 	for (WindowPointer<T> &item : *pointers) {
-		if (!strcmp(item.GetTitle(), pointer.GetTitle())) {
+		if (item.GetTitle() == pointer.GetTitle()) {
 			item = pointer;
 			WindowPointerController::Save(window, pointers);
 			return;
@@ -47,7 +47,7 @@ inline void WindowPointerController::SetPointer(GLFWwindow* window, WindowPointe
 }
 
 template<typename T>
-inline WindowPointer<T>* WindowPointerController::GetValue(GLFWwindow* window, const char* title)
+inline WindowPointer<T>* WindowPointerController::GetValue(GLFWwindow* window, std::string_view title)
 {
 	std::vector<WindowPointer<T>>* pointers = static_cast<std::vector<WindowPointer<T>>*>(glfwGetWindowUserPointer(window));
 	if (!pointers->capacity() || pointers->empty() || pointers == nullptr) {
@@ -55,7 +55,7 @@ inline WindowPointer<T>* WindowPointerController::GetValue(GLFWwindow* window, c
 	}
 
 	for (WindowPointer<T>& item : *pointers) {
-		if (!strcmp(item.GetTitle(), title)) {
+		if (item.GetTitle() == title) {
 			return &item;
 		}
 	}

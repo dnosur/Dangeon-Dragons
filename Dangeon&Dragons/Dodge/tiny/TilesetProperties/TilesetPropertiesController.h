@@ -18,7 +18,7 @@ public:
 
 	int GetSize();
 
-	Propertie* operator[](const char* name);
+	Propertie* operator[](std::string name);
 	Propertie* operator[](int index);
 
 	static void readTilesetProperties(tinyxml2::XMLElement* tileset, std::vector<Propertie*>& tilesetProperties);

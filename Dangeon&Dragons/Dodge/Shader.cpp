@@ -93,43 +93,44 @@ Shader::Shader()
     id = 0;
 }
 
-Shader::Shader(const char* title, const char* vertexPath, const char* fragmentPath)
+Shader::Shader(std::string title, std::string vertexPath, std::string fragmentPath)
 {
-    this->title = new char[strlen(title) + 1];
-    strcpy_s(this->title, strlen(title) + 1, title);
+    this->title = new char[strlen(title.c_str()) + 1];
+    strcpy_s(this->title, strlen(title.c_str()) + 1, title.c_str());
 
-    this->vertexPath = new char[strlen(vertexPath) + 1];
-    strcpy_s(this->vertexPath, strlen(vertexPath) + 1, vertexPath);
+    this->vertexPath = new char[strlen(vertexPath.c_str()) + 1];
+    strcpy_s(this->vertexPath, strlen(vertexPath.c_str()) + 1, vertexPath.c_str());
 
-    this->fragmentPath = new char[strlen(fragmentPath) + 1];
-    strcpy_s(this->fragmentPath, strlen(fragmentPath) + 1, fragmentPath);
+    this->fragmentPath = new char[strlen(fragmentPath.c_str()) + 1];
+    strcpy_s(this->fragmentPath, strlen(fragmentPath.c_str()) + 1, fragmentPath.c_str());
 
-	Load();
+
+    Load();
 }
 
 Shader::~Shader()
 {
     if (title != NULL)
-	{
-		delete[] title;
-		title = NULL;
-	}
-	if (vertexPath != NULL)
-	{
-		delete[] vertexPath;
-		vertexPath = NULL;
-	}
-	if (fragmentPath != NULL)
-	{
-		delete[] fragmentPath;
-		fragmentPath = NULL;
-	}
+    {
+        delete[] title;
+        title = NULL;
+    }
+    if (vertexPath != NULL)
+    {
+        delete[] vertexPath;
+        vertexPath = NULL;
+    }
+    if (fragmentPath != NULL)
+    {
+        delete[] fragmentPath;
+        fragmentPath = NULL;
+    }
 
     if (id != 0 && this != NULL)
-	{
-		glDeleteProgram(id);
-		id = 0;
-	}
+    {
+        glDeleteProgram(id);
+        id = 0;
+    }
 }
 
 unsigned int Shader::GetID()
@@ -155,8 +156,8 @@ char* Shader::GetFragmentPath()
 void Shader::Use()
 {
     if (this == nullptr || Undefined()) {
-		return glUseProgram(0);
-	}
+        return glUseProgram(0);
+    }
     glUseProgram(id);
 }
 
@@ -170,37 +171,37 @@ bool Shader::Undefined()
         return true;
     }
 
-	return false;
+    return false;
 }
 
 void Shader::SetBool(const char* name, bool value) const
 {
-	glUniform1i(glGetUniformLocation(id, name), (int)value);
+    glUniform1i(glGetUniformLocation(id, name), (int)value);
 }
 
 void Shader::SetInt(const char* name, int value) const
 {
-	glUniform1i(glGetUniformLocation(id, name), value);
+    glUniform1i(glGetUniformLocation(id, name), value);
 }
 
 void Shader::SetFloat(const char* name, float value) const
 {
-	glUniform1f(glGetUniformLocation(id, name), value);
+    glUniform1f(glGetUniformLocation(id, name), value);
 }
 
 void Shader::SetVec2(const char* name, float x, float y) const
 {
-	glUniform2f(glGetUniformLocation(id, name), x, y);
+    glUniform2f(glGetUniformLocation(id, name), x, y);
 }
 
 void Shader::SetVec3(const char* name, float x, float y, float z) const
 {
-	glUniform3f(glGetUniformLocation(id, name), x, y, z);
+    glUniform3f(glGetUniformLocation(id, name), x, y, z);
 }
 
 void Shader::SetVec4(const char* name, float x, float y, float z, float w) const
 {
-	glUniform4f(glGetUniformLocation(id, name), x, y, z, w);
+    glUniform4f(glGetUniformLocation(id, name), x, y, z, w);
 }
 
 void Shader::SetMat4(const char* name, Mat4 mat)
@@ -210,12 +211,12 @@ void Shader::SetMat4(const char* name, Mat4 mat)
 
 void Shader::SetColor(const char* name, Color color)
 {
-	SetVec4(name, color.r, color.g, color.b, color.a);
+    SetVec4(name, color.r, color.g, color.b, color.a);
 }
 
 bool Shader::operator==(const Shader& other) const
 {
-    return !strcmp(title, other.title) && !strcmp(vertexPath, other.vertexPath) && 
+    return !strcmp(title, other.title) && !strcmp(vertexPath, other.vertexPath) &&
         !strcmp(fragmentPath, other.fragmentPath) && id == other.id;
 }
 

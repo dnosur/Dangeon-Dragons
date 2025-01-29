@@ -53,8 +53,13 @@ bool Pawn::MouseInRect(Mouse& mouse)
 }
 
 Pawn::Pawn(
+<<<<<<< Updated upstream
 	const char* title, Window& window,
 	ICollision* collision, Material* material, Directions moveDirection,
+=======
+	std::string title, Window& window,
+	std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
+>>>>>>> Stashed changes
 	Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
 	float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
 	std::vector<IAnimation*> animations
@@ -108,9 +113,13 @@ void Pawn::RotateToDirection(Directions direction)
 {
 }
 
-void Pawn::SetTitle(const char* title)
+void Pawn::SetTitle(std::string title)
 {
+<<<<<<< Updated upstream
 	copyStr(title, this->title);
+=======
+	this->title = title;
+>>>>>>> Stashed changes
 }
 
 void Pawn::SetSize(Size size)
@@ -273,12 +282,12 @@ Window* Pawn::GetWindow()
 	return window;
 }
 
-Coord Pawn::GetPos()
+const Coord& Pawn::GetPos()
 {
 	return pos;
 }
 
-Coord Pawn::GetOpenGlPos()
+const Coord& Pawn::GetOpenGlPos()
 {
 	return Coord(window->PixelToGLX(pos.X), window->PixelToGLY(pos.Y));
 }
@@ -358,7 +367,7 @@ float Pawn::GetMinSpeed()
 	return minSpeed;
 }
 
-const char* Pawn::GetTitle()
+std::string_view Pawn::GetTitle()
 {
 	return title;
 }

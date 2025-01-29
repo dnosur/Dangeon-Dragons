@@ -6,11 +6,15 @@
 class TinyClass
 {
 	int id;
-	char* name;
+	std::string name;
 
 	std::vector<ICollision*> objects;
 public:
+<<<<<<< Updated upstream
 	TinyClass(int id, const char* name, std::vector<ICollision*> objects);
+=======
+	TinyClass(int id, std::string name, std::vector<std::shared_ptr<ICollision>> objects);
+>>>>>>> Stashed changes
 	TinyClass(tinyxml2::XMLElement* element);
 	~TinyClass();
 
@@ -20,7 +24,7 @@ public:
 	std::vector<ICollision*>::iterator end();
 
 	int GetId();
-	char* GetName();
+	std::string GetName();
 	int GetSize();
 
 	ICollision* operator[](int index);

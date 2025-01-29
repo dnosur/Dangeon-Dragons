@@ -11,8 +11,8 @@ class Audio
 	ALuint source;
 	ALuint buffer;
 
-	char* title;
-	char* path;
+	std::string title;
+	std::string path;
 
 	float baseVolume;
 	float volume;
@@ -27,7 +27,7 @@ class Audio
 public:
 	Audio();
 	Audio(
-		const char* title, const char* path, 
+		std::string title, std::string path, 
 		float radius = 10.0f, float volume = 1.0f, 
 		bool loop = false
 	);
@@ -45,8 +45,8 @@ public:
 	void SetLoop(bool loop);
 	bool GetLoop();
 
-	char* GetTitle();
-	char* GetPath();
+	std::string_view GetTitle();
+	std::string_view GetPath();
 
 	AudioStates GetState();
 

@@ -21,13 +21,17 @@ public:
 	//Helpers
 	// Проверка пересечения луча с AABB
 	static bool CheckRayAABBIntersection(
-		const Coord& rayOrigin, const Coord& rayDir, float rayWidth,
+		const Coord& rayOrconst , const Coord& rayDir, float rayWidth,
 		double objLeft, double objRight, double objBottom, double objTop
 	);
 
 	// Проверка пересечения луча с многоугольником
 	static bool CheckRayPolygonIntersection(
+<<<<<<< Updated upstream
 		const Coord& rayOrigin, const Coord& rayDir, 
+=======
+		const const Coord& rayOrigin, const Coord& rayDir,
+>>>>>>> Stashed changes
 		const std::vector<Coord>& polygon
 	);
 };

@@ -33,7 +33,7 @@ class Rect :
 
     Camera* camera;
 
-    char* title;
+    std::string title;
 
     Layer layer;
 
@@ -47,9 +47,9 @@ class Rect :
     void Draw();
 public:
     Rect();
-    Rect(const char* title, Window& window, Coord pos, Size size, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
-    Rect(const char* title, Window& window, Coord vertex1, Coord vertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
-    Rect(const char* title, Window& window, Coord vertex1, Coord vertex2, Coord textureVertex1, Coord textureVertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
+    Rect(std::string title, Window& window, Coord pos, Size size, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
+    Rect(std::string title, Window& window, Coord vertex1, Coord vertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
+    Rect(std::string title, Window& window, Coord vertex1, Coord vertex2, Coord textureVertex1, Coord textureVertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
 
     static std::vector<float> GetVerticesByDirection(
         Rect& rect, 
@@ -61,8 +61,8 @@ public:
 
     void Update();
 
-    Coord GetPos();
-    Coord GetOpenGlPos();
+    const Coord& GetPos();
+    const Coord& GetOpenGlPos();
 
     Size GetSize();
 
@@ -90,8 +90,8 @@ public:
     void SetCollision(ICollision* collision);
     ICollision* GetCollision();
 
-    const char* GetTitle();
-    void SetTitle(const char* title);
+    std::string_view GetTitle();
+    void SetTitle(std::string title);
 
     void SetMoveDirection(Directions moveDirection);
     Directions GetMoveDirection();
@@ -104,7 +104,7 @@ public:
     bool IsKinematic();
     void SetKinematic(bool kinematic);
 
-    Coord GetDistanceTo(IGameObject& gameObject);
+    const Coord& GetDistanceTo(IGameObject& gameObject);
 
     void HookMouseHover(MouseHoverHandler handler);
     void HookMouseOver(MouseHoverHandler handler);

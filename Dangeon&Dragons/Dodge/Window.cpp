@@ -2,7 +2,7 @@
 
 void Window::MakeWindow()
 {
-    window = glfwCreateWindow(size.width, size.height, title, monitor, share);
+    window = glfwCreateWindow(size.width, size.height, title.c_str(), monitor, share);
     if (!window)
     {
         return CloseWindow();
@@ -43,10 +43,14 @@ Window::Window()
     MakeWindow();
 } 
 
-Window::Window(Size size, const char* title, Color backgroundColor, GLFWmonitor* monitor, GLFWwindow* share)
+Window::Window(Size size, std::string title, Color backgroundColor, GLFWmonitor* monitor, GLFWwindow* share)
 {
     this->size = size;
+<<<<<<< Updated upstream
     copyStr(title, this->title);
+=======
+    this->title = title;
+>>>>>>> Stashed changes
 
     this->share = share;
     this->monitor = monitor;
@@ -81,7 +85,7 @@ Size Window::GetSize()
     return size;
 }
 
-char* Window::GetTitle()
+std::string Window::GetTitle()
 {
     return title;
 }

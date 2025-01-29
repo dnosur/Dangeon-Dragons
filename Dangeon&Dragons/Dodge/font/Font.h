@@ -14,8 +14,8 @@ struct Coord;
 
 class Font
 {
-	char* title;
-	char* path;
+	std::string title;
+	std::string path;
 
 	Size size;
 
@@ -25,7 +25,16 @@ class Font
 
 	bool LoadFont();
 public:
+<<<<<<< Updated upstream
 	Font(const char* title, const char* path, Size size = Size(14, 14));
+=======
+	Font(
+		std::string title, 
+		std::string path, 
+		Size windowSize = Size(1280, 720),
+		Size size = Size(14, 14)
+	);
+>>>>>>> Stashed changes
 	~Font();
 
 	void RenderText(std::string text, Coord pos, float scale, Color color = Color(0, 0, 0));

@@ -61,14 +61,19 @@ public:
 	//frame_setting.first - frame name, frame_setting.second - duration
 	VertexAnimation* CreateVertexAnimation(
 		int vertex_row_index,
-		std::pair<const char*, int> frame_setting
+		std::pair<std::string, int> frame_setting
 	);
 
 	std::vector<VertexAnimation*> CreateVertexAnimations();
 
 	//frames_settings.first - frames names, frames_settings.second - duration
+<<<<<<< Updated upstream
 	std::vector<VertexAnimation*> CreateVertexAnimations(
 		std::pair<std::vector<const char*>, std::vector<int>> frames_settings
+=======
+	std::vector<std::unique_ptr<VertexAnimation>> CreateVertexAnimations(
+		std::pair<std::vector<std::string>, std::vector<int>> frames_settings
+>>>>>>> Stashed changes
 	);
 
 	std::vector<

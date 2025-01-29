@@ -275,7 +275,7 @@ std::string generateRandomString(int length)
 	return randomString;
 }
 
-const char* GetCurrentUser()
+std::string GetCurrentUser()
 {
 	wchar_t username[UNLEN + 1];
 	DWORD username_len = UNLEN + 1;

@@ -1,6 +1,6 @@
 #include "Save.h"
 
-void Save::SaveData(const char* path, std::vector<std::pair<std::string, std::string>> data, bool rewrite) {
+void Save::SaveData(std::string path, std::vector<std::pair<std::string, std::string>> data, bool rewrite) {
     std::ofstream file;
     if (rewrite) {
         file.open(path, std::ios::out);
@@ -20,7 +20,7 @@ void Save::SaveData(const char* path, std::vector<std::pair<std::string, std::st
     }
 }
 
-std::vector<std::pair<std::string, std::string>> Save::LoadData(const char* path) {
+std::vector<std::pair<std::string, std::string>> Save::LoadData(std::string path) {
     std::vector<std::pair<std::string, std::string>> data;
     std::ifstream file(path);
 

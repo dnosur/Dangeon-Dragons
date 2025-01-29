@@ -46,12 +46,18 @@ void Camera::DropOffset()
     position = observed->GetPos();
 }
 
+<<<<<<< Updated upstream
 Camera::Camera(const char* title, Size cameraSize, Size mapSize, Window* window)
     : size(cameraSize), mapSize(mapSize), window(window), observed(nullptr){
     copyStr(
         title,
         this->title
     );
+=======
+Camera::Camera(std::string title, Size cameraSize, Size mapSize, Window* window)
+    : size(cameraSize), mapSize(mapSize), window(window), observed(nullptr), title(title) 
+{
+>>>>>>> Stashed changes
 }
 
 void Camera::Update()

@@ -1,12 +1,13 @@
 #pragma once
 #include "Propertie.h"
+#include <string>
 
 class BoolPropertie :
     public Propertie
 {
 	bool boolValue;
 public:
-	BoolPropertie(char* title, char* value);
+	BoolPropertie(std::string title, std::string value);
 	bool getBoolValue();
 };
 

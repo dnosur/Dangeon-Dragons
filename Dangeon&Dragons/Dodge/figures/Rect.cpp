@@ -66,13 +66,17 @@ Rect::Rect()
 }
 
 Rect::Rect(
-    const char* title,
+    std::string title,
     Window& window, Coord
     pos, Size size, Color color, 
     Directions moveDirection
 )
 {
+<<<<<<< Updated upstream
     copyStr(title, this->title);
+=======
+    title = this->title;
+>>>>>>> Stashed changes
 
     this->window = &window;
     this->size = size;
@@ -104,13 +108,17 @@ Rect::Rect(
 }
 
 Rect::Rect(
-    const char* title, 
+    std::string title, 
     Window& window, 
     Coord vertex1, Coord vertex2, 
     Color color, Directions moveDirection
 )
 {
+<<<<<<< Updated upstream
     copyStr(title, this->title);
+=======
+    title = this->title;
+>>>>>>> Stashed changes
 
     this->window = &window;
     this->color = baseColor = color;
@@ -139,14 +147,18 @@ Rect::Rect(
 }
 
 Rect::Rect(
-    const char* title, 
+    std::string title, 
     Window& window, 
     Coord vertex1, Coord vertex2, 
     Coord textureVertex1, Coord textureVertex2, 
     Color color, Directions moveDirection
 )
 {
+<<<<<<< Updated upstream
     copyStr(title, this->title);
+=======
+    title = this->title;
+>>>>>>> Stashed changes
 
     this->window = &window;
     this->color = baseColor = color;
@@ -361,12 +373,12 @@ void Rect::RotateToDirection(Directions direction)
     moveDirection = direction;
 }
 
-Coord Rect::GetPos()
+const Coord& Rect::GetPos()
 {
     return pos;
 }
 
-Coord Rect::GetOpenGlPos()
+const Coord& Rect::GetOpenGlPos()
 {
     return Coord(window->PixelToGLX(pos.X), window->PixelToGLY(pos.Y));
 }
@@ -475,14 +487,18 @@ ICollision* Rect::GetCollision()
     return collision;
 }
 
-const char* Rect::GetTitle()
+std::string_view Rect::GetTitle()
 {
     return title;
 }
 
-void Rect::SetTitle(const char* title)
+void Rect::SetTitle(std::string title)
 {
+<<<<<<< Updated upstream
     copyStr(title, this->title);
+=======
+    this->title = title;
+>>>>>>> Stashed changes
 }
 
 void Rect::SetMoveDirection(Directions moveDirection)
@@ -520,9 +536,10 @@ void Rect::SetKinematic(bool kinematic)
     this->kinematic = kinematic;
 }
 
-Coord Rect::GetDistanceTo(IGameObject& gameObject)
+const Coord& Rect::GetDistanceTo(IGameObject& gameObject)
 {
-    return gameObject.GetPos() - pos;
+    Coord temp = gameObject.GetPos();
+    return temp - pos;
 }
 
 void Rect::HookMouseHover(MouseHoverHandler handler)
@@ -550,7 +567,7 @@ bool Rect::operator==(const Rect& other) const
     return window == other.window && pos == other.pos && 
         vertex1 == other.vertex1 && vertex2 == other.vertex2 && size == other.size &&
         color == other.color && baseColor == other.baseColor && material == other.material &&
-        !strcmp(title, other.title);
+        title == other.title;
 }
 
 bool Rect::operator!=(const Rect& other) const
@@ -581,7 +598,11 @@ Rect& Rect::operator=(const Rect& other)
 
     this->material = other.material;
 
+<<<<<<< Updated upstream
     copyStr(other.title, this->title);
+=======
+    this->title = other.title;
+>>>>>>> Stashed changes
 
     return *this;
 }

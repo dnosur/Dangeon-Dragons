@@ -19,7 +19,7 @@ public:
 	
 	TinyClass* GetById(int id);
 
-	TinyClass* operator[](const char* name);
+	TinyClass* operator[](std::string name);
 	TinyClass* operator[](int index);
 };
 

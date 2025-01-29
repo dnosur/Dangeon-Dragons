@@ -25,7 +25,7 @@ class WonderWold
 
 	void OnTriggerEnter(IGameObject* object, IGameObject* triggeredObject) override;
 
-	Propertie* GetObjectPropertie(const char* propertie_name, IGameObject* object);
+	Propertie* GetObjectPropertie(std::string propertie_name, IGameObject* object);
 
 	void Initialize();
 public:

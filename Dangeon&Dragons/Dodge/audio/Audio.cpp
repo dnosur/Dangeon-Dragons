@@ -3,7 +3,7 @@
 void Audio::Load()
 {
     SF_INFO sfInfo;
-    SNDFILE* sndFile = sf_open(path, SFM_READ, &sfInfo);
+    SNDFILE* sndFile = sf_open(path.c_str(), SFM_READ, &sfInfo);
     if (!sndFile) {
         std::cerr << "Error opening sound file: " << path << std::endl;
         return;
@@ -47,13 +47,18 @@ Audio::Audio()
 }
 
 Audio::Audio(
-    const char* title, const char* path,
+    std::string title, std::string path,
     float radius, float volume,
     bool loop
 )
 {
+<<<<<<< Updated upstream
     copyStr(title, this->title);
     copyStr(path, this->path);
+=======
+    this->title = title;
+    this->path = path;
+>>>>>>> Stashed changes
     Load();
 
     state = AudioStates::FINISHED;
@@ -121,12 +126,12 @@ bool Audio::GetLoop()
     return loop;
 }
 
-char* Audio::GetTitle()
+std::string_view Audio::GetTitle()
 {
     return title;
 }
 
-char* Audio::GetPath()
+std::string_view Audio::GetPath()
 {
     return path;
 }
@@ -165,7 +170,7 @@ Audio::~Audio()
 bool Audio::operator==(const Audio& other) const
 {
     return other.source == source && other.buffer == buffer 
-        && !strcmp(other.title, title) && !strcmp(other.path, path);
+        && other.title == title && other.path == path;
 }
 
 bool Audio::operator!=(const Audio& other) const
@@ -179,8 +184,13 @@ Audio& Audio::operator=(const Audio& other)
         source = other.source;
         buffer = other.buffer;
 
+<<<<<<< Updated upstream
         copyStr(other.title, title);
         copyStr(other.path, path);
+=======
+        title = other.title;
+        path = other.path;
+>>>>>>> Stashed changes
     }
     return *this;
 }

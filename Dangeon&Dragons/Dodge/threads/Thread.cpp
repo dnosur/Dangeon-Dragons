@@ -20,20 +20,29 @@ void Thread::RemoveThread()
 	delete t;
 	t = nullptr;
 }
-Thread::Thread(const char* title)
+Thread::Thread(std::string title)
 {
+<<<<<<< Updated upstream
 	copyStr(title, this->title);
+=======
+	this->title = title;
+>>>>>>> Stashed changes
 
 	m = nullptr;
 	t = nullptr;
 }
 
 Thread::Thread(
-	const char* title, 
+	std::string title, 
 	std::function<void()> func
 )
 {
+<<<<<<< Updated upstream
 	copyStr(title, this->title);
+=======
+	this->title = title;
+
+>>>>>>> Stashed changes
 	m = new std::mutex();
 	t = new std::thread([this, func]() {
 		std::lock_guard<std::mutex> lock(*m);
@@ -76,7 +85,7 @@ void Thread::Detach()
 	}
 }
 
-const char* Thread::GetTitle()
+std::string_view Thread::GetTitle()
 {
 	return title;
 }
@@ -88,17 +97,11 @@ bool Thread::IsJoinable()
 
 bool Thread::operator==(Thread* thread)
 {
-	return !strcmp(thread->title, title);
+	return thread->title == title;
 }
 
 Thread::~Thread()
 {
-	if (title != nullptr)
-	{
-		delete[] title;
-		title = nullptr;
-	}
-
 	RemoveThread();
 
 	if (m != nullptr)

@@ -25,9 +25,8 @@ __interface IGameObject
 	bool CollisionEnter(IGameObject& gameObject);
 
 	Window* GetWindow();
-
-	Coord GetPos();
-	Coord GetOpenGlPos();
+	const Coord& GetPos();
+	const Coord& GetOpenGlPos();
 
 	std::vector<Coord> GetVertices();
 
@@ -53,8 +52,8 @@ __interface IGameObject
 	void SetCollision(ICollision* collision);
 	ICollision* GetCollision();
 
-	const char* GetTitle();
-	void SetTitle(const char* title);
+	std::string_view GetTitle();
+	void SetTitle(std::string title);
 
 	void SetLayer(Layer layer);
 	Layer GetLayer();
@@ -62,7 +61,7 @@ __interface IGameObject
 	bool IsKinematic();
 	void SetKinematic(bool kinematic);
 
-	Coord GetDistanceTo(IGameObject& gameObject);
+	const Coord& GetDistanceTo(IGameObject& gameObject);
 
 	const bool IsMouseOverlap();
 

@@ -1,20 +1,20 @@
 #include "SpriteAnimationController.h"
 
-SpriteAnimation* SpriteAnimationController::GetByTitle(const char* title)
+SpriteAnimation* SpriteAnimationController::GetByTitle(std::string_view title)
 {
 	for (SpriteAnimation& animation : animations) {
-		if (!strcmp(animation.GetTitle(), title)) {
+		if (animation.GetTitle() == title) {
 			return &animation;
 		}
 	}
 	return nullptr;
 }
 
-SpriteAnimation* SpriteAnimationController::GetByTitle(const char* title, int& index)
+SpriteAnimation* SpriteAnimationController::GetByTitle(std::string_view title, int& index)
 {
 	index = 0;
 	for (SpriteAnimation& animation : animations) {
-		if (!strcmp(animation.GetTitle(), title)) {
+		if (animation.GetTitle() == title) {
 			return &animation;
 		}
 		index++;
@@ -95,7 +95,7 @@ void SpriteAnimationController::PlayOnEnd(int index, Coord pos, Size size)
 	Play(index, pos, size);
 }
 
-void SpriteAnimationController::Play(const char* title)
+void SpriteAnimationController::Play(std::string_view title)
 {
 	SpriteAnimation* animation = GetByTitle(title, currentIndex);
 	
@@ -104,7 +104,7 @@ void SpriteAnimationController::Play(const char* title)
 	}
 }
 
-void SpriteAnimationController::Play(const char* title, Coord pos, Size size)
+void SpriteAnimationController::Play(std::string_view title, Coord pos, Size size)
 {
 	SpriteAnimation* animation = GetByTitle(title, currentIndex);
 
@@ -113,7 +113,7 @@ void SpriteAnimationController::Play(const char* title, Coord pos, Size size)
 	}
 }
 
-void SpriteAnimationController::PlayOnEnd(const char* title)
+void SpriteAnimationController::PlayOnEnd(std::string_view title)
 {
 	if (!IsAnimationEnd()) {
 		return;
@@ -122,7 +122,7 @@ void SpriteAnimationController::PlayOnEnd(const char* title)
 	Play(title);
 }
 
-void SpriteAnimationController::PlayOnEnd(const char* title, Coord pos, Size size)
+void SpriteAnimationController::PlayOnEnd(std::string_view title, Coord pos, Size size)
 {
 	if (!IsAnimationEnd()) {
 		return;
@@ -158,7 +158,7 @@ SpriteAnimation* SpriteAnimationController::operator[](int index)
 	return GetByIndex(index);
 }
 
-SpriteAnimation* SpriteAnimationController::operator[](const char* title)
+SpriteAnimation* SpriteAnimationController::operator[](std::string_view title)
 {
 	return GetByTitle(title);
 }

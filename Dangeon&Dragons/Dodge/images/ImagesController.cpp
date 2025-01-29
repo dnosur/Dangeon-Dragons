@@ -1,10 +1,16 @@
 #include "ImagesController.h"
 
+<<<<<<< Updated upstream
 int ImagesController::GetIndexByTitle(char* title)
+=======
+std::shared_ptr<Image> ImagesController::defaultImage;
+
+int ImagesController::GetIndexByTitle(std::string& title)
+>>>>>>> Stashed changes
 {
     int index = 0;
     for (Image& img : images) {
-        if (!strcmp(title, img.title)) {
+        if (title == img.title) {
             return index;
         }
         index++;
@@ -15,7 +21,7 @@ int ImagesController::GetIndexByTitle(char* title)
 
 void ImagesController::ChangeIfExist(Image image)
 {
-    if (image.title == nullptr) {
+    if (image.title.empty()) {
         return;
     }
 
@@ -101,7 +107,7 @@ void ImagesController::Draw(Image& item, Coord& position, Color& color, Size& wi
     glUseProgram(0);
 }
 
-Image ImagesController::LoadImg(const char* path, const char* title)
+Image ImagesController::LoadImg(std::string path, std::string title)
 {
     GLuint textureID;
     glGenTextures(1, &textureID);
@@ -110,7 +116,7 @@ Image ImagesController::LoadImg(const char* path, const char* title)
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true);
 
-    unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
     if (!data) {
         std::cout << "stbi_load error: " << stbi_failure_reason() << std::endl;
     }
@@ -153,7 +159,21 @@ Image ImagesController::LoadImg(const char* path, const char* title)
         ));
 }
 
+<<<<<<< Updated upstream
 void ImagesController::Load(const char* path, const char* title, Shader* shader)
+=======
+void ImagesController::SetDefaultImage(std::unique_ptr<Image> image)
+{
+    defaultImage = std::move(image);
+}
+
+std::weak_ptr<Image> ImagesController::GetDafaultImage()
+{
+    return defaultImage;
+}
+
+void ImagesController::Load(std::string path, std::string title, Shader* shader)
+>>>>>>> Stashed changes
 {
     Image image = ImagesController::LoadImg(path, title);
     if (shader != nullptr) {
@@ -164,7 +184,7 @@ void ImagesController::Load(const char* path, const char* title, Shader* shader)
 }
 
 void ImagesController::LoadAndDrawImage(
-    const char* path, const char* title, 
+    std::string path, std::string title, 
     Shader* shader, Coord position, 
     Size size, Size windowSize
 )
@@ -206,9 +226,9 @@ void ImagesController::LoadAndDrawImage(
     ChangeIfExist(image_obj);
 }
 
-void ImagesController::DrawImage(const char* title, Coord position, Size size, Size windowSize, Color color, bool reverse)
+void ImagesController::DrawImage(std::string title, Coord position, Size size, Size windowSize, Color color, bool reverse)
 {
-    const int index = GetIndexByTitle((char*)title);
+    const int index = GetIndexByTitle(title);
     if (index < 0) {
         return;
     }
@@ -250,10 +270,10 @@ Image* ImagesController::operator[](int index)
     return &images[index];
 }
 
-Image* ImagesController::operator[](const char* title)
+Image* ImagesController::operator[](std::string title)
 {
     for (Image& image : images) {
-        if (!strcmp(title, image.title)) {
+        if (title == image.title) {
             return &image;
         }
     }

@@ -15,6 +15,7 @@ public:
 
 	static void Add(std::vector<IGameObject*>* gameObjects);
 
+<<<<<<< Updated upstream
 	static IGameObject* GetByTitle(const char* title);
 	template <typename T>
 	static T* GetDynamicByTitle(const char* title);
@@ -22,6 +23,15 @@ public:
 	static IGameObject* GetByTitle(const char* title, Layer layer);
 	template <typename T>
 	static T* GetDynamicByTitle(const char* title, Layer layer);
+=======
+	static std::weak_ptr<IGameObject> GetByTitle(std::string title);
+	template <typename T>
+	static std::weak_ptr<T> GetDynamicByTitle(std::string title);
+
+	static std::weak_ptr<IGameObject> GetByTitle(std::string title, Layer layer);
+	template <typename T>
+	static std::weak_ptr<T>  GetDynamicByTitle(std::string title, Layer layer);
+>>>>>>> Stashed changes
 
 	static std::vector<IGameObject*>* GetAll();
 	static std::vector<IGameObject*>* GetAll(Layer layer);
@@ -39,6 +49,7 @@ public:
 };
 
 template<typename T>
+<<<<<<< Updated upstream
 inline T* GameObjects::GetDynamicByTitle(const char* title)
 {
 	return dynamic_cast<T*>(GetByTitle(title));
@@ -48,6 +59,37 @@ template<typename T>
 inline T* GameObjects::GetDynamicByTitle(const char* title, Layer layer)
 {
 	return dynamic_cast<T*>(GetByTitle(title, layer));
+=======
+inline std::weak_ptr<T> GameObjects::GetDynamicByTitle(std::string title)
+{
+	for (int i = 0; i < gameObjects.size(); i++)
+	{
+		if (gameObjects[i]->GetTitle() == title)
+		{
+			if (auto casted = std::dynamic_pointer_cast<T>(gameObjects[i])) {
+				return casted;
+			}
+		}
+	}
+	return std::shared_ptr<T>(nullptr);
+}
+
+template<typename T>
+inline std::weak_ptr<T> GameObjects::GetDynamicByTitle(std::string title, Layer layer)
+{
+	for (int i = 0; i < gameObjects.size(); i++)
+	{
+		if (gameObjects[i]->GetTitle() == title &&
+			gameObjects[i]->GetLayer() == layer
+			)
+		{
+			if (auto casted = std::dynamic_pointer_cast<T>(gameObjects[i])) {
+				return casted;
+			}
+		}
+	}
+	return std::shared_ptr<T>(nullptr);
+>>>>>>> Stashed changes
 }
 
 template<typename T>

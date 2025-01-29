@@ -11,8 +11,13 @@ Movement::Movement()
 }
 
 Movement::Movement(
+<<<<<<< Updated upstream
     const char* title, Directions direction, Actions action, 
     IAnimation* animation, Coord position)
+=======
+    std::string_view title, Directions direction, Actions action,
+	std::shared_ptr<IAnimation> animation, Coord position)
+>>>>>>> Stashed changes
 {
 	copyStr(title, this->title);
 	complete = false;

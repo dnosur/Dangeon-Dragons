@@ -26,7 +26,7 @@ void Player::LoadAnimations()
 
 	for (VertexAnimation*& animation : playerImages->CreateVertexAnimations(
 		std::make_pair(
-			std::vector<const char*>({
+			std::vector<std::string>({
 				"idle_top",
 				"idle_right",
 				"idle_down",
@@ -390,7 +390,7 @@ void Player::AIMovement()
 {
 }
 
-const char* Player::GetAnimationName()
+std::string_view Player::GetAnimationName()
 {
 	if (action == Actions::Dead) {
 		return "die";
@@ -462,8 +462,13 @@ void Player::LoadAudio()
 }
 
 Player::Player(
+<<<<<<< Updated upstream
 	const char* title, Window& window, ICollision* collision,
 	Material* material, Directions moveDirection, Coord pos, Size size, 
+=======
+	std::string title, Window& window, std::shared_ptr<ICollision> collision,
+	std::shared_ptr<Material> material, Directions moveDirection, Coord pos, Size size,
+>>>>>>> Stashed changes
 	float speed, float maxSpeed, float minSpeed, 
 	float health, float maxHealth, bool isPlayable, bool isKinematic, 
 	bool isHidden, std::vector<IAnimation*> animations)
@@ -482,7 +487,7 @@ Coord Player::GetStartPos()
 	return startPos;
 }
 
-Coord Player::GetDistanceTo(IGameObject& gameObject)
+const Coord& Player::GetDistanceTo(IGameObject& gameObject)
 {
 	return startPos - gameObject.GetPos();
 }

@@ -1,10 +1,10 @@
 #include "BoolPropertie.h"
 #include <string.h>
 
-BoolPropertie::BoolPropertie(char* title, char* value)
-	: Propertie(title, value, (char*)"bool")
+BoolPropertie::BoolPropertie(std::string title, std::string value)
+	: Propertie(title, value, "bool")
 {
-	boolValue = !strcmp(value, "true");
+	boolValue = value == "true";
 }
 
 bool BoolPropertie::getBoolValue()

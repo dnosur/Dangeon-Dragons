@@ -190,7 +190,7 @@ VertexAnimation* SlicedImage::CreateVertexAnimation(int vertex_row_index)
 
 VertexAnimation* SlicedImage::CreateVertexAnimation(
 	int vertex_row_index, 
-	std::pair<const char*, int> frame_setting
+	std::pair<std::string, int> frame_setting
 )
 {
 	if (vertex_row_index < 0 || vertex_row_index >= vertexes.size()) {
@@ -219,7 +219,7 @@ VertexAnimation* SlicedImage::CreateVertexAnimation(
 
 std::vector<VertexAnimation*> SlicedImage::CreateVertexAnimations()
 {
-	std::vector<const char*> names;
+	std::vector<std::string> names;
 	std::vector<int> durations;
 
 	for (int i = 0; i < vertexes.size(); i++) {
@@ -233,8 +233,13 @@ std::vector<VertexAnimation*> SlicedImage::CreateVertexAnimations()
 	);
 }
 
+<<<<<<< Updated upstream
 std::vector<VertexAnimation*> SlicedImage::CreateVertexAnimations(
 	std::pair<std::vector<const char*>, std::vector<int>> frames_settings
+=======
+std::vector<std::unique_ptr<VertexAnimation>> SlicedImage::CreateVertexAnimations(
+	std::pair<std::vector<std::string>, std::vector<int>> frames_settings
+>>>>>>> Stashed changes
 )
 {
 	std::vector<VertexAnimation*> vertex_animations;

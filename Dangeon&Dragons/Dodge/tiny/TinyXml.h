@@ -24,10 +24,15 @@ namespace fs = std::filesystem;
 
 static class TinyXml
 {
-	static const char* root_dir;
+	static std::string root_dir;
 public:
+<<<<<<< Updated upstream
 	static tinyxml2::XMLError ReadDoc(tinyxml2::XMLDocument& doc, const char* path);
 	static TileMap* LoadMap(const char* path, const char* title = "sampleMap");
+=======
+	static tinyxml2::XMLError ReadDoc(tinyxml2::XMLDocument& doc, std::string path);
+	static std::unique_ptr<TileMap> LoadMap(std::string path, std::string title = "sampleMap");
+>>>>>>> Stashed changes
 
 	static std::vector<Coord> ParsePolygon(std::string polygon, const Coord& offset);
 	static std::string GetPathToTileSource(std::string path);

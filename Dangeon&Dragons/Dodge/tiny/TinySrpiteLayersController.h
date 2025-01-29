@@ -20,6 +20,6 @@ public:
 	std::vector<TinySpriteLayer>::iterator end();
 
 	TinySpriteLayer* operator[](int index);
-	TinySpriteLayer* operator[](const char* name);
+	TinySpriteLayer* operator[](std::string name);
 };
 
