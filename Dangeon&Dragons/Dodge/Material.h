@@ -18,13 +18,13 @@ protected:
 	float specularIntensity;
 	float emissiveIntensity;
 
-	Shader* shader;
-	Camera* camera;
+	std::shared_ptr<Shader> shader;
+	std::shared_ptr<Camera> camera;
 
-	Image* diffuseMap;
-	Image* normalMap;
-	Image* specularMap;
-	Image* emissiveMap;
+	std::shared_ptr<Image> diffuseMap;
+	std::shared_ptr<Image> normalMap;
+	std::shared_ptr<Image> specularMap;
+	std::shared_ptr<Image> emissiveMap;
 
 	std::vector<Coord> diffuseMapVerticies;
 	std::vector<Coord> normalMapVerticies;
@@ -44,26 +44,25 @@ public:
 		float specularIntensity = 1.0f,
 		float emissiveIntensity = 1.0f,
 
-		Shader* shader = nullptr,
+		std::shared_ptr<Shader> shader = nullptr,
 
-		Image* diffuseMap = nullptr, 
-		Image* normalMap = nullptr,
-		Image* specularMap = nullptr, 
-		Image* emissiveMap = nullptr,
+		std::shared_ptr<Image> diffuseMap = nullptr,
+		std::shared_ptr<Image> normalMap = nullptr,
+		std::shared_ptr<Image> specularMap = nullptr,
+		std::shared_ptr<Image> emissiveMap = nullptr,
 
 		std::vector<Coord> diffuseMapVerticies = std::vector<Coord>(),
 		std::vector<Coord> normalMapVerticies = std::vector<Coord>(),
 		std::vector<Coord> specularMapVerticies = std::vector<Coord>(),
 		std::vector<Coord> emissiveMapVerticies = std::vector<Coord>()
 	);
-	~Material();
 
-	void SetShader(Shader* shader);
-	void SetCamera(Camera* camera);
-	void SetDiffuseMap(Image* diffuseMap);
-	void SetNormalMap(Image* normalMap);
-	void SetSpecularMap(Image* specularMap);
-	void SetEmissiveMap(Image* emissiveMap);
+	void SetShader(std::shared_ptr<Shader> shader);
+	void SetCamera(std::shared_ptr<Camera> camera);
+	void SetDiffuseMap(std::shared_ptr<Image> diffuseMap);
+	void SetNormalMap(std::shared_ptr<Image> normalMap);
+	void SetSpecularMap(std::shared_ptr<Image> specularMap);
+	void SetEmissiveMap(std::shared_ptr<Image> emissiveMap);
 
 	void SetAmbient(Color ambient);
 	void SetDiffuse(Color diffuse);
@@ -97,12 +96,12 @@ public:
 	float GetSpecularIntensity();
 	float GetEmissiveIntensity();
 
-	Shader* GetShader();
-	Camera* GetCamera();
-	Image* GetDiffuseMap();
-	Image* GetNormalMap();
-	Image* GetSpecularMap();
-	Image* GetEmissiveMap();
+	std::weak_ptr<Shader> GetShader();
+	std::weak_ptr<Camera> GetCamera();
+	std::weak_ptr<Image> GetDiffuseMap();
+	std::weak_ptr<Image> GetNormalMap();
+	std::weak_ptr<Image> GetSpecularMap();
+	std::weak_ptr<Image> GetEmissiveMap();
 
 	std::vector<Coord> GetDiffuseMapVerticies();
 	std::vector<Coord> GetNormalMapVerticies();

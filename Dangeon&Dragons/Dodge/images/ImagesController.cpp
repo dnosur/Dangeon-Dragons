@@ -1,5 +1,7 @@
 #include "ImagesController.h"
 
+std::shared_ptr<Image> ImagesController::defaultImage;
+
 int ImagesController::GetIndexByTitle(char* title)
 {
     int index = 0;
@@ -153,6 +155,16 @@ Image ImagesController::LoadImg(const char* path, const char* title)
         ));
 }
 
+void ImagesController::SetDefaultImage(std::unique_ptr<Image> image)
+{
+    defaultImage = std::move(image);
+}
+
+std::weak_ptr<Image> ImagesController::GetDafaultImage()
+{
+    return defaultImage;
+}
+
 void ImagesController::Load(const char* path, const char* title, Shader* shader)
 {
     Image image = ImagesController::LoadImg(path, title);
@@ -224,7 +236,7 @@ std::vector<Image> ImagesController::GetImages()
 void ImagesController::SetImages(std::vector<Image> images)
 {
     Clear();
-    for (const Image& image : images) {
+    for (Image& image : images) {
         this->images.push_back(image);
     }
 }

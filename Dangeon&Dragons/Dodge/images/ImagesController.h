@@ -15,12 +15,17 @@ class ImagesController
 {
 	std::vector<Image> images;
 
+	static std::shared_ptr<Image> defaultImage;
+
 	int GetIndexByTitle(char* title);
 	void ChangeIfExist(Image image);
 
 	void Draw(Image& item, Coord& position, Color& color, Size& windowSize, Size& size, bool reverse = false);
 public:
 	static Image LoadImg(const char* path, const char* title);
+
+	static void SetDefaultImage(std::unique_ptr<Image> image);
+	static std::weak_ptr<Image> GetDafaultImage();
 
 	void Load(const char* path, const char* title, Shader* shader = nullptr);
 	void LoadAndDrawImage(const char* path, const char* title, Shader* shader, Coord position, Size size, Size windowSize);

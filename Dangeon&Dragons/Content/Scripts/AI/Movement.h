@@ -5,20 +5,20 @@
 
 struct Movement
 {
-	char* title;
+	std::string title;
 
 	bool complete;
 
 	Directions direction;
 	Actions action;
 
-	IAnimation* animation;
+	std::shared_ptr<IAnimation> animation;
 
 	Coord position;
 
 	Movement();
 	Movement(
-		const char* title, Directions direction, Actions action, 
-		IAnimation* animation, Coord position
+		std::string title, Directions direction, Actions action, 
+		std::shared_ptr<IAnimation> animation, Coord position
 	);
 }; 

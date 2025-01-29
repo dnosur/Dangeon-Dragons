@@ -9,6 +9,7 @@
 #include "../Content/Scripts/Characters/Enemys/Skeleton.h"
 
 #include "../Dodge/GameObjects.h"
+#include "../Content/Scripts/UI/HpBar/HpBar.h"
 
 MainWindow::MainWindow(): Window()
 {
@@ -35,6 +36,10 @@ void MainWindow::Initialize()
 
     gameStatus = GameStatuses::Initialize;
 
+    ImagesController::SetDefaultImage(std::make_unique<Image>(
+        ImagesController::LoadImg("Content/Images/defaultObj.jpg", "default")
+    ));
+
     images.Load("Content/Images/Background/ground.png", "ground");
 
     //const char* sample = "123";
@@ -59,7 +64,7 @@ void MainWindow::Update()
 {
     gameStatus = GameStatuses::Start;
 
-    WonderWold* wonderWold = new WonderWold(
+    std::unique_ptr<WonderWold> wonderWold = std::make_unique<WonderWold>(
         this, 
         TinyXml::LoadMap(
             "Content/Maps/world/world.tmx", 
@@ -68,19 +73,35 @@ void MainWindow::Update()
         Coord(100, -400)
     );
 
-    std::vector<IGameObject*> solidCollisions = wonderWold->GetClassesByType("SolidCollision");
+    std::vector<std::weak_ptr<IGameObject>> solidCollisions = wonderWold->GetClassesByType("SolidCollision");
 
     if (!solidCollisions.empty()) {
-        WindowPointerController::SetPointer(window, WindowPointer<std::vector<IGameObject*> >("SolidCollisions", &solidCollisions));
+        WindowPointerController::SetPointer(
+            window, 
+            WindowPointer<std::vector<std::weak_ptr<IGameObject>>>(
+                "SolidCollisions", &solidCollisions
+            )
+        );
     }
 
+    std::unique_ptr<Font> sampleFont = std::make_unique<Font>(
+        "NotJamGlasgow",
+        "Content/Fonts/Not Jam Glasgow 13/Not Jam Glasgow 16.ttf",
+        GetSize()
+    );
+
     GameObjects::Add(&solidCollisions);
+
+    std::unique_ptr<HpBar> hpBar = std::make_unique<HpBar>(*this);
+
+    bool down = false;
 
     while (!glfwWindowShouldClose(GetWindow()) && !IsClosed())
     {
         FillBackground();
         glClear(GL_COLOR_BUFFER_BIT);
 
+        //glEnable(GL_CULL_FACE);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -99,6 +120,9 @@ void MainWindow::Update()
         }
 
         wonderWold->Update();
+        hpBar->Update();
+
+        sampleFont->RenderText("123!", Coord(100, 100), 4.0f, Color(1.0f, .0f, .0f, .5f));
 
         mouse.Update();
         keyboard.Update();

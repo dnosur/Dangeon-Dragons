@@ -28,6 +28,18 @@ in vec2 emissiveTexCoord;
 
 void main()
 {
-    // Получение цвета текстуры и умножение на заданный цвет
-    color = texture(material.diffuseMap, diffuseTexCoord) * material.diffuse;
+    vec4 diffuseColor;
+
+    // Проверяем, есть ли текстура
+    if (textureSize(material.diffuseMap, 0).x > 0) {
+        // Если текстура существует, используем её
+        diffuseColor = texture(material.diffuseMap, diffuseTexCoord) * material.diffuse;
+    }
+    else {
+        // Если текстуры нет, используем только цвет материала
+        diffuseColor = material.diffuse;
+    }
+
+    // Устанавливаем итоговый цвет
+    color = diffuseColor;
 }

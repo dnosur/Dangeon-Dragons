@@ -17,13 +17,13 @@ TileMap::TileMap(
 	TinySrpiteLayersController spriteLayersController
 )
 {
-	copyStr(title, this->title);
+	CopyStr(title, this->title);
 
 	this->size = size;
 	this->tileSize = tileSize;
 
-	copyStr(orientation, this->orientation);
-	copyStr(renderOreder, this->renderOreder);
+	CopyStr(orientation, this->orientation);
+	CopyStr(renderOreder, this->renderOreder);
 
 	this->infinite = infinite;
 	this->nextLayerId = nextLayerId;
@@ -48,13 +48,13 @@ TileMap& TileMap::operator=(const TileMap& other)
 {
 	if (this != &other)
 	{
-		copyStr(other.title, title);
+		CopyStr(other.title, title);
 
 		size = other.size;
 		tileSize = other.tileSize;
 
-		copyStr(other.orientation, orientation);
-		copyStr(other.renderOreder, renderOreder);
+		CopyStr(other.orientation, orientation);
+		CopyStr(other.renderOreder, renderOreder);
 
 		infinite = other.infinite;
 		nextLayerId = other.nextLayerId;

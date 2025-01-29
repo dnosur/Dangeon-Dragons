@@ -1,0 +1,11 @@
+#include "Ray.h"
+#include "../functions.h"
+
+Ray::Ray(std::unique_ptr<Coord> origin, std::unique_ptr<Coord> direction, float rayWidth)
+{
+	this->origin = std::move(origin);
+	this->direction = direction;
+	this->rayWidth = rayWidth;
+
+	raySize = CalculateDistanceRef(*origin, *direction);
+}

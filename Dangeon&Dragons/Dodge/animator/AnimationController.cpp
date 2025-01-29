@@ -1,48 +1,49 @@
 #include "AnimationController.h"
+#include "SpriteAnimation.h"
 
-IAnimation* AnimationController::GetByTitle(const char* title)
+std::weak_ptr<IAnimation> AnimationController::GetByTitle(const char* title)
 {
-	for (IAnimation*& animation : animations) {
+	for (std::shared_ptr<IAnimation>& animation : animations) {
 		if (!strcmp(animation->GetTitle(), title)) {
 			return animation;
 		}
 	}
-	return nullptr;
+	return std::weak_ptr<SpriteAnimation>();
 }
 
-IAnimation* AnimationController::GetByTitle(const char* title, int& index)
+std::weak_ptr<IAnimation> AnimationController::GetByTitle(const char* title, int& index)
 {
 	index = 0;
-	for (IAnimation*& animation : animations) {
+	for (std::shared_ptr<IAnimation>& animation : animations) {
 		if (!strcmp(animation->GetTitle(), title)) {
 			return animation;
 		}
 		index++;
 	}
 	index = -1;
-	return nullptr;
+	return std::weak_ptr<SpriteAnimation>();
 }
 
-IAnimation* AnimationController::GetByIndex(int index)
+std::weak_ptr<IAnimation> AnimationController::GetByIndex(int index)
 {
 	if (index < 0 || index >= animations.size()) {
-		return nullptr;
+		return std::weak_ptr<SpriteAnimation>();
 	}
 	return animations[index];
 }
 
-void AnimationController::DropPrevAnim(IAnimation* currentAnim)
+void AnimationController::DropPrevAnim(std::shared_ptr<IAnimation> currentAnim)
 {
 	return;
 
 	if (prevAnim == nullptr) {
-		copyStr(currentAnim->GetTitle(), prevAnim);
+		CopyStr(currentAnim->GetTitle(), prevAnim);
 		return;
 	}
 
 	if (strcmp(currentAnim->GetTitle(), prevAnim)) {
 		animations[currentIndex]->Stop();
-		copyStr(currentAnim->GetTitle(), prevAnim);
+		CopyStr(currentAnim->GetTitle(), prevAnim);
 	}
 }
 
@@ -52,51 +53,59 @@ AnimationController::AnimationController()
 	currentIndex = -1;
 }
 
-AnimationController::AnimationController(std::vector<IAnimation*> animations)
+AnimationController::AnimationController(std::vector<std::shared_ptr<IAnimation>> animations)
 {
 	this->animations = animations;
 	prevAnim = nullptr;
 	currentIndex = -1;
 }
 
-void AnimationController::AddAnimation(IAnimation* animation)
+void AnimationController::AddAnimation(std::shared_ptr<IAnimation> animation)
 {
-	IAnimation* same = GetByTitle(animation->GetTitle());
-	if (same == nullptr) {
+	const std::weak_ptr<IAnimation>& weakSame = GetByTitle(animation->GetTitle());
+	std::shared_ptr<IAnimation> same = weakSame.lock();
+
+	if (same == nullptr || weakSame.expired()) {
 		animations.push_back(animation);
 		return;
 	}
 
-	same = animation->Clone();
+	same = animation;
 }
 
-void AnimationController::AddAnimations(std::vector<IAnimation*> animations)
+void AnimationController::AddAnimations(std::vector<std::shared_ptr<IAnimation>> animations)
 {
-	for (IAnimation*& animation : animations) {
+	for (std::shared_ptr<IAnimation>& animation : animations) {
 		AddAnimation(animation);
 	}
 }
 
 void AnimationController::Play(int index)
 {
-	IAnimation* animation = GetByIndex(index);
+	std::weak_ptr<IAnimation> weakAnimation = GetByIndex(index);
+	std::shared_ptr<IAnimation> animation = weakAnimation.lock();
 
-	if (animation != nullptr) {
-		DropPrevAnim(animation);
-		animation->Play();
-		currentIndex = index;
+	if (animation == nullptr || weakAnimation.expired()) {
+		return;
 	}
+
+	DropPrevAnim(animation);
+	animation->Play();
+	currentIndex = index;
 }
 
 void AnimationController::Play(int index, Coord pos, Size size)
 {
-	IAnimation* animation = GetByIndex(index);
+	std::weak_ptr<IAnimation> weakAnimation = GetByIndex(index);
+	std::shared_ptr<IAnimation> animation = weakAnimation.lock();
 
-	if (animation != nullptr) {
-		DropPrevAnim(animation);
-		animation->Play(pos, size);
-		currentIndex = index;
+	if (animation == nullptr || weakAnimation.expired()) {
+		return;
 	}
+
+	DropPrevAnim(animation);
+	animation->Play(pos, size);
+	currentIndex = index;
 }
 
 void AnimationController::PlayOnEnd(int index)
@@ -120,27 +129,34 @@ void AnimationController::PlayOnEnd(int index, Coord pos, Size size)
 bool AnimationController::Play(const char* title)
 {
 	int newIndex = 0;
-	IAnimation* animation = GetByTitle(title, newIndex);
+	std::weak_ptr<IAnimation> weakAnimation = GetByTitle(title, newIndex);
+	std::shared_ptr<IAnimation> animation = weakAnimation.lock();
 
-	if (animation != nullptr) {
-		DropPrevAnim(animation);
+	if (animation == nullptr || weakAnimation.expired()) {
+		return false;
+	}
+	
+	DropPrevAnim(animation);
 
-		if (animation->IsEnd()) {
-			animation->Restart();
-			return true;
-		}
-
-		animation->Play();
-		currentIndex = newIndex;
+	if (animation->IsEnd()) {
+		animation->Restart();
 		return true;
 	}
-	return false;
+
+	animation->Play();
+	currentIndex = newIndex;
+	return true;
 }
 
 void AnimationController::Play(const char* title, Coord pos, Size size)
 {
 	int newIndex = 0;
-	IAnimation* animation = GetByTitle(title, newIndex);
+	std::weak_ptr<IAnimation> weakAnimation = GetByTitle(title, newIndex);
+	std::shared_ptr<IAnimation> animation = weakAnimation.lock();
+
+	if (animation == nullptr || weakAnimation.expired()) {
+		return;
+	}
 
 	if (animation != nullptr) {
 		DropPrevAnim(animation);
@@ -169,7 +185,7 @@ void AnimationController::PlayOnEnd(const char* title, Coord pos, Size size)
 
 void AnimationController::PlayAll()
 {
-	for (IAnimation*& animation : animations) {
+	for (std::shared_ptr<IAnimation>& animation : animations) {
 		animation->Play();
 	}
 }
@@ -189,12 +205,12 @@ bool AnimationController::IsAnimationEnd()
 	return currentIndex < 0 || !animations.size() || animations.operator[](currentIndex)->IsEnd();
 }
 
-IAnimation* AnimationController::operator[](const char* title)
+std::weak_ptr<IAnimation> AnimationController::operator[](const char* title)
 {
 	return GetByTitle(title);
 }
 
-IAnimation* AnimationController::operator[](int index)
+std::weak_ptr<IAnimation> AnimationController::operator[](int index)
 {
 	return GetByIndex(index);
 }

@@ -4,7 +4,7 @@
 #include <mutex>
 
 class Player :
-    public Pawn
+    public Pawn, public std::enable_shared_from_this<Player>
 {
     Keyboard* keyboard;
 
@@ -18,8 +18,6 @@ class Player :
     const char* GetAnimationName() override;
 
     void LoadAudio() override;
-
-    void Initialize() override;
 	void Draw() override;
 
     void Move();
@@ -30,15 +28,21 @@ class Player :
     bool CheckForCollision();
     bool CheckForCollision(Coord pos, Size size);
 
+    void MathSide(double& sideSize, bool isWidth) override;
+
     void AIMovement() override;
 public:
     Player(
         const char* title, Window& window,
-        ICollision* collision, Material* material, Directions moveDirection,
+        std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
         Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
-        std::vector<IAnimation*> animations = {}
+        std::vector<std::shared_ptr<IAnimation>> animations = {}
     );
+
+    void Initialize() override;
+
+    void SetSideSize(Sides sides) override;
 
     Coord GetStartPos();
 

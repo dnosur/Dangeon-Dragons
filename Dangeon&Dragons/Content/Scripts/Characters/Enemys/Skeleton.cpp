@@ -13,13 +13,13 @@
 #include "../../Utilities/RaycastUtilities.h"
 
 Skeleton::Skeleton(
-	const char* title, Window& window, ICollision* collision, 
-	Material* material, Directions moveDirection, Coord pos, Size size, 
+	const char* title, Window& window, std::shared_ptr<ICollision> collision, 
+	std::shared_ptr<Material> material, Directions moveDirection, Coord pos, Size size,
 	float speed, float maxSpeed, float minSpeed, float health, float maxHealth, 
-	bool isPlayable, bool isKinematic, bool isHidden, std::vector<IAnimation*> animations
+	bool isPlayable, bool isKinematic, bool isHidden, std::vector<std::shared_ptr<IAnimation>> animations
 ) : Pawn(
-	title, window, collision,
-	material, moveDirection, pos, size,
+	title, window, std::move(collision),
+	std::move(material), moveDirection, pos, size,
 	speed, maxSpeed, minSpeed,
 	health, maxHealth, false, isKinematic,
 	isHidden, animations)
@@ -62,12 +62,12 @@ bool Skeleton::IsNear(Coord pos)
 			std::abs(pos.Y - this->pos.Y) <= damageDistance);
 }
 
-void Skeleton::SetTarget(Pawn* target)
+void Skeleton::SetTarget(std::weak_ptr<Pawn> target)
 {
 	this->target = target;
 }
 
-class Pawn* Skeleton::GetTarget()
+class std::weak_ptr<class Pawn> Skeleton::GetTarget()
 {
 	return target;
 }
@@ -97,9 +97,9 @@ void Skeleton::Update()
 
 void Skeleton::LoadAnimations()
 {
-	playerImages = new SlicedImage(
-		material->GetDiffuseMap(),
-		{
+	std::unique_ptr<SlicedImage> playerImages = std::make_unique<SlicedImage>(
+		material->GetDiffuseMap().lock(),
+		std::vector<int>{
 			9, 9, 9, 9,
 			6, 6, 6, 6,
 			7, 7, 7, 7,
@@ -109,7 +109,7 @@ void Skeleton::LoadAnimations()
 		Size(64, 64)
 	);
 
-	for (VertexAnimation*& animation : playerImages->CreateVertexAnimations(
+	for (std::unique_ptr<VertexAnimation>& animation : playerImages->CreateVertexAnimations(
 		std::make_pair(
 			std::vector<const char*>({
 				"walk_top",
@@ -154,10 +154,10 @@ void Skeleton::LoadAnimations()
 		)
 	{
 		animation->SetGameObject(this);
-		animations.AddAnimation(animation);
+		animations.AddAnimation(std::move(animation));
 	}
 
-	animations["die"]->SetStopOnEnd(true);
+	animations["die"].lock()->SetStopOnEnd(true);
 }
 
 const char* Skeleton::GetAnimationName()
@@ -329,13 +329,35 @@ void Skeleton::Initialize()
 	LoadAnimations();
 }
 
+void Skeleton::SetSideSize(Sides sides)
+{
+	if (sides.bottom != 0) {
+		MathSide(sides.bottom, false);
+	}
+
+	if (sides.top != 0) {
+		MathSide(sides.top, false);
+	}
+
+	if (sides.left != 0) {
+		MathSide(sides.left, true);
+	}
+
+	if (sides.right != 0) {
+		MathSide(sides.right, true);
+	}
+}
+
 void Skeleton::Draw()
 {
 	material->Use(this);
 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
-	const bool isHasDiffuseVertexs = material->GetDiffuseMapVerticies().size() >= 2 && material->GetDiffuseMap() != nullptr;
+	const bool isHasDiffuseVertexs = 
+		material->GetDiffuseMapVerticies().size() >= 2 && 
+		material->GetDiffuseMap().lock() != nullptr;
+
 	const Coord& textCoord1 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[0] : Coord(0, 0);
 	const Coord& textCoord2 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[1] : Coord(1, 1);
 
@@ -384,7 +406,10 @@ void Skeleton::Move()
 
 void Skeleton::Drag(Coord newPos)
 {
-	Audio* walk = audioController["walk"];
+	std::weak_ptr<Audio> weakWalk = audioController["walk"];
+	std::shared_ptr<Audio> walk = weakWalk.lock();
+	if (walk == nullptr) return;
+
 	if (walk != nullptr && walk->GetState() != AudioStates::PLAYING) {
 		walk->Play();
 	}
@@ -394,19 +419,24 @@ void Skeleton::Drag(Coord newPos)
 
 bool Skeleton::CheckForCollision(Coord position)
 {
-	WindowPointer<std::vector<IGameObject*>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<IGameObject*>>(window->GetWindow(), "SolidCollisions");
+	WindowPointer<std::vector<std::shared_ptr<IGameObject>>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<std::shared_ptr<IGameObject>>>(window->GetWindow(), "SolidCollisions");
 	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().empty()) {
 		return true;
 	}
 
-	for (IGameObject* collisionObj : solidCollisionsObjects->GetValue()) {
-		std::vector<Coord> points = collisionObj->GetCollision()->GetPoints();
-
-		if (collisionObj == nullptr || collisionObj->GetCollision() == nullptr) {
+	for (std::shared_ptr<IGameObject>& collisionObj : solidCollisionsObjects->GetValue()) {
+		std::shared_ptr<ICollision> collision = collisionObj->GetCollision().lock();
+		if (collision == nullptr) {
 			continue;
 		}
 
-		if (collisionObj->GetCollision()->IsCollisionEnter(position, Size(24, 24))) {
+		std::vector<Coord> points = collision->GetPoints();
+
+		if (collisionObj == nullptr || collision == nullptr) {
+			continue;
+		}
+
+		if (collision->IsCollisionEnter(position, Size(24, 24))) {
 			return false;
 		}
 	}
@@ -419,9 +449,42 @@ bool Skeleton::CheckForCollision()
 	return false;
 }
 
+void Skeleton::MathSide(double& sideSize, bool isWidth)
+{
+	Coord& vertex1 = vertexes[0];
+	Coord& vertex2 = vertexes[1];
+
+	float glDelta = (float)sideSize / (float)window->GetSize().GetWidth() * 2.0f;
+
+	if (isWidth) {
+		if (sideSize > 0) {
+			vertex1.X += glDelta;
+		}
+		else {
+			vertex2.X -= glDelta;
+		}
+	}
+	else {
+		if (sideSize > 0) {
+			vertex1.Y += glDelta;
+		}
+		else {
+			vertex2.Y -= glDelta;
+		}
+	}
+
+	size.SetWidth((vertex1.X - vertex2.X) * window->GetSize().GetWidth() / 2.0f);
+	size.SetHeight((vertex1.Y - vertex2.Y) * window->GetSize().GetHeight() / 2.0f);
+
+	pos.X = window->GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
+	pos.Y = window->GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
+}
+
 void Skeleton::AIMovement()
 {
 	if (isDead) return;
+
+	std::shared_ptr<class Pawn> _target = target.lock();
 
 	if (!movements.empty() && movements.size() == movementIndex) {
 		movements.clear();
@@ -429,38 +492,38 @@ void Skeleton::AIMovement()
 		animations.Play(GetAnimationName());
 		movementIndex = 0;
 
-		if (target) {
+		if (target.expired() || !_target) {
 			return;
 		}
 
 		Thread* findTarget = new Thread(nullptr, [&]() {
-			Player* player = GameObjects::GetDynamicByTitle<Player>("Player");
-			if (player == nullptr) {
+			std::weak_ptr<Player> player = GameObjects::GetDynamicByTitle<Player>("Player");
+			std::shared_ptr<Player> _player = player.lock();
+
+			if (_player == nullptr) {
 				return;
 			}
 
-			Ray* ray = RayFactory::CreateRay(
-				new Coord(startPos),
-				new Coord(player->GetStartPos())
-			);
+			std::unique_ptr<Ray> ray = std::move(RayFactory::CreateRay(
+				std::move(std::make_unique<Coord>(startPos)),
+				std::move(std::make_unique<Coord>(_player->GetStartPos()))
+			));
 
 			if (ray == nullptr || ray->raySize > viewDistance) {
-				delete ray;
+				ray.release();
 				return;
 			}
 
-			IGameObject* target = Raycast::RaycastFirst(
+			std::weak_ptr<IGameObject> target = Raycast::RaycastFirst(
 				RayFactory::CreateRay(
-					new Coord(startPos),
-					new Coord(player->GetStartPos())
+					std::move(std::make_unique<Coord>(startPos)),
+					std::move(std::make_unique<Coord>(_player->GetStartPos()))
 				)
 			);
 
-			if (target != player) {
+			if (_target != _player) {
 				return;
 			}
-
-			std::cout << "Found player\n";
 			this->SetTarget(player);
 		});
 
@@ -469,13 +532,13 @@ void Skeleton::AIMovement()
 	}
 
 	if (!movements.empty()) {
-		Movement* movement = movements[movementIndex];
+		std::shared_ptr<Movement>& movement = movements[movementIndex];
 
 		action = movement->action;
 		moveDirection = movement->direction;
 
 		SetPos(movement->position);
-		IAnimation* anim = movement->animation;
+		std::shared_ptr<IAnimation>& anim = movement->animation;
 
 		if (anim == nullptr) {
 			return;
@@ -489,22 +552,27 @@ void Skeleton::AIMovement()
 	}
 
 	//Движение к цели
-	if (!findingPath && target) {
-		std::thread([this]() { 
+	if (!findingPath && _target) {
+		std::thread([this, _target]() { 
 			std::lock_guard<std::mutex> lock(pathMutex);
 			Coord targetPos;
 
-			if (Player* player = dynamic_cast<Player*>(target)) {
+			if (std::shared_ptr<Player> player = std::dynamic_pointer_cast<Player>(_target)) {
 				targetPos = player->GetStartPos();
 			}
 			else {
-				targetPos = target->GetPos();
+				targetPos = _target->GetPos();
 			}
 
-			Ray* ray = RayFactory::CreateRay(&startPos, &targetPos);
+			std::unique_ptr<Ray> ray = std::move(
+				RayFactory::CreateRay(
+					std::move(std::make_unique<Coord>(startPos)),
+					std::move(std::make_unique<Coord>(targetPos))
+				)
+			);
 
 			if (ray == nullptr || ray->raySize > viewDistance) {
-				delete ray;
+				ray.release();
 				return;
 			}
 
@@ -516,11 +584,10 @@ void Skeleton::AIMovement()
 	}
 
 	//Буждание
-	if (!findingPath && !target) {
+	if (!findingPath && !_target) {
 		std::thread([this]() {
 			float wanderRadius = 100.0f;
 			Coord randomPosition = GenerateRandomPosition(GetPos(), wanderRadius);
-
 			std::lock_guard<std::mutex> lock(pathMutex);
 			FindPath(GetPos(), randomPosition);
 			findingPath = false;
@@ -563,7 +630,7 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 	findingPath = true;
 
 	//Текущий путь
-	std::priority_queue<Node*, std::vector<Node*>, CompareNodes> openList;
+	std::priority_queue<std::shared_ptr<Node>, std::vector<std::shared_ptr<Node>>, CompareNodes> openList;
 
 	//Закрытый
 	std::unordered_map<int, bool> closedList;
@@ -574,12 +641,12 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 	auto GetKey = [](Coord pos) { return pos.X * 10000 + pos.Y; };
 
 	//Начальная позиция
-	Node* startNode = new Node(
-		new Movement(
+	std::shared_ptr<Node> startNode = std::make_shared<Node>(
+		std::make_unique<Movement>(
 			GetAnimationName(),
 			moveDirection,
 			action,
-			animations[GetAnimationName()],
+			animations[GetAnimationName()].lock(),
 			pos
 		),
 		0.0f, 
@@ -590,7 +657,7 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 	openListCosts[GetKey(start)] = startNode->gCost;
 
 	while (!openList.empty()) {
-		Node* currentNode = openList.top();
+		std::shared_ptr<Node> currentNode = openList.top();
 		openList.pop();
 		if (closedList[GetKey(currentNode->movement->position)]) {
 			continue;
@@ -598,11 +665,14 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 
 		//Цель достигнута
 		if (Pawn::IsNear(currentNode->movement->position, goal, damageDistance - 10)) {
-			Node* node = currentNode;
+			std::shared_ptr<Node> node = currentNode;
+			int i = 0;
 			while (node != nullptr) {
 				movements.push_back(node->movement);
 				node = node->parent;
+				i++;
 			}
+
 			std::reverse(movements.begin(), movements.end());
 			return true;
 		}
@@ -610,8 +680,7 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 		closedList[GetKey(currentNode->movement->position)] = true;
 
 		//Проверяем все стороны движения
-		std::vector<Movement*> neighbors = GetNeighbors(currentNode->movement->position);
-		for (Movement*& neighbor : neighbors) {
+		for (std::unique_ptr<Movement>& neighbor : GetNeighbors(currentNode->movement->position)) {
 			Coord& neighborPos = neighbor->position;
 			int neighborKey = GetKey(neighborPos);
 
@@ -626,8 +695,14 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 				continue;
 			}
 
-			Node* neighborNode = new Node(neighbor, tentativeGCost, std::hypot(goal.X - neighborPos.X, goal.Y - neighborPos.Y), currentNode);
-			openList.push(neighborNode);
+			std::unique_ptr<Node> neighborNode = std::make_unique<Node>(
+				std::move(neighbor),
+				tentativeGCost, 
+				std::hypot(goal.X - neighborPos.X, goal.Y - neighborPos.Y), 
+				currentNode
+			);
+
+			openList.push(std::move(neighborNode));
 			openListCosts[neighborKey] = tentativeGCost;
 		}
 	}
@@ -640,9 +715,9 @@ bool Skeleton::FindTarget()
 	return true;
 }
 
-std::vector<Movement*> Skeleton::GetNeighbors(Coord position)
+std::vector<std::unique_ptr<Movement>> Skeleton::GetNeighbors(Coord position)
 {
-	std::vector<Movement*> neighbors;
+	std::vector<std::unique_ptr<Movement>> neighbors;
 	std::vector<Coord> directions = {
 		{ 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 }, // Основные направления
 		{ 1, 1 }, { 1, -1 }, { -1, 1 }, { -1, -1 } // Диагональные направления
@@ -659,10 +734,10 @@ std::vector<Movement*> Skeleton::GetNeighbors(Coord position)
 
 			const char* title = GetAnimationMovementName(dir);
 			neighbors.push_back(
-				new Movement(
+				std::make_unique<Movement>(
 					title, 
 					GetDirection(dir), Actions::Move,
-					animations[title], neighbor
+					animations[title].lock(), neighbor
 				)
 			);
 		}

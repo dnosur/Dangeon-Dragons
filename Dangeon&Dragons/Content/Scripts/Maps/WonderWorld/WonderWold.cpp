@@ -6,7 +6,7 @@
 
 void WonderWold::CreateCamera()
 {
-	camera = new Camera(
+	camera = std::make_shared<Camera>(
 		"Player",
 		Size(0, 0),
 		Size(1000, 1000),
@@ -16,11 +16,16 @@ void WonderWold::CreateCamera()
 
 void WonderWold::SpawnPlayer()
 {
-	Material* playerMaterial = new BaseFigureMaterial();
-	IGameObject* playerSpawn = GetClassByName("PlayerSpawnPoint");
+	std::unique_ptr<Material> playerMaterial = std::make_unique<BaseFigureMaterial>();
+	std::weak_ptr<IGameObject> weakPlayerSpawn = GetClassByName("PlayerSpawnPoint");
+	std::shared_ptr<IGameObject> playerSpawn = weakPlayerSpawn.lock();
+
+	if (playerSpawn == nullptr) {
+		return;
+	}
 
 	playerMaterial->SetShader(
-		new Shader(
+		std::make_shared<Shader>(
 			"Player",
 			"Dodge/shaders/Test/vertex.vs",
 			"Dodge/shaders/Test/fragment.frag"
@@ -29,7 +34,7 @@ void WonderWold::SpawnPlayer()
 
 	playerMaterial->SetDiffuse(Color(1, 1, 1));
 	playerMaterial->SetDiffuseMap(
-		new Image(
+		std::make_shared<Image>(
 			ImagesController::LoadImg(
 				"Content/Assets/lpc_entry/males/player.png",
 				"Player"
@@ -37,17 +42,17 @@ void WonderWold::SpawnPlayer()
 		)
 	);
 
-	player = new Player(
+	player = std::make_shared<Player>(
 		"Player",
 		*window,
-		new BoxCollision(
+		std::make_unique<BoxCollision>(
 			playerSpawn->GetPos(),
 			Size(24, 16),
 			-1,
 			(char*)"Player",
 			(char*)"Player"
 		),
-		playerMaterial,
+		std::move(playerMaterial),
 		Directions::DOWN,
 		playerSpawn->GetPos(),
 		Size(64, 64),
@@ -65,20 +70,24 @@ void WonderWold::SpawnPlayer()
 
 	WindowPointerController::SetPointer(
 		window->GetWindow(), 
-		WindowPointer<Player*>("player", &player)
+		WindowPointer<Player>("player", player.get())
 	);
 
-	GameObjects::Add(player);
+	GameObjects::Add(std::dynamic_pointer_cast<class Pawn>(player));
 }
 
 void WonderWold::SpawnSkeleton(Coord pos)
 {
+	for (std::weak_ptr<IGameObject>& weakSpawn : GetClassesByName("SkeletonSpawnPoint")) {
+		std::shared_ptr<IGameObject> spawn = weakSpawn.lock();
+		if (spawn == nullptr) {
+			continue;
+		}
 
-	for (IGameObject* spawn : GetClassesByName("SkeletonSpawnPoint")) {
 		//skeleton->SetTarget(player);
-		Material* skeletonMaterial = new BaseFigureMaterial();
+		std::unique_ptr<Material> skeletonMaterial = std::make_unique<BaseFigureMaterial>();
 		skeletonMaterial->SetShader(
-			new Shader(
+			std::make_shared<Shader>(
 				"Skeleton",
 				"Dodge/shaders/Test/vertex.vs",
 				"Dodge/shaders/Test/fragment.frag"
@@ -87,7 +96,7 @@ void WonderWold::SpawnSkeleton(Coord pos)
 
 		skeletonMaterial->SetDiffuse(Color(1, 1, 1));
 		skeletonMaterial->SetDiffuseMap(
-			new Image(
+			std::make_shared<Image>(
 				ImagesController::LoadImg(
 					"Content/Assets/lpc_entry/males/skeleton.png",
 					"Skeleton"
@@ -97,17 +106,17 @@ void WonderWold::SpawnSkeleton(Coord pos)
 
 		skeletonMaterial->SetCamera(camera);
 
-		Skeleton* skeleton = new Skeleton(
+		std::shared_ptr<Skeleton> skeleton = std::make_unique<Skeleton>(
 			"Skeleton",
 			*window,
-			new BoxCollision(
+			std::make_unique<BoxCollision>(
 				spawn->GetPos(),
 				Size(24, 16),
 				-1,
 				(char*)"Skeleton",
 				(char*)"Enemy"
 			),
-			skeletonMaterial,
+			std::move(skeletonMaterial),
 			Directions::DOWN,
 			spawn->GetPos(),
 			Size(64, 64),
@@ -121,8 +130,9 @@ void WonderWold::SpawnSkeleton(Coord pos)
 			false
 		);
 
-		enemys.push_back(skeleton);
-		GameObjects::Add(skeleton);
+		GameObjects::Add(std::dynamic_pointer_cast<class Pawn>(skeleton));
+		enemys.push_back(std::move(skeleton));
+		return;
 	}
 }
 
@@ -142,49 +152,44 @@ void WonderWold::Initialize()
 	SpawnPlayer();
 	SpawnSkeleton(Coord(450, 300));
 
-	Audio* main = new Audio("main", "Content/Sounds/WonderWorld/main.wav");
+	std::unique_ptr<Audio> main = std::make_unique<Audio>("main", "Content/Sounds/WonderWorld/main.wav");
 	main->SetVolume(0.05f);
 
-	Audio* wind = new Audio("wind", "Content/Sounds/WonderWorld/light-wind.wav");
+	std::unique_ptr<Audio> wind = std::make_unique<Audio>("wind", "Content/Sounds/WonderWorld/light-wind.wav");
 	wind->SetVolume(0.15f);
 
-	audioController.Load(main);
-	audioController.Load(wind);
+	audioController.Load(std::move(main));
+	audioController.Load(std::move(wind));
 
 	audioController.Play("main", true);
 	audioController.Play("wind", true);
 }
 
-WonderWold::WonderWold(Window* window, TileMap* tileMap, Coord pos)
-	: TinyMap(window, tileMap, pos)
+WonderWold::WonderWold(Window* window, std::unique_ptr<TileMap>  tileMap, Coord pos)
+	: TinyMap(window, std::move(tileMap), pos)
 {
 	Initialize();
 }
 
-WonderWold::~WonderWold()
+void WonderWold::SetCamera(std::unique_ptr<Camera> camera)
 {
-
-}
-
-void WonderWold::SetCamera(Camera* camera)
-{
-	this->camera = camera;
+	this->camera = std::move(camera);
 }
 
 void WonderWold::Update()
 {
-	IGameObject* observed = camera->GetObservedObj();
+	std::weak_ptr<IGameObject> observed = camera->GetObservedObj();
 	Coord cameraOffset = camera->GetOffset();
 	bool cameraMove = cameraOffset.X != 0 || cameraOffset.Y != 0;
 
-	for (IGameObject* obj : gameObjects)
+	for (std::shared_ptr<IGameObject>& obj : gameObjects)
 	{
 		if (cameraMove) {
 			obj->SetPos(obj->GetPos() + cameraOffset);
 		}
 
 		animationController.Play(obj->GetTitle());
-		Coord distance = observed->GetDistanceTo(*obj);
+		Coord distance = observed.lock()->GetDistanceTo(*obj);
 
 		if (distance.X >= 500 || distance.X <= -838 ||
 			distance.Y >= 584|| distance.Y <= -200) {
@@ -195,25 +200,26 @@ void WonderWold::Update()
 	}
 
 	if (cameraMove) {
-		for (class Pawn* pawn : enemys) {
+		for (std::shared_ptr<class Pawn>& pawn : enemys) {
 			pawn->SetPos(pawn->GetPos() + cameraOffset);
-			if (Skeleton* skeleton = dynamic_cast<Skeleton*>(pawn)) {
+			if (std::shared_ptr<Skeleton> skeleton = std::dynamic_pointer_cast<Skeleton>(pawn)) {
 				skeleton->SetPathOffset(cameraOffset);
 			}
 
-			if (pawn->GetCollision() == nullptr) {
+			std::shared_ptr<ICollision> collision = pawn->GetCollision().lock();
+			if (collision == nullptr) {
 				continue;
 			}
 
-			pawn->GetCollision()->SetPoints({
+			collision->SetPoints({
 				pawn->GetPos()
 			});
 		}
 
-		for (IGameObject* obj : gameClasses)
+		for (std::shared_ptr<IGameObject>& obj : gameClasses)
 		{
 			obj->SetPos(obj->GetPos() + cameraOffset);
-			obj->GetCollision()->SetPoints({
+			obj->GetCollision().lock()->SetPoints({
 				obj->GetPos()
 			});
 		}
@@ -225,9 +231,9 @@ void WonderWold::Update()
 void WonderWold::UpdatePawns()
 {
 	camera->DropOffset();
-	for (IGameObject* obj : enemys)
+	for (std::shared_ptr<class Pawn>& pawn : enemys)
 	{
-		obj->Update();
+		pawn->Update();
 	}
 
 	player->Update();

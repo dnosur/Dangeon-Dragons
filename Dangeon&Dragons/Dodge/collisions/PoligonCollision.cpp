@@ -21,8 +21,8 @@ PoligonCollision::PoligonCollision(std::vector<Coord> points, int root_id, char*
 
 	SetLayer(Layer::Collision);
 
-	copyStr(root_title, this->root_title);
-	copyStr(type, this->type);
+	CopyStr(root_title, this->root_title);
+	CopyStr(type, this->type);
 }
 
 bool PoligonCollision::IsPointInPolygon(const Coord& point, const std::vector<Coord>& polygon)
@@ -103,11 +103,13 @@ bool PoligonCollision::IsCollisionEnter(IGameObject* gameObject)
 		return false;
 	}
 
-	if (gameObject->GetCollision() == nullptr) {
+	std::shared_ptr<ICollision> gameObjectPtr = gameObject->GetCollision().lock();
+
+	if (gameObjectPtr == nullptr) {
 		return false;
 	}
 
-	if (gameObject->GetCollision() == this) {
+	if (gameObjectPtr.get() == this) {
 		return true;
 	}
 
@@ -116,19 +118,14 @@ bool PoligonCollision::IsCollisionEnter(IGameObject* gameObject)
 		return false;
 	}
 
-	ICollision* otherCollision = gameObject->GetCollision();
-	if (otherCollision == nullptr) {
-		return false;
-	}
-
-	std::vector<Coord> otherPoints = otherCollision->GetPoints();
+	std::vector<Coord> otherPoints = gameObjectPtr->GetPoints();
 	if (otherPoints.empty()) {
 		return false;
 	}
 
 	bool res = false;
 
-	for (const Coord& p : otherPoints) {
+	for (Coord& p : otherPoints) {
 		if (IsPointInPolygon(p, polygonPoints)) {
 			res = true;
 			break;
@@ -198,8 +195,8 @@ PoligonCollision& PoligonCollision::operator=(const PoligonCollision& other)
 {
 	if (this != &other)
 	{
-		copyStr(other.root_title, root_title);
-		copyStr(other.type, type);
+		CopyStr(other.root_title, root_title);
+		CopyStr(other.type, type);
 
 		points = other.points;
 		root_id = other.root_id;

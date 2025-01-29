@@ -40,6 +40,12 @@ void Pawn::MathPos(Coord& pos)
 	vertexes = std::vector<Coord>({ vertex1, vertex2 });
 }
 
+void Pawn::MathSize(Size& size)
+{
+	this->size = size;
+	MathPos(pos);
+}
+
 bool Pawn::MouseInRect(Mouse& mouse)
 {
 	Coord& vertex1 = vertexes[0];
@@ -54,10 +60,10 @@ bool Pawn::MouseInRect(Mouse& mouse)
 
 Pawn::Pawn(
 	const char* title, Window& window,
-	ICollision* collision, Material* material, Directions moveDirection,
+	std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
 	Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
 	float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
-	std::vector<IAnimation*> animations
+	std::vector<std::shared_ptr<IAnimation>> animations
 ){
 	this->window = &window;
 
@@ -110,12 +116,12 @@ void Pawn::RotateToDirection(Directions direction)
 
 void Pawn::SetTitle(const char* title)
 {
-	copyStr(title, this->title);
+	CopyStr(title, this->title);
 }
 
 void Pawn::SetSize(Size size)
 {
-	this->size = size;
+	MathSize(size);
 }
 
 void Pawn::SetSpeed(float speed)
@@ -168,12 +174,12 @@ void Pawn::SetIsHidden(bool isHidden)
 	this->isHidden = isHidden;
 }
 
-void Pawn::SetCollision(ICollision* collision)
+void Pawn::SetCollision(std::shared_ptr<ICollision> collision)
 {
 	this->collision = collision;
 }
 
-void Pawn::SetMaterial(Material* material)
+void Pawn::SetMaterial(std::shared_ptr<Material> material)
 {
 	this->material = material;
 }
@@ -183,12 +189,12 @@ void Pawn::SetColor(Color color)
 	material->SetDiffuse(color);
 }
 
-void Pawn::AddAnimation(IAnimation* animation)
+void Pawn::AddAnimation(std::shared_ptr<IAnimation> animation)
 {
 	animations.AddAnimation(animation);
 }
 
-void Pawn::AddAnimations(std::vector<IAnimation*> animations)
+void Pawn::AddAnimations(std::vector<std::shared_ptr<IAnimation>> animations)
 {
 	this->animations.AddAnimations(animations);
 }
@@ -298,7 +304,7 @@ Color Pawn::GetColor()
 	return material->GetDiffuse();
 }
 
-Material* Pawn::GetMaterial()
+std::weak_ptr<Material> Pawn::GetMaterial()
 {
 	return material;
 }
@@ -308,7 +314,7 @@ Directions Pawn::GetMoveDirection()
 	return moveDirection;
 }
 
-ICollision* Pawn::GetCollision()
+std::weak_ptr<ICollision> Pawn::GetCollision()
 {
 	return collision;
 }

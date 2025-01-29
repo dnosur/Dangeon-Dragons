@@ -25,8 +25,8 @@ protected:
 	OnCollisionEnter OnCollisionEnterHandler;
 
 	std::vector<Coord> vertexes;
-	ICollision* collision;
-	Material* material;
+	std::shared_ptr<ICollision> collision;
+	std::shared_ptr<Material> material;
 
 	Directions moveDirection;
 
@@ -36,7 +36,7 @@ protected:
 	Coord pos;
 	Size size;
 
-	SlicedImage* playerImages;
+	std::unique_ptr<SlicedImage> playerImages;
 
 	Layer layer;
 
@@ -55,11 +55,11 @@ protected:
 
 	float damage;
 	float damageDistance;
-	IGameObject* damageObject;
+	std::weak_ptr<IGameObject> damageObject;
 
 	float viewDistance;
 	float interactiveDistance;
-	IGameObject* interactiveObject;
+	std::weak_ptr<IGameObject> interactiveObject;
 
 	bool isDead;
 	bool isPlayable;
@@ -72,12 +72,14 @@ protected:
 	virtual const char* GetAnimationName() = 0;
 
 	virtual void LoadAudio() = 0;
-
-	virtual void Initialize() = 0;
 	virtual void Draw() = 0;
 
 	void MathPos(std::vector<Coord> vertexes);
 	void MathPos(Coord& pos);
+
+	void MathSize(Size& size);
+
+	virtual void MathSide(double& sideSize, bool isWidth) = 0;
 
 	bool MouseInRect(Mouse& mouse);
 
@@ -85,12 +87,14 @@ protected:
 public:
 	Pawn(
 		const char* title, Window& window,
-		ICollision* collision, Material* material, Directions moveDirection, 
+		std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
 		Coord pos, Size size, float speed, float maxSpeed, float minSpeed, 
 		float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
-		std::vector<IAnimation*> animations = {}
+		std::vector<std::shared_ptr<IAnimation>> animations = {}
 	);
-	~Pawn() = default;
+	virtual ~Pawn() = default;
+
+	virtual void Initialize() = 0;
 
 	void SetMoveDirection(Directions moveDirection);
 
@@ -102,6 +106,8 @@ public:
 	void SetTitle(const char* title);
 
 	void SetSize(Size size);
+
+	virtual void SetSideSize(Sides sides) = 0;
 
 	void SetSpeed(float speed);
 	void SetMaxSpeed(float maxSpeed);
@@ -115,14 +121,14 @@ public:
 	void SetIsPlayable(bool isPlayable);
 	void SetIsHidden(bool isHidden);
 
-	void SetCollision(ICollision* collision);
+	void SetCollision(std::shared_ptr<ICollision> collision);
 
-	void SetMaterial(Material* material);
+	void SetMaterial(std::shared_ptr<Material> material);
 
 	void SetColor(Color color);
 
-	void AddAnimation(IAnimation* animation);
-	void AddAnimations(std::vector<IAnimation*> animations);
+	void AddAnimation(std::shared_ptr<IAnimation> animation);
+	void AddAnimations(std::vector<std::shared_ptr<IAnimation>> animations);
 
 	void Damage(float damage);
 	void Die();
@@ -152,10 +158,10 @@ public:
 
 	Color GetColor();
 
-	Material* GetMaterial();
+	std::weak_ptr<Material> GetMaterial();
 	Directions GetMoveDirection();
 
-	ICollision* GetCollision();
+	std::weak_ptr<ICollision> GetCollision();
 
 	Color GetBaseColor();
 

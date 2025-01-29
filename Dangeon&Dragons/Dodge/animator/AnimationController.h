@@ -3,23 +3,23 @@
 
 class AnimationController
 {
-	std::vector<IAnimation*> animations;
+	std::vector<std::shared_ptr<IAnimation>> animations;
 	char* prevAnim;
 
-	IAnimation* GetByTitle(const char* title);
-	IAnimation* GetByTitle(const char* title, int& index);
+	std::weak_ptr<IAnimation> GetByTitle(const char* title);
+	std::weak_ptr<IAnimation> GetByTitle(const char* title, int& index);
 
-	IAnimation* GetByIndex(int index);
+	std::weak_ptr<IAnimation> GetByIndex(int index);
 
-	void DropPrevAnim(IAnimation* currentAnim);
+	void DropPrevAnim(std::shared_ptr<IAnimation> currentAnim);
 
 	int currentIndex;
 public:
 	AnimationController();
-	AnimationController(std::vector<IAnimation*> animations);
+	AnimationController(std::vector<std::shared_ptr<IAnimation>> animations);
 
-	void AddAnimation(IAnimation* animation);
-	void AddAnimations(std::vector<IAnimation*> animations);
+	void AddAnimation(std::shared_ptr<IAnimation> animation);
+	void AddAnimations(std::vector<std::shared_ptr<IAnimation>> animations);
 
 	void Play(int index);
 	void Play(int index, Coord pos, Size size);
@@ -39,7 +39,7 @@ public:
 
 	bool IsAnimationEnd();
 
-	IAnimation* operator[](const char* title);
-	IAnimation* operator[](int index);
+	std::weak_ptr<IAnimation> operator[](const char* title);
+	std::weak_ptr<IAnimation> operator[](int index);
 };
 

@@ -8,9 +8,9 @@ Propertie::Propertie()
 
 Propertie::Propertie(char* title, char* value,const char* type)
 {
-	copyStr(title, this->title);
-	copyStr(value, this->value);
-	copyStr(type, this->type);
+	CopyStr(title, this->title);
+	CopyStr(value, this->value);
+	CopyStr(type, this->type);
 }
 
 char* Propertie::getTitle()
@@ -41,9 +41,9 @@ bool Propertie::operator!=(const Propertie& other) const
 Propertie& Propertie::operator=(const Propertie& other)
 {
 	if (this != &other) {
-		copyStr(other.title, title);
-		copyStr(other.value, value);
-		copyStr(other.type, type);
+		CopyStr(other.title, title);
+		CopyStr(other.value, value);
+		CopyStr(other.type, type);
 	}
 	return *this;
 }

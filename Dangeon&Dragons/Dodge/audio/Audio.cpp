@@ -52,8 +52,8 @@ Audio::Audio(
     bool loop
 )
 {
-    copyStr(title, this->title);
-    copyStr(path, this->path);
+    CopyStr(title, this->title);
+    CopyStr(path, this->path);
     Load();
 
     state = AudioStates::FINISHED;
@@ -179,8 +179,8 @@ Audio& Audio::operator=(const Audio& other)
         source = other.source;
         buffer = other.buffer;
 
-        copyStr(other.title, title);
-        copyStr(other.path, path);
+        CopyStr(other.title, title);
+        CopyStr(other.path, path);
     }
     return *this;
 }

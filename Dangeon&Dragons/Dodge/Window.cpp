@@ -46,7 +46,7 @@ Window::Window()
 Window::Window(Size size, const char* title, Color backgroundColor, GLFWmonitor* monitor, GLFWwindow* share)
 {
     this->size = size;
-    copyStr(title, this->title);
+    CopyStr(title, this->title);
 
     this->share = share;
     this->monitor = monitor;

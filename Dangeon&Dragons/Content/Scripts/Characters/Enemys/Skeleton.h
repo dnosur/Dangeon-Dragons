@@ -8,9 +8,9 @@
 #include "../../AI/Movement.h"
 
 class Skeleton
-	: public Pawn
+	: public Pawn, public std::enable_shared_from_this<Skeleton>
 {
-    Pawn* target;
+    std::weak_ptr<Pawn> target;
     float viewDistance;
 
     float viewWidth;
@@ -20,7 +20,7 @@ class Skeleton
     Coord offset;
 
     //В дальнейшем перенести в класс!
-    std::vector<Movement*> movements;
+    std::vector<std::shared_ptr<Movement>> movements;
 	int movementIndex;
 
     std::mutex pathMutex;
@@ -33,8 +33,6 @@ class Skeleton
     void LoadAudio() override;
 
     Directions GetDirection(Coord direction);
-
-    void Initialize() override;
     void Draw() override;
 
     void Move();
@@ -43,6 +41,8 @@ class Skeleton
     bool CheckForCollision(Coord position);
     bool CheckForCollision();
 
+    void MathSide(double& sideSize, bool isWidth);
+
     void AIMovement() override;
 
     Coord GenerateRandomPosition(Coord center, float radius);
@@ -50,16 +50,20 @@ class Skeleton
     bool FindPath(Coord start, Coord goal);
     bool FindTarget();
 
-    std::vector<Movement*> GetNeighbors(Coord position);
+    std::vector<std::unique_ptr<Movement>> GetNeighbors(Coord position);
     bool IsWalkable(Coord position);
 public:
     Skeleton(
         const char* title, Window& window,
-        ICollision* collision, Material* material, Directions moveDirection,
+        std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
         Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
-        std::vector<IAnimation*> animations = {}
+        std::vector<std::shared_ptr<IAnimation>> animations = {}
     );
+
+    void Initialize() override;
+
+    void SetSideSize(Sides sides) override;
 
     Coord GetStartPos();
 
@@ -69,8 +73,8 @@ public:
     bool IsNear(IGameObject& gameObject) override;
     bool IsNear(Coord pos) override;
 
-    void SetTarget(Pawn* target);
-    Pawn* GetTarget();
+    void SetTarget(std::weak_ptr<Pawn> target);
+    std::weak_ptr<class Pawn> GetTarget();
 
     void ViewPawn(Pawn* pawn);
 

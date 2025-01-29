@@ -1,9 +1,13 @@
 #include "VertexAnimation.h"
 #include "../Material.h"
 
-VertexAnimation::VertexAnimation(const char* title, int frameRate, bool repeat, bool stopOnEnd, IGameObject* object, std::vector<std::pair<int, std::vector<Coord>>> frames)
+VertexAnimation::VertexAnimation(
+	const char* title, int frameRate, bool repeat, bool stopOnEnd, 
+	IGameObject* object,
+	std::vector<std::pair<int, std::vector<Coord>>> frames
+)
 {
-	copyStr(title, this->title);
+	CopyStr(title, this->title);
 
 	this->frameRate = frameRate;
 	this->repeat = repeat;
@@ -68,14 +72,10 @@ void VertexAnimation::Play(Coord coord, Size size)
 
 		frameSounds.Update(currentAnimationIndex);
 
-		if (!strcmp(object->GetTitle(), "284")) {
-			std::cout << currentAnimationIndex << std::endl;
-		}
-
 		if (currentAnimationIndex >= 0 && currentAnimationIndex < frames.size())
 		{
 			// Используем ссылку на вектор, чтобы избежать создания копии
-			object->GetMaterial()->SetDiffuseMapVerticies(frames[currentAnimationIndex].second);
+			object->GetMaterial().lock()->SetDiffuseMapVerticies(frames[currentAnimationIndex].second);
 			delay = frames[currentAnimationIndex].first;
 		}
 	}
@@ -131,11 +131,7 @@ void VertexAnimation::Reverse()
 
 char* VertexAnimation::GetFolder()
 {
-	if (object == nullptr) {
-		return nullptr;
-	}
-
-	return object->GetMaterial()->GetDiffuseMap()->path;
+	return object->GetMaterial().lock()->GetDiffuseMap().lock()->path;
 }
 
 void VertexAnimation::LoadFromFolder(char* folder)
