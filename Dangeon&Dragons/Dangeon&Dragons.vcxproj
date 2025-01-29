@@ -210,8 +210,6 @@
     <ClCompile Include="Dodge\threads\GameThreads.cpp" />
     <ClCompile Include="Dodge\threads\Thread.cpp" />
     <ClCompile Include="Content\Scripts\Utilities\RaycastUtilities.cpp" />
-    <ClCompile Include="Content\Scripts\UI\HpBar\HpBar.cpp" />
-    <ClCompile Include="Dodge\Sides.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Content\Scripts\UI\HpBar\HpBar.h" />
@@ -300,8 +298,6 @@
     <ClInclude Include="Dodge\threads\GameThreads.h" />
     <ClInclude Include="Dodge\threads\Thread.h" />
     <ClInclude Include="Content\Scripts\Utilities\RaycastUtilities.h" />
-    <ClInclude Include="Content\Scripts\UI\HpBar\HpBar.h" />
-    <ClInclude Include="Dodge\Sides.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dodge\project properties.txt" />
