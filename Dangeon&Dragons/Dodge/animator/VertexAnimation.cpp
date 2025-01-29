@@ -178,7 +178,7 @@ std::string_view VertexAnimation::GetTitle()
 	return title;
 }
 
-std::string VertexAnimation::GetStringTitle()
+std::string VertexAnimation::GetTitleString()
 {
 	return title;
 }

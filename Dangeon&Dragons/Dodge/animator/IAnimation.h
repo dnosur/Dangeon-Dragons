@@ -34,7 +34,7 @@ __interface IAnimation
 	void SetTitle(std::string title);
 	std::string_view GetTitle();
 
-	std::string GetStringTitle();
+	std::string GetTitleString();
 
 	IAnimation* Clone();
 };

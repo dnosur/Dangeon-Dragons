@@ -69,7 +69,7 @@ public:
 	void SetTitle(std::string title);
 	std::string_view GetTitle();
 
-	std::string GetStringTitle();
+	std::string GetTitleString();
 
 
 	void AddFrame(int waitTime, std::vector<Coord> vertexes);

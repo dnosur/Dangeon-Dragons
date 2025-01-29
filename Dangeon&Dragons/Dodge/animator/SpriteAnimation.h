@@ -57,7 +57,7 @@ public:
 	void SetTitle(std::string title);
 	std::string_view GetTitle();
 
-	std::string GetStringTitle();
+	std::string GetTitleString();
 
 	std::vector<Image> GetSprites();
 	void SetSprites(std::vector<Image> sprites);

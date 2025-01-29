@@ -143,7 +143,7 @@ std::string_view SpriteAnimation::GetTitle()
 	return title;
 }
 
-std::string SpriteAnimation::GetStringTitle()
+std::string SpriteAnimation::GetTitleString()
 {
 	return title;
 }
