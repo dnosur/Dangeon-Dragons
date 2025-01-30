@@ -152,7 +152,7 @@ bool IsPointBetween(std::unique_ptr<Ray>& ray, Coord point);
  * @return True if the object is between the ray, false otherwise.
  */
 bool IsObjectBetween(Ray* ray, IGameObject* object, bool useCollision = true);
-bool IsObjectBetween(std::unique_ptr<Ray>& ray, std::weak_ptr<IGameObject>& object, bool useCollision = true);
+bool IsObjectBetween(std::unique_ptr<Ray>& ray, std::weak_ptr<IGameObject> object, bool useCollision = true);
 
 double MathPercentsValue(double num, double percent);
 
