@@ -13,7 +13,7 @@ Tileset::Tileset()
 Tileset::Tileset(
 	int firstgId, int tileWidth, int tileHeight, int width, int height,
 	int tileCount, int columns, char* name, char* source,
-	Image image, std::vector<Tile> tiles, TilesetPropertiesController tilesetProperties
+	Image image, std::unordered_map<int, std::shared_ptr<Tile>> tiles, TilesetPropertiesController tilesetProperties
 ){
 	std::cout << source << std::endl;
 
@@ -42,7 +42,7 @@ Tileset::Tileset(
 Tileset::Tileset(
 	int firstgId, int tileWidth, int tileHeight, int width, int height,
 	int tileCount, int columns, std::string name,std::string source,
-	Image image, std::vector<Tile> tiles, TilesetPropertiesController tilesetProperties
+	Image image, std::unordered_map<int, std::shared_ptr<Tile>> tiles, TilesetPropertiesController tilesetProperties
 ) {
 	std::cout << source << std::endl;
 
@@ -118,14 +118,13 @@ std::string Tileset::GetSource()
 	return source;
 }
 
-Tile* Tileset::GetTileById(int id)
+std::weak_ptr<Tile> Tileset::GetTileById(int id)
 {
-	for (Tile& tile : tiles) {
-		if (tile.GetId() == id - firstgId) {
-			return &tile;
-		}
+	auto it = tiles.find(id - firstgId);
+	if (it == tiles.end()) {
+		return {};
 	}
-	return nullptr;
+	return it->second;
 }
 
 Image Tileset::GetImage()
@@ -152,10 +151,13 @@ TilesetPropertiesController* Tileset::GetProperties()
 	return &tilesetProperties;
 }
 
-Tile* Tileset::operator[](int index)
+std::weak_ptr<Tile> Tileset::operator[](int index)
 {
 	if (index < 0 || index >= tiles.size()) {
-		return nullptr;
+		return {};
 	}
-	return &tiles[index];
+
+	auto it = tiles.begin();
+	std::advance(it, index);
+	return it->second;
 }

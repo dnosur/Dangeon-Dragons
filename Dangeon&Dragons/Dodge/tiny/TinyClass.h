@@ -19,7 +19,7 @@ public:
 	std::vector<std::shared_ptr<ICollision>>::iterator end();
 
 	int GetId();
-	std::string GetName();
+	std::string_view GetName();
 	int GetSize();
 
 	std::weak_ptr<ICollision> operator[](int index);

@@ -26,7 +26,7 @@ public:
 	static void LoadChunkIds(std::string data, int**& ids, Size size);
 
 	int GetId();
-	std::string GetName();
+	std::string_view GetName();
 	Size GetSize();
 
 	int GetChunksCount();

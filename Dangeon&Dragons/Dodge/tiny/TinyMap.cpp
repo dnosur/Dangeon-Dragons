@@ -25,13 +25,13 @@ void TinyMap::MoveCollison(std::shared_ptr<ICollision> collision, Coord* pos)
 void TinyMap::Initialize()
 {
 	//Math Map Texture Position
-	for (TinySpriteLayer& spriteLayer : tileMap->spriteLayersController) {
-		const Size spriteLayerSize = spriteLayer.GetSize();
+	for (auto& spriteLayer : tileMap->spriteLayersController) {
+		const Size spriteLayerSize = spriteLayer.second->GetSize();
 
-		std::cout << "Layer: " << spriteLayer.GetName() << std::endl;
+		std::cout << "Layer: " << spriteLayer.second->GetName() << std::endl;
 
-		for (int chunk_id = 0; chunk_id < spriteLayer.GetChunksCount(); chunk_id++) {
-			std::weak_ptr<TinyChunk> weakChunk = spriteLayer[chunk_id];
+		for (int chunk_id = 0; chunk_id < spriteLayer.second->GetChunksCount(); chunk_id++) {
+			std::weak_ptr<TinyChunk> weakChunk = spriteLayer.second->operator[](chunk_id);
 			std::shared_ptr<TinyChunk> chunk = weakChunk.lock();
 
 			if (chunk == nullptr) {
@@ -51,7 +51,7 @@ void TinyMap::Initialize()
 						continue;
 					}
 
-					Tile* tile = tileset->GetTileById(tileId);
+					std::shared_ptr<Tile> tile = tileset->GetTileById(tileId).lock();
 
 					std::shared_ptr<ICollision> collision = tile ? tile->GetCollision().lock() : nullptr;
 					std::shared_ptr<Animation> tileAnimation = tile ? tile->GetAnimation().lock() : nullptr;
@@ -178,11 +178,11 @@ void TinyMap::Initialize()
 	}
 
 	//Classes
-	for (TinyClass& classes : tileMap->classesController) {
-		std::cout << "Class: " << classes.GetName() << std::endl;
-		std::cout << "Size: " << classes.GetSize() << std::endl;
+	for (auto& classes : tileMap->classesController) {
+		std::cout << "Class: " << classes.second->GetName() << std::endl;
+		std::cout << "Size: " << classes.second->GetSize() << std::endl;
 
-		for (std::weak_ptr<ICollision> item : classes) {
+		for (std::weak_ptr<ICollision> item : *classes.second) {
 			std::shared_ptr<ICollision> collision = item.lock();
 			if (collision == nullptr) {
 				continue;

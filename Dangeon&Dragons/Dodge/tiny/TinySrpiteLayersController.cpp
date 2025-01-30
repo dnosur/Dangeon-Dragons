@@ -2,10 +2,9 @@
 
 TinySrpiteLayersController::TinySrpiteLayersController()
 {
-	spriteLayers = std::vector<TinySpriteLayer>();
 }
 
-TinySrpiteLayersController::TinySrpiteLayersController(std::vector<TinySpriteLayer> spriteLayers)
+TinySrpiteLayersController::TinySrpiteLayersController(std::unordered_map<int, std::shared_ptr<TinySpriteLayer>> spriteLayers)
 {
 	this->spriteLayers = spriteLayers;
 }
@@ -19,7 +18,7 @@ TinySrpiteLayersController::~TinySrpiteLayersController()
 {
 }
 
-void TinySrpiteLayersController::LoadSpriteLayers(tinyxml2::XMLElement* element, std::vector<TinySpriteLayer>& spriteLayers)
+void TinySrpiteLayersController::LoadSpriteLayers(tinyxml2::XMLElement* element, std::unordered_map<int, std::shared_ptr<TinySpriteLayer>>& spriteLayers)
 {
 	for (tinyxml2::XMLElement* group = element->FirstChildElement("group");
 		group != nullptr;
@@ -30,7 +29,8 @@ void TinySrpiteLayersController::LoadSpriteLayers(tinyxml2::XMLElement* element,
 			layer = layer->NextSiblingElement("layer")
 			) {
 			if (layer) {
-				spriteLayers.push_back(TinySpriteLayer(layer));
+				std::unique_ptr<TinySpriteLayer> temp = std::make_unique<TinySpriteLayer>(layer);
+				spriteLayers[temp->GetId()] = std::move(temp);
 				std::cout << layer->Attribute("name") << " OK" << std::endl;
 				continue;
 			}
@@ -44,45 +44,46 @@ int TinySrpiteLayersController::GetSize()
 	return spriteLayers.size();
 }
 
-TinySpriteLayer* TinySrpiteLayersController::GetById(int id)
+std::weak_ptr<TinySpriteLayer> TinySrpiteLayersController::GetById(int id)
 {
-	for (int i = 0; i < spriteLayers.size(); i++)
+	auto it = spriteLayers.find(id);
+	if (it == spriteLayers.end())
 	{
-		if (spriteLayers[i].GetId() == id)
-		{
-			return &spriteLayers[i];
-		}
+		return {};
 	}
-	return nullptr;
+	return it->second;
 }
 
-std::vector<TinySpriteLayer>::iterator TinySrpiteLayersController::begin()
+std::unordered_map<int, std::shared_ptr<TinySpriteLayer>>::iterator TinySrpiteLayersController::begin()
 {
 	return spriteLayers.begin();
 }
 
-std::vector<TinySpriteLayer>::iterator TinySrpiteLayersController::end()
+std::unordered_map<int, std::shared_ptr<TinySpriteLayer>>::iterator TinySrpiteLayersController::end()
 {
 	return spriteLayers.end();
 }
 
-TinySpriteLayer* TinySrpiteLayersController::operator[](int index)
+std::weak_ptr<TinySpriteLayer> TinySrpiteLayersController::operator[](int index)
 {
 	if (index < 0 || index >= spriteLayers.size())
 	{
-		return nullptr;
+		return {};
 	}
-	return &spriteLayers[index];
+
+	auto it = spriteLayers.begin();
+	std::advance(it, index);
+	return it->second;
 }
 
-TinySpriteLayer* TinySrpiteLayersController::operator[](std::string name)
+std::weak_ptr<TinySpriteLayer> TinySrpiteLayersController::operator[](std::string name)
 {
-	for (int i = 0; i < spriteLayers.size(); i++)
+	for (auto& item : spriteLayers)
 	{
-		if (spriteLayers[i].GetName() == name)
+		if (item.second->GetName() == name)
 		{
-			return &spriteLayers[i];
+			return item.second;
 		}
 	}
-	return nullptr;
+	return {};
 }

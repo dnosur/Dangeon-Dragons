@@ -2,6 +2,8 @@
 #include "Tile.h"
 #include "TilesetProperties/TilesetPropertiesController.h"
 
+#include <unordered_map>
+
 class Tileset
 {
 	int firstgId;
@@ -19,20 +21,20 @@ class Tileset
 	std::string source;
 
 	Image image;
-	std::vector<Tile> tiles;
+	std::unordered_map<int, std::shared_ptr<Tile>> tiles;
 	TilesetPropertiesController tilesetProperties;
 public:
 	Tileset();
 	Tileset(
 		int firstgId, int tileWidth, int tileHeight, int width, int height,
 		int tileCount, int columns, char* name, char* source, 
-		Image image, std::vector<Tile> tile, TilesetPropertiesController tilesetProperties
+		Image image, std::unordered_map<int, std::shared_ptr<Tile>> tiles, TilesetPropertiesController tilesetProperties
 	);
 
 	Tileset(
 		int firstgId, int tileWidth, int tileHeight, int width, int height,
 		int tileCount, int columns, std::string name, std::string source,
-		Image image, std::vector<Tile> tile, TilesetPropertiesController tilesetProperties
+		Image image, std::unordered_map<int, std::shared_ptr<Tile>> tiles, TilesetPropertiesController tilesetProperties
 	);
 
 	int GetFirstgId();
@@ -50,7 +52,7 @@ public:
 	std::string GetName();
 	std::string GetSource();
 
-	Tile* GetTileById(int id);
+	std::weak_ptr<Tile> GetTileById(int id);
 
 	Image GetImage();
 
@@ -59,6 +61,6 @@ public:
 
 	TilesetPropertiesController* GetProperties();
 
-	Tile* operator[](int index);
+	std::weak_ptr<Tile> operator[](int index);
 };
 
