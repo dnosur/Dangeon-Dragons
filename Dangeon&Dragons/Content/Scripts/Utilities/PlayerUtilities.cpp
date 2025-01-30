@@ -17,6 +17,8 @@ void SetRaycastedObject(
 		}
 
 		target = raycastedObject;
-		_target->GetMaterial().lock()->SetDiffuse(*color);
+		if (_target && _target->GetMaterial().lock()) {
+			_target->GetMaterial().lock()->SetDiffuse(*color);
+		}
 	}
 }
