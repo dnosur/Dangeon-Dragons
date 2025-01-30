@@ -181,6 +181,7 @@ public:
 	float GetMinSpeed();
 
 	std::string_view GetTitle();
+	const std::string& GetTitleString();
 
 	float GetHealth();
 	float GetMaxHealth();

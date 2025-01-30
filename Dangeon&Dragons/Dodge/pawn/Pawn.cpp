@@ -37,7 +37,12 @@ void Pawn::MathPos(Coord& pos)
 	vertex2.X = glCenterX + halfWidth;
 	vertex2.Y = glCenterY + halfHeight;
 
-	vertexes = std::vector<Coord>({ vertex1, vertex2 });
+	if (!vertexes.empty()) {
+		vertexes.clear();
+	}
+
+	vertexes.push_back(vertex1); 
+	vertexes.push_back(vertex2);
 }
 
 void Pawn::MathSize(Size& size)
@@ -365,6 +370,11 @@ float Pawn::GetMinSpeed()
 }
 
 std::string_view Pawn::GetTitle()
+{
+	return title;
+}
+
+const std::string& Pawn::GetTitleString()
 {
 	return title;
 }
