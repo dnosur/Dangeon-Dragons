@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include <unordered_map>
 #include "IGameObject.h"
 
 __interface IGameObject;
@@ -9,8 +10,8 @@ enum Layer;
 
 static class GameObjects
 {
-	static std::vector<std::shared_ptr<IGameObject>> gameObjects;
-	static std::vector<std::shared_ptr<class Pawn>> pawns;
+	static std::unordered_map<std::string, std::shared_ptr<IGameObject>> gameObjects;
+	static std::unordered_map<std::string, std::shared_ptr<class Pawn>> pawns;
 public:
 	static void Add(IGameObject* gameObject);
 	static void Add(class Pawn* pawn);
@@ -21,24 +22,24 @@ public:
 	static void Add(std::vector<IGameObject*>* gameObjects);
 	static void Add(std::vector<std::weak_ptr<IGameObject>>* gameObjects);
 
-	static std::weak_ptr<IGameObject> GetByTitle(std::string title);
+	static std::weak_ptr<IGameObject> GetByTitle(std::string_view title);
 	template <typename T>
-	static std::weak_ptr<T> GetDynamicByTitle(std::string title);
+	static std::weak_ptr<T> GetDynamicByTitle(std::string_view title);
 
-	static std::weak_ptr<IGameObject> GetByTitle(std::string title, Layer layer);
+	static std::weak_ptr<IGameObject> GetByTitle(std::string_view title, Layer layer);
 	template <typename T>
-	static std::weak_ptr<T>  GetDynamicByTitle(std::string title, Layer layer);
+	static std::weak_ptr<T>  GetDynamicByTitle(std::string_view title, Layer layer);
 
-	static std::vector<std::shared_ptr<IGameObject>>* GetAll();
-	static std::vector<std::shared_ptr<IGameObject>>* GetAll(Layer layer);
+	static std::unordered_map<std::string, std::shared_ptr<IGameObject>>& GetAll();
+	static std::unordered_map<std::string, std::shared_ptr<IGameObject>>& GetAll(Layer layer);
 
-	static std::vector<std::shared_ptr<class Pawn>>* GetAllPawns();
-	static std::vector<std::shared_ptr<class Pawn>>* GetAllPawns(Layer layer);
+	static std::unordered_map<std::string, std::shared_ptr<class Pawn>>& GetAllPawns();
+	static std::unordered_map<std::string, std::shared_ptr<class Pawn>>& GetAllPawns(Layer layer);
 
 	template <typename T>
-	static std::vector<std::shared_ptr <T>>* GetAllDynamic();
+	static std::unordered_map<std::string, std::shared_ptr<T>>& GetAllDynamic();
 	template <typename T>
-	static std::vector<std::shared_ptr <T>>* GetAllDynamic(Layer layer);
+	static std::unordered_map<std::string, std::shared_ptr<T>>& GetAllDynamic(Layer layer);
 
 	static void Clear();
 
@@ -47,31 +48,27 @@ public:
 };
 
 template<typename T>
-inline std::weak_ptr<T> GameObjects::GetDynamicByTitle(std::string title)
+inline std::weak_ptr<T> GameObjects::GetDynamicByTitle(std::string_view title)
 {
-	for (int i = 0; i < gameObjects.size(); i++)
-	{
-		if (gameObjects[i]->GetTitle() == title)
-		{
-			if (auto casted = std::dynamic_pointer_cast<T>(gameObjects[i])) {
-				return casted;
-			}
-		}
+	auto it = gameObjects.find(std::string(title));
+	if (it != gameObjects.end()) {
+		return std::shared_ptr<T>(nullptr);
 	}
-	return std::shared_ptr<T>(nullptr);
+
+	return std::dynamic_pointer_cast<T>(it->second);
 }
 
 template<typename T>
-inline std::weak_ptr<T> GameObjects::GetDynamicByTitle(std::string title, Layer layer)
+inline std::weak_ptr<T> GameObjects::GetDynamicByTitle(std::string_view title, Layer layer)
 {
-	for (int i = 0; i < gameObjects.size(); i++)
+	for (auto& pair : gameObjects)
 	{
-		if (gameObjects[i]->GetTitle() == title &&
-			gameObjects[i]->GetLayer() == layer
+		if (pair.second->GetTitle() == title &&
+			pair.second->GetLayer() == layer
 			)
 		{
-			if (auto casted = std::dynamic_pointer_cast<T>(gameObjects[i])) {
-				return casted;
+			if (auto casted = std::dynamic_pointer_cast<T>(pair.second)) {
+				return std::dynamic_pointer_cast<T>(pair.second);
 			}
 		}
 	}
@@ -79,13 +76,12 @@ inline std::weak_ptr<T> GameObjects::GetDynamicByTitle(std::string title, Layer 
 }
 
 template<typename T>
-inline std::vector<std::shared_ptr <T>>* GameObjects::GetAllDynamic()
+inline std::unordered_map<std::string, std::shared_ptr<T>>& GameObjects::GetAllDynamic()
 {
-	std::vector<std::shared_ptr <T>>* temp = new std::vector<std::shared_ptr <T>>();
-	for (IGameObject*& gameObject : gameObjects)
+	std::unordered_map<std::string, std::shared_ptr<T>> temp;
+	for (auto& pair : gameObjects)
 	{
-		auto casted = std::dynamic_pointer_cast<T>(gameObject);
-		if (casted)
+		if (auto casted = std::dynamic_pointer_cast<T>(pair))
 		{
 			temp->push_back(casted);
 		}
@@ -94,13 +90,12 @@ inline std::vector<std::shared_ptr <T>>* GameObjects::GetAllDynamic()
 }
 
 template<typename T>
-inline std::vector<std::shared_ptr <T>>* GameObjects::GetAllDynamic(Layer layer)
+inline std::unordered_map<std::string, std::shared_ptr<T>>& GameObjects::GetAllDynamic(Layer layer)
 {
-	std::vector<std::shared_ptr <T>>* temp = new std::vector<std::shared_ptr <T>>();
+	std::unordered_map<std::string, std::shared_ptr<T>> temp;
 	for (IGameObject* gameObject : GetAll(layer))
 	{
-		auto casted = std::dynamic_pointer_cast<T>(gameObject);
-		if (casted)
+		if(auto casted = std::dynamic_pointer_cast<T>(gameObject))
 		{
 			temp->push_back(casted);
 		}

@@ -56,6 +56,8 @@ __interface IGameObject
 	void SetCollision(std::shared_ptr<ICollision> collision);
 	std::weak_ptr<ICollision> GetCollision();
 
+	const std::string& GetTitleString();
+
 	std::string_view GetTitle();
 	void SetTitle(std::string title);
 

@@ -533,7 +533,7 @@ void Skeleton::AIMovement()
 	}
 
 	if (!movements.empty()) {
-		std::shared_ptr<Movement>& movement = movements[movementIndex];
+		std::unique_ptr<Movement> movement = std::move(movements[movementIndex]);
 
 		action = movement->action;
 		moveDirection = movement->direction;
@@ -669,7 +669,7 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 			std::shared_ptr<Node> node = currentNode;
 			int i = 0;
 			while (node != nullptr) {
-				movements.push_back(node->movement);
+				movements.push_back(std::move(node->movement));
 				node = node->parent;
 				i++;
 			}

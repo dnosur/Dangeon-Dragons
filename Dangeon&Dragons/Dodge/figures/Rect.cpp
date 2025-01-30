@@ -549,6 +549,11 @@ std::weak_ptr<ICollision> Rect::GetCollision()
     return collision;
 }
 
+const std::string& Rect::GetTitleString()
+{
+    return title;
+}
+
 std::string_view Rect::GetTitle()
 {
     return title;
