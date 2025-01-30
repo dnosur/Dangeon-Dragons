@@ -1,25 +1,26 @@
 #pragma once
 #include "TinySpriteLayer.h"
+#include <unordered_map>
 
 class TinySrpiteLayersController
 {
-	std::vector<TinySpriteLayer> spriteLayers;
+	std::unordered_map<int, std::shared_ptr<TinySpriteLayer>> spriteLayers;
 public:
 	TinySrpiteLayersController();
-	TinySrpiteLayersController(std::vector<TinySpriteLayer> spriteLayers);
+	TinySrpiteLayersController(std::unordered_map<int, std::shared_ptr<TinySpriteLayer>> spriteLayers);
 	TinySrpiteLayersController(tinyxml2::XMLElement* element);
 	~TinySrpiteLayersController();
 
-	static void LoadSpriteLayers(tinyxml2::XMLElement* element, std::vector<TinySpriteLayer>& spriteLayers);
+	static void LoadSpriteLayers(tinyxml2::XMLElement* element, std::unordered_map<int, std::shared_ptr<TinySpriteLayer>>& spriteLayers);
 
 	int GetSize();
 
-	TinySpriteLayer* GetById(int id);
+	std::weak_ptr<TinySpriteLayer> GetById(int id);
 
-	std::vector<TinySpriteLayer>::iterator begin();
-	std::vector<TinySpriteLayer>::iterator end();
+	std::unordered_map<int, std::shared_ptr<TinySpriteLayer>>::iterator begin();
+	std::unordered_map<int, std::shared_ptr<TinySpriteLayer>>::iterator end();
 
-	TinySpriteLayer* operator[](int index);
-	TinySpriteLayer* operator[](std::string name);
+	std::weak_ptr<TinySpriteLayer> operator[](int index);
+	std::weak_ptr<TinySpriteLayer> operator[](std::string name);
 };
 

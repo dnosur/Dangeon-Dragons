@@ -85,7 +85,7 @@ int TinyClass::GetId()
 	return id;
 }
 
-std::string TinyClass::GetName()
+std::string_view TinyClass::GetName()
 {
 	return name;
 }

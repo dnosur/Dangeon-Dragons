@@ -128,7 +128,7 @@ int TinySpriteLayer::GetId()
 	return id;
 }
 
-std::string TinySpriteLayer::GetName()
+std::string_view TinySpriteLayer::GetName()
 {
 	return name;
 }

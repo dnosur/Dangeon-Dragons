@@ -2,10 +2,9 @@
 
 TinyClassController::TinyClassController()
 {
-	classes = std::vector<TinyClass>();
 }
 
-TinyClassController::TinyClassController(std::vector<TinyClass> classes)
+TinyClassController::TinyClassController(std::unordered_map<int, std::shared_ptr<TinyClass>> classes)
 {
 	this->classes = classes;
 }
@@ -19,23 +18,24 @@ TinyClassController::~TinyClassController()
 {
 }
 
-void TinyClassController::LoadClasses(tinyxml2::XMLElement* element, std::vector<TinyClass>& classes)
+void TinyClassController::LoadClasses(tinyxml2::XMLElement* element, std::unordered_map<int, std::shared_ptr<TinyClass>>& classes)
 {
 	for (tinyxml2::XMLElement* child = element->FirstChildElement("group");
 		child != nullptr;
 		child = child->NextSiblingElement("group")
 	)
 	{
-		classes.push_back(TinyClass(child));
+		std::unique_ptr<TinyClass> temp = std::make_unique<TinyClass>(child);
+		classes[temp->GetId()] = std::move(temp);
 	}
 }
 
-std::vector<TinyClass>::iterator TinyClassController::begin()
+std::unordered_map<int, std::shared_ptr<TinyClass>>::iterator TinyClassController::begin()
 {
 	return classes.begin();
 }
 
-std::vector<TinyClass>::iterator TinyClassController::end()
+std::unordered_map<int, std::shared_ptr<TinyClass>>::iterator TinyClassController::end()
 {
 	return classes.end();
 }
@@ -45,35 +45,33 @@ int TinyClassController::GetSize()
 	return classes.size();
 }
 
-TinyClass* TinyClassController::GetById(int id)
+std::weak_ptr<TinyClass> TinyClassController::GetById(int id)
 {
-	for (int i = 0; i < classes.size(); i++)
-	{
-		if (classes[i].GetId() == id)
-		{
-			return &classes[i];
-		}
+	auto it = classes.find(id);
+	if (it == classes.end()) {
+		return {};
 	}
-	return nullptr;
+	return it->second;
 }
 
-TinyClass* TinyClassController::operator[](std::string name)
+std::weak_ptr<TinyClass> TinyClassController::operator[](std::string_view name)
 {
-	for (int i = 0; i < classes.size(); i++)
-	{
-		if (classes[i].GetName() == name)
-		{
-			return &classes[i];
+	for (auto& it : classes) {
+		if (it.second->GetName() == name) {
+			return it.second;
 		}
 	}
-	return nullptr;
+	return {};
 }
 
-TinyClass* TinyClassController::operator[](int index)
+std::weak_ptr<TinyClass>TinyClassController::operator[](int index)
 {
 	if (index < 0 || index >= classes.size())
 	{
-		return nullptr;
+		return {};
 	}
-	return &classes[index];
+
+	auto it = classes.begin();
+	std::advance(it, index);
+	return it->second;
 }

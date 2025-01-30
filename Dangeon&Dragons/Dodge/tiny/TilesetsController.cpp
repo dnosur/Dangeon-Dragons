@@ -77,7 +77,7 @@ std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, std::stri
         return nullptr;
     }
 
-    std::vector<Tile> tiles;
+    std::unordered_map<int, std::shared_ptr<Tile>> tiles;
 
     //Tiles
     for (tinyxml2::XMLElement* tileset = tilesetElement->FirstChildElement("tile");
@@ -104,15 +104,15 @@ std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, std::stri
         tinyxml2::XMLElement* objectGroup = tileset->FirstChildElement("objectgroup");
 
         if (objectGroup == nullptr) {
-            Tile tile = Tile(
+            std::unique_ptr<Tile> tile = std::make_unique<Tile>(
                 tile_id,
                 nullptr,
                 animation_obj
             );
 
-            tile.SetTilesetProperties(tilesetProperties);
+            tile->SetTilesetProperties(tilesetProperties);
 
-            tiles.push_back(tile);
+            tiles[tile_id] = std::move(tile);
             continue;
         }
 
@@ -120,14 +120,14 @@ std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, std::stri
         tinyxml2::XMLElement* object = objectGroup->FirstChildElement("object");
 
         if (object == nullptr) {
-            Tile tile = Tile(
+            std::unique_ptr<Tile> tile = std::make_unique<Tile>(
                 tile_id,
                 nullptr,
                 animation_obj
             );
 
-			tile.SetTilesetProperties(tilesetProperties);
-            tiles.push_back(tile);
+			tile->SetTilesetProperties(tilesetProperties);
+            tiles[tile_id] = std::move(tile);
             continue;
         }
 
@@ -160,7 +160,7 @@ std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, std::stri
         tinyxml2::XMLElement* polygon = object->FirstChildElement("polygon");
 
         if (polygon == nullptr) {
-            Tile tile = Tile(
+            std::unique_ptr<Tile> tile = std::make_unique<Tile>(
                 tile_id,
                 std::make_shared<BoxCollision>(
                     object_pos,
@@ -172,15 +172,13 @@ std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, std::stri
                 animation_obj
             );
 
-			tile.SetTilesetProperties(tilesetProperties);
+			tile->SetTilesetProperties(tilesetProperties);
 
-            tiles.push_back(
-				tile
-            );
+            tiles[tile_id] = std::move(tile);
             continue;
         }
 
-        Tile tile = Tile(
+        std::unique_ptr<Tile> tile = std::make_unique<Tile>(
             tile_id,
             std::make_shared<PoligonCollision>(
                 TinyXml::ParsePolygon(polygon->Attribute("points"), object_pos),
@@ -191,11 +189,9 @@ std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, std::stri
             animation_obj
         );
 
-        tile.SetTilesetProperties(tilesetProperties);
+        tile->SetTilesetProperties(tilesetProperties);
 
-        tiles.push_back(
-            tile
-        );
+        tiles[tile_id] = std::move(tile);
     }
 
     return std::make_shared<Tileset>(
@@ -212,7 +208,7 @@ int TilesetsController::GetSize()
 
 std::weak_ptr<Tileset> TilesetsController::GetTilesetByTileId(int tileId)
 {
-    for (std::shared_ptr<Tileset> tileset : tilesets) {
+    for (std::shared_ptr<Tileset>& tileset : tilesets) {
 		if (tileset->IsContains(tileId)) {
 			return tileset;
 		}

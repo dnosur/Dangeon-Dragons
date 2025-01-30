@@ -1,7 +1,8 @@
 #pragma once
 #include "TinyXml.h"
-
 #include "Tileset.h"
+
+#include <unordered_map>
 
 class TilesetsController
 {
