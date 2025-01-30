@@ -20,7 +20,7 @@ class Skeleton
     Coord offset;
 
     //� ���������� ��������� � �����!
-    std::vector<std::shared_ptr<Movement>> movements;
+    std::vector<std::unique_ptr<Movement>> movements;
 	int movementIndex;
 
     std::mutex pathMutex;
