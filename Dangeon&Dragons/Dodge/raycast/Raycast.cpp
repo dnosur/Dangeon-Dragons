@@ -7,16 +7,16 @@ std::weak_ptr<IGameObject> Raycast::RaycastFirst(std::unique_ptr<Ray> ray, bool 
 		drawRay(ray, debugColor);
 	}
 
-	for (std::weak_ptr<IGameObject> object : *GameObjects::GetAll()) {
-		if (!object.lock()) {
+	for (auto& object : GameObjects::GetAll()) {
+		if (!object.second) {
 			continue;
 		}
 
-		if (IsObjectBetween(ray, object)) {
-			return object;
+		if (IsObjectBetween(ray, object.second)) {
+			return object.second;
 		}
 	}
-	return std::shared_ptr<IGameObject>(nullptr);
+	return {};
 }
 
 std::vector<std::weak_ptr<IGameObject>> Raycast::RaycastAll(std::unique_ptr<Ray> ray, bool debug, Color debugColor)
@@ -26,13 +26,13 @@ std::vector<std::weak_ptr<IGameObject>> Raycast::RaycastAll(std::unique_ptr<Ray>
 	}
 
 	std::vector<std::weak_ptr<IGameObject>> result;
-	for (std::shared_ptr<IGameObject>& object : *GameObjects::GetAll()) {
-		if (!object.get()) {
+	for (auto& object : GameObjects::GetAll()) {
+		if (!object.second) {
 			continue;
 		}
 
-		if (IsPointBetween(ray, object.get()->GetPos())) {
-			result.push_back(object);
+		if (IsPointBetween(ray, object.second->GetPos())) {
+			result.push_back(object.second);
 		}
 	}
 
