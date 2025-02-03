@@ -21,8 +21,7 @@ void SpriteAnimation::LoadSpritesFromFolder()
 SpriteAnimation::SpriteAnimation()
 {
 	window = nullptr;
-	folder = nullptr;
-	title = (char*)"Undefined";
+	title = "Undefined";
 
 	rootTile = nullptr;
 	currentFrameTitle = nullptr;
@@ -148,7 +147,7 @@ std::string SpriteAnimation::GetTitleString()
 	return title;
 }
 
-std::vector<Image> SpriteAnimation::GetSprites()
+std::unordered_map<std::string, Image> SpriteAnimation::GetSprites()
 {
 	return sprites.GetImages();
 }

@@ -2,32 +2,15 @@
 
 std::shared_ptr<Image> ImagesController::defaultImage;
 
-int ImagesController::GetIndexByTitle(std::string& title)
+int ImagesController::GetIndexByTitle(std::string_view title)
 {
-    int index = 0;
-    for (Image& img : images) {
-        if (title == img.title) {
-            return index;
-        }
-        index++;
-    }
-
-    return -1;
+    auto it = images.find(std::string(title));
+    return it != images.end() ? std::distance(images.begin(), it) : -1;
 }
 
 void ImagesController::ChangeIfExist(Image image)
 {
-    if (image.title.empty()) {
-        return;
-    }
-
-    const int index = GetIndexByTitle(image.title);
-    if (index < 0) {
-        images.push_back(image);
-        return;
-    }
-
-    images[index] = image;
+    images[image.title] = image;
 }
 
 void ImagesController::Draw(Image& item, Coord& position, Color& color, Size& windowSize, Size& size, bool reverse)
@@ -103,7 +86,7 @@ void ImagesController::Draw(Image& item, Coord& position, Color& color, Size& wi
     glUseProgram(0);
 }
 
-Image ImagesController::LoadImg(std::string path, std::string title)
+Image ImagesController::LoadImg(std::string_view path, std::string title)
 {
     GLuint textureID;
     glGenTextures(1, &textureID);
@@ -112,7 +95,7 @@ Image ImagesController::LoadImg(std::string path, std::string title)
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true);
 
-    unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load(path.data(), &width, &height, &nrChannels, 0);
     if (!data) {
         std::cout << "stbi_load error: " << stbi_failure_reason() << std::endl;
     }
@@ -142,7 +125,7 @@ Image ImagesController::LoadImg(std::string path, std::string title)
 
     return Image(
         title,
-        path,
+        std::string(path),
         textureID,
         Size(
             width,
@@ -165,7 +148,23 @@ std::weak_ptr<Image> ImagesController::GetDafaultImage()
     return defaultImage;
 }
 
-void ImagesController::Load(std::string path, std::string title, Shader* shader)
+void ImagesController::LoadFromFolder(std::string_view path)
+{
+    if (!fs::exists(path) || !fs::is_directory(path)) {
+        std::cerr << "Directory does not exist: " << path << std::endl;
+        return;
+    }
+
+    for (const auto& entry : fs::directory_iterator(path)) {
+        if (fs::is_regular_file(entry.path())) {
+            std::string name = entry.path().filename().string();
+            std::cout << "File: " << entry.path() << " " << name << std::endl;
+            Load(entry.path().string().c_str(), name.c_str());
+        }
+    }
+}
+
+void ImagesController::Load(std::string_view path, std::string title, Shader* shader)
 {
     Image image = ImagesController::LoadImg(path, title);
     if (shader != nullptr) {
@@ -176,7 +175,7 @@ void ImagesController::Load(std::string path, std::string title, Shader* shader)
 }
 
 void ImagesController::LoadAndDrawImage(
-    std::string path, std::string title, 
+    std::string_view path, std::string title,
     Shader* shader, Coord position, 
     Size size, Size windowSize
 )
@@ -218,17 +217,17 @@ void ImagesController::LoadAndDrawImage(
     ChangeIfExist(image_obj);
 }
 
-void ImagesController::DrawImage(std::string title, Coord position, Size size, Size windowSize, Color color, bool reverse)
+void ImagesController::DrawImage(std::string_view title, Coord position, Size size, Size windowSize, Color color, bool reverse)
 {
     const int index = GetIndexByTitle(title);
     if (index < 0) {
         return;
     }
 
-    Draw(images[index], position, color, windowSize, size, reverse);
+    Draw(*this->operator[](index), position, color, windowSize, size, reverse);
 }
 
-std::vector<Image> ImagesController::GetImages()
+const std::unordered_map<std::string, Image>& ImagesController::GetImages()
 {
     return images;
 }
@@ -237,7 +236,7 @@ void ImagesController::SetImages(std::vector<Image> images)
 {
     Clear();
     for (Image& image : images) {
-        this->images.push_back(image);
+        this->images[image.title] = image;
     }
 }
 
@@ -259,15 +258,13 @@ Image* ImagesController::operator[](int index)
     if (index < 0 || index >= GetSize()) {
         return nullptr;
     }
-    return &images[index];
+    auto it = images.begin();
+    std::advance(it, index);
+    return &it->second;
 }
 
-Image* ImagesController::operator[](std::string title)
+Image* ImagesController::operator[](std::string_view title)
 {
-    for (Image& image : images) {
-        if (title == image.title) {
-            return &image;
-        }
-    }
-    return nullptr;
+    auto it = images.find(std::string(title));
+    return it != images.end() ? &it->second : nullptr;
 }

@@ -59,7 +59,7 @@ public:
 
 	std::string GetTitleString();
 
-	std::vector<Image> GetSprites();
+	std::unordered_map<std::string, Image> GetSprites();
 	void SetSprites(std::vector<Image> sprites);
 
 	std::string_view GetFolder();

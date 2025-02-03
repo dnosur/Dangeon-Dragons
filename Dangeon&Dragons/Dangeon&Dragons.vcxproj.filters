@@ -243,6 +243,12 @@
     <ClCompile Include="Dodge\Sides.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Content\Scripts\Screens\LoadingScreen\Screen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Scripts\Screens\MainWindowLoading\MainWindowLoading.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dodge\audio\Audio.h">
@@ -501,6 +507,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dodge\Sides.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\Screens\LoadingScreen\Screen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\Screens\MainWindowLoading\MainWindowLoading.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

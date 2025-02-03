@@ -211,6 +211,7 @@
     <ClCompile Include="Dodge\threads\GameThreads.cpp" />
     <ClCompile Include="Dodge\threads\Thread.cpp" />
     <ClCompile Include="Content\Scripts\Utilities\RaycastUtilities.cpp" />
+    <ClCompile Include="MainWindowLoading.cpp" />
     <ClCompile Include="Content\Scripts\Screens\LoadingScreen\Screen.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -301,6 +302,7 @@
     <ClInclude Include="Dodge\threads\GameThreads.h" />
     <ClInclude Include="Dodge\threads\Thread.h" />
     <ClInclude Include="Content\Scripts\Utilities\RaycastUtilities.h" />
+    <ClInclude Include="MainWindowLoading.h" />
     <ClInclude Include="Content\Scripts\Screens\LoadingScreen\Screen.h" />
   </ItemGroup>
   <ItemGroup>
