@@ -90,7 +90,7 @@ void MainWindow::Update()
         GetSize()
     );
 
-    GameObjects::Add(&solidCollisions);
+   GameObjects::Add(&solidCollisions);
 
     std::unique_ptr<HpBar> hpBar = std::make_unique<HpBar>(*this);
 
@@ -122,7 +122,7 @@ void MainWindow::Update()
         wonderWold->Update();
         hpBar->Update();
 
-        sampleFont->RenderText("123!", Coord(100, 100), 4.0f, Color(1.0f, .0f, .0f, .5f));
+        sampleFont->RenderText("Work in progress", Coord(30, 30), 4.0f, Color(1.0f, .0f, .0f, .5f));
 
         mouse.Update();
         keyboard.Update();
