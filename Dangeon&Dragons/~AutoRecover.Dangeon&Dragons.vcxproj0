@@ -134,7 +134,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Content\Scripts\Screens\MainWindowLoading\MainWindowLoading.cpp" />
     <ClCompile Include="Content\Scripts\UI\HpBar\HpBar.cpp" />
     <ClCompile Include="Dodge\camera\Camera.cpp" />
     <ClCompile Include="Dodge\animator\AnimationsFactory.cpp" />
@@ -211,10 +210,9 @@
     <ClCompile Include="Dodge\threads\GameThreads.cpp" />
     <ClCompile Include="Dodge\threads\Thread.cpp" />
     <ClCompile Include="Content\Scripts\Utilities\RaycastUtilities.cpp" />
-    <ClCompile Include="Content\Scripts\Screens\LoadingScreen\Screen.cpp" />
+    <ClCompile Include="MainWindowLoading.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Content\Scripts\Screens\MainWindowLoading\MainWindowLoading.h" />
     <ClInclude Include="Content\Scripts\UI\HpBar\HpBar.h" />
     <ClInclude Include="Dodge\audio\AudioStates.h" />
     <ClInclude Include="Dodge\camera\Camera.h" />
@@ -301,7 +299,7 @@
     <ClInclude Include="Dodge\threads\GameThreads.h" />
     <ClInclude Include="Dodge\threads\Thread.h" />
     <ClInclude Include="Content\Scripts\Utilities\RaycastUtilities.h" />
-    <ClInclude Include="Content\Scripts\Screens\LoadingScreen\Screen.h" />
+    <ClInclude Include="MainWindowLoading.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dodge\project properties.txt" />
