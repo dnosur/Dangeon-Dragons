@@ -237,16 +237,31 @@
     <ClCompile Include="Content\Scripts\Utilities\RaycastUtilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Content\Scripts\UI\HpBar\HpBar.cpp">
+    <ClCompile Include="Content\Scripts\UI\ProgressBar\HpBar\HpBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dodge\Sides.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Content\Scripts\Screens\LoadingScreen\Screen.cpp">
+    <ClCompile Include="Content\Scripts\Screens\Screen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Content\Scripts\Screens\MainWindowLoading\MainWindowLoading.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\utilities\string.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Scripts\Screens\LoadingScreen\LoadingScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Scripts\UI\ProgressBar\ProgressBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Scripts\UI\ProgressBar\TextureProgressBar\TextureProgressBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Scripts\UI\ProgressBar\utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -503,16 +518,31 @@
     <ClInclude Include="Content\Scripts\Utilities\RaycastUtilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Content\Scripts\UI\HpBar\HpBar.h">
+    <ClInclude Include="Content\Scripts\UI\ProgressBar\HpBar\HpBar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dodge\Sides.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Content\Scripts\Screens\LoadingScreen\Screen.h">
+    <ClInclude Include="Content\Scripts\Screens\Screen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Content\Scripts\Screens\MainWindowLoading\MainWindowLoading.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\utilities\string.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\Screens\LoadingScreen\LoadingScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\UI\ProgressBar\ProgressBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\UI\ProgressBar\TextureProgressBar\TextureProgressBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\UI\ProgressBar\utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

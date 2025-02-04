@@ -1,8 +1,8 @@
 #include "HpBar.h"
-#include "../../../../Dodge/images/SlicedImage.h"
-#include "../../../../Dodge/Sides.h"
+#include "../../../../../Dodge/images/SlicedImage.h"
+#include "../../../../../Dodge/Sides.h"
 
-void HpBar::Draw() const
+void HpBar::Draw()
 {
     line->Update();
     bar->Update();
@@ -11,13 +11,13 @@ void HpBar::Draw() const
     line->SetSideSize(Sides(0, 0, 0, 0));
 }
 
-HpBar::HpBar(Window& window): window(&window)
+void HpBar::Initialize()
 {
     bar = std::make_unique<Rect>(
         "hpBar",
-        window,
-        Coord(150, 30),
-        Size(200, 100),
+        *window,
+        ProgressBar::GetPos(),
+        ProgressBar::GetSize(),
         Color(1.0f, 1.0f, 1.0f, 1.0f)
     );
 
@@ -40,7 +40,7 @@ HpBar::HpBar(Window& window): window(&window)
 
     line = std::make_unique<Rect>(
         "hpLine",
-        window,
+        *window,
         Coord(150, 35),
         Size(120, 10),
         Color(1.0f, 0, 0)
@@ -48,28 +48,36 @@ HpBar::HpBar(Window& window): window(&window)
 
     icon = std::make_unique<Rect>(
         "hpIcon",
-		window,
-		Coord(45, 35),
-		Size(32, 32),
-		Color(1.0f, 1.0f, 1.0f, 1.0f)
+        *window,
+        Coord(45, 35),
+        Size(32, 32),
+        Color(1.0f, 1.0f, 1.0f, 1.0f)
     );
 
-	icon->GetMaterial().lock()->SetDiffuseMap(
-		std::make_unique<Image>(
-			ImagesController::LoadImg(
-				"Content/UI/Cryo's Mini GUI/GUI/Pngs/icons.png",
-				"hpIcon"
-			)
-		)
-	);
+    icon->GetMaterial().lock()->SetDiffuseMap(
+        std::make_unique<Image>(
+            ImagesController::LoadImg(
+                "Content/UI/Cryo's Mini GUI/GUI/Pngs/icons.png",
+                "hpIcon"
+            )
+        )
+    );
 
-	icon->GetMaterial().lock()->SetDiffuseMapVerticies(
-		SlicedImage::CalculateTextureVertexes(
-			Size(32, 32),
-			icon->GetMaterial().lock()->GetDiffuseMap().lock()->size,
-			Coord(0, 0)
-		)
-	);
+
+    icon->GetMaterial().lock()->SetDiffuseMapVerticies(
+        SlicedImage::CalculateTextureVertexes(
+            Size(32, 32),
+            icon->GetMaterial().lock()->GetDiffuseMap().lock()->size,
+            Coord(0, 0)
+        )
+    );
+}
+
+HpBar::HpBar(Window& window, int hp)
+    : window(&window), hp(hp), 
+    ProgressBar(Coord(150, 30), Size(200, 100))
+{
+    Initialize();
 }
 
 void HpBar::SetPos(Coord pos)
@@ -98,14 +106,15 @@ void HpBar::SetSides(Sides sides)
 
 void HpBar::SetHp(int hp)
 {
+    this->hp = hp;
 }
 
 int HpBar::GetHp() const
 {
-	return 0;
+	return hp;
 }
 
-void HpBar::Update() const
+void HpBar::Update()
 {
 	Draw();
 }

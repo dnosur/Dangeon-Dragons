@@ -7,6 +7,8 @@
 #include <unordered_map>
 #include <filesystem>
 
+#include <functional>
+
 #include "../Size.h"
 #include "../Coord.h"
 #include "Image.h"

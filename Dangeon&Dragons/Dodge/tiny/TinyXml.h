@@ -1,6 +1,9 @@
 #pragma once
 #include <filesystem>
 #include <iostream>
+#include <memory>
+
+#include "../../Content/Scripts/UI/ProgressBar/ProgressBar.h"
 
 struct TileMap;
 
@@ -27,7 +30,11 @@ static class TinyXml
 	static std::string root_dir;
 public:
 	static tinyxml2::XMLError ReadDoc(tinyxml2::XMLDocument& doc, std::string path);
-	static std::unique_ptr<TileMap> LoadMap(std::string path, std::string title = "sampleMap");
+	static std::unique_ptr<TileMap> LoadMap(
+		std::string path, 
+		std::string title = "sampleMap", 
+		std::weak_ptr<ProgressBar> progressBar = {}
+	);
 
 	static std::vector<Coord> ParsePolygon(std::string polygon, const Coord& offset);
 	static std::string GetPathToTileSource(std::string path);

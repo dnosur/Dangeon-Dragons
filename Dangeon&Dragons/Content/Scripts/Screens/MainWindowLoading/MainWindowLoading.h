@@ -1,25 +1,15 @@
 #pragma once
-#include "../LoadingScreen/Screen.h"
+#include "../LoadingScreen/LoadingScreen.h"
 
-class MainWindowLoading : protected Screen
+class MainWindowLoading : protected LoadingScreen
 {
-	int maxValue;
-	int currentValue;
-	bool isFinished;
-
 	void Initialize() override;
 	void Draw() override;
 public:
-	MainWindowLoading(int maxValue = 100, int currentValue = 0, bool isFinished = false);
+	MainWindowLoading(int maxValue = 100);
 	~MainWindowLoading() = default;
 
-	void SetMaxValue(int value);
-	const int& GetMaxValue() const;
-
-	void SetCurrentValue(int value);
-	const int& GetCurrentValue() const;
-
-	bool IsFinished();
+	std::weak_ptr<ProgressBar> GetProgressBar();
 
 	void Update() override;
 };

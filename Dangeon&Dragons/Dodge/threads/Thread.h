@@ -22,6 +22,8 @@ public:
 
 	std::string_view GetTitle();
 
+	std::mutex*& GetMutex();
+
 	bool IsJoinable();
 	bool operator==(Thread* thread);
 };

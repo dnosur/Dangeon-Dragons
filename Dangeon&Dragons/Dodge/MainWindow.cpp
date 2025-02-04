@@ -9,7 +9,11 @@
 #include "../Content/Scripts/Characters/Enemys/Skeleton.h"
 
 #include "../Dodge/GameObjects.h"
-#include "../Content/Scripts/UI/HpBar/HpBar.h"
+#include "../Content/Scripts/UI/ProgressBar/HpBar/HpBar.h"
+
+#include "../Content/Scripts/Screens/MainWindowLoading/MainWindowLoading.h"
+#include "threads/Thread.h"
+#include "../Content/Scripts/UI/ProgressBar/utilities.h"
 
 MainWindow::MainWindow(): Window()
 {
@@ -62,35 +66,46 @@ void MainWindow::Initialize()
 
 void MainWindow::Update()
 {
-    gameStatus = GameStatuses::Start;
+	gameStatus = GameStatuses::Loading;
+    std::shared_ptr<MainWindowLoading> mainWindowLoading = std::make_shared<MainWindowLoading>(6);
+    std::unique_ptr<WonderWold> wonderWold;
 
-    std::unique_ptr<WonderWold> wonderWold = std::make_unique<WonderWold>(
-        this, 
-        TinyXml::LoadMap(
-            "Content/Maps/world/world.tmx", 
-            "wonder_world"
-        ),
-        Coord(100, -400)
-    );
-
-    std::vector<std::weak_ptr<IGameObject>> solidCollisions = wonderWold->GetClassesByType("SolidCollision");
-
-    if (!solidCollisions.empty()) {
-        WindowPointerController::SetPointer(
-            window, 
-            WindowPointer<std::vector<std::weak_ptr<IGameObject>>>(
-                "SolidCollisions", &solidCollisions
-            )
+    Thread loadingThread = Thread("loading", [mainWindowLoading, &wonderWold, this](){
+        glfwMakeContextCurrent(window);
+        std::weak_ptr<ProgressBar> progressBar = mainWindowLoading->GetProgressBar();
+        wonderWold = std::make_unique<WonderWold>(
+            this,
+            TinyXml::LoadMap(
+                "Content/Maps/world/world.tmx",
+                "wonder_world",
+                progressBar
+            ),
+            Coord(100, -400)
         );
-    }
+
+        std::vector<std::weak_ptr<IGameObject>> solidCollisions = wonderWold->GetClassesByType("SolidCollision");
+
+        if (!solidCollisions.empty()) {
+            WindowPointerController::SetPointer(
+                window,
+                WindowPointer<std::vector<std::weak_ptr<IGameObject>>>(
+                    "SolidCollisions", &solidCollisions
+                )
+            );
+        }   
+
+        GameObjects::Add(&solidCollisions);
+        NextProgressBarValue(progressBar);
+
+        glfwMakeContextCurrent(nullptr);
+    });
+    loadingThread.Detach();
 
     std::unique_ptr<Font> sampleFont = std::make_unique<Font>(
         "NotJamGlasgow",
         "Content/Fonts/Not Jam Glasgow 13/Not Jam Glasgow 16.ttf",
         GetSize()
     );
-
-   GameObjects::Add(&solidCollisions);
 
     std::unique_ptr<HpBar> hpBar = std::make_unique<HpBar>(*this);
 
@@ -105,27 +120,38 @@ void MainWindow::Update()
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        if (gameStatus == GameStatuses::Restart) {
+        if (gameStatus == GameStatuses::Loading && mainWindowLoading->GetProgressBar().lock()->IsFinished()) {
+			gameStatus = GameStatuses::Start;
+            mainWindowLoading.reset();
         }
 
-        images.DrawImage(
-            "ground",
-            Coord(0, 0),
-            GetSize(),
-            GetSize(),
-            Color(0.4f, 0.4f, 0.4f)
-        );
+        if (gameStatus == GameStatuses::Loading) {
+            mainWindowLoading->Update();
+        }
+
+        if (gameStatus == GameStatuses::Restart) {
+        }
 
         if (gameStatus == GameStatuses::End) {
         }
 
-        wonderWold->Update();
-        hpBar->Update();
+        if (gameStatus == GameStatuses::Start) {
+            images.DrawImage(
+                "ground",
+                Coord(0, 0),
+                GetSize(),
+                GetSize(),
+                Color(0.4f, 0.4f, 0.4f)
+            );
 
-        sampleFont->RenderText("Work in progress", Coord(30, 30), 4.0f, Color(1.0f, .0f, .0f, .5f));
+            //wonderWold->Update();
+            //hpBar->Update();
 
-        mouse.Update();
-        keyboard.Update();
+            //sampleFont->RenderText("Work in progress", Coord(30, 30), 4.0f, Color(1.0f, .0f, .0f, .5f));
+
+            //mouse.Update();
+            //keyboard.Update();
+		}
 
         //Debug();  // ֲûגמהטל סטלגמכ
 

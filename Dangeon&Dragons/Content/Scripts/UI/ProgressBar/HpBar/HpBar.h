@@ -1,7 +1,9 @@
 #pragma once
-#include "../../../../Dodge/figures/Rect.h"
+#include "../../../../../Dodge/figures/Rect.h"
+#include "../../ProgressBar/ProgressBar.h"
 
-class HpBar
+class HpBar 
+	: public ProgressBar
 {
 	std::unique_ptr<Rect> bar;
 	std::unique_ptr<Rect> line;
@@ -11,9 +13,10 @@ class HpBar
 
 	int hp;
 
-	void Draw() const;
+	void Draw() override;
+	void Initialize() override;
 public:
-	HpBar(Window& window);
+	HpBar(Window& window, int hp = 100);
 	~HpBar() = default;
 
 	void SetPos(Coord pos);
@@ -27,5 +30,5 @@ public:
 	void SetHp(int hp);
 	int GetHp() const;
 
-	void Update() const;
+	void Update() override;
 };

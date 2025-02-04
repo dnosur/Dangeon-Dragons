@@ -2,8 +2,9 @@
 enum class GameStatuses {
 	Stop = 0,
 	Initialize = 1,
-	Start = 2,
-	Pause = 3,
-	Restart = 4,
-	End = 5
+	Loading = 2,
+	Start = 3,
+	Pause = 4,
+	Restart = 5,
+	End = 6
 };

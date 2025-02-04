@@ -1,48 +1,36 @@
 #include "MainWindowLoading.h"
+#include <filesystem>
+
+#include"../../../../Dodge/utilities/string.h"
+#include "../../UI/ProgressBar/TextureProgressBar/TextureProgressBar.h"
 
 void MainWindowLoading::Initialize()
 {
-	
 }
 
 void MainWindowLoading::Draw()
 {
 }
-
-MainWindowLoading::MainWindowLoading(
-	int maxValue, 
-	int currentValue, 
-	bool isFinished
-) : maxValue(maxValue), currentValue(currentValue), isFinished(isFinished)
+	
+MainWindowLoading::MainWindowLoading(int maxValue) 
+	: LoadingScreen(
+		std::make_unique<TextureProgressBar>(
+			Coord(0, 0),
+			Size(1280, 720),
+			"Content/UI/LoadBar/",
+			maxValue
+		)
+	)
 {
 	Initialize();
 }
 
-void MainWindowLoading::SetMaxValue(int value)
+std::weak_ptr<ProgressBar> MainWindowLoading::GetProgressBar()
 {
-	this->maxValue = value;
-}
-
-const int& MainWindowLoading::GetMaxValue() const
-{
-	return this->maxValue;
-}
-
-void MainWindowLoading::SetCurrentValue(int value)
-{
-	this->currentValue = value;
-}
-
-const int& MainWindowLoading::GetCurrentValue() const
-{
-	return this->currentValue;
-}
-
-bool MainWindowLoading::IsFinished()
-{
-	return isFinished;
+	return progressBar;
 }
 
 void MainWindowLoading::Update()
 {
+	progressBar->Update();
 }

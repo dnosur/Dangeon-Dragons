@@ -135,7 +135,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Content\Scripts\Screens\MainWindowLoading\MainWindowLoading.cpp" />
-    <ClCompile Include="Content\Scripts\UI\HpBar\HpBar.cpp" />
+    <ClCompile Include="Content\Scripts\UI\ProgressBar\HpBar\HpBar.cpp" />
     <ClCompile Include="Dodge\camera\Camera.cpp" />
     <ClCompile Include="Dodge\animator\AnimationsFactory.cpp" />
     <ClCompile Include="Dodge\Layers.h" />
@@ -211,11 +211,16 @@
     <ClCompile Include="Dodge\threads\GameThreads.cpp" />
     <ClCompile Include="Dodge\threads\Thread.cpp" />
     <ClCompile Include="Content\Scripts\Utilities\RaycastUtilities.cpp" />
-    <ClCompile Include="Content\Scripts\Screens\LoadingScreen\Screen.cpp" />
+    <ClCompile Include="Content\Scripts\Screens\Screen.cpp" />
+    <ClCompile Include="Dodge\utilities\string.cpp" />
+    <ClCompile Include="Content\Scripts\Screens\LoadingScreen\LoadingScreen.cpp" />
+    <ClCompile Include="Content\Scripts\UI\ProgressBar\ProgressBar.cpp" />
+    <ClCompile Include="Content\Scripts\UI\ProgressBar\TextureProgressBar\TextureProgressBar.cpp" />
+    <ClCompile Include="Content\Scripts\UI\ProgressBar\utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Content\Scripts\Screens\MainWindowLoading\MainWindowLoading.h" />
-    <ClInclude Include="Content\Scripts\UI\HpBar\HpBar.h" />
+    <ClInclude Include="Content\Scripts\UI\ProgressBar\HpBar\HpBar.h" />
     <ClInclude Include="Dodge\audio\AudioStates.h" />
     <ClInclude Include="Dodge\camera\Camera.h" />
     <ClInclude Include="Dodge\animator\AnimationsFactory.h" />
@@ -301,7 +306,12 @@
     <ClInclude Include="Dodge\threads\GameThreads.h" />
     <ClInclude Include="Dodge\threads\Thread.h" />
     <ClInclude Include="Content\Scripts\Utilities\RaycastUtilities.h" />
-    <ClInclude Include="Content\Scripts\Screens\LoadingScreen\Screen.h" />
+    <ClInclude Include="Content\Scripts\Screens\Screen.h" />
+    <ClInclude Include="Dodge\utilities\string.h" />
+    <ClInclude Include="Content\Scripts\Screens\LoadingScreen\LoadingScreen.h" />
+    <ClInclude Include="Content\Scripts\UI\ProgressBar\ProgressBar.h" />
+    <ClInclude Include="Content\Scripts\UI\ProgressBar\TextureProgressBar\TextureProgressBar.h" />
+    <ClInclude Include="Content\Scripts\UI\ProgressBar\utilities.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dodge\project properties.txt" />
