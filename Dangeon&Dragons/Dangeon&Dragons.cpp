@@ -35,11 +35,15 @@ int main(int argc, char** argv)
         return -1;
 
     SoundSystem soundSystem;
-    MainWindow main(Size(1280, 720), "Sample", Color(.4f, .6f, 0));
+    std::shared_ptr<Window> main = std::make_shared<MainWindow>(
+        Size(1280, 720), 
+        "Sample", 
+        Color(.4f, .6f, 0)
+    );
 
-    main.MakeContext();
-    main.Initialize();
-    main.Update();
+    main->MakeContext();
+    main->Initialize();
+    main->Update();
 
     _CrtDumpMemoryLeaks();
     return 0;
