@@ -25,10 +25,6 @@ MainWindow::MainWindow(Size size, std::string title, Color backgroundColor, GLFW
     gameStatus = GameStatuses::Stop;
 }
 
-MainWindow::~MainWindow()
-{
-}
-
 void MainWindow::Initialize()
 {
     if (!gladLoadGL()) {
@@ -44,23 +40,23 @@ void MainWindow::Initialize()
         ImagesController::LoadImg("Content/Images/defaultObj.jpg", "default")
     ));
 
-    images.Load("Content/Images/Background/ground.png", "ground");
+    images->Load("Content/Images/Background/ground.png", "ground");
 
     //std::string sample = "123";
     //std::unique_ptr<std::string> title;
     //title.reset(&sample);
 
-    WindowPointerController::SetPointer(window, WindowPointer<Mouse>("Mouse", &mouse));
-    WindowPointerController::SetPointer(window, WindowPointer<Keyboard>("Keyboard", &keyboard));
+    WindowPointerController::SetPointer(WindowPointer<Mouse>("Mouse", mouse));
+    WindowPointerController::SetPointer(WindowPointer<Keyboard>("Keyboard", keyboard));
 
-    WindowPointerController::SetPointer(window, WindowPointer<AudioController>("audioController", &audioController));
+    WindowPointerController::SetPointer(WindowPointer<AudioController>("audioController", audioController));
 
-    WindowPointerController::SetPointer(window, WindowPointer<Window>("MainWindow", this));
+    WindowPointerController::SetPointer(WindowPointer<Window>("MainWindow", weak_from_this()));
 
-    WindowPointerController::SetPointer(window, WindowPointer<GameStatuses>("GameStatus", &gameStatus));
+    WindowPointerController::SetPointer(WindowPointer<GameStatuses>("GameStatus", &gameStatus));
 
     glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
-       WindowPointerController::GetValue<Window>(window, "MainWindow")->GetValue().ResizeWindow(Size(width, height));
+       WindowPointerController::GetValue<Window>("MainWindow")->GetValue().lock()->ResizeWindow(Size(width, height));
     });
 }
 
@@ -70,8 +66,9 @@ void MainWindow::Update()
     std::shared_ptr<MainWindowLoading> mainWindowLoading = std::make_shared<MainWindowLoading>(6);
     std::unique_ptr<WonderWold> wonderWold;
 
-    Thread loadingThread = Thread("loading", [mainWindowLoading, &wonderWold, this](){
-        glfwMakeContextCurrent(window);
+    auto* loadingContext = glfwCreateWindow(1, 1, "Loading Context", NULL, window);
+    Thread loadingThread = Thread("loading", [mainWindowLoading, &wonderWold, this, loadingContext](){
+        glfwMakeContextCurrent(loadingContext);
         std::weak_ptr<ProgressBar> progressBar = mainWindowLoading->GetProgressBar();
         wonderWold = std::make_unique<WonderWold>(
             this,
@@ -86,10 +83,17 @@ void MainWindow::Update()
         std::vector<std::weak_ptr<IGameObject>> solidCollisions = wonderWold->GetClassesByType("SolidCollision");
 
         if (!solidCollisions.empty()) {
+            std::unique_ptr<std::vector<std::shared_ptr<IGameObject>>> solidCollisionsPtr = std::make_unique<std::vector<std::shared_ptr<IGameObject>>>();
+            for (std::weak_ptr<IGameObject>& solidCollision : solidCollisions) {
+                if (solidCollision.expired() || !solidCollision.lock()) {
+                    continue;
+                }
+				solidCollisionsPtr->push_back(solidCollision.lock());
+            }
+
             WindowPointerController::SetPointer(
-                window,
-                WindowPointer<std::vector<std::weak_ptr<IGameObject>>>(
-                    "SolidCollisions", &solidCollisions
+                WindowPointer<std::vector<std::shared_ptr<IGameObject>>>(
+                    "SolidCollisions", std::move(solidCollisionsPtr)
                 )
             );
         }   
@@ -123,6 +127,8 @@ void MainWindow::Update()
         if (gameStatus == GameStatuses::Loading && mainWindowLoading->GetProgressBar().lock()->IsFinished()) {
 			gameStatus = GameStatuses::Start;
             mainWindowLoading.reset();
+            glfwMakeContextCurrent(window);
+            glfwDestroyWindow(loadingContext);
         }
 
         if (gameStatus == GameStatuses::Loading) {
@@ -136,7 +142,7 @@ void MainWindow::Update()
         }
 
         if (gameStatus == GameStatuses::Start) {
-            images.DrawImage(
+            images->DrawImage(
                 "ground",
                 Coord(0, 0),
                 GetSize(),
@@ -144,13 +150,13 @@ void MainWindow::Update()
                 Color(0.4f, 0.4f, 0.4f)
             );
 
-            //wonderWold->Update();
-            //hpBar->Update();
+            wonderWold->Update();
+            hpBar->Update();
 
-            //sampleFont->RenderText("Work in progress", Coord(30, 30), 4.0f, Color(1.0f, .0f, .0f, .5f));
+            sampleFont->RenderText("Work in progress", Coord(30, 30), 4.0f, Color(1.0f, .0f, .0f, .5f));
 
-            //mouse.Update();
-            //keyboard.Update();
+            mouse->Update();
+            keyboard->Update();
 		}
 
         //Debug();  // ֲûגמהטל סטלגמכ
