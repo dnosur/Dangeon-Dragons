@@ -576,7 +576,7 @@ Directions Rect::GetMoveDirection()
 
 const bool Rect::IsMouseOverlap()
 {
-    return MouseInRect(window->GetMouse());
+    return MouseInRect(*window->GetMouse().lock());
 }
 
 void Rect::SetLayer(Layer layer)
