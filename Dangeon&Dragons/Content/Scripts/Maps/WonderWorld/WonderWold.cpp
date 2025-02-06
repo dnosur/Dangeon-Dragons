@@ -69,8 +69,7 @@ void WonderWold::SpawnPlayer()
 	camera->SetObservedObj(player);
 
 	WindowPointerController::SetPointer(
-		window->GetWindow(), 
-		WindowPointer<Player>("player", player.get())
+		WindowPointer<Player>("player", player)
 	);
 
 	GameObjects::Add(std::dynamic_pointer_cast<class Pawn>(player));

@@ -18,11 +18,11 @@ protected:
 	GLFWmonitor* monitor;
 	GLFWwindow* share;
 
-	ImagesController images;
-	AudioController audioController;
+	std::shared_ptr<ImagesController> images;
+	std::shared_ptr<AudioController> audioController;
 
-	Mouse mouse;
-	Keyboard keyboard;
+	std::shared_ptr<Mouse> mouse;
+	std::shared_ptr<Keyboard> keyboard;
 
 	Timer timer;
 
@@ -40,7 +40,7 @@ public:
 
 	Window();
 	Window(Size size, std::string title, Color backgroundColor = Color(1, 1, 1), GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
-	~Window();
+	~Window() = default;
 
 	GLFWwindow* GetWindow();
 	GLFWmonitor* GetMonitor();
@@ -65,13 +65,12 @@ public:
 
 	void SetBackgroundColor(Color color);
 	Color GetBackgroundColor();
-
-	ImagesController& GetImagesController();
+	std::weak_ptr<ImagesController> GetImagesController();
 
 	void ResizeWindow(Size size);
 
-	Mouse& GetMouse();
-	Keyboard& GetKeyboard();
+	std::weak_ptr<Mouse> GetMouse();
+	std::weak_ptr<Keyboard> GetKeyboard();
 
 	Timer& GetTimer();
 

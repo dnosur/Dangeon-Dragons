@@ -116,9 +116,9 @@ void Player::Initialize()
 	LoadAnimations();
 	LoadAudio();
 
-	WindowPointer<Keyboard>* keyboard = WindowPointerController::GetValue<Keyboard>(window->GetWindow(), "Keyboard");
+	WindowPointer<Keyboard>* keyboard = WindowPointerController::GetValue<Keyboard>("Keyboard");
 	if (keyboard != nullptr) {
-		this->keyboard = &keyboard->GetValue();
+		this->keyboard = &*keyboard->GetValue().lock();
 	}
 }
 
@@ -374,15 +374,14 @@ void Player::Raycasting()
 bool Player::CheckForCollision()
 {
 	WindowPointer<std::vector<std::shared_ptr<IGameObject>>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<std::shared_ptr<IGameObject>>>(
-		window->GetWindow(), 
 		"SolidCollisions"
 	);
 
-	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().empty()) {
+	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().lock()->empty()) {
 		return true;
 	}
 
-	for (std::shared_ptr<IGameObject> collisionObj : solidCollisionsObjects->GetValue()) {
+	for (std::shared_ptr<IGameObject>& collisionObj : *solidCollisionsObjects->GetValue().lock()) {
 		std::shared_ptr<ICollision> collision = collisionObj->GetCollision().lock();
 		if (!collision) {
 			continue;
@@ -404,12 +403,12 @@ bool Player::CheckForCollision()
 
 bool Player::CheckForCollision(Coord pos, Size size)
 {
-	WindowPointer<std::vector<std::shared_ptr<IGameObject>>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<std::shared_ptr<IGameObject>>>(window->GetWindow(), "SolidCollisions");
-	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().empty()) {
+	WindowPointer<std::vector<std::shared_ptr<IGameObject>>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<std::shared_ptr<IGameObject>>>("SolidCollisions");
+	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().lock()->empty()) {
 		return true;
 	}
 
-	for (std::shared_ptr<IGameObject> collisionObj : solidCollisionsObjects->GetValue()) {
+	for (std::shared_ptr<IGameObject>& collisionObj : *solidCollisionsObjects->GetValue().lock()) {
 		std::shared_ptr<ICollision> collision = collisionObj->GetCollision().lock();
 		if (!collision) {
 			continue;

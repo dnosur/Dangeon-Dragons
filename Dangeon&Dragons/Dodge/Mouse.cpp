@@ -17,13 +17,13 @@ Mouse::Mouse(GLFWwindow* window)
 	click = false;
 
 	HookMouseHandler([](GLFWwindow* window, int button, int action, int mods) {
-		WindowPointer<Mouse>* mouse = WindowPointerController::GetValue<Mouse>(window, "Mouse");
+		WindowPointer<Mouse>* mouse = WindowPointerController::GetValue<Mouse>("Mouse");
 		if (mouse == nullptr) {
 			return;
 		}
 
 		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-			mouse->GetValue().Click();
+			mouse->GetValue().lock()->Click();
 		}
 	});
 }

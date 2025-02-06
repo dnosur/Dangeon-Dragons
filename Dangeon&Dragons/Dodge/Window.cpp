@@ -8,8 +8,8 @@ void Window::MakeWindow()
         return CloseWindow();
     }
 
-    mouse = Mouse(window);
-    keyboard = Keyboard(window);
+    mouse = std::make_shared<Mouse>(window);
+    keyboard = std::make_shared<Keyboard>(window);
 
     closed = false;
 }
@@ -53,12 +53,10 @@ Window::Window(Size size, std::string title, Color backgroundColor, GLFWmonitor*
 
     this->backgroundColor = backgroundColor;
 
-    MakeWindow();
-}
+    images = std::make_shared<ImagesController>();
+    audioController = std::make_shared<AudioController>();
 
-Window::~Window()
-{
-	CloseWindow();
+    MakeWindow();
 }
 
 GLFWwindow* Window::GetWindow()
@@ -121,10 +119,6 @@ void Window::CloseWindow()
         glfwDestroyWindow(share);
     }
 
-    if (monitor) {
-        delete monitor;
-    }
-
     glfwTerminate();
     closed = true;
 
@@ -164,17 +158,17 @@ Color Window::GetBackgroundColor()
     return backgroundColor;
 }
 
-ImagesController& Window::GetImagesController()
+std::weak_ptr<ImagesController> Window::GetImagesController()
 {
     return images;
 }
 
-Mouse& Window::GetMouse()
+std::weak_ptr<Mouse> Window::GetMouse()
 {
     return mouse;
 }
 
-Keyboard& Window::GetKeyboard()
+std::weak_ptr<Keyboard> Window::GetKeyboard()
 {
     return keyboard;
 }
@@ -186,8 +180,8 @@ Timer& Window::GetTimer()
 
 void Window::Debug(bool norm)
 {
-    Coord coord = mouse.GetMouseCoord();
-    Coord prev = mouse.GetPrevMouseCoord();
+    Coord coord = mouse->GetMouseCoord();
+    Coord prev = mouse->GetPrevMouseCoord();
 
     if (coord == prev) {
         return;

@@ -420,12 +420,12 @@ void Skeleton::Drag(Coord newPos)
 
 bool Skeleton::CheckForCollision(Coord position)
 {
-	WindowPointer<std::vector<std::shared_ptr<IGameObject>>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<std::shared_ptr<IGameObject>>>(window->GetWindow(), "SolidCollisions");
-	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().empty()) {
+	WindowPointer<std::vector<std::shared_ptr<IGameObject>>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<std::shared_ptr<IGameObject>>>("SolidCollisions");
+	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().lock()->empty()) {
 		return true;
 	}
 
-	for (std::shared_ptr<IGameObject>& collisionObj : solidCollisionsObjects->GetValue()) {
+	for (std::shared_ptr<IGameObject>& collisionObj : *solidCollisionsObjects->GetValue().lock()) {
 		std::shared_ptr<ICollision> collision = collisionObj->GetCollision().lock();
 		if (collision == nullptr) {
 			continue;

@@ -414,7 +414,7 @@ const bool Pawn::IsNear(Coord startPos, Coord targetPos, float distance)
 
 const bool Pawn::IsMouseOverlap()
 {
-	return MouseInRect(window->GetMouse());
+	return MouseInRect(*window->GetMouse().lock());
 }
 
 const bool Pawn::IsDead()
