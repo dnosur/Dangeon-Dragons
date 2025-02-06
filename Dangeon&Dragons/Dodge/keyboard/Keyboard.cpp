@@ -20,18 +20,18 @@ Keyboard::Keyboard(GLFWwindow* window)
 	key_history_index = 0;
 
 	HookOnKeyPress([](GLFWwindow* window, int key, int scancode, int action, int mods) {
-		WindowPointer<Keyboard>* keyboard = WindowPointerController::GetValue<Keyboard>(window, "Keyboard");
+		WindowPointer<Keyboard>* keyboard = WindowPointerController::GetValue<Keyboard>("Keyboard");
 		if (keyboard == nullptr) {
 			return;
 		}
 
-		if (action == GLFW_RELEASE && keyboard->GetValue().GetKey().key != key) {
+		if (action == GLFW_RELEASE && keyboard->GetValue().lock()->GetKey().key != key) {
 			return;
 		}
 
 		//std::cout << "Key: " << key << " Action: " << action << std::endl;
 
-		keyboard->GetValue().SetKey(KeyboardKey(key, action, action >= GLFW_PRESS));
+		keyboard->GetValue().lock()->SetKey(KeyboardKey(key, action, action >= GLFW_PRESS));
 	});
 }
 
