@@ -6,6 +6,7 @@
 
 void MainWindowLoading::Initialize()
 {
+
 }
 
 void MainWindowLoading::Draw()
@@ -15,8 +16,8 @@ void MainWindowLoading::Draw()
 MainWindowLoading::MainWindowLoading(int maxValue) 
 	: LoadingScreen(
 		std::make_unique<TextureProgressBar>(
-			Coord(0, 0),
-			Size(1280, 720),
+			Coord(320, 0),
+			Size(1280 / 2, 720 / 2),
 			"Content/UI/LoadBar/",
 			maxValue
 		)
