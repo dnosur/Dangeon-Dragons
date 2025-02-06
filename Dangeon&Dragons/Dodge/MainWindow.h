@@ -15,7 +15,7 @@
 #include "camera/Camera.h"
 
 class MainWindow :
-    public Window
+    public Window, std::enable_shared_from_this<MainWindow>
 {
     GameStatuses gameStatus;
 
@@ -23,7 +23,7 @@ class MainWindow :
 public:
     MainWindow();
     MainWindow(Size size, std::string title, Color backgroundColor = Color(1, 1, 1), GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
-    ~MainWindow();
+    ~MainWindow() = default;
 
     void Initialize() override;
     void Update() override;
