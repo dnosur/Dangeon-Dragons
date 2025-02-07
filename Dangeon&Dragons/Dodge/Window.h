@@ -34,13 +34,22 @@ protected:
 	std::string title;
 	bool closed;
 
+	bool fullscreen;
+
 	void MakeWindow();
 
 	void FillBackground();
 public:
 
 	Window();
-	Window(Size size, std::string title, Color backgroundColor = Color(1, 1, 1), GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
+	Window(
+		Size size, 
+		std::string title,
+		bool fullscreen = false,
+		Color backgroundColor = Color(1, 1, 1), 
+		GLFWmonitor* monitor = NULL, 
+		GLFWwindow* share = NULL
+	);
 	~Window() = default;
 
 	GLFWwindow* GetWindow();

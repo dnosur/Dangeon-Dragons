@@ -7,7 +7,12 @@ void Window::MakeWindow()
 {
     monitor = glfwGetPrimaryMonitor();
 
-    window = glfwCreateWindow(size.width, size.height, title.c_str(), NULL, share);
+    window = glfwCreateWindow(
+        size.width, size.height, 
+        title.c_str(), 
+        (fullscreen && monitor ? monitor : NULL), 
+        share
+    );
 
     if (!window)
     {
@@ -49,10 +54,19 @@ Window::Window()
     MakeWindow();
 } 
 
-Window::Window(Size size, std::string title, Color backgroundColor, GLFWmonitor* monitor, GLFWwindow* share)
+Window::Window(
+    Size size, 
+    std::string title, 
+    bool fullscreen,
+    Color backgroundColor, 
+    GLFWmonitor* monitor, 
+    GLFWwindow* share
+)
 {
     this->size = size;
     this->title = title;
+
+    this->fullscreen = fullscreen;
 
     this->share = share;
     this->monitor = monitor;

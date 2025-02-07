@@ -2,7 +2,11 @@
 #include "font/Font.h"
 #include "Save.h"
 
+#include "threads/Thread.h"
+
 #include "./images/SlicedImage.h"
+
+#include "font/Fonts.h"
 
 #include "../Content/Scripts/Maps/WonderWorld/WonderWold.h"
 #include "../Content/Scripts/Characters/Player/Player.h"
@@ -12,7 +16,6 @@
 #include "../Content/Scripts/UI/ProgressBar/HpBar/HpBar.h"
 
 #include "../Content/Scripts/Screens/MainWindowLoading/MainWindowLoading.h"
-#include "threads/Thread.h"
 #include "../Content/Scripts/UI/ProgressBar/utilities.h"
 
 MainWindow::MainWindow(): Window()
@@ -20,8 +23,8 @@ MainWindow::MainWindow(): Window()
     gameStatus = GameStatuses::End;
 }
 
-MainWindow::MainWindow(Size size, std::string title, Color backgroundColor, GLFWmonitor* monitor, GLFWwindow* share):
-    Window(size, title, backgroundColor, monitor, share) {
+MainWindow::MainWindow(Size size, std::string title, bool fullscreen, Color backgroundColor, GLFWmonitor* monitor, GLFWwindow* share):
+    Window(size, title, fullscreen, backgroundColor, monitor, share) {
     gameStatus = GameStatuses::Stop;
 }
 
@@ -41,6 +44,10 @@ void MainWindow::Initialize()
     ));
 
     images->Load("Content/Images/Background/ground.png", "ground");
+
+    //Fonts
+    Fonts::LoadFont("NotJamGlasgow", "Content/Fonts/Not Jam Glasgow 13/Not Jam Glasgow 16.ttf", Size(56, 56));
+    Fonts::LoadFont("DreiFraktur", "Content/Fonts/Drei Fraktur/DreiFraktur.ttf", Size(24, 24));
 
     //std::string sample = "123";
     //std::unique_ptr<std::string> title;
@@ -111,12 +118,6 @@ void MainWindow::Update()
     });
     loadingThread.Detach();
 
-    std::unique_ptr<Font> sampleFont = std::make_unique<Font>(
-        "NotJamGlasgow",
-        "Content/Fonts/Not Jam Glasgow 13/Not Jam Glasgow 16.ttf",
-        GetSize()
-    );
-
     std::unique_ptr<HpBar> hpBar = std::make_unique<HpBar>(*this);
 
     bool down = false;
@@ -159,7 +160,18 @@ void MainWindow::Update()
             wonderWold->Update();
             hpBar->Update();
 
-            sampleFont->RenderText("Work in progress", Coord(30, 30), 4.0f, Color(1.0f, .0f, .0f, .5f));
+            std::shared_ptr<Camera> camera = NULL;
+
+            Fonts::GetFont("NotJamGlasgow")->RenderText(
+                L"Work in progress", 
+                Coord(30, 30),
+                std::make_unique<FontRenderOptions>(
+                    1.0f,
+                    .0f,
+                    nullptr,
+                    nullptr,
+                    Color(1.0f, .0f, .0f)
+            ));
 
             mouse->Update();
             keyboard->Update();

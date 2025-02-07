@@ -22,7 +22,14 @@ class MainWindow :
     std::vector<std::pair<std::string, std::string>> saveData;
 public:
     MainWindow();
-    MainWindow(Size size, std::string title, Color backgroundColor = Color(1, 1, 1), GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
+    MainWindow(
+        Size size, 
+        std::string title, 
+        bool fullscreen = false, 
+        Color backgroundColor = Color(1, 1, 1), 
+        GLFWmonitor* monitor = NULL, 
+        GLFWwindow* share = NULL
+    );
     ~MainWindow() = default;
 
     void Initialize() override;
