@@ -19,9 +19,9 @@ bool Font::LoadFont()
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    for (unsigned char c = 0; c < 128; c++) {
+    for (wchar_t c = 0x0020; c <= 0x04FF; c++) {
         if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
-			std::cout << "ERROR::FREETYPE: Failed to load Glyph" << std::endl;
+            std::cout << "ERROR::FREETYPE: Failed to load Glyph " << c << std::endl;
             continue;
         }
 
@@ -52,7 +52,7 @@ bool Font::LoadFont()
             (GLuint)face->glyph->advance.x
         );
 
-        characters.insert(std::pair<char, Character>(c, character));
+        characters.insert(std::pair<wchar_t, Character>(c, character));
     }
 
     FT_Done_Face(face);
@@ -65,7 +65,6 @@ bool Font::LoadFont()
 Font::Font(
     std::string title, 
     std::string path, 
-    Size windowSize, 
     Size size
 )
 {
@@ -73,11 +72,12 @@ Font::Font(
     this->path = path;
 
     this->size = size;
-    this->windowSize = windowSize;
+
+    const Size& windowSize = Window::GetRenderResolutionView();
 
     projection = glm::ortho(
         0.0f, 
-        static_cast<float>(windowSize.width), 
+        static_cast<float>(windowSize.width),
         0.0f, 
         static_cast<float>(windowSize.height)
     );
@@ -97,7 +97,7 @@ Font::~Font()
 {
 }
 
-void Font::RenderText(std::string text, Coord pos, float scale, Color color)
+void Font::RenderText(std::wstring text, Coord pos, float scale, Color color)
 {
     unsigned int VAO, VBO;
 
@@ -118,10 +118,13 @@ void Font::RenderText(std::string text, Coord pos, float scale, Color color)
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);
 
-    std::string::const_iterator c;
-    for (c = text.begin(); c != text.end(); c++)
+    for (wchar_t c : text)
     {
-        Character ch = characters[*c];
+        if (!characters.count(c)) {
+            continue;
+        }
+
+        Character ch = characters[c];
 
         float xpos = pos.X + ch.bearing.width * scale;
         float ypos = pos.Y - (ch.size.height - ch.bearing.height) * scale;

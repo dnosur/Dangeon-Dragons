@@ -21,11 +21,10 @@ class Font
 	std::string path;
 
 	Size size;
-	Size windowSize;
 
 	glm::mat4 projection;
 
-	std::map<char, Character> characters;
+	std::map<wchar_t, Character> characters;
 
 	std::unique_ptr<Shader> shader;
 
@@ -36,13 +35,12 @@ public:
 	Font(
 		std::string title, 
 		std::string path, 
-		Size windowSize = Window::GetRenderResolutionView(),
 		Size size = Size(14, 14)
 	);
 	~Font();
 
 	void RenderText(
-		std::string text, 
+		std::wstring text, 
 		Coord pos, 
 		float scale, 
 		Color color = Color()
