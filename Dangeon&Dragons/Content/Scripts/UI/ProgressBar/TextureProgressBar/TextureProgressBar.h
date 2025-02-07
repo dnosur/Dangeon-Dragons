@@ -7,7 +7,8 @@
 class TextureProgressBar :
     public ProgressBar
 {
-	ImagesController images;
+	std::unique_ptr<ImagesController> images;
+	std::unique_ptr<Color> color;
 
 	void LoadImages(std::string_view path);
 
@@ -15,12 +16,13 @@ class TextureProgressBar :
 	void Draw() override;
 public:
 	TextureProgressBar(
-		Coord pos, 
+		Coord pos,
 		Size size,
-		std::string_view path, 
-		int maxValue = 100, 
-		int currentValue = 0, 
-		bool isFinished = false
+		std::string_view path,
+		int maxValue = 100,
+		int currentValue = 0,
+		bool isFinished = false,
+		std::unique_ptr<Color> color = std::make_unique<Color>(1, 1, 1)
 	);
 	~TextureProgressBar() = default;
 

@@ -1,5 +1,6 @@
 #include "TextureProgressBar.h"
 #include "../../../../../Dodge/utilities/string.h"
+#include "../../../../../Dodge/Window.h"
 
 void TextureProgressBar::LoadImages(std::string_view path)
 {
@@ -20,12 +21,13 @@ void TextureProgressBar::LoadImages(std::string_view path)
 	});
 
 	for (const auto& link : links) {
-		images.Load(link.string().c_str(), link.filename().string().c_str());
+		images->Load(link.string().c_str(), link.filename().string().c_str());
 	}
 }
 
 void TextureProgressBar::Initialize()
 {
+	images = std::make_unique<ImagesController>();
 }
 
 //18 - все картинки
@@ -33,10 +35,11 @@ void TextureProgressBar::Initialize()
 
 void TextureProgressBar::Draw()
 {
-	const int index = (float)((float)images.GetSize() / (float)GetMaxValue()) * (GetCurrentValue() + 1);
-	images.DrawImage(images[index ? index - 1 : index]->title, GetPos(), GetSize(), Size(1280, 720));
+	const Size& windowSize = Window::GetSizeView();
+	const int index = (float)((float)images->GetSize() / (float)GetMaxValue()) * (GetCurrentValue() + 1);
+	images->DrawImage(images->operator[](index ? index - 1 : index)->title, GetPos(), GetSize(), windowSize, *color);
 
-	if (index == images.GetSize()) {
+	if (index == images->GetSize()) {
 		Finish();
 	}
 }
@@ -47,9 +50,12 @@ TextureProgressBar::TextureProgressBar(
 	std::string_view path, 
 	int maxValue, 
 	int currentValue, 
-	bool isFinished
-) : ProgressBar(pos, size, maxValue, currentValue, isFinished)
+	bool isFinished,
+	std::unique_ptr<Color> color
+) : ProgressBar(pos, size, maxValue, currentValue, isFinished),
+	color(std::move(color))
 {
+	Initialize();
 	LoadImages(path);
 }
 
