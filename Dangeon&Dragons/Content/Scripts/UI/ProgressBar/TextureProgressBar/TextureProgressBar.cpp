@@ -35,7 +35,7 @@ void TextureProgressBar::Initialize()
 
 void TextureProgressBar::Draw()
 {
-	const Size& windowSize = Window::GetSizeView();
+	const Size& windowSize = Window::GetRenderResolutionView();
 	const int index = (float)((float)images->GetSize() / (float)GetMaxValue()) * (GetCurrentValue() + 1);
 	images->DrawImage(images->operator[](index ? index - 1 : index)->title, GetPos(), GetSize(), windowSize, *color);
 

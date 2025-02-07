@@ -33,7 +33,7 @@ void Window::ResizeWindow(Size size)
 
     glViewport(0, 0, size.width, size.height);
 
-   //this->size = size;
+   this->size = size;
 }
 
 Window::Window()
@@ -152,21 +152,21 @@ const bool Window::IsClosed()
 }
 
 float Window::PixelToGLX(float pixelX) {
-    return (pixelX / size.GetWidth()) * 2.0f - 1.0f;
+    return (pixelX / renderResolution.GetWidth()) * 2.0f - 1.0f;
 }
 
 float Window::PixelToGLY(float pixelY) {
-    return 1.0f - (pixelY / size.GetHeight()) * 2.0f;
+    return 1.0f - (pixelY / renderResolution.GetHeight()) * 2.0f;
 }
 
 float Window::GLXToPixel(float glx)
 {
-    return ((glx + 1.0f) / 2.0f) * size.GetWidth();
+    return ((glx + 1.0f) / 2.0f) * renderResolution.GetWidth();
 }
 
 float Window::GLYToPixel(float gly)
 {
-    return ((1.0f - (gly + 1.0f) / 2.0f) * size.GetHeight());
+    return ((1.0f - (gly + 1.0f) / 2.0f) * renderResolution.GetHeight());
 }
 
 void Window::SetBackgroundColor(Color color)
@@ -214,14 +214,14 @@ void Window::Debug(bool norm)
     }
 
     if (norm) {
-        float normMouseX = (coord.X / GetSize().GetWidth()) * 2.0f - 1.0f;
-        float normMouseY = 1.0f - (coord.Y / GetSize().GetHeight()) * 2.0f;
+        float normMouseX = (coord.X / GetRenderResolution().GetWidth()) * 2.0f - 1.0f;
+        float normMouseY = 1.0f - (coord.Y / GetRenderResolution().GetHeight()) * 2.0f;
         std::cout << "X: " << normMouseX << " Y: " << normMouseY << std::endl;
         return;
     }
 
-    if (coord.X < 0 || coord.X > size.width ||
-        coord.Y < 0 || coord.Y > size.height) {
+    if (coord.X < 0 || coord.X > renderResolution.width ||
+        coord.Y < 0 || coord.Y > renderResolution.height) {
         return;
     }
 

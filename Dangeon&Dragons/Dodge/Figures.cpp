@@ -42,7 +42,7 @@ void drawLine(Coord a, Coord b, Color color, int lineWidth)
     // Âû÷èñëÿåì êîîðäèíàòû
     glColor3f(color.r, color.g, color.b);
 
-    Size windowSize = Window::GetSize();
+    Size windowSize = Window::GetRenderResolution();
 
     Coord first = Coord(
         2.0f * a.X / windowSize.GetWidth() - 1.0f,
@@ -67,7 +67,7 @@ void drawRay(Ray*& ray, Color& color)
     // Âû÷èñëÿåì êîîðäèíàòû
     glColor3f(color.r, color.g, color.b);
 
-    Size windowSize = Window::GetSize();
+    Size windowSize = Window::GetRenderResolution();
 
     Coord* first = new Coord(
         2.0f * ray->origin->X / windowSize.GetWidth() - 1.0f,
