@@ -66,7 +66,12 @@ void MainWindow::Update()
     std::shared_ptr<MainWindowLoading> mainWindowLoading = std::make_shared<MainWindowLoading>(6);
     std::unique_ptr<WonderWold> wonderWold;
 
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_FOCUSED, GLFW_FALSE);
+    glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+
     auto* loadingContext = glfwCreateWindow(1, 1, "Loading Context", NULL, window);
+
     Thread loadingThread = Thread("loading", [mainWindowLoading, &wonderWold, this, loadingContext](){
         glfwMakeContextCurrent(loadingContext);
         std::weak_ptr<ProgressBar> progressBar = mainWindowLoading->GetProgressBar();
@@ -102,6 +107,7 @@ void MainWindow::Update()
         NextProgressBarValue(progressBar);
 
         glfwMakeContextCurrent(nullptr);
+        glfwFocusWindow(window);
     });
     loadingThread.Detach();
 
