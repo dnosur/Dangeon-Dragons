@@ -15,7 +15,7 @@ bool Font::LoadFont()
         return false;
     }
 
-    FT_Set_Pixel_Sizes(face, 0, 14);
+    FT_Set_Pixel_Sizes(face, size.width, size.height);
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -73,7 +73,7 @@ Font::Font(
 
     this->size = size;
 
-    const Size& windowSize = Window::GetRenderResolutionView();
+    const Size& windowSize = Window::GetSizeView();
 
     projection = glm::ortho(
         0.0f, 
@@ -97,7 +97,11 @@ Font::~Font()
 {
 }
 
-void Font::RenderText(std::wstring text, Coord pos, float scale, Color color)
+void Font::RenderText(
+    std::wstring text, 
+    Coord pos, 
+    std::unique_ptr<FontRenderOptions> options
+)
 {
     unsigned int VAO, VBO;
 
@@ -111,12 +115,26 @@ void Font::RenderText(std::wstring text, Coord pos, float scale, Color color)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+    const Color& color = options->GetColor();
+
     shader->Use();
     shader->SetVec4("textColor", color.r, color.g, color.b, color.a);
     shader->SetMat4("projection", projection);
 
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);
+
+    std::shared_ptr<Size> area = options->GetRenderArea().lock();
+    bool useArea = area != nullptr;
+    if (useArea) {
+        area->width += pos.X;
+		area->height += pos.Y;
+    }
+
+    std::shared_ptr<Padding> padding = options->GetPadding().lock();
+
+    const float& scale = options->GetScale();
+    const double startX = pos.X;
 
     for (wchar_t c : text)
     {
@@ -126,11 +144,21 @@ void Font::RenderText(std::wstring text, Coord pos, float scale, Color color)
 
         Character ch = characters[c];
 
+        float w = ch.size.width * scale;
+        float h = ch.size.height * scale;
+
+        if (useArea && pos.X + w > area->width) {
+            pos.X = startX;
+            pos.Y -= ch.size.height * scale;
+
+            if (padding) {
+				padding->Use(pos);
+            }
+        }
+
         float xpos = pos.X + ch.bearing.width * scale;
         float ypos = pos.Y - (ch.size.height - ch.bearing.height) * scale;
 
-        float w = ch.size.width * scale;
-        float h = ch.size.height * scale;
         // update VBO for each character
         float vertices[6][4] = {
             { xpos,     ypos + h,   0.0f, 0.0f },

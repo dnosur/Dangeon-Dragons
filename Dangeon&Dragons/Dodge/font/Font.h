@@ -14,6 +14,7 @@ struct Coord;
 
 #include "../Shader.h"
 #include "../Window.h"
+#include "FontRenderOptions.h"
 
 class Font
 {
@@ -42,8 +43,7 @@ public:
 	void RenderText(
 		std::wstring text, 
 		Coord pos, 
-		float scale, 
-		Color color = Color()
+		std::unique_ptr<FontRenderOptions> options = std::make_unique<FontRenderOptions>()
 	);
 
 	bool IsLoaded();
