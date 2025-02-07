@@ -1,6 +1,6 @@
 #pragma once
-#define DEFAULT_WINDOW_WIDTH 1280
-#define DEFAULT_WINDOW_HEIGHT 720
+#define DEFAULT_WINDOW_WIDTH 1280.0f
+#define DEFAULT_WINDOW_HEIGHT 720.0f
 
 #include "./images/ImagesController.h"
 #include "./audio/AudioController.h"
@@ -26,7 +26,8 @@ protected:
 
 	Timer timer;
 
-	Size size;
+	static Size size;
+	static Size renderResolution;
 
 	Color backgroundColor;
 
@@ -46,7 +47,10 @@ public:
 	GLFWmonitor* GetMonitor();
 	GLFWwindow* GetShare();
 
-	Size GetSize();
+	static const Size& GetSizeView();
+	static Size GetSize();
+	static const Size& GetRenderResolutionView();
+	static Size GetRenderResolution();
 	std::string GetTitle();
 
 	virtual void Initialize();
@@ -71,6 +75,8 @@ public:
 
 	std::weak_ptr<Mouse> GetMouse();
 	std::weak_ptr<Keyboard> GetKeyboard();
+
+	const GLFWvidmode* GetVideoMode();
 
 	Timer& GetTimer();
 

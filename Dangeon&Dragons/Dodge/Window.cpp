@@ -1,8 +1,14 @@
 #include "Window.h"
 
+Size Window::size;
+Size Window::renderResolution = Size(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
+
 void Window::MakeWindow()
 {
-    window = glfwCreateWindow(size.width, size.height, title.c_str(), monitor, share);
+    monitor = glfwGetPrimaryMonitor();
+
+    window = glfwCreateWindow(size.width, size.height, title.c_str(), NULL, share);
+
     if (!window)
     {
         return CloseWindow();
@@ -27,7 +33,7 @@ void Window::ResizeWindow(Size size)
 
     glViewport(0, 0, size.width, size.height);
 
-   // this->size = size;
+   //this->size = size;
 }
 
 Window::Window()
@@ -72,6 +78,21 @@ GLFWmonitor* Window::GetMonitor()
 GLFWwindow* Window::GetShare()
 {
     return share;
+}
+
+const Size& Window::GetRenderResolutionView()
+{
+    return renderResolution;
+}
+
+Size Window::GetRenderResolution()
+{
+    return renderResolution;
+}
+
+const Size& Window::GetSizeView()
+{
+    return size;
 }
 
 Size Window::GetSize()
@@ -171,6 +192,11 @@ std::weak_ptr<Mouse> Window::GetMouse()
 std::weak_ptr<Keyboard> Window::GetKeyboard()
 {
     return keyboard;
+}
+
+const GLFWvidmode* Window::GetVideoMode()
+{
+	return glfwGetVideoMode(monitor);
 }
 
 Timer& Window::GetTimer()
