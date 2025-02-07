@@ -38,6 +38,9 @@ const int& ProgressBar::GetMaxValue() const
 void ProgressBar::SetCurrentValue(int value)
 {
 	this->currentValue = value;
+	if (OnChangeValue != nullptr) {
+		OnChangeValue(*this);
+	}
 }
 
 const int& ProgressBar::GetCurrentValue() const
@@ -48,6 +51,9 @@ const int& ProgressBar::GetCurrentValue() const
 void ProgressBar::NextValue()
 {
 	currentValue++;
+	if (OnChangeValue != nullptr) {
+		OnChangeValue(*this);
+	}
 }
 
 void ProgressBar::Finish()
@@ -58,4 +64,9 @@ void ProgressBar::Finish()
 bool ProgressBar::IsFinished()
 {
 	return isFinished;
+}
+
+void ProgressBar::OnChangeValueHandler(std::function<void(ProgressBar&)> onChangeValue)
+{
+	this->OnChangeValue = onChangeValue;
 }

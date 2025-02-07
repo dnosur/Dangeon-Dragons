@@ -2,6 +2,8 @@
 #include "../../../../Dodge/Coord.h"
 #include "../../../../Dodge/Size.h"
 
+#include <functional>
+
 class ProgressBar
 {
 	Coord pos;
@@ -10,6 +12,8 @@ class ProgressBar
 	int maxValue;
 	int currentValue;
 	bool isFinished;
+
+	std::function<void(ProgressBar&)> OnChangeValue;
 
 	virtual void Draw() = 0;
 	virtual void Initialize() = 0;
@@ -36,6 +40,8 @@ public:
 
 	void Finish();
 	bool IsFinished();
+
+	void OnChangeValueHandler(std::function<void(ProgressBar&)> onChangeValue);
 
 	virtual void Update() = 0;
 };
