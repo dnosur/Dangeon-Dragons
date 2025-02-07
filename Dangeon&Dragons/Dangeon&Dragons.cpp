@@ -36,7 +36,7 @@ int main(int argc, char** argv)
 
     SoundSystem soundSystem;
     std::shared_ptr<Window> main = std::make_shared<MainWindow>(
-        Size(1280, 720), 
+        Size(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT), 
         "Sample", 
         Color(.4f, .6f, 0)
     );
