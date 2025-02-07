@@ -27,4 +27,9 @@ public:
 	Size operator-(const Size& other) const;
 	Size operator*(const Size& other) const;
 	Size operator/(const Size& other) const;
+
+	Size operator+(const int value) const;
+	Size operator-(const int value) const;
+	Size operator*(const int value) const;
+	Size operator/(const int value) const;
 };
