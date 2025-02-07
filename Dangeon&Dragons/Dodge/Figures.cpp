@@ -1,6 +1,8 @@
 ﻿#include "Figures.h"
 #include "functions.h"
 
+#include "Window.h"
+
 void drawCircle(float cx, float cy, float r, int num_segments) {
     glBegin(GL_TRIANGLE_FAN);
     glColor4f(.0f, 1.0f, .0f, 1.0f);
@@ -40,14 +42,16 @@ void drawLine(Coord a, Coord b, Color color, int lineWidth)
     // Âû÷èñëÿåì êîîðäèíàòû
     glColor3f(color.r, color.g, color.b);
 
+    Size windowSize = Window::GetSize();
+
     Coord first = Coord(
-        2.0f * a.X / 1280 - 1.0f,
-        1.0f - 2.0f * a.Y / 720
+        2.0f * a.X / windowSize.GetWidth() - 1.0f,
+        1.0f - 2.0f * a.Y / windowSize.GetHeight()
     );
 
     Coord second = Coord(
-        2.0f * b.X / 1280 - 1.0f,
-        1.0f - 2.0f * b.Y / 720
+        2.0f * b.X / windowSize.GetWidth() - 1.0f,
+        1.0f - 2.0f * b.Y / windowSize.GetHeight()
     );
 
     // Ðèñóåì ëèíèþ
@@ -63,14 +67,16 @@ void drawRay(Ray*& ray, Color& color)
     // Âû÷èñëÿåì êîîðäèíàòû
     glColor3f(color.r, color.g, color.b);
 
+    Size windowSize = Window::GetSize();
+
     Coord* first = new Coord(
-        2.0f * ray->origin->X / 1280 - 1.0f,
-        1.0f - 2.0f * ray->origin->Y / 720
+        2.0f * ray->origin->X / windowSize.GetWidth() - 1.0f,
+        1.0f - 2.0f * ray->origin->Y / windowSize.GetHeight()
     );
 
     Coord* second = new Coord(
-        2.0f * ray->direction->X / 1280 - 1.0f,
-        1.0f - 2.0f * ray->direction->Y / 720
+        2.0f * ray->direction->X / windowSize.GetWidth() - 1.0f,
+        1.0f - 2.0f * ray->direction->Y / windowSize.GetHeight()
     );
 
     // Ðèñóåì ëèíèþ

@@ -13,6 +13,7 @@ struct Coord;
 #include "../Color.h"
 
 #include "../Shader.h"
+#include "../Window.h"
 
 class Font
 {
@@ -35,7 +36,7 @@ public:
 	Font(
 		std::string title, 
 		std::string path, 
-		Size windowSize = Size(1280, 720),
+		Size windowSize = Window::GetRenderResolutionView(),
 		Size size = Size(14, 14)
 	);
 	~Font();

@@ -109,16 +109,16 @@ void GetXY(int& x, int& y) {
 Size MathSize(Size size, Size windowSize)
 {
 	return Size(
-		static_cast<int>((float)(size.width * (float)(windowSize.width / 1280.0f))),
-		static_cast<int>((float)(size.height * (float)(windowSize.height / 720.0f)))
+		static_cast<int>((float)(size.width * (float)(windowSize.width / DEFAULT_WINDOW_WIDTH))),
+		static_cast<int>((float)(size.height * (float)(windowSize.height / DEFAULT_WINDOW_HEIGHT)))
 	);
 }
 
 Coord MathCoord(Coord coord, Size windowSize)
 {
 	return Coord(
-		static_cast<int>((float)(coord.X * (float)(windowSize.width / 1280.0f))),
-		static_cast<int>((float)(coord.Y * (float)(windowSize.height / 720.0f)))
+		static_cast<int>((float)(coord.X * (float)(windowSize.width / DEFAULT_WINDOW_WIDTH))),
+		static_cast<int>((float)(coord.Y * (float)(windowSize.height / DEFAULT_WINDOW_HEIGHT)))
 	);
 }
 
