@@ -3,6 +3,9 @@
 
 class MainWindowLoading : protected LoadingScreen
 {
+	std::shared_ptr<ImagesController> images;
+	std::shared_ptr<int> imageIndex;
+
 	void Initialize() override;
 	void Draw() override;
 public:
