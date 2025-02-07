@@ -11,14 +11,18 @@ TinySrpiteLayersController::TinySrpiteLayersController(std::unordered_map<int, s
 
 TinySrpiteLayersController::TinySrpiteLayersController(tinyxml2::XMLElement* element)
 {
-	LoadSpriteLayers(element, spriteLayers);
+	LoadSpriteLayers(element, spriteLayers, spriteLayerOrders);
 }
 
 TinySrpiteLayersController::~TinySrpiteLayersController()
 {
 }
 
-void TinySrpiteLayersController::LoadSpriteLayers(tinyxml2::XMLElement* element, std::unordered_map<int, std::shared_ptr<TinySpriteLayer>>& spriteLayers)
+void TinySrpiteLayersController::LoadSpriteLayers(
+	tinyxml2::XMLElement* element, 
+	std::unordered_map<int, std::shared_ptr<TinySpriteLayer>>& spriteLayers,
+	std::vector<int>& spriteLayerOrders
+)
 {
 	for (tinyxml2::XMLElement* group = element->FirstChildElement("group");
 		group != nullptr;
@@ -30,6 +34,8 @@ void TinySrpiteLayersController::LoadSpriteLayers(tinyxml2::XMLElement* element,
 			) {
 			if (layer) {
 				std::unique_ptr<TinySpriteLayer> temp = std::make_unique<TinySpriteLayer>(layer);
+				int id = temp->GetId();  // Сохраняем ID перед move!
+				spriteLayerOrders.push_back(id);
 				spriteLayers[temp->GetId()] = std::move(temp);
 				std::cout << layer->Attribute("name") << " OK" << std::endl;
 				continue;
@@ -62,6 +68,11 @@ std::unordered_map<int, std::shared_ptr<TinySpriteLayer>>::iterator TinySrpiteLa
 std::unordered_map<int, std::shared_ptr<TinySpriteLayer>>::iterator TinySrpiteLayersController::end()
 {
 	return spriteLayers.end();
+}
+
+const std::vector<int>& TinySrpiteLayersController::GetSpriteLayerOrders()
+{
+	return spriteLayerOrders;
 }
 
 std::weak_ptr<TinySpriteLayer> TinySrpiteLayersController::operator[](int index)
