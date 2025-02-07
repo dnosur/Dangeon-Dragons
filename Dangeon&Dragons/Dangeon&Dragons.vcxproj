@@ -219,6 +219,7 @@
     <ClCompile Include="Content\Scripts\UI\ProgressBar\utilities.cpp" />
     <ClCompile Include="Dodge\WindowPointerController.cpp" />
     <ClCompile Include="Dodge\WindowPointerBase.cpp" />
+    <ClCompile Include="Dodge\font\Fonts.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Content\Scripts\Screens\MainWindowLoading\MainWindowLoading.h" />
@@ -315,6 +316,8 @@
     <ClInclude Include="Content\Scripts\UI\ProgressBar\TextureProgressBar\TextureProgressBar.h" />
     <ClInclude Include="Content\Scripts\UI\ProgressBar\utilities.h" />
     <ClInclude Include="Dodge\WindowPointerBase.h" />
+    <ClInclude Include="Dodge\utilities\random.h" />
+    <ClInclude Include="Dodge\font\Fonts.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dodge\project properties.txt" />
