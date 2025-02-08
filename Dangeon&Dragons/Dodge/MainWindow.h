@@ -10,15 +10,12 @@
 
 #include "tiny/TinyXml.h"
 
-#include "GameStatuses.h"
 #include "animator/SpriteAnimation.h"
 #include "camera/Camera.h"
 
 class MainWindow :
     public Window, std::enable_shared_from_this<MainWindow>
 {
-    GameStatuses gameStatus;
-
     std::vector<std::pair<std::string, std::string>> saveData;
 public:
     MainWindow();
@@ -34,5 +31,7 @@ public:
 
     void Initialize() override;
     void Update() override;
+
+    std::weak_ptr<MainWindow> GetWeak();
 };
 

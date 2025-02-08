@@ -3,6 +3,14 @@
 Size Window::size;
 Size Window::renderResolution = Size(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 
+std::shared_ptr<ImagesController> Window::images = nullptr;
+std::shared_ptr<AudioController> Window::audioController = nullptr;
+
+std::shared_ptr<Mouse> Window::mouse = nullptr;
+std::shared_ptr<Keyboard> Window::keyboard = nullptr;
+
+GameStatuses Window::gameStatus;
+
 void Window::MakeWindow()
 {
     monitor = glfwGetPrimaryMonitor();
@@ -38,7 +46,7 @@ void Window::ResizeWindow(Size size)
 
     glViewport(0, 0, size.width, size.height);
 
-   this->size = size;
+   Window::size = size;
 }
 
 Window::Window()
@@ -102,6 +110,11 @@ const Size& Window::GetRenderResolutionView()
 Size Window::GetRenderResolution()
 {
     return renderResolution;
+}
+
+const GameStatuses& Window::GetGameStatus()
+{
+    return gameStatus;
 }
 
 const Size& Window::GetSizeView()
@@ -196,6 +209,11 @@ Color Window::GetBackgroundColor()
 std::weak_ptr<ImagesController> Window::GetImagesController()
 {
     return images;
+}
+
+std::weak_ptr<AudioController> Window::GetAudioController()
+{
+    return audioController;
 }
 
 std::weak_ptr<Mouse> Window::GetMouse()

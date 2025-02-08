@@ -1,4 +1,5 @@
 #include "Keyboard.h"
+#include "../Window.h"
 
 
 void Keyboard::AddToHistory(KeyboardKey key)
@@ -10,6 +11,8 @@ void Keyboard::AddToHistory(KeyboardKey key)
 Keyboard::Keyboard()
 {
 	window = nullptr;
+	keys = nullptr;
+	key_history_index = -1;
 }
 
 Keyboard::Keyboard(GLFWwindow* window)
@@ -20,18 +23,18 @@ Keyboard::Keyboard(GLFWwindow* window)
 	key_history_index = 0;
 
 	HookOnKeyPress([](GLFWwindow* window, int key, int scancode, int action, int mods) {
-		WindowPointer<Keyboard>* keyboard = WindowPointerController::GetValue<Keyboard>("Keyboard");
-		if (keyboard == nullptr) {
+		std::shared_ptr<Keyboard> keyboard = Window::GetKeyboard().lock();
+		if (!keyboard) {
 			return;
 		}
 
-		if (action == GLFW_RELEASE && keyboard->GetValue().lock()->GetKey().key != key) {
+		if (action == GLFW_RELEASE && keyboard->GetKey().key != key) {
 			return;
 		}
 
-		//std::cout << "Key: " << key << " Action: " << action << std::endl;
+		std::cout << "Key: " << key << " Action: " << action << std::endl;
 
-		keyboard->GetValue().lock()->SetKey(KeyboardKey(key, action, action >= GLFW_PRESS));
+		keyboard->SetKey(KeyboardKey(key, action, action >= GLFW_PRESS));
 	});
 }
 

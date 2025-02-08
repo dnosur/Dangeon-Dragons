@@ -4,11 +4,13 @@
 
 #include "./images/ImagesController.h"
 #include "./audio/AudioController.h"
+#include "./keyboard/Keyboard.h"
+
+#include "GameStatuses.h"
 
 #include "Size.h"
 #include "Mouse.h"
 #include "Color.h"
-#include "./keyboard/Keyboard.h"
 #include "Timer.h"
 
 class Window
@@ -18,11 +20,13 @@ protected:
 	GLFWmonitor* monitor;
 	GLFWwindow* share;
 
-	std::shared_ptr<ImagesController> images;
-	std::shared_ptr<AudioController> audioController;
+	static GameStatuses gameStatus;
 
-	std::shared_ptr<Mouse> mouse;
-	std::shared_ptr<Keyboard> keyboard;
+	static std::shared_ptr<ImagesController> images;
+	static std::shared_ptr<AudioController> audioController;
+
+	static std::shared_ptr<Mouse> mouse;
+	static std::shared_ptr<Keyboard> keyboard;
 
 	Timer timer;
 
@@ -40,7 +44,6 @@ protected:
 
 	void FillBackground();
 public:
-
 	Window();
 	Window(
 		Size size, 
@@ -60,6 +63,9 @@ public:
 	static Size GetSize();
 	static const Size& GetRenderResolutionView();
 	static Size GetRenderResolution();
+
+	static const GameStatuses& GetGameStatus();
+
 	std::string GetTitle();
 
 	virtual void Initialize();
@@ -78,12 +84,15 @@ public:
 
 	void SetBackgroundColor(Color color);
 	Color GetBackgroundColor();
-	std::weak_ptr<ImagesController> GetImagesController();
 
-	void ResizeWindow(Size size);
+	static std::weak_ptr<ImagesController> GetImagesController();
 
-	std::weak_ptr<Mouse> GetMouse();
-	std::weak_ptr<Keyboard> GetKeyboard();
+	static std::weak_ptr<AudioController> GetAudioController();
+
+	static void ResizeWindow(Size size);
+
+	static std::weak_ptr<Mouse> GetMouse();
+	static std::weak_ptr<Keyboard> GetKeyboard();
 
 	const GLFWvidmode* GetVideoMode();
 
