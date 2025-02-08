@@ -40,6 +40,8 @@ public:
 	void LoadAndDrawImage(std::string_view path, std::string title, Shader* shader, Coord position, Size size, Size windowSize);
 
 	void DrawImage(std::string_view title, Coord position, Size size, Size windowSize, Color color = Color(1.0f, 1.0f, 1.0f), bool reverse = false);
+	void DrawImage(Image*& image, Coord position, Size size, Size windowSize, Color color = Color(1.0f, 1.0f, 1.0f), bool reverse = false);
+	void DrawImage(std::weak_ptr<Image> image, Coord position, Size size, Size windowSize, Color color = Color(1.0f, 1.0f, 1.0f), bool reverse = false);
 
 	const std::unordered_map<std::string, Image>& GetImages();
 	void SetImages(std::vector<Image> images);
