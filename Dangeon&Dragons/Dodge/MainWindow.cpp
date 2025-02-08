@@ -17,6 +17,7 @@
 
 #include "../Content/Scripts/Screens/MainWindowLoading/MainWindowLoading.h"
 #include "../Content/Scripts/UI/ProgressBar/utilities.h"
+#include "../Content/Scripts/UI/PauseMenu/PauseMenu.h"
 
 MainWindow::MainWindow(): Window()
 {
@@ -61,7 +62,10 @@ void MainWindow::Initialize()
 void MainWindow::Update()
 {
 	gameStatus = GameStatuses::Loading;
-    std::shared_ptr<MainWindowLoading> mainWindowLoading = std::make_shared<MainWindowLoading>(6);
+    std::shared_ptr<MainWindowLoading> mainWindowLoading = std::make_shared<MainWindowLoading>(7);
+    
+    std::unique_ptr<PauseMenu> pauseMenu = std::make_unique<PauseMenu>();
+
     std::unique_ptr<WonderWold> wonderWold;
 
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
@@ -73,6 +77,10 @@ void MainWindow::Update()
     Thread loadingThread = Thread("loading", [mainWindowLoading, &wonderWold, this, loadingContext](){
         glfwMakeContextCurrent(loadingContext);
         std::weak_ptr<ProgressBar> progressBar = mainWindowLoading->GetProgressBar();
+        SetProgressBarValue(progressBar, 0);
+
+        images->Load("Content/Images/PauseMenu/pauseMenu.png", "pauseMenu");
+
         wonderWold = std::make_unique<WonderWold>(
             this,
             TinyXml::LoadMap(
@@ -157,8 +165,12 @@ void MainWindow::Update()
 
             std::shared_ptr<Camera> camera = NULL;
 
+            if (gameStatus == GameStatuses::Pause) {
+                pauseMenu->Update();
+            }
+
             Fonts::GetFont("NotJamGlasgow")->RenderText(
-                L"Work in progress", 
+                L"Work in progress",
                 Coord(30, 30),
                 std::make_unique<FontRenderOptions>(
                     1.0f,
@@ -166,7 +178,8 @@ void MainWindow::Update()
                     nullptr,
                     nullptr,
                     Color(1.0f, .0f, .0f)
-            ));
+               )
+            );
 
             mouse->Update();
             keyboard->Update();
