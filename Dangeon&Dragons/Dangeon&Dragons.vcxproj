@@ -114,7 +114,13 @@
       <AdditionalDependencies>glfw3.lib;opengl32.lib;user32.lib;gdi32.lib;shell32.lib;freeglut.lib;OpenAL32.lib;sndfile.lib;tinyxml2.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(CurrentVsInstallRoot)\VC\Auxiliary\VS\bin\x64" "$(OutDir)"</Command>
+      <Command>if exist "$(CurrentVsInstallRoot)\VC\Auxiliary\VS\bin\x64" (
+  copy "$(CurrentVsInstallRoot)\VC\Auxiliary\VS\bin\x64" "$(OutDir)"
+) else (
+  copy "$(CurrentVsInstallRoot)\VC\Auxiliary\VS\lib\x64" "$(OutDir)"
+)
+
+copy "$(MSBuildStartupDirectory)\vcpkg_installed\x64-windows\bin" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
