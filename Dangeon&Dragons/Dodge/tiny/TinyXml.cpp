@@ -55,7 +55,7 @@ std::unique_ptr<TileMap> TinyXml::LoadMap(
     std::weak_ptr<ProgressBar> progressBar
 )
 {
-    SetProgressBarValue(progressBar, 0);
+    NextProgressBarValue(progressBar);
 
 	tinyxml2::XMLDocument doc;
     if (TinyXml::ReadDoc(doc, path) != tinyxml2::XML_SUCCESS) {
