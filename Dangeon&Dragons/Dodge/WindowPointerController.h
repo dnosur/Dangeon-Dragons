@@ -13,7 +13,9 @@
 
 class WindowPointerController
 {
-	static std::unordered_map<std::type_index, std::unordered_map<std::string, std::unique_ptr<WindowPointerBase>>> pointers;
+	static std::unique_ptr<
+		std::unordered_map<std::type_index, std::unordered_map<std::string, std::unique_ptr<WindowPointerBase>>>
+	> pointers;
 public:
 	template <typename T>
 	static void SetPointer(WindowPointer<T> pointer);
@@ -25,14 +27,14 @@ public:
 template<typename T>
 inline void WindowPointerController::SetPointer(WindowPointer<T> pointer)
 {
-	pointers[typeid(T)][std::string(pointer.GetTitle())] = std::make_unique<WindowPointer<T>>(pointer);
+	pointers->operator[](typeid(T))[std::string(pointer.GetTitle())] = std::make_unique<WindowPointer<T>>(pointer);
 }
 
 template<typename T>
 inline WindowPointer<T>* WindowPointerController::GetValue(std::string_view title)
 {
-	auto typeIt = pointers.find(typeid(T));
-	if (typeIt == pointers.end()) {
+	auto typeIt = pointers->find(typeid(T));
+	if (typeIt == pointers->end()) {
 		return nullptr;
 	}
 
