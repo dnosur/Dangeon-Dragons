@@ -1,5 +1,7 @@
 #include "Mouse.h"
 
+#include "Window.h"
+
 Mouse::Mouse()
 {
 	click = false;
@@ -17,13 +19,13 @@ Mouse::Mouse(GLFWwindow* window)
 	click = false;
 
 	HookMouseHandler([](GLFWwindow* window, int button, int action, int mods) {
-		WindowPointer<Mouse>* mouse = WindowPointerController::GetValue<Mouse>(window, "Mouse");
-		if (mouse == nullptr) {
+		std::shared_ptr<Mouse> mouse = Window::GetMouse().lock();
+		if (!mouse) {
 			return;
 		}
 
 		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-			mouse->GetValue().Click();
+			mouse->Click();
 		}
 	});
 }

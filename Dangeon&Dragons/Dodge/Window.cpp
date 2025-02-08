@@ -1,15 +1,34 @@
 #include "Window.h"
 
+Size Window::size;
+Size Window::renderResolution = Size(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
+
+std::shared_ptr<ImagesController> Window::images = nullptr;
+std::shared_ptr<AudioController> Window::audioController = nullptr;
+
+std::shared_ptr<Mouse> Window::mouse = nullptr;
+std::shared_ptr<Keyboard> Window::keyboard = nullptr;
+
+GameStatuses Window::gameStatus;
+
 void Window::MakeWindow()
 {
-    window = glfwCreateWindow(size.width, size.height, title.c_str(), monitor, share);
+    monitor = glfwGetPrimaryMonitor();
+
+    window = glfwCreateWindow(
+        size.width, size.height, 
+        title.c_str(), 
+        (fullscreen && monitor ? monitor : NULL), 
+        share
+    );
+
     if (!window)
     {
         return CloseWindow();
     }
 
-    mouse = Mouse(window);
-    keyboard = Keyboard(window);
+    mouse = std::make_shared<Mouse>(window);
+    keyboard = std::make_shared<Keyboard>(window);
 
     closed = false;
 }
@@ -27,7 +46,7 @@ void Window::ResizeWindow(Size size)
 
     glViewport(0, 0, size.width, size.height);
 
-   // this->size = size;
+   Window::size = size;
 }
 
 Window::Window()
@@ -43,22 +62,29 @@ Window::Window()
     MakeWindow();
 } 
 
-Window::Window(Size size, std::string title, Color backgroundColor, GLFWmonitor* monitor, GLFWwindow* share)
+Window::Window(
+    Size size, 
+    std::string title, 
+    bool fullscreen,
+    Color backgroundColor, 
+    GLFWmonitor* monitor, 
+    GLFWwindow* share
+)
 {
     this->size = size;
     this->title = title;
+
+    this->fullscreen = fullscreen;
 
     this->share = share;
     this->monitor = monitor;
 
     this->backgroundColor = backgroundColor;
 
-    MakeWindow();
-}
+    images = std::make_shared<ImagesController>();
+    audioController = std::make_shared<AudioController>();
 
-Window::~Window()
-{
-	CloseWindow();
+    MakeWindow();
 }
 
 GLFWwindow* Window::GetWindow()
@@ -74,6 +100,26 @@ GLFWmonitor* Window::GetMonitor()
 GLFWwindow* Window::GetShare()
 {
     return share;
+}
+
+const Size& Window::GetRenderResolutionView()
+{
+    return renderResolution;
+}
+
+Size Window::GetRenderResolution()
+{
+    return renderResolution;
+}
+
+const GameStatuses& Window::GetGameStatus()
+{
+    return gameStatus;
+}
+
+const Size& Window::GetSizeView()
+{
+    return size;
 }
 
 Size Window::GetSize()
@@ -121,10 +167,6 @@ void Window::CloseWindow()
         glfwDestroyWindow(share);
     }
 
-    if (monitor) {
-        delete monitor;
-    }
-
     glfwTerminate();
     closed = true;
 
@@ -137,21 +179,21 @@ const bool Window::IsClosed()
 }
 
 float Window::PixelToGLX(float pixelX) {
-    return (pixelX / size.GetWidth()) * 2.0f - 1.0f;
+    return (pixelX / renderResolution.GetWidth()) * 2.0f - 1.0f;
 }
 
 float Window::PixelToGLY(float pixelY) {
-    return 1.0f - (pixelY / size.GetHeight()) * 2.0f;
+    return 1.0f - (pixelY / renderResolution.GetHeight()) * 2.0f;
 }
 
 float Window::GLXToPixel(float glx)
 {
-    return ((glx + 1.0f) / 2.0f) * size.GetWidth();
+    return ((glx + 1.0f) / 2.0f) * renderResolution.GetWidth();
 }
 
 float Window::GLYToPixel(float gly)
 {
-    return ((1.0f - (gly + 1.0f) / 2.0f) * size.GetHeight());
+    return ((1.0f - (gly + 1.0f) / 2.0f) * renderResolution.GetHeight());
 }
 
 void Window::SetBackgroundColor(Color color)
@@ -164,19 +206,29 @@ Color Window::GetBackgroundColor()
     return backgroundColor;
 }
 
-ImagesController& Window::GetImagesController()
+std::weak_ptr<ImagesController> Window::GetImagesController()
 {
     return images;
 }
 
-Mouse& Window::GetMouse()
+std::weak_ptr<AudioController> Window::GetAudioController()
+{
+    return audioController;
+}
+
+std::weak_ptr<Mouse> Window::GetMouse()
 {
     return mouse;
 }
 
-Keyboard& Window::GetKeyboard()
+std::weak_ptr<Keyboard> Window::GetKeyboard()
 {
     return keyboard;
+}
+
+const GLFWvidmode* Window::GetVideoMode()
+{
+	return glfwGetVideoMode(monitor);
 }
 
 Timer& Window::GetTimer()
@@ -186,22 +238,22 @@ Timer& Window::GetTimer()
 
 void Window::Debug(bool norm)
 {
-    Coord coord = mouse.GetMouseCoord();
-    Coord prev = mouse.GetPrevMouseCoord();
+    Coord coord = mouse->GetMouseCoord();
+    Coord prev = mouse->GetPrevMouseCoord();
 
     if (coord == prev) {
         return;
     }
 
     if (norm) {
-        float normMouseX = (coord.X / GetSize().GetWidth()) * 2.0f - 1.0f;
-        float normMouseY = 1.0f - (coord.Y / GetSize().GetHeight()) * 2.0f;
+        float normMouseX = (coord.X / GetRenderResolution().GetWidth()) * 2.0f - 1.0f;
+        float normMouseY = 1.0f - (coord.Y / GetRenderResolution().GetHeight()) * 2.0f;
         std::cout << "X: " << normMouseX << " Y: " << normMouseY << std::endl;
         return;
     }
 
-    if (coord.X < 0 || coord.X > size.width ||
-        coord.Y < 0 || coord.Y > size.height) {
+    if (coord.X < 0 || coord.X > renderResolution.width ||
+        coord.Y < 0 || coord.Y > renderResolution.height) {
         return;
     }
 

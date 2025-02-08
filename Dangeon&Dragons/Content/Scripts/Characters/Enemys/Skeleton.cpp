@@ -91,7 +91,10 @@ void Skeleton::SetPathOffset(Coord offset)
 
 void Skeleton::Update()
 {
-	AIMovement();
+	if (Window::GetGameStatus() == GameStatuses::Start) {
+		AIMovement();
+	}
+
 	Draw();
 	//animations[GetAnimationName()]->Play();
 };
@@ -420,12 +423,12 @@ void Skeleton::Drag(Coord newPos)
 
 bool Skeleton::CheckForCollision(Coord position)
 {
-	WindowPointer<std::vector<std::shared_ptr<IGameObject>>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<std::shared_ptr<IGameObject>>>(window->GetWindow(), "SolidCollisions");
-	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().empty()) {
+	WindowPointer<std::vector<std::shared_ptr<IGameObject>>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<std::shared_ptr<IGameObject>>>("SolidCollisions");
+	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().lock()->empty()) {
 		return true;
 	}
 
-	for (std::shared_ptr<IGameObject>& collisionObj : solidCollisionsObjects->GetValue()) {
+	for (std::shared_ptr<IGameObject>& collisionObj : *solidCollisionsObjects->GetValue().lock()) {
 		std::shared_ptr<ICollision> collision = collisionObj->GetCollision().lock();
 		if (collision == nullptr) {
 			continue;
@@ -455,7 +458,7 @@ void Skeleton::MathSide(double& sideSize, bool isWidth)
 	Coord& vertex1 = vertexes[0];
 	Coord& vertex2 = vertexes[1];
 
-	float glDelta = (float)sideSize / (float)window->GetSize().GetWidth() * 2.0f;
+	float glDelta = (float)sideSize / (float)window->GetRenderResolution().GetWidth() * 2.0f;
 
 	if (isWidth) {
 		if (sideSize > 0) {
@@ -474,8 +477,8 @@ void Skeleton::MathSide(double& sideSize, bool isWidth)
 		}
 	}
 
-	size.SetWidth((vertex1.X - vertex2.X) * window->GetSize().GetWidth() / 2.0f);
-	size.SetHeight((vertex1.Y - vertex2.Y) * window->GetSize().GetHeight() / 2.0f);
+	size.SetWidth((vertex1.X - vertex2.X) * window->GetRenderResolution().GetWidth() / 2.0f);
+	size.SetHeight((vertex1.Y - vertex2.Y) * window->GetRenderResolution().GetHeight() / 2.0f);
 
 	pos.X = window->GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
 	pos.Y = window->GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
@@ -497,7 +500,7 @@ void Skeleton::AIMovement()
 			return;
 		}
 
-		Thread* findTarget = new Thread(nullptr, [&]() {
+		std::unique_ptr<Thread> findTarget = std::make_unique<Thread>("", [&]() {
 			std::weak_ptr<Player> player = GameObjects::GetDynamicByTitle<Player>("Player");
 			std::shared_ptr<Player> _player = player.lock();
 

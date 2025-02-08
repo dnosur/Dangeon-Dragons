@@ -69,8 +69,7 @@ void WonderWold::SpawnPlayer()
 	camera->SetObservedObj(player);
 
 	WindowPointerController::SetPointer(
-		window->GetWindow(), 
-		WindowPointer<Player>("player", player.get())
+		WindowPointer<Player>("player", player)
 	);
 
 	GameObjects::Add(std::dynamic_pointer_cast<class Pawn>(player));
@@ -181,8 +180,10 @@ void WonderWold::Update()
 	std::weak_ptr<IGameObject> observed = camera->GetObservedObj();
 	std::shared_ptr<IGameObject> lockedObserved = observed.lock();
 
+	bool isPause = Window::GetGameStatus() == GameStatuses::Pause;
+
 	Coord cameraOffset = camera->GetOffset();
-	bool cameraMove = cameraOffset.X != 0 || cameraOffset.Y != 0;
+	bool cameraMove = (cameraOffset.X != 0 || cameraOffset.Y != 0) && !isPause;
 
 	for (std::shared_ptr<IGameObject>& obj : gameObjects)
 	{
@@ -191,7 +192,9 @@ void WonderWold::Update()
 			obj->SetPos(temp + cameraOffset);
 		}
 
-		animationController.Play(obj->GetTitle());
+		if (!isPause) {
+			animationController.Play(obj->GetTitle());
+		}
 
 		if (lockedObserved == nullptr) {
 			continue;

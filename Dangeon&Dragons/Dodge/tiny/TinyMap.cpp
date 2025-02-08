@@ -25,13 +25,18 @@ void TinyMap::MoveCollison(std::shared_ptr<ICollision> collision, Coord* pos)
 void TinyMap::Initialize()
 {
 	//Math Map Texture Position
-	for (auto& spriteLayer : tileMap->spriteLayersController) {
-		const Size spriteLayerSize = spriteLayer.second->GetSize();
+	for (const int& spriteLayerId : tileMap->spriteLayersController.GetSpriteLayerOrders()) {
+		std::shared_ptr<TinySpriteLayer> spriteLayer = tileMap->spriteLayersController.GetById(spriteLayerId).lock();
+		if (!spriteLayer) {
+			continue;
+		}
 
-		std::cout << "Layer: " << spriteLayer.second->GetName() << std::endl;
+		const Size spriteLayerSize = spriteLayer->GetSize();
 
-		for (int chunk_id = 0; chunk_id < spriteLayer.second->GetChunksCount(); chunk_id++) {
-			std::weak_ptr<TinyChunk> weakChunk = spriteLayer.second->operator[](chunk_id);
+		std::cout << "Layer: " << spriteLayer->GetName() << std::endl;
+
+		for (int chunk_id = 0; chunk_id < spriteLayer->GetChunksCount(); chunk_id++) {
+			std::weak_ptr<TinyChunk> weakChunk = spriteLayer->operator[](chunk_id);
 			std::shared_ptr<TinyChunk> chunk = weakChunk.lock();
 
 			if (chunk == nullptr) {

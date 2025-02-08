@@ -1,5 +1,7 @@
 #include "TinyXml.h"
 #include "TileMap.h"
+#include "../../Content/Scripts/UI/ProgressBar/ProgressBar.h"
+#include "../../Content/Scripts/UI/ProgressBar/utilities.h"
 
 std::string TinyXml::root_dir = "Content/";
 
@@ -47,8 +49,14 @@ tinyxml2::XMLError TinyXml::ReadDoc(tinyxml2::XMLDocument& doc, std::string path
     return tinyxml2::XML_SUCCESS;
 }
 
-std::unique_ptr<TileMap> TinyXml::LoadMap(std::string path, std::string title)
+std::unique_ptr<TileMap> TinyXml::LoadMap(
+    std::string path, 
+    std::string title, 
+    std::weak_ptr<ProgressBar> progressBar
+)
 {
+    NextProgressBarValue(progressBar);
+
 	tinyxml2::XMLDocument doc;
     if (TinyXml::ReadDoc(doc, path) != tinyxml2::XML_SUCCESS) {
         return std::make_unique<TileMap>();
@@ -74,12 +82,16 @@ std::unique_ptr<TileMap> TinyXml::LoadMap(std::string path, std::string title)
 	map->tileSize.height = mapElement->IntAttribute("tileheight");
 	map->tileSize.width = mapElement->IntAttribute("tilewidth");
 
+    NextProgressBarValue(progressBar);
+
     std::cout << "[MapLoad]::TILESETS::LOAD" << std::endl;
 
     //Tilesets
     TilesetsController tilesetsController(mapElement, path);
 
     std::cout << "[MapLoad]::TILESETS::OK" << std::endl << std::endl;
+
+    NextProgressBarValue(progressBar);
 
     std::cout << "[MapLoad]::CLASSES::LOAD" << std::endl;
     //Classes
@@ -94,6 +106,8 @@ std::unique_ptr<TileMap> TinyXml::LoadMap(std::string path, std::string title)
 
     std::cout << "[MapLoad]::CLASSES::OK" << std::endl << std::endl;
 
+    NextProgressBarValue(progressBar);
+
     std::cout << "[MapLoad]::SPRITES::LOAD" << std::endl;
     //Sprites
     TinySrpiteLayersController layersController;
@@ -106,6 +120,8 @@ std::unique_ptr<TileMap> TinyXml::LoadMap(std::string path, std::string title)
     map->tilesetsController = tilesetsController;
     map->classesController = objects;
     map->spriteLayersController = layersController;
+
+    NextProgressBarValue(progressBar);
 
     return std::move(map);
 }

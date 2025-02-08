@@ -15,13 +15,13 @@ bool Font::LoadFont()
         return false;
     }
 
-    FT_Set_Pixel_Sizes(face, 0, 14);
+    FT_Set_Pixel_Sizes(face, size.width, size.height);
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    for (unsigned char c = 0; c < 128; c++) {
+    for (wchar_t c = 0x0020; c <= 0x04FF; c++) {
         if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
-			std::cout << "ERROR::FREETYPE: Failed to load Glyph" << std::endl;
+            std::cout << "ERROR::FREETYPE: Failed to load Glyph " << c << std::endl;
             continue;
         }
 
@@ -52,7 +52,7 @@ bool Font::LoadFont()
             (GLuint)face->glyph->advance.x
         );
 
-        characters.insert(std::pair<char, Character>(c, character));
+        characters.insert(std::pair<wchar_t, Character>(c, character));
     }
 
     FT_Done_Face(face);
@@ -65,7 +65,6 @@ bool Font::LoadFont()
 Font::Font(
     std::string title, 
     std::string path, 
-    Size windowSize, 
     Size size
 )
 {
@@ -73,11 +72,12 @@ Font::Font(
     this->path = path;
 
     this->size = size;
-    this->windowSize = windowSize;
+
+    const Size& windowSize = Window::GetSizeView();
 
     projection = glm::ortho(
         0.0f, 
-        static_cast<float>(windowSize.width), 
+        static_cast<float>(windowSize.width),
         0.0f, 
         static_cast<float>(windowSize.height)
     );
@@ -97,7 +97,11 @@ Font::~Font()
 {
 }
 
-void Font::RenderText(std::string text, Coord pos, float scale, Color color)
+void Font::RenderText(
+    std::wstring text, 
+    Coord pos, 
+    std::unique_ptr<FontRenderOptions> options
+)
 {
     unsigned int VAO, VBO;
 
@@ -111,6 +115,8 @@ void Font::RenderText(std::string text, Coord pos, float scale, Color color)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+    const Color& color = options->GetColor();
+
     shader->Use();
     shader->SetVec4("textColor", color.r, color.g, color.b, color.a);
     shader->SetMat4("projection", projection);
@@ -118,16 +124,41 @@ void Font::RenderText(std::string text, Coord pos, float scale, Color color)
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);
 
-    std::string::const_iterator c;
-    for (c = text.begin(); c != text.end(); c++)
+    std::shared_ptr<Size> area = options->GetRenderArea().lock();
+    bool useArea = area != nullptr;
+    if (useArea) {
+        area->width += pos.X;
+		area->height += pos.Y;
+    }
+
+    std::shared_ptr<Padding> padding = options->GetPadding().lock();
+
+    const float& scale = options->GetScale();
+    const double startX = pos.X;
+
+    for (wchar_t c : text)
     {
-        Character ch = characters[*c];
+        if (!characters.count(c)) {
+            continue;
+        }
+
+        Character ch = characters[c];
+
+        float w = ch.size.width * scale;
+        float h = ch.size.height * scale;
+
+        if (useArea && pos.X + w > area->width) {
+            pos.X = startX;
+            pos.Y -= ch.size.height * scale;
+
+            if (padding) {
+				padding->Use(pos);
+            }
+        }
 
         float xpos = pos.X + ch.bearing.width * scale;
         float ypos = pos.Y - (ch.size.height - ch.bearing.height) * scale;
 
-        float w = ch.size.width * scale;
-        float h = ch.size.height * scale;
         // update VBO for each character
         float vertices[6][4] = {
             { xpos,     ypos + h,   0.0f, 0.0f },

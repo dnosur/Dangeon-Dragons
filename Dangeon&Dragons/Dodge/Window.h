@@ -1,14 +1,16 @@
 #pragma once
-#define DEFAULT_WINDOW_WIDTH 1280
-#define DEFAULT_WINDOW_HEIGHT 720
+#define DEFAULT_WINDOW_WIDTH 1280.0f
+#define DEFAULT_WINDOW_HEIGHT 720.0f
 
 #include "./images/ImagesController.h"
 #include "./audio/AudioController.h"
+#include "./keyboard/Keyboard.h"
+
+#include "GameStatuses.h"
 
 #include "Size.h"
 #include "Mouse.h"
 #include "Color.h"
-#include "./keyboard/Keyboard.h"
 #include "Timer.h"
 
 class Window
@@ -18,35 +20,52 @@ protected:
 	GLFWmonitor* monitor;
 	GLFWwindow* share;
 
-	ImagesController images;
-	AudioController audioController;
+	static GameStatuses gameStatus;
 
-	Mouse mouse;
-	Keyboard keyboard;
+	static std::shared_ptr<ImagesController> images;
+	static std::shared_ptr<AudioController> audioController;
+
+	static std::shared_ptr<Mouse> mouse;
+	static std::shared_ptr<Keyboard> keyboard;
 
 	Timer timer;
 
-	Size size;
+	static Size size;
+	static Size renderResolution;
 
 	Color backgroundColor;
 
 	std::string title;
 	bool closed;
 
+	bool fullscreen;
+
 	void MakeWindow();
 
 	void FillBackground();
 public:
-
 	Window();
-	Window(Size size, std::string title, Color backgroundColor = Color(1, 1, 1), GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
-	~Window();
+	Window(
+		Size size, 
+		std::string title,
+		bool fullscreen = false,
+		Color backgroundColor = Color(1, 1, 1), 
+		GLFWmonitor* monitor = NULL, 
+		GLFWwindow* share = NULL
+	);
+	~Window() = default;
 
 	GLFWwindow* GetWindow();
 	GLFWmonitor* GetMonitor();
 	GLFWwindow* GetShare();
 
-	Size GetSize();
+	static const Size& GetSizeView();
+	static Size GetSize();
+	static const Size& GetRenderResolutionView();
+	static Size GetRenderResolution();
+
+	static const GameStatuses& GetGameStatus();
+
 	std::string GetTitle();
 
 	virtual void Initialize();
@@ -66,12 +85,16 @@ public:
 	void SetBackgroundColor(Color color);
 	Color GetBackgroundColor();
 
-	ImagesController& GetImagesController();
+	static std::weak_ptr<ImagesController> GetImagesController();
 
-	void ResizeWindow(Size size);
+	static std::weak_ptr<AudioController> GetAudioController();
 
-	Mouse& GetMouse();
-	Keyboard& GetKeyboard();
+	static void ResizeWindow(Size size);
+
+	static std::weak_ptr<Mouse> GetMouse();
+	static std::weak_ptr<Keyboard> GetKeyboard();
+
+	const GLFWvidmode* GetVideoMode();
 
 	Timer& GetTimer();
 

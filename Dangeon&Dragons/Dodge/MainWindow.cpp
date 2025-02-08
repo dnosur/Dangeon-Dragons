@@ -2,27 +2,31 @@
 #include "font/Font.h"
 #include "Save.h"
 
+#include "threads/Thread.h"
+
 #include "./images/SlicedImage.h"
+
+#include "font/Fonts.h"
 
 #include "../Content/Scripts/Maps/WonderWorld/WonderWold.h"
 #include "../Content/Scripts/Characters/Player/Player.h"
 #include "../Content/Scripts/Characters/Enemys/Skeleton.h"
 
 #include "../Dodge/GameObjects.h"
-#include "../Content/Scripts/UI/HpBar/HpBar.h"
+#include "../Content/Scripts/UI/ProgressBar/HpBar/HpBar.h"
+
+#include "../Content/Scripts/Screens/MainWindowLoading/MainWindowLoading.h"
+#include "../Content/Scripts/UI/ProgressBar/utilities.h"
+#include "../Content/Scripts/UI/PauseMenu/PauseMenu.h"
 
 MainWindow::MainWindow(): Window()
 {
     gameStatus = GameStatuses::End;
 }
 
-MainWindow::MainWindow(Size size, std::string title, Color backgroundColor, GLFWmonitor* monitor, GLFWwindow* share):
-    Window(size, title, backgroundColor, monitor, share) {
+MainWindow::MainWindow(Size size, std::string title, bool fullscreen, Color backgroundColor, GLFWmonitor* monitor, GLFWwindow* share):
+    Window(size, title, fullscreen, backgroundColor, monitor, share) {
     gameStatus = GameStatuses::Stop;
-}
-
-MainWindow::~MainWindow()
-{
 }
 
 void MainWindow::Initialize()
@@ -40,57 +44,78 @@ void MainWindow::Initialize()
         ImagesController::LoadImg("Content/Images/defaultObj.jpg", "default")
     ));
 
-    images.Load("Content/Images/Background/ground.png", "ground");
+    images->Load("Content/Images/Background/ground.png", "ground");
+
+    //Fonts
+    Fonts::LoadFont("NotJamGlasgow", "Content/Fonts/Not Jam Glasgow 13/Not Jam Glasgow 16.ttf", Size(56, 56));
+    Fonts::LoadFont("DreiFraktur", "Content/Fonts/Drei Fraktur/DreiFraktur.ttf", Size(24, 24));
 
     //std::string sample = "123";
     //std::unique_ptr<std::string> title;
     //title.reset(&sample);
 
-    WindowPointerController::SetPointer(window, WindowPointer<Mouse>("Mouse", &mouse));
-    WindowPointerController::SetPointer(window, WindowPointer<Keyboard>("Keyboard", &keyboard));
-
-    WindowPointerController::SetPointer(window, WindowPointer<AudioController>("audioController", &audioController));
-
-    WindowPointerController::SetPointer(window, WindowPointer<Window>("MainWindow", this));
-
-    WindowPointerController::SetPointer(window, WindowPointer<GameStatuses>("GameStatus", &gameStatus));
-
     glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
-       WindowPointerController::GetValue<Window>(window, "MainWindow")->GetValue().ResizeWindow(Size(width, height));
+       Window::ResizeWindow(Size(width, height));
     });
 }
 
 void MainWindow::Update()
 {
-    gameStatus = GameStatuses::Start;
+	gameStatus = GameStatuses::Loading;
+    std::shared_ptr<MainWindowLoading> mainWindowLoading = std::make_shared<MainWindowLoading>(7);
+    
+    std::unique_ptr<PauseMenu> pauseMenu = std::make_unique<PauseMenu>();
 
-    std::unique_ptr<WonderWold> wonderWold = std::make_unique<WonderWold>(
-        this, 
-        TinyXml::LoadMap(
-            "Content/Maps/world/world.tmx", 
-            "wonder_world"
-        ),
-        Coord(100, -400)
-    );
+    std::unique_ptr<WonderWold> wonderWold;
 
-    std::vector<std::weak_ptr<IGameObject>> solidCollisions = wonderWold->GetClassesByType("SolidCollision");
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_FOCUSED, GLFW_FALSE);
+    glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 
-    if (!solidCollisions.empty()) {
-        WindowPointerController::SetPointer(
-            window, 
-            WindowPointer<std::vector<std::weak_ptr<IGameObject>>>(
-                "SolidCollisions", &solidCollisions
-            )
+    auto* loadingContext = glfwCreateWindow(1, 1, "Loading Context", NULL, window);
+
+    Thread loadingThread = Thread("loading", [mainWindowLoading, &wonderWold, this, loadingContext](){
+        glfwMakeContextCurrent(loadingContext);
+        std::weak_ptr<ProgressBar> progressBar = mainWindowLoading->GetProgressBar();
+        SetProgressBarValue(progressBar, 0);
+
+        images->Load("Content/Images/PauseMenu/pauseMenu.png", "pauseMenu");
+
+        wonderWold = std::make_unique<WonderWold>(
+            this,
+            TinyXml::LoadMap(
+                "Content/Maps/world/world.tmx",
+                "wonder_world",
+                progressBar
+            ),
+            Coord(100, -400)
         );
-    }
 
-    std::unique_ptr<Font> sampleFont = std::make_unique<Font>(
-        "NotJamGlasgow",
-        "Content/Fonts/Not Jam Glasgow 13/Not Jam Glasgow 16.ttf",
-        GetSize()
-    );
+        std::vector<std::weak_ptr<IGameObject>> solidCollisions = wonderWold->GetClassesByType("SolidCollision");
 
-   GameObjects::Add(&solidCollisions);
+        if (!solidCollisions.empty()) {
+            std::unique_ptr<std::vector<std::shared_ptr<IGameObject>>> solidCollisionsPtr = std::make_unique<std::vector<std::shared_ptr<IGameObject>>>();
+            for (std::weak_ptr<IGameObject>& solidCollision : solidCollisions) {
+                if (solidCollision.expired() || !solidCollision.lock()) {
+                    continue;
+                }
+				solidCollisionsPtr->push_back(solidCollision.lock());
+            }
+
+            WindowPointerController::SetPointer(
+                WindowPointer<std::vector<std::shared_ptr<IGameObject>>>(
+                    "SolidCollisions", std::move(solidCollisionsPtr)
+                )
+            );
+        }   
+
+        GameObjects::Add(&solidCollisions);
+        NextProgressBarValue(progressBar);
+
+        glfwMakeContextCurrent(nullptr);
+        glfwFocusWindow(window);
+    });
+    loadingThread.Detach();
 
     std::unique_ptr<HpBar> hpBar = std::make_unique<HpBar>(*this);
 
@@ -105,27 +130,60 @@ void MainWindow::Update()
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        if (gameStatus == GameStatuses::Restart) {
+        if (gameStatus == GameStatuses::Loading && mainWindowLoading->GetProgressBar().lock()->IsFinished()) {
+			gameStatus = GameStatuses::Start;
+            mainWindowLoading.reset();
+            glfwMakeContextCurrent(window);
+            glfwDestroyWindow(loadingContext);
         }
 
-        images.DrawImage(
-            "ground",
-            Coord(0, 0),
-            GetSize(),
-            GetSize(),
-            Color(0.4f, 0.4f, 0.4f)
-        );
+        if (gameStatus == GameStatuses::Loading) {
+            mainWindowLoading->Update();
+        }
+
+        if (gameStatus == GameStatuses::Restart) {
+        }
 
         if (gameStatus == GameStatuses::End) {
         }
 
-        wonderWold->Update();
-        hpBar->Update();
+        if (gameStatus == GameStatuses::Start || gameStatus == GameStatuses::Pause) {
+            if (keyboard->GetKey() == KeyboardKeys::Esc && keyboard->GetKey().pressed) {
+                gameStatus = gameStatus == GameStatuses::Pause ? GameStatuses::Start : GameStatuses::Pause;
+            }
 
-        sampleFont->RenderText("Work in progress", Coord(30, 30), 4.0f, Color(1.0f, .0f, .0f, .5f));
+            images->DrawImage(
+                "ground",
+                Coord(0, 0),
+                GetSize(),
+                GetSize(),
+                Color(0.4f, 0.4f, 0.4f)
+            );
 
-        mouse.Update();
-        keyboard.Update();
+            wonderWold->Update();
+            hpBar->Update();
+
+            std::shared_ptr<Camera> camera = NULL;
+
+            if (gameStatus == GameStatuses::Pause) {
+                pauseMenu->Update();
+            }
+
+            Fonts::GetFont("NotJamGlasgow")->RenderText(
+                L"Work in progress",
+                Coord(30, 30),
+                std::make_unique<FontRenderOptions>(
+                    1.0f,
+                    .0f,
+                    nullptr,
+                    nullptr,
+                    Color(1.0f, .0f, .0f)
+               )
+            );
+
+            mouse->Update();
+            keyboard->Update();
+		}
 
         //Debug();  // ֲûגמהטל סטלגמכ
 
@@ -134,4 +192,9 @@ void MainWindow::Update()
     }
 
     CloseWindow();
+}
+
+std::weak_ptr<MainWindow> MainWindow::GetWeak()
+{
+    return weak_from_this();
 }

@@ -12,8 +12,8 @@ void Pawn::MathPos(std::vector<Coord> vertexes)
 	float centerX_GL = float(vertex1.X + vertex2.X) / 2.0f;
 	float centerY_GL = float(vertex1.Y + vertex2.Y) / 2.0f;
 
-	pos = Coord(((centerX_GL + 1.0f) / 2.0f) * (float)window->GetSize().GetWidth(),
-		((1.0f - (centerY_GL + 1.0f) / 2.0f) * (float)window->GetSize().GetHeight()));
+	pos = Coord(((centerX_GL + 1.0f) / 2.0f) * (float)window->GetRenderResolution().GetWidth(),
+		((1.0f - (centerY_GL + 1.0f) / 2.0f) * (float)window->GetRenderResolution().GetHeight()));
 }
 
 void Pawn::MathPos(Coord& pos)
@@ -23,8 +23,8 @@ void Pawn::MathPos(Coord& pos)
 	float glCenterX = window->PixelToGLX(pos.X);
 	float glCenterY = window->PixelToGLY(pos.Y);
 
-	float glWidth = (float)(size.GetWidth()) / (float)window->GetSize().GetWidth() * 2.0f;
-	float glHeight = (float)size.GetHeight() / (float)window->GetSize().GetHeight() * 2.0f;
+	float glWidth = (float)(size.GetWidth()) / (float)window->GetRenderResolution().GetWidth() * 2.0f;
+	float glHeight = (float)size.GetHeight() / (float)window->GetRenderResolution().GetHeight() * 2.0f;
 
 	float halfWidth = glWidth / 2.0f;
 	float halfHeight = glHeight / 2.0f;
@@ -56,8 +56,8 @@ bool Pawn::MouseInRect(Mouse& mouse)
 	Coord& vertex1 = vertexes[0];
 	Coord& vertex2 = vertexes[1];
 
-	float normMouseX = (mouse.GetMouseCoord().X / window->GetSize().GetWidth()) * 2.0f - 1.0f;
-	float normMouseY = 1.0f - (mouse.GetMouseCoord().Y / window->GetSize().GetHeight()) * 2.0f;
+	float normMouseX = (mouse.GetMouseCoord().X / window->GetRenderResolution().GetWidth()) * 2.0f - 1.0f;
+	float normMouseY = 1.0f - (mouse.GetMouseCoord().Y / window->GetRenderResolution().GetHeight()) * 2.0f;
 
 	return (normMouseX >= vertex1.X && normMouseX <= vertex2.X &&
 		normMouseY >= vertex1.Y && normMouseY <= vertex2.Y);
@@ -414,7 +414,7 @@ const bool Pawn::IsNear(Coord startPos, Coord targetPos, float distance)
 
 const bool Pawn::IsMouseOverlap()
 {
-	return MouseInRect(window->GetMouse());
+	return MouseInRect(*window->GetMouse().lock());
 }
 
 const bool Pawn::IsDead()

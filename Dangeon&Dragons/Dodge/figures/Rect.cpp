@@ -2,8 +2,8 @@
 
 bool Rect::MouseInRect(Mouse& mouse)
 {
-    float normMouseX = (mouse.GetMouseCoord().X / window->GetSize().GetWidth()) * 2.0f - 1.0f;
-    float normMouseY = 1.0f - (mouse.GetMouseCoord().Y / window->GetSize().GetHeight()) * 2.0f;
+    float normMouseX = (mouse.GetMouseCoord().X / window->GetRenderResolution().GetWidth()) * 2.0f - 1.0f;
+    float normMouseY = 1.0f - (mouse.GetMouseCoord().Y / window->GetRenderResolution().GetHeight()) * 2.0f;
 
     return (normMouseX >= vertex1.X && normMouseX <= vertex2.X &&
         normMouseY >= vertex1.Y && normMouseY <= vertex2.Y);
@@ -14,8 +14,8 @@ void Rect::MathPos(Coord& vertex1, Coord& vertex2)
     this->vertex1 = vertex1;
     this->vertex2 = vertex2;
 
-    float width = (vertex2.X - vertex1.X) * (window->GetSize().GetWidth() / 2.0f);
-    float height = (vertex2.Y - vertex1.Y) * (window->GetSize().GetHeight() / 2.0f);
+    float width = (vertex2.X - vertex1.X) * (window->GetRenderResolution().GetWidth() / 2.0f);
+    float height = (vertex2.Y - vertex1.Y) * (window->GetRenderResolution().GetHeight() / 2.0f);
 
     // ������ ������������ �� ������ ������� ���������
     size = Size(round(std::abs(width)), round(std::abs(height)));
@@ -26,8 +26,8 @@ void Rect::MathPos(Coord& vertex1, Coord& vertex2)
 
     // ����������� OpenGL-���������� � �������
     pos = Coord(
-        ((centerX_GL + 1.0f) / 2.0f) * (float)window->GetSize().GetWidth(),
-        ((1.0f - (centerY_GL + 1.0f) / 2.0f) * (float)window->GetSize().GetHeight())
+        ((centerX_GL + 1.0f) / 2.0f) * (float)window->GetRenderResolution().GetWidth(),
+        ((1.0f - (centerY_GL + 1.0f) / 2.0f) * (float)window->GetRenderResolution().GetHeight())
     );
 }
 
@@ -37,8 +37,8 @@ void Rect::MathPos(Coord& pos)
     float glCenterX = window->PixelToGLX(pos.X);
     float glCenterY = window->PixelToGLY(pos.Y);
 
-    float glWidth = (float)size.GetWidth() / (float)window->GetSize().GetWidth() * 2.0f;
-    float glHeight = (float)size.GetHeight() / (float)window->GetSize().GetHeight() * 2.0f;
+    float glWidth = (float)size.GetWidth() / (float)window->GetRenderResolution().GetWidth() * 2.0f;
+    float glHeight = (float)size.GetHeight() / (float)window->GetRenderResolution().GetHeight() * 2.0f;
 
     // Calculate the vertex1 and vertex2 coordinates
     vertex2.X = glCenterX - glWidth / 2.0f;
@@ -400,7 +400,7 @@ Size Rect::GetSize()
 void Rect::SetSideSize(Sides sides)
 {
     if (sides.bottom != 0) {
-        float glDelta = abs((float)sides.bottom / (float)window->GetSize().GetWidth() * 2.0f);
+        float glDelta = abs((float)sides.bottom / (float)window->GetRenderResolution().GetWidth() * 2.0f);
 
         if (sides.bottom > 0) {
             vertex1.Y -= glDelta;
@@ -411,7 +411,7 @@ void Rect::SetSideSize(Sides sides)
     }
 
     if (sides.top != 0) {
-        float glDelta = abs((float)sides.top / (float)window->GetSize().GetWidth() * 2.0f);
+        float glDelta = abs((float)sides.top / (float)window->GetRenderResolution().GetWidth() * 2.0f);
 
         if (sides.top > 0) {
             vertex2.Y += glDelta;
@@ -422,7 +422,7 @@ void Rect::SetSideSize(Sides sides)
     }
 
     if (sides.left != 0) {
-        float glDelta = abs((float)sides.left / (float)window->GetSize().GetWidth() * 2.0f);
+        float glDelta = abs((float)sides.left / (float)window->GetRenderResolution().GetWidth() * 2.0f);
 
         if (sides.left > 0) {
             vertex2.X -= glDelta;
@@ -433,7 +433,7 @@ void Rect::SetSideSize(Sides sides)
     }
 
     if (sides.right != 0) {
-        float glDelta = abs((float)sides.right / (float)window->GetSize().GetWidth() * 2.0f);
+        float glDelta = abs((float)sides.right / (float)window->GetRenderResolution().GetWidth() * 2.0f);
 
         if (sides.right > 0) {
             vertex1.X += glDelta;
@@ -443,8 +443,8 @@ void Rect::SetSideSize(Sides sides)
         }
     }
 
-    size.SetWidth((vertex1.X - vertex2.X) * window->GetSize().GetWidth() / 2.0f);
-    size.SetHeight((vertex1.Y - vertex2.Y) * window->GetSize().GetHeight() / 2.0f);
+    size.SetWidth((vertex1.X - vertex2.X) * window->GetRenderResolution().GetWidth() / 2.0f);
+    size.SetHeight((vertex1.Y - vertex2.Y) * window->GetRenderResolution().GetHeight() / 2.0f);
 
     pos.X = window->GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
     pos.Y = window->GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
@@ -576,7 +576,7 @@ Directions Rect::GetMoveDirection()
 
 const bool Rect::IsMouseOverlap()
 {
-    return MouseInRect(window->GetMouse());
+    return MouseInRect(*window->GetMouse().lock());
 }
 
 void Rect::SetLayer(Layer layer)

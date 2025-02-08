@@ -26,6 +26,11 @@ bool KeyboardKey::operator==(const KeyboardKey& other) const
 		&& other.pressed == pressed && other.clamping == clamping;
 }
 
+bool KeyboardKey::operator==(const KeyboardKeys& other) const
+{
+	return key == other;
+}
+
 bool KeyboardKey::operator!=(const KeyboardKey& other) const
 {
 	return !(*this == other);

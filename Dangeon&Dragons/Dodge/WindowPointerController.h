@@ -4,59 +4,47 @@
 #include <GLFW/glfw3.h>
 
 #include "WindowPointer.h"
+
 #include <vector>
+#include <unordered_map>
+#include <typeindex>
+
+#include <memory>
 
 class WindowPointerController
 {
-	template <typename T>
-	static void Save(GLFWwindow* window, std::vector<WindowPointer<T>>* pointers);
+	static std::unique_ptr<
+		std::unordered_map<std::type_index, std::unordered_map<std::string, std::unique_ptr<WindowPointerBase>>>
+	> pointers;
 public:
 	template <typename T>
-	static void SetPointer(GLFWwindow* window, WindowPointer<T> pointer);
+	static void SetPointer(WindowPointer<T> pointer);
 
 	template <typename T>
-	static WindowPointer<T>* GetValue(GLFWwindow* window, std::string_view title);
+	static WindowPointer<T>* GetValue(std::string_view title);
 };
 
 template<typename T>
-inline void WindowPointerController::Save(GLFWwindow* window, std::vector<WindowPointer<T>>* pointers)
+inline void WindowPointerController::SetPointer(WindowPointer<T> pointer)
 {
-	glfwSetWindowUserPointer(window, pointers);
+	pointers->operator[](typeid(T))[std::string(pointer.GetTitle())] = std::make_unique<WindowPointer<T>>(pointer);
 }
 
 template<typename T>
-inline void WindowPointerController::SetPointer(GLFWwindow* window, WindowPointer<T> pointer)
+inline WindowPointer<T>* WindowPointerController::GetValue(std::string_view title)
 {
-	std::vector<WindowPointer<T>>* pointers = static_cast<std::vector<WindowPointer<T>>*>(glfwGetWindowUserPointer(window));
-	if (pointers == nullptr || !pointers->capacity() || pointers->empty()) {
-		pointers = new std::vector<WindowPointer<T>>();
-		pointers->push_back(pointer);
-		WindowPointerController::Save(window, pointers);
-		return;
+	auto typeIt = pointers->find(typeid(T));
+	if (typeIt == pointers->end()) {
+		return nullptr;
 	}
 
-	for (WindowPointer<T> &item : *pointers) {
-		if (item.GetTitle() == pointer.GetTitle()) {
-			item = pointer;
-			WindowPointerController::Save(window, pointers);
-			return;
-		}
+	auto it = typeIt->second.find(std::string(title));
+
+	if (it == typeIt->second.end()) {
+		return nullptr;
 	}
 
-	pointers->push_back(pointer);
-}
-
-template<typename T>
-inline WindowPointer<T>* WindowPointerController::GetValue(GLFWwindow* window, std::string_view title)
-{
-	std::vector<WindowPointer<T>>* pointers = static_cast<std::vector<WindowPointer<T>>*>(glfwGetWindowUserPointer(window));
-	if (!pointers->capacity() || pointers->empty() || pointers == nullptr) {
-		return new WindowPointer<T>();
-	}
-
-	for (WindowPointer<T>& item : *pointers) {
-		if (item.GetTitle() == title) {
-			return &item;
-		}
-	}
+	WindowPointer<T>* pointer = dynamic_cast<WindowPointer<T>*>(it->second.get());;
+	if (!pointer) return nullptr;
+	return pointer;
 }

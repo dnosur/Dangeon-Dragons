@@ -26,12 +26,12 @@ void Camera::UpdateCamera()
 
 float Camera::GetPixelToGLFactorX()
 {
-    return 2.0f / window->GetSize().width;
+    return 2.0f / window->GetRenderResolution().width;
 }
 
 float Camera::GetPixelToGLFactorY()
 {
-    return 2.0f / window->GetSize().height;
+    return 2.0f / window->GetRenderResolution().height;
 }
 
 Coord Camera::GetOffset()

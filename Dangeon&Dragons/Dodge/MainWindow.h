@@ -10,22 +10,28 @@
 
 #include "tiny/TinyXml.h"
 
-#include "GameStatuses.h"
 #include "animator/SpriteAnimation.h"
 #include "camera/Camera.h"
 
 class MainWindow :
-    public Window
+    public Window, std::enable_shared_from_this<MainWindow>
 {
-    GameStatuses gameStatus;
-
     std::vector<std::pair<std::string, std::string>> saveData;
 public:
     MainWindow();
-    MainWindow(Size size, std::string title, Color backgroundColor = Color(1, 1, 1), GLFWmonitor* monitor = NULL, GLFWwindow* share = NULL);
-    ~MainWindow();
+    MainWindow(
+        Size size, 
+        std::string title, 
+        bool fullscreen = false, 
+        Color backgroundColor = Color(1, 1, 1), 
+        GLFWmonitor* monitor = NULL, 
+        GLFWwindow* share = NULL
+    );
+    ~MainWindow() = default;
 
     void Initialize() override;
     void Update() override;
+
+    std::weak_ptr<MainWindow> GetWeak();
 };
 

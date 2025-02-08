@@ -13,6 +13,8 @@ struct Coord;
 #include "../Color.h"
 
 #include "../Shader.h"
+#include "../Window.h"
+#include "FontRenderOptions.h"
 
 class Font
 {
@@ -20,11 +22,10 @@ class Font
 	std::string path;
 
 	Size size;
-	Size windowSize;
 
 	glm::mat4 projection;
 
-	std::map<char, Character> characters;
+	std::map<wchar_t, Character> characters;
 
 	std::unique_ptr<Shader> shader;
 
@@ -35,16 +36,14 @@ public:
 	Font(
 		std::string title, 
 		std::string path, 
-		Size windowSize = Size(1280, 720),
 		Size size = Size(14, 14)
 	);
 	~Font();
 
 	void RenderText(
-		std::string text, 
+		std::wstring text, 
 		Coord pos, 
-		float scale, 
-		Color color = Color()
+		std::unique_ptr<FontRenderOptions> options = std::make_unique<FontRenderOptions>()
 	);
 
 	bool IsLoaded();

@@ -115,11 +115,6 @@ void Player::Initialize()
 
 	LoadAnimations();
 	LoadAudio();
-
-	WindowPointer<Keyboard>* keyboard = WindowPointerController::GetValue<Keyboard>(window->GetWindow(), "Keyboard");
-	if (keyboard != nullptr) {
-		this->keyboard = &keyboard->GetValue();
-	}
 }
 
 void Player::SetSideSize(Sides sides)
@@ -195,7 +190,9 @@ void Player::Draw()
 
 void Player::Move()
 {
-	if (!health) {
+	std::shared_ptr<Keyboard> keyboard = Window::GetKeyboard().lock();
+
+	if (!health || !keyboard) {
 		return;
 	}
 
@@ -374,15 +371,14 @@ void Player::Raycasting()
 bool Player::CheckForCollision()
 {
 	WindowPointer<std::vector<std::shared_ptr<IGameObject>>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<std::shared_ptr<IGameObject>>>(
-		window->GetWindow(), 
 		"SolidCollisions"
 	);
 
-	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().empty()) {
+	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().lock()->empty()) {
 		return true;
 	}
 
-	for (std::shared_ptr<IGameObject> collisionObj : solidCollisionsObjects->GetValue()) {
+	for (std::shared_ptr<IGameObject>& collisionObj : *solidCollisionsObjects->GetValue().lock()) {
 		std::shared_ptr<ICollision> collision = collisionObj->GetCollision().lock();
 		if (!collision) {
 			continue;
@@ -404,12 +400,12 @@ bool Player::CheckForCollision()
 
 bool Player::CheckForCollision(Coord pos, Size size)
 {
-	WindowPointer<std::vector<std::shared_ptr<IGameObject>>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<std::shared_ptr<IGameObject>>>(window->GetWindow(), "SolidCollisions");
-	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().empty()) {
+	WindowPointer<std::vector<std::shared_ptr<IGameObject>>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<std::shared_ptr<IGameObject>>>("SolidCollisions");
+	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().lock()->empty()) {
 		return true;
 	}
 
-	for (std::shared_ptr<IGameObject> collisionObj : solidCollisionsObjects->GetValue()) {
+	for (std::shared_ptr<IGameObject>& collisionObj : *solidCollisionsObjects->GetValue().lock()) {
 		std::shared_ptr<ICollision> collision = collisionObj->GetCollision().lock();
 		if (!collision) {
 			continue;
@@ -434,7 +430,7 @@ void Player::MathSide(double& sideSize, bool isWidth)
 	Coord& vertex1 = vertexes[0];
 	Coord& vertex2 = vertexes[1];
 
-	float glDelta = (float)sideSize / (float)window->GetSize().GetWidth() * 2.0f;
+	float glDelta = (float)sideSize / (float)window->GetRenderResolution().GetWidth() * 2.0f;
 
 	if (isWidth) {
 		if (sideSize > 0) {
@@ -453,8 +449,8 @@ void Player::MathSide(double& sideSize, bool isWidth)
 		}
 	}
 
-	size.SetWidth((vertex1.X - vertex2.X) * window->GetSize().GetWidth() / 2.0f);
-	size.SetHeight((vertex1.Y - vertex2.Y) * window->GetSize().GetHeight() / 2.0f);
+	size.SetWidth((vertex1.X - vertex2.X) * window->GetRenderResolution().GetWidth() / 2.0f);
+	size.SetHeight((vertex1.Y - vertex2.Y) * window->GetRenderResolution().GetHeight() / 2.0f);
 
 	pos.X = window->GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
 	pos.Y = window->GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
@@ -588,15 +584,16 @@ bool Player::IsNear(Coord pos)
 
 void Player::Update()
 {
-	Thread* th = new Thread("PlayerRaycast", [this]() {
+	std::unique_ptr<Thread> th = std::make_unique<Thread>("PlayerRaycast", [this]() {
 		Raycasting();
 	});
 
-	Move();
+	if (Window::GetGameStatus() == GameStatuses::Start) {
+		Move();
+		animations[GetAnimationName()].lock()->Play();
+	}
+
 	Draw();
 
 	th->Join();
-	delete th;
-
-	animations[GetAnimationName()].lock()->Play();
 }

@@ -227,6 +227,20 @@ void ImagesController::DrawImage(std::string_view title, Coord position, Size si
     Draw(*this->operator[](index), position, color, windowSize, size, reverse);
 }
 
+void ImagesController::DrawImage(Image*& image, Coord position, Size size, Size windowSize, Color color, bool reverse)
+{
+    Draw(*image, position, color, windowSize, size, reverse);
+}
+
+void ImagesController::DrawImage(std::weak_ptr<Image> image, Coord position, Size size, Size windowSize, Color color, bool reverse)
+{
+    if (image.expired() || !image.lock()) {
+        return;
+    }
+
+    Draw(*image.lock(), position, color, windowSize, size, reverse);
+}
+
 const std::unordered_map<std::string, Image>& ImagesController::GetImages()
 {
     return images;

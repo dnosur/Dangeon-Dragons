@@ -6,8 +6,6 @@
 class Player :
     public Pawn, public std::enable_shared_from_this<Player>
 {
-    Keyboard* keyboard;
-
     //������� �� ������ ��� ���������
     Coord startPos;
     Coord startPosVertexes[2];

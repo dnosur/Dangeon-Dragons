@@ -116,3 +116,23 @@ Size Size::operator/(const Size& other) const
 		height / other.height
 	);
 }
+
+Size Size::operator+(const int value) const
+{
+	return Size(width + value, height + value);
+}
+
+Size Size::operator-(const int value) const
+{
+	return Size(width - value, height - value);
+}
+
+Size Size::operator*(const int value) const
+{
+	return Size(width * value, height * value);
+}
+
+Size Size::operator/(const int value) const
+{
+	return Size(width / value, height / value);
+}

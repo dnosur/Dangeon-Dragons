@@ -22,7 +22,6 @@ TinySpriteLayer::TinySpriteLayer(tinyxml2::XMLElement* element)
 {
 	if (element == nullptr) {
 		id = -1;
-		name = nullptr;
 		size = Size(0, 0);
 		return;
 	}

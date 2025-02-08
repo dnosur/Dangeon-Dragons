@@ -31,8 +31,6 @@ class WonderWold
 public:
 	WonderWold(Window* window, std::unique_ptr<TileMap> tileMap, Coord pos = Coord());
 
-	float moveSpeed = .4f;
-
 	void SetCamera(std::unique_ptr<Camera> camera);
 
 	void Update() override;

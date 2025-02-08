@@ -82,6 +82,11 @@ std::string_view Thread::GetTitle()
 	return title;
 }
 
+std::mutex*& Thread::GetMutex()
+{
+	return m;
+}
+
 bool Thread::IsJoinable()
 {
 	return t != nullptr && t->joinable();
