@@ -115,11 +115,6 @@ void Player::Initialize()
 
 	LoadAnimations();
 	LoadAudio();
-
-	WindowPointer<Keyboard>* keyboard = WindowPointerController::GetValue<Keyboard>("Keyboard");
-	if (keyboard != nullptr) {
-		this->keyboard = &*keyboard->GetValue().lock();
-	}
 }
 
 void Player::SetSideSize(Sides sides)
@@ -195,7 +190,9 @@ void Player::Draw()
 
 void Player::Move()
 {
-	if (!health) {
+	std::shared_ptr<Keyboard> keyboard = Window::GetKeyboard().lock();
+
+	if (!health || !keyboard) {
 		return;
 	}
 
@@ -587,15 +584,16 @@ bool Player::IsNear(Coord pos)
 
 void Player::Update()
 {
-	Thread* th = new Thread("PlayerRaycast", [this]() {
+	std::unique_ptr<Thread> th = std::make_unique<Thread>("PlayerRaycast", [this]() {
 		Raycasting();
 	});
 
-	Move();
+	if (Window::GetGameStatus() == GameStatuses::Start) {
+		Move();
+		animations[GetAnimationName()].lock()->Play();
+	}
+
 	Draw();
 
 	th->Join();
-	delete th;
-
-	animations[GetAnimationName()].lock()->Play();
 }

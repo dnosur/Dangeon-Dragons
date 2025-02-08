@@ -91,7 +91,10 @@ void Skeleton::SetPathOffset(Coord offset)
 
 void Skeleton::Update()
 {
-	AIMovement();
+	if (Window::GetGameStatus() == GameStatuses::Start) {
+		AIMovement();
+	}
+
 	Draw();
 	//animations[GetAnimationName()]->Play();
 };
@@ -497,7 +500,7 @@ void Skeleton::AIMovement()
 			return;
 		}
 
-		Thread* findTarget = new Thread(nullptr, [&]() {
+		std::unique_ptr<Thread> findTarget = std::make_unique<Thread>("", [&]() {
 			std::weak_ptr<Player> player = GameObjects::GetDynamicByTitle<Player>("Player");
 			std::shared_ptr<Player> _player = player.lock();
 

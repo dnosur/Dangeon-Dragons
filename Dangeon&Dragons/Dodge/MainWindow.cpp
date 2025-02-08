@@ -53,17 +53,8 @@ void MainWindow::Initialize()
     //std::unique_ptr<std::string> title;
     //title.reset(&sample);
 
-    WindowPointerController::SetPointer(WindowPointer<Mouse>("Mouse", mouse));
-    WindowPointerController::SetPointer(WindowPointer<Keyboard>("Keyboard", keyboard));
-
-    WindowPointerController::SetPointer(WindowPointer<AudioController>("audioController", audioController));
-
-    WindowPointerController::SetPointer(WindowPointer<Window>("MainWindow", weak_from_this()));
-
-    WindowPointerController::SetPointer(WindowPointer<GameStatuses>("GameStatus", &gameStatus));
-
     glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
-       WindowPointerController::GetValue<Window>("MainWindow")->GetValue().lock()->ResizeWindow(Size(width, height));
+       Window::ResizeWindow(Size(width, height));
     });
 }
 
@@ -148,7 +139,11 @@ void MainWindow::Update()
         if (gameStatus == GameStatuses::End) {
         }
 
-        if (gameStatus == GameStatuses::Start) {
+        if (gameStatus == GameStatuses::Start || gameStatus == GameStatuses::Pause) {
+            if (keyboard->GetKey() == KeyboardKeys::Esc && keyboard->GetKey().pressed) {
+                gameStatus = gameStatus == GameStatuses::Pause ? GameStatuses::Start : GameStatuses::Pause;
+            }
+
             images->DrawImage(
                 "ground",
                 Coord(0, 0),
@@ -184,4 +179,9 @@ void MainWindow::Update()
     }
 
     CloseWindow();
+}
+
+std::weak_ptr<MainWindow> MainWindow::GetWeak()
+{
+    return weak_from_this();
 }
