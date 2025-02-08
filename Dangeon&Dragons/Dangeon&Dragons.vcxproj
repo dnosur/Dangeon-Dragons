@@ -228,6 +228,7 @@ copy "$(MSBuildStartupDirectory)\vcpkg_installed\x64-windows\bin" "$(OutDir)"</C
     <ClCompile Include="Dodge\font\Fonts.cpp" />
     <ClCompile Include="Dodge\font\FontRenderOptions.cpp" />
     <ClCompile Include="Dodge\font\Padding.cpp" />
+    <ClCompile Include="Content\Scripts\UI\PauseMenu\PauseMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Content\Scripts\Screens\MainWindowLoading\MainWindowLoading.h" />
@@ -328,6 +329,7 @@ copy "$(MSBuildStartupDirectory)\vcpkg_installed\x64-windows\bin" "$(OutDir)"</C
     <ClInclude Include="Dodge\font\Fonts.h" />
     <ClInclude Include="Dodge\font\FontRenderOptions.h" />
     <ClInclude Include="Dodge\font\Padding.h" />
+    <ClInclude Include="Content\Scripts\UI\PauseMenu\PauseMenu.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dodge\project properties.txt" />
