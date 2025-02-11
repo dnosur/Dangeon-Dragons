@@ -17,6 +17,8 @@ struct KeyboardKey
 
 	bool Pressed(KeyboardKeys keyboardKey);
 
+	bool Up(KeyboardKeys keyboardKey);
+
 	bool operator==(const KeyboardKey& other) const;
 	bool operator==(const KeyboardKeys& other) const;
 

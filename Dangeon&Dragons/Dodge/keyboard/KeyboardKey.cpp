@@ -20,6 +20,11 @@ bool KeyboardKey::Pressed(KeyboardKeys keyboardKey)
 	return key == keyboardKey && pressed;
 }
 
+bool KeyboardKey::Up(KeyboardKeys keyboardKey)
+{
+	return key == keyboardKey && !pressed;
+}
+
 bool KeyboardKey::operator==(const KeyboardKey& other) const
 {
 	return other.key == key && other.action == action 
