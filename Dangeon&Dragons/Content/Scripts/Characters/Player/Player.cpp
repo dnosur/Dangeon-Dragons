@@ -196,40 +196,38 @@ void Player::Move()
 		return;
 	}
 
-	KeyboardKey key = keyboard->GetKey();
+	{
+		KeyboardKey* key = keyboard->GetKeyDown();
 
-	if (!key.pressed) {
-		action = Actions::Idle;
-		return;
+		if (!key || !key->pressed) {
+			action = Actions::Idle;
+			return;
+		}
 	}
 
 	float speedBonus = .0f;
 	bool isAttck = false;
 
-	if (key.Pressed(KeyboardKeys::Shift)) {
+	if (keyboard->Pressed(KeyboardKeys::Shift)) {
 		speedBonus = maxSpeed - speed;
 
 		if (keyboard->GetLastKey(1) == nullptr) {
 			return;
 		}
-
-		key = *keyboard->GetLastKey(1);
 	}
 
-	if (key.Pressed(KeyboardKeys::Space)) {
+	if (keyboard->Pressed(KeyboardKeys::Space)) {
 		if (action == Actions::Move) {
 			if (keyboard->GetLastKey(1) == nullptr) {
 				return;
 			}
-
-			key = *keyboard->GetLastKey(1);
 		}
 
 		isAttck = true;
 	}
 
 
-	if (key.Pressed(KeyboardKeys::W)) {
+	if (keyboard->Pressed(KeyboardKeys::W)) {
 		moveDirection = Directions::UP;
 		action = Actions::Move;
 
@@ -244,7 +242,7 @@ void Player::Move()
 			)
 		);
 	}
-	else if (key.Pressed(KeyboardKeys::S)) {
+	else if (keyboard->Pressed(KeyboardKeys::S)) {
 		moveDirection = Directions::DOWN;
 		action = Actions::Move;
 
@@ -259,7 +257,7 @@ void Player::Move()
 			)
 		);
 	}
-	else if (key.Pressed(KeyboardKeys::A)) {
+	else if (keyboard->Pressed(KeyboardKeys::A)) {
 		moveDirection = Directions::LEFT;
 		action = Actions::Move;
 
@@ -274,7 +272,7 @@ void Player::Move()
 			)
 		);
 	}
-	else if (key.Pressed(KeyboardKeys::D)) {
+	else if (keyboard->Pressed(KeyboardKeys::D)) {
 		moveDirection = Directions::RIGHT;
 		action = Actions::Move;
 
