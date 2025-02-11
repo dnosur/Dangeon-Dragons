@@ -148,8 +148,13 @@ void MainWindow::Update()
         }
 
         if (gameStatus == GameStatuses::Start || gameStatus == GameStatuses::Pause) {
-            if (keyboard->GetKey() == KeyboardKeys::Esc && keyboard->GetKey().pressed) {
-                gameStatus = gameStatus == GameStatuses::Pause ? GameStatuses::Start : GameStatuses::Pause;
+            if (keyboard->GetKeyDown() && 
+               !keyboard->GetKeyDown()->clamping &&
+                keyboard->Click(KeyboardKeys::Esc)
+            ) {
+                gameStatus = gameStatus == GameStatuses::Pause 
+                    ? GameStatuses::Start 
+                    : GameStatuses::Pause;
             }
 
             images->DrawImage(
