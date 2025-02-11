@@ -1,26 +1,20 @@
 #include "Keyboard.h"
 #include "../Window.h"
 
-
-void Keyboard::AddToHistory(KeyboardKey key)
-{
-	keys[key_history_index] = key;
-	key_history_index = (key_history_index + 1) == KEY_HISTORY_SIZE ? 0 : key_history_index + 1;
-}
-
 Keyboard::Keyboard()
 {
 	window = nullptr;
-	keys = nullptr;
-	key_history_index = -1;
+
+	down = nullptr;
+	up = nullptr;
 }
 
 Keyboard::Keyboard(GLFWwindow* window)
 {
 	this->window = window;
 
-	keys = new KeyboardKey[KEY_HISTORY_SIZE];
-	key_history_index = 0;
+	down = nullptr;
+	up = nullptr;
 
 	HookOnKeyPress([](GLFWwindow* window, int key, int scancode, int action, int mods) {
 		std::shared_ptr<Keyboard> keyboard = Window::GetKeyboard().lock();
@@ -28,28 +22,52 @@ Keyboard::Keyboard(GLFWwindow* window)
 			return;
 		}
 
-		if (action == GLFW_RELEASE && keyboard->GetKey().key != key) {
-			return;
-		}
-
 		std::cout << "Key: " << key << " Action: " << action << std::endl;
 
-		keyboard->SetKey(KeyboardKey(key, action, action >= GLFW_PRESS));
+		if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+			keyboard->KeyDown(KeyboardKey(key, action, true));
+		}
+		
+		if (action == GLFW_RELEASE && 
+			keyboard->GetKeyDown() && 
+			keyboard->GetKeyDown()->key == key
+		) {
+			keyboard->KeyUp(KeyboardKey(key, action));
+		}
 	});
 }
 
 Keyboard::Keyboard(GLFWwindow* window, GLFWkeyfun handler)
 {
 	this->window = window;
-	keys = new KeyboardKey[KEY_HISTORY_SIZE];
-	key_history_index = 0;
+
+	down = nullptr;
+	up = nullptr;
 
 	HookOnKeyPress(handler);
 }
 
 void Keyboard::Update()
 {
+	if (up && !down) {
+		up.release();
+		return;
+	}
 
+	if (!down || !up) {
+		return;
+	}
+
+	if (down->keyProcessed && up->keyProcessed) {
+		down.release();
+		up.release();
+	}
+}
+
+void Keyboard::Release()
+{
+	down.release();
+	up.release();
 }
 
 void Keyboard::HookOnKeyPress(GLFWkeyfun handler)
@@ -63,28 +81,82 @@ KeyboardKey* Keyboard::GetLastKey(int index)
 		return nullptr;
 	}
 
-	return &keys[
-		index > key_history_index 
-			? KEY_HISTORY_SIZE - (index - key_history_index) 
-			: index
-	];
+	return nullptr;
 }
 
-void Keyboard::SetKey(KeyboardKey key)
+void Keyboard::KeyDown(KeyboardKey key)
 {
-
-	this->key = key;
-}
-
-KeyboardKey Keyboard::GetKey()
-{
-	return key;
-}
-
-KeyboardKey Keyboard::GetKey(KeyboardKeys keyboardKey)
-{
-	if (key.key == keyboardKey) {
-		return key;
+	if (onKeyDown) {
+		onKeyDown(key);
 	}
-	return KeyboardKey();
+
+	down = std::make_unique<KeyboardKey>(key);
+
+	if (up) {
+		up.release();
+	}
+}
+
+void Keyboard::KeyUp(KeyboardKey key)
+{
+	if (onKeyUp) {
+		onKeyUp(key);
+	}
+
+	up = std::make_unique<KeyboardKey>(key);
+}
+
+bool Keyboard::Pressed(KeyboardKeys keyboardKey, bool release)
+{
+	bool result = down && down->Pressed(keyboardKey);
+
+	if (result) {
+		down->keyProcessed = true;
+	}
+
+	if (up) {
+		up->keyProcessed = true;
+	}
+
+	if (release && result) {
+		Release();
+	}
+
+	return result;
+}
+
+bool Keyboard::Click(KeyboardKeys keyboardKey, bool release)
+{
+	if (!(down && up && down->Pressed(keyboardKey) && up->Up(keyboardKey))) {
+		return false;
+	}
+
+	down->keyProcessed = true;
+	up->keyProcessed = true;
+
+	if (release) {
+		Release();
+	}
+
+	return true;
+}
+
+KeyboardKey* Keyboard::GetKeyDown()
+{
+	return down ? down.get() : nullptr;
+}
+
+KeyboardKey* Keyboard::GetKeyUp()
+{
+	return up ? up.get() : nullptr;
+}
+
+void Keyboard::OnKeyDown(std::function<void(KeyboardKey&)> handler)
+{
+	onKeyDown = handler;
+}
+
+void Keyboard::OnKeyUp(std::function<void(KeyboardKey&)> handler)
+{
+	onKeyUp = handler;
 }
