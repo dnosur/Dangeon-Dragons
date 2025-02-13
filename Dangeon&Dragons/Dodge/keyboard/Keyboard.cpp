@@ -28,10 +28,7 @@ Keyboard::Keyboard(GLFWwindow* window)
 			keyboard->KeyDown(KeyboardKey(key, action, true));
 		}
 		
-		if (action == GLFW_RELEASE && 
-			keyboard->GetKeyDown() && 
-			keyboard->GetKeyDown()->key == key
-		) {
+		if (action == GLFW_RELEASE) {
 			keyboard->KeyUp(KeyboardKey(key, action));
 		}
 	});
@@ -59,6 +56,8 @@ void Keyboard::Update()
 	}
 
 	if (down->keyProcessed && up->keyProcessed) {
+		std::cout << "Release" << std::endl;
+
 		down.release();
 		up.release();
 	}
@@ -91,6 +90,7 @@ void Keyboard::KeyDown(KeyboardKey key)
 	}
 
 	down = std::make_unique<KeyboardKey>(key);
+	unuppedKeys[KeyboardKeys(down->key)] = key;
 
 	if (up) {
 		up.release();
@@ -103,12 +103,24 @@ void Keyboard::KeyUp(KeyboardKey key)
 		onKeyUp(key);
 	}
 
+	unuppedKeys.erase(KeyboardKeys(key.key));
+	std::cout << "Unupped keys: " << unuppedKeys.size() << std::endl;
+
+	if (!unuppedKeys.empty()) {
+		Release();
+
+		down = std::make_unique<KeyboardKey>(std::prev(unuppedKeys.end())->second);
+		return;
+	}
+
 	up = std::make_unique<KeyboardKey>(key);
 }
 
 bool Keyboard::Pressed(KeyboardKeys keyboardKey, bool release)
 {
-	bool result = down && down->Pressed(keyboardKey);
+	auto it = unuppedKeys.find(keyboardKey);
+	bool result = (down && down->Pressed(keyboardKey)) || 
+		(it != unuppedKeys.end() && it->second.Pressed(keyboardKey));
 
 	if (result) {
 		down->keyProcessed = true;
