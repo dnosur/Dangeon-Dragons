@@ -282,6 +282,9 @@
     <ClCompile Include="Content\Scripts\UI\PauseMenu\PauseMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Dodge\shaders\ShadersController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dodge\audio\Audio.h">
@@ -579,6 +582,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Content\Scripts\UI\PauseMenu\PauseMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\shaders\ShadersController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
