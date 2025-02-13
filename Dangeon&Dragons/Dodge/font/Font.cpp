@@ -1,5 +1,6 @@
 #include "Font.h"
 #include "../functions.h"
+#include "../shaders/ShadersController.h"
 
 bool Font::LoadFont()
 {
@@ -84,11 +85,7 @@ Font::Font(
 
 	loaded = false;
 
-    shader = std::make_unique<Shader>(
-        title,
-        "Dodge/shaders/Font/vertex.vs", 
-        "Dodge/shaders/Font/fragment.frag"
-    );
+    shader = ShadersController::GetShaderID("BaseFont");
 
 	LoadFont();
 }
@@ -117,9 +114,9 @@ void Font::RenderText(
 
     const Color& color = options->GetColor();
 
-    shader->Use();
-    shader->SetVec4("textColor", color.r, color.g, color.b, color.a);
-    shader->SetMat4("projection", projection);
+    ShadersController::Use(shader);
+    ShadersController::SetVec4(shader, "textColor", color.r, color.g, color.b, color.a);
+    ShadersController::SetMat4(shader, "projection", projection);
 
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);

@@ -17,7 +17,7 @@ public:
 		float specularIntensity = 1.0f,
 		float emissiveIntensity = 1.0f,
 
-		std::shared_ptr<Shader> shader = nullptr,
+		GLuint shader = 0,
 
 		std::shared_ptr<Image> diffuseMap = nullptr,
 		std::shared_ptr<Image> normalMap = nullptr,

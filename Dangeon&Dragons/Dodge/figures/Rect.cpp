@@ -1,4 +1,5 @@
 #include "Rect.h"
+#include "../shaders/ShadersController.h"
 
 bool Rect::MouseInRect(Mouse& mouse)
 {
@@ -98,12 +99,9 @@ Rect::Rect(
 
     material = std::make_unique<BaseFigureMaterial>();
     material->SetShader(
-        std::make_unique<Shader>(
-            title, 
-            "Dodge/shaders/Test/vertex.vs", 
-            "Dodge/shaders/Test/fragment.frag"
-        )
+        ShadersController::GetShaderID("BaseFigure")
     );
+
     material->SetDiffuse(color);
     material->SetDiffuseMap(ImagesController::GetDafaultImage().lock());
 
@@ -135,11 +133,7 @@ Rect::Rect(
 
     material = std::make_unique<BaseFigureMaterial>();
     material->SetShader(
-        std::make_unique<Shader>(
-            title,
-            "Dodge/shaders/Figures/vertex.vs",
-            "Dodge/shaders/Figures/fragment.frag"
-        )
+        ShadersController::GetShaderID("BaseFigure")
     );
 
     this->moveDirection = moveDirection;
@@ -171,11 +165,7 @@ Rect::Rect(
 
     material = std::make_unique<BaseFigureMaterial>();
     material->SetShader(
-        std::make_unique<Shader>(
-            title,
-            "Dodge/shaders/Test/vertex.vs",
-            "Dodge/shaders/Test/fragment.frag"
-        )
+        ShadersController::GetShaderID("BaseFigure")
     );
 
     std::vector<Coord> verticies = std::vector<Coord>{

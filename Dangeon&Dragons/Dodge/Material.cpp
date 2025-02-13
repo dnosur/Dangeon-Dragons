@@ -4,7 +4,7 @@ Material::Material(
 	Color ambient, Color diffuse, Color specular, Color emissive, 
 	float shininess, float metalic, float roughness, 
 	float specularIntensity, float emissiveIntensity, 
-	std::shared_ptr<Shader> shader,
+	GLuint shader,
 
 	std::shared_ptr<Image> diffuseMap, 
 	std::shared_ptr<Image> normalMap, 
@@ -39,22 +39,7 @@ Material::Material(
 	this->emissiveMapVerticies = emissiveMapVerticies;
 }
 
-//Material::~Material()
-//{
-//	if (shader != nullptr) delete shader;
-//
-//	if (diffuseMap != nullptr) delete diffuseMap;
-//	if (normalMap != nullptr) delete normalMap;
-//	if (specularMap != nullptr) delete specularMap;
-//	if (emissiveMap != nullptr) delete emissiveMap;
-//
-//	ClearVector<Coord>(diffuseMapVerticies);
-//	ClearVector<Coord>(normalMapVerticies);
-//	ClearVector<Coord>(specularMapVerticies);
-//	ClearVector<Coord>(emissiveMapVerticies);
-//}
-
-void Material::SetShader(std::shared_ptr<Shader> shader)
+void Material::SetShader(const GLuint& shader)
 {
 	this->shader = shader;
 }
@@ -309,7 +294,7 @@ Material& Material::operator=(const Material& other)
 }
 
 
-std::weak_ptr<Shader> Material::GetShader()
+const GLuint& Material::GetShader()
 {
 	return shader;
 }

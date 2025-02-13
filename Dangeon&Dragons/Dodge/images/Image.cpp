@@ -3,7 +3,7 @@
 Image::Image()
 {
 	image = -1;
-	shader = new Shader();
+	shader = 0;
 }
 
 Image::Image(
@@ -11,7 +11,7 @@ Image::Image(
 	std::string path, 
 	GLint image, 
 	Size size, 
-	Shader* shader
+	GLuint shader
 ) : title(title), path(path), image(image), shader(shader), size(size)
 {
 }

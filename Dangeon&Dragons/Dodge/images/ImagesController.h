@@ -36,8 +36,8 @@ public:
 
 	void LoadFromFolder(std::string_view path);
 
-	void Load(std::string_view path, std::string title, Shader* shader = nullptr);
-	void LoadAndDrawImage(std::string_view path, std::string title, Shader* shader, Coord position, Size size, Size windowSize);
+	void Load(std::string_view path, std::string title, GLuint shader = 0);
+	void LoadAndDrawImage(std::string_view path, std::string title, GLuint shader, Coord position, Size size, Size windowSize);
 
 	void DrawImage(std::string_view title, Coord position, Size size, Size windowSize, Color color = Color(1.0f, 1.0f, 1.0f), bool reverse = false);
 	void DrawImage(Image*& image, Coord position, Size size, Size windowSize, Color color = Color(1.0f, 1.0f, 1.0f), bool reverse = false);

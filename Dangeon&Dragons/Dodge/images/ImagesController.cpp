@@ -1,5 +1,7 @@
 #include "ImagesController.h"
 
+#include "../shaders/ShadersController.h"
+
 std::shared_ptr<Image> ImagesController::defaultImage;
 
 int ImagesController::GetIndexByTitle(std::string_view title)
@@ -73,9 +75,9 @@ void ImagesController::Draw(Image& item, Coord& position, Color& color, Size& wi
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, image);
 
-    item.shader->Use();
-    item.shader->SetInt("diffuseTexture", 0);
-    item.shader->SetVec4("diffuseColor", color.r, color.g, color.b, color.a);
+    ShadersController::Use(item.shader);
+    ShadersController::SetInt(item.shader, "diffuseTexture", 0);
+    ShadersController::SetVec4(item.shader, "diffuseColor", color.r, color.g, color.b, color.a);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -131,11 +133,8 @@ Image ImagesController::LoadImg(std::string_view path, std::string title)
             width,
             height
         ),
-        new Shader(
-            title,
-            "Dodge/shaders/Image/imageVertex.vs",
-            "Dodge/shaders/Image/imageFragment.frag"
-        ));
+        ShadersController::GetShaderID("BaseImage")
+    );
 }
 
 void ImagesController::SetDefaultImage(std::unique_ptr<Image> image)
@@ -164,10 +163,10 @@ void ImagesController::LoadFromFolder(std::string_view path)
     }
 }
 
-void ImagesController::Load(std::string_view path, std::string title, Shader* shader)
+void ImagesController::Load(std::string_view path, std::string title, GLuint shader)
 {
     Image image = ImagesController::LoadImg(path, title);
-    if (shader != nullptr) {
+    if (shader) {
         image.shader = shader;
     }
 
@@ -176,7 +175,7 @@ void ImagesController::Load(std::string_view path, std::string title, Shader* sh
 
 void ImagesController::LoadAndDrawImage(
     std::string_view path, std::string title,
-    Shader* shader, Coord position, 
+    GLuint shader, Coord position,
     Size size, Size windowSize
 )
 {
@@ -198,7 +197,8 @@ void ImagesController::LoadAndDrawImage(
     glPushMatrix();
     glLoadIdentity();
 
-    shader->Use();
+    ShadersController::Use(shader);
+
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f); glVertex2f(position.X, position.Y); // ����� ������ ����
     glTexCoord2f(1.0f, 0.0f); glVertex2f(position.X + size.width, position.Y); // ������ ������ ����

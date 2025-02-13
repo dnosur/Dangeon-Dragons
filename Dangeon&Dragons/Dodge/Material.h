@@ -18,7 +18,7 @@ protected:
 	float specularIntensity;
 	float emissiveIntensity;
 
-	std::shared_ptr<Shader> shader;
+	GLuint shader;
 	std::shared_ptr<Camera> camera;
 
 	std::shared_ptr<Image> diffuseMap;
@@ -44,7 +44,7 @@ public:
 		float specularIntensity = 1.0f,
 		float emissiveIntensity = 1.0f,
 
-		std::shared_ptr<Shader> shader = nullptr,
+		GLuint shader = 0,
 
 		std::shared_ptr<Image> diffuseMap = nullptr,
 		std::shared_ptr<Image> normalMap = nullptr,
@@ -57,7 +57,7 @@ public:
 		std::vector<Coord> emissiveMapVerticies = std::vector<Coord>()
 	);
 
-	void SetShader(std::shared_ptr<Shader> shader);
+	void SetShader(const GLuint& shader);
 	void SetCamera(std::shared_ptr<Camera> camera);
 	void SetDiffuseMap(std::shared_ptr<Image> diffuseMap);
 	void SetNormalMap(std::shared_ptr<Image> normalMap);
@@ -96,7 +96,7 @@ public:
 	float GetSpecularIntensity();
 	float GetEmissiveIntensity();
 
-	std::weak_ptr<Shader> GetShader();
+	const GLuint& GetShader();
 	std::weak_ptr<Camera> GetCamera();
 	std::weak_ptr<Image> GetDiffuseMap();
 	std::weak_ptr<Image> GetNormalMap();

@@ -10,14 +10,14 @@ struct Image
 	std::string path;
 
 	GLuint image;
-	Shader* shader;
+	GLuint shader;
 
 	Size size;
 
 	Coord vertexes[2];
 
 	Image();
-	Image(std::string title, std::string path, GLint image, Size size, Shader* shader);
+	Image(std::string title, std::string path, GLint image, Size size, GLuint shader = 0);
 	~Image();
 
 	bool operator==(const Image& other) const;

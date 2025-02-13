@@ -27,7 +27,7 @@ class Font
 
 	std::map<wchar_t, Character> characters;
 
-	std::unique_ptr<Shader> shader;
+	GLuint shader;
 
 	bool loaded;
 

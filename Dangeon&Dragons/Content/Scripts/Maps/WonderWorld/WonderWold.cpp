@@ -3,6 +3,7 @@
 #include "../../Characters/Enemys/Skeleton.h"
 #include "../../../../Dodge/raycast/Raycast.h"
 #include "../../../../Dodge/GameObjects.h"
+#include "../../../../Dodge/shaders/ShadersController.h"
 
 void WonderWold::CreateCamera()
 {
@@ -25,11 +26,7 @@ void WonderWold::SpawnPlayer()
 	}
 
 	playerMaterial->SetShader(
-		std::make_shared<Shader>(
-			"Player",
-			"Dodge/shaders/Test/vertex.vs",
-			"Dodge/shaders/Test/fragment.frag"
-		)
+		ShadersController::GetShaderID("BaseFigure")
 	);
 
 	playerMaterial->SetDiffuse(Color(1, 1, 1));
@@ -86,11 +83,7 @@ void WonderWold::SpawnSkeleton(Coord pos)
 		//skeleton->SetTarget(player);
 		std::unique_ptr<Material> skeletonMaterial = std::make_unique<BaseFigureMaterial>();
 		skeletonMaterial->SetShader(
-			std::make_shared<Shader>(
-				"Skeleton",
-				"Dodge/shaders/Test/vertex.vs",
-				"Dodge/shaders/Test/fragment.frag"
-			)
+			ShadersController::GetShaderID("BaseFigure")
 		);
 
 		skeletonMaterial->SetDiffuse(Color(1, 1, 1));
