@@ -205,27 +205,7 @@ void Player::Move()
 		}
 	}
 
-	float speedBonus = .0f;
-	bool isAttck = false;
-
-	if (keyboard->Pressed(KeyboardKeys::Shift)) {
-		speedBonus = maxSpeed - speed;
-
-		if (keyboard->GetLastKey(1) == nullptr) {
-			return;
-		}
-	}
-
-	if (keyboard->Pressed(KeyboardKeys::Space)) {
-		if (action == Actions::Move) {
-			if (keyboard->GetLastKey(1) == nullptr) {
-				return;
-			}
-		}
-
-		isAttck = true;
-	}
-
+	float speedBonus = keyboard->Pressed(KeyboardKeys::Shift) ? 20.0f : .0f;
 
 	if (keyboard->Pressed(KeyboardKeys::W)) {
 		moveDirection = Directions::UP;
@@ -242,7 +222,7 @@ void Player::Move()
 			)
 		);
 	}
-	else if (keyboard->Pressed(KeyboardKeys::S)) {
+	if (keyboard->Pressed(KeyboardKeys::S)) {
 		moveDirection = Directions::DOWN;
 		action = Actions::Move;
 
@@ -257,7 +237,7 @@ void Player::Move()
 			)
 		);
 	}
-	else if (keyboard->Pressed(KeyboardKeys::A)) {
+	if (keyboard->Pressed(KeyboardKeys::A)) {
 		moveDirection = Directions::LEFT;
 		action = Actions::Move;
 
@@ -272,7 +252,7 @@ void Player::Move()
 			)
 		);
 	}
-	else if (keyboard->Pressed(KeyboardKeys::D)) {
+	if (keyboard->Pressed(KeyboardKeys::D)) {
 		moveDirection = Directions::RIGHT;
 		action = Actions::Move;
 
@@ -288,7 +268,7 @@ void Player::Move()
 		);
 	}
 
-	if (isAttck) {
+	if (keyboard->Pressed(KeyboardKeys::Space)) {
 		action = Actions::Attack;
 	}
 }
