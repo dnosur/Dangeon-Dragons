@@ -18,6 +18,9 @@
 #include "../Content/Scripts/Screens/MainWindowLoading/MainWindowLoading.h"
 #include "../Content/Scripts/UI/ProgressBar/utilities.h"
 #include "../Content/Scripts/UI/PauseMenu/PauseMenu.h"
+#include "shaders/ShadersController.h"
+
+typedef void (*GLMaxShaderCompilerThreadsARB_t)(GLuint);
 
 MainWindow::MainWindow(): Window()
 {
@@ -36,9 +39,46 @@ void MainWindow::Initialize()
         return;
     }
 
+    GLMaxShaderCompilerThreadsARB_t glMaxShaderCompilerThreadsARB =
+        (GLMaxShaderCompilerThreadsARB_t)wglGetProcAddress("glMaxShaderCompilerThreadsARB");
+
     std::cout << GetCurrentUser() << std::endl;
 
     gameStatus = GameStatuses::Initialize;
+
+    //Shaders
+
+    ShadersController::LoadShader(
+        std::move(
+            std::make_unique<Shader>(
+                "BaseFigure",
+                "Dodge/shaders/Test/vertex.vs",
+                "Dodge/shaders/Test/fragment.frag"
+            )
+        )
+    );
+
+    ShadersController::LoadShader(
+        std::move(
+            std::make_unique<Shader>(
+                "BaseImage",
+                "Dodge/shaders/Image/imageVertex.vs",
+                "Dodge/shaders/Image/imageFragment.frag"
+            )
+        )
+    );
+
+    ShadersController::LoadShader(
+        std::move(
+            std::make_unique<Shader>(
+                "BaseFont",
+                "Dodge/shaders/Font/vertex.vs",
+                "Dodge/shaders/Font/fragment.frag"
+            )
+        )
+    );
+
+    //Images
 
     ImagesController::SetDefaultImage(std::make_unique<Image>(
         ImagesController::LoadImg("Content/Images/defaultObj.jpg", "default")
@@ -53,6 +93,14 @@ void MainWindow::Initialize()
     //std::string sample = "123";
     //std::unique_ptr<std::string> title;
     //title.reset(&sample);
+
+    //GL_ARB_parallel_shader_compile 
+
+    const char* extensions = (const char*)glGetString(GL_EXTENSIONS);
+    if (strstr(extensions, "GL_ARB_parallel_shader_compile")) {
+        std::cout << "Parallel shader compilation is supported!\n";
+        glMaxShaderCompilerThreadsARB(0);
+    }
 
     glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {
        Window::ResizeWindow(Size(width, height));
