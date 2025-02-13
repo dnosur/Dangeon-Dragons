@@ -12,6 +12,8 @@ class Keyboard
 	std::unique_ptr<KeyboardKey> down;
 	std::unique_ptr<KeyboardKey> up;
 
+	std::unordered_map<KeyboardKeys, KeyboardKey> unuppedKeys;
+
 	std::function<void(KeyboardKey&)> onKeyDown;
 	std::function<void(KeyboardKey&)> onKeyUp;
 public: 
