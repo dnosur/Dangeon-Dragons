@@ -76,6 +76,8 @@ void VertexAnimation::Play(Coord coord, Size size)
 		{
 			// ���������� ������ �� ������, ����� �������� �������� �����
 			object->GetMaterial().lock()->SetDiffuseMapVerticies(frames[currentAnimationIndex].second);
+			object->UpdateVertices();
+
 			delay = frames[currentAnimationIndex].first;
 		}
 	}

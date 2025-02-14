@@ -1,6 +1,11 @@
 #include "Rect.h"
 #include "../shaders/ShadersController.h"
 
+std::vector<unsigned int> defaultIndicies = {
+    0, 1, 2,
+    2, 3, 0
+};
+
 bool Rect::MouseInRect(Mouse& mouse)
 {
     float normMouseX = (mouse.GetMouseCoord().X / window->GetRenderResolution().GetWidth()) * 2.0f - 1.0f;
@@ -76,6 +81,8 @@ Rect::Rect()
     this->layer = Layer::Undefined;
 
     moveDirection = Directions::DOWN;
+
+    VAO = VBO = EBO = 0;
 }
 
 Rect::Rect(
@@ -111,6 +118,8 @@ Rect::Rect(
     this->layer = Layer::GameObject;
 
     collision = nullptr;
+
+    VAO = VBO = EBO = 0;
 }
 
 Rect::Rect(
@@ -142,6 +151,8 @@ Rect::Rect(
     this->layer = Layer::GameObject;
 
     collision = nullptr;
+
+    VAO = VBO = EBO = 0;
 }
 
 Rect::Rect(
@@ -179,6 +190,43 @@ Rect::Rect(
     this->layer = Layer::GameObject;
 
     collision = nullptr;
+
+    VAO = VBO = EBO = 0;
+}
+
+void Rect::InitQuads(
+    unsigned int& VAO, unsigned int& VBO, unsigned int& EBO,
+    std::vector<float> vertices, std::vector<unsigned int>& indices
+) {
+    if (VAO || VBO || EBO) {
+        return;
+    }
+
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    glGenVertexArrays(1, &VAO);
+
+    glBindVertexArray(VAO);
+
+    // Передаём данные вершин в OpenGL
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+
+    // Передаём индексы вершин в OpenGL
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+
+    // Определяем атрибуты вершин
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    // Атрибут текстурных координат
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
 
 void Rect::Update()
@@ -188,50 +236,58 @@ void Rect::Update()
 
 void Rect::Draw()
 {
-    material->Use(this);
+    //glPushAttrib(GL_ALL_ATTRIB_BITS);
 
+    if (!VBO && !VAO && !EBO) {
+        InitializeRender();
+	}
+
+    material->Use(this);
     glPushAttrib(GL_ALL_ATTRIB_BITS);
 
-    const bool isHasDiffuseVertexs = 
-        material->GetDiffuseMapVerticies().size() >= 2 && 
-        material->GetDiffuseMap().lock() != nullptr;
-    const Coord& textCoord1 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[0] : Coord(0, 0);
-	const Coord& textCoord2 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[1] : Coord(1, 1);
-
-    float vertices[] = {
-        // positions         // colors
-         vertex1.X, vertex1.Y, 0.0f,  textCoord1.X, textCoord1.Y,
-         vertex2.X, vertex1.Y, 0.0f,  textCoord2.X, textCoord1.Y,
-         vertex2.X, vertex2.Y, 0.0f,  textCoord2.X, textCoord2.Y,
-		 vertex1.X, vertex2.Y, 0.0f,  textCoord1.X, textCoord2.Y
-    };
-
-    unsigned int VBO, VAO;
-
-    glGenBuffers(1, &VBO);
-	glGenVertexArrays(1, &VAO);
-
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	//diffuse
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-	glDrawArrays(GL_QUADS, 0, 4);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+    //glPopAttrib();
 
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-    glPopAttrib();
     material->Disable(this);
+}
+
+void Rect::UpdateVertices()
+{
+    std::vector<float> vertices = GetRenderVertices();
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(unsigned int), vertices.data());
+}
+
+void Rect::UpdateVertices(std::vector<float> vertices)
+{
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(unsigned int), vertices.data());
+}
+
+void Rect::InitializeRender()
+{
+    InitQuads(VAO, VBO, EBO, GetRenderVertices());
+}
+
+std::vector<float> Rect::GetRenderVertices()
+{
+    const bool isHasDiffuseVertexs =
+        material->GetDiffuseMapVerticies().size() >= 2 &&
+        material->GetDiffuseMap().lock() != nullptr;
+    const Coord& textCoord1 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[0] : Coord(0, 0);
+    const Coord& textCoord2 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[1] : Coord(1, 1);
+
+    return {
+        // positions         // colors
+         (float)vertex1.X, (float)vertex1.Y, 0.0f,  (float)textCoord1.X,(float)textCoord1.Y,
+         (float)vertex2.X, (float)vertex1.Y, 0.0f, (float)textCoord2.X, (float)textCoord1.Y,
+         (float)vertex2.X, (float)vertex2.Y, 0.0f,  (float)textCoord2.X,(float)textCoord2.Y,
+         (float)vertex1.X, (float)vertex2.Y, 0.0f,  (float)textCoord1.X, (float)textCoord2.Y
+    };
 }
 
 std::vector<float> Rect::GetVerticesByDirection(Rect& rect, Directions moveDirection, bool returnTexCoords)
@@ -377,9 +433,14 @@ const Coord& Rect::GetOpenGlPos()
     return Coord(window->PixelToGLX(pos.X), window->PixelToGLY(pos.Y));
 }
 
-void Rect::SetSize(Size size)
+void Rect::SetSize(Size size, bool render)
 {
     MathSize(size);
+    if (!render) {
+        return;
+    }
+
+    UpdateVertices();
 }
 
 Size Rect::GetSize()
@@ -387,7 +448,7 @@ Size Rect::GetSize()
     return size;
 }
 
-void Rect::SetSideSize(Sides sides)
+void Rect::SetSideSize(Sides sides, bool render)
 {
     if (sides.bottom != 0) {
         float glDelta = abs((float)sides.bottom / (float)window->GetRenderResolution().GetWidth() * 2.0f);
@@ -438,6 +499,12 @@ void Rect::SetSideSize(Sides sides)
 
     pos.X = window->GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
     pos.Y = window->GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
+
+    if (!render) {
+        return;
+    }
+
+    UpdateVertices();
 }
 
 bool Rect::MouseHover(Mouse& mouse)
@@ -509,14 +576,24 @@ std::vector<Coord> Rect::GetVertices()
     return { vertex1, vertex2 };
 }
 
-void Rect::SetPos(std::vector<Coord> vertices)
+void Rect::SetPos(std::vector<Coord> vertices, bool render)
 {
     MathPos(vertices[0], vertices[1]);
+    if (!render) {
+        return;
+    }
+
+    UpdateVertices();
 }
 
-void Rect::SetPos(Coord pos)
+void Rect::SetPos(Coord pos, bool render)
 {
     MathPos(pos);
+    if (!render) {
+        return;
+    }
+
+    UpdateVertices();
 }
 
 void Rect::SetMaterial(std::shared_ptr<Material> material)

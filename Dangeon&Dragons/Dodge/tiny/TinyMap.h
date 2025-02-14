@@ -32,6 +32,11 @@ public:
 	std::vector<std::weak_ptr<IGameObject>> GetClassesByName(std::string name);
 	std::weak_ptr<IGameObject> GetClassByName(std::string name);
 
+	const std::vector<std::shared_ptr<IGameObject>>& GetGameObjects();
+	const std::vector<std::shared_ptr<IGameObject>>& GetGameClasses();
+
+	void InitializeRender();
+
 	Window* GetWindow();
 	TileMap* GetTileMap();
 };

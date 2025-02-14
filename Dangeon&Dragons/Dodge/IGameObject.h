@@ -22,6 +22,14 @@ __interface IGameObject
 	void Draw();
 	void Update();
 
+	void UpdateVertices();
+
+	void UpdateVertices(std::vector<float> vertices);
+
+	void InitializeRender();
+
+	std::vector<float> GetRenderVertices();
+
 	bool MouseHover(Mouse& mouse);
 	bool CollisionEnter(IGameObject& gameObject);
 
@@ -34,8 +42,8 @@ __interface IGameObject
 	void SetColor(Color color);
 	Color GetColor();
 
-	void SetPos(std::vector<Coord> vertices);
-	void SetPos(Coord pos);
+	void SetPos(std::vector<Coord> vertices, bool render = true);
+	void SetPos(Coord pos, bool render = true);
 
 	Directions GetMoveDirection();
 
@@ -45,10 +53,10 @@ __interface IGameObject
 
 	Color GetBaseColor();
 
-	void SetSize(Size size);
+	void SetSize(Size size, bool render = true);
 	Size GetSize();
 
-	void SetSideSize(Sides sides);
+	void SetSideSize(Sides sides, bool render = true);
 
 	void SetMaterial(std::shared_ptr<Material> material);
 

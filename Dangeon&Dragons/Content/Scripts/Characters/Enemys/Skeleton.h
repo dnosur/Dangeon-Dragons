@@ -19,7 +19,6 @@ class Skeleton
     Coord startPosVertexes[2];
     Coord offset;
 
-    //� ���������� ��������� � �����!
     std::vector<std::unique_ptr<Movement>> movements;
 	int movementIndex;
 
@@ -52,6 +51,10 @@ class Skeleton
 
     std::vector<std::unique_ptr<Movement>> GetNeighbors(Coord position);
     bool IsWalkable(Coord position);
+
+    void InitializeRender() override;
+
+    std::vector<float> GetRenderVertices() override;
 public:
     Skeleton(
         std::string title, Window& window,
@@ -63,7 +66,7 @@ public:
 
     void Initialize() override;
 
-    void SetSideSize(Sides sides) override;
+    void SetSideSize(Sides sides, bool render = true) override;
 
     Coord GetStartPos();
 
@@ -81,5 +84,9 @@ public:
     void SetPathOffset(Coord offset);
 
     void Update() override;
+
+    void UpdateVertices() override;
+
+    void UpdateVertices(std::vector<float> vertices) override;
 };
 

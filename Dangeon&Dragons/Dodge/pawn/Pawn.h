@@ -17,6 +17,8 @@ class Pawn : public IGameObject
 protected:
 	Window* window;
 
+	unsigned int VAO, VBO, EBO;
+
 	MouseHoverHandler OnMouseHover;
 	MouseHoverHandler OnMouseOver;
 
@@ -84,6 +86,10 @@ protected:
 	bool MouseInRect(Mouse& mouse);
 
 	virtual void AIMovement() = 0;
+
+	virtual void InitializeRender() = 0;
+
+	virtual std::vector<float> GetRenderVertices() = 0;
 public:
 	Pawn(
 		std::string title, Window& window,
@@ -98,16 +104,16 @@ public:
 
 	void SetMoveDirection(Directions moveDirection);
 
-	void SetPos(std::vector<Coord> vertexes);
-	void SetPos(Coord pos);
+	void SetPos(std::vector<Coord> vertexes, bool render = true);
+	void SetPos(Coord pos, bool render = true);
 
 	void RotateToDirection(Directions direction);
 
 	void SetTitle(std::string title);
 
-	void SetSize(Size size);
+	void SetSize(Size size, bool render = true);
 
-	virtual void SetSideSize(Sides sides) = 0;
+	virtual void SetSideSize(Sides sides, bool render = true) = 0;
 
 	void SetSpeed(float speed);
 	void SetMaxSpeed(float maxSpeed);
@@ -140,6 +146,10 @@ public:
 	bool CollisionEnter(IGameObject& gameObject);
 
 	virtual void Update() = 0;
+
+	virtual void UpdateVertices() = 0;
+
+	virtual void UpdateVertices(std::vector<float> vertices) = 0;
 
 	void HookMouseHover(MouseHoverHandler OnMouseHover);
 	void HookMouseOver(MouseHoverHandler OnMouseOver);

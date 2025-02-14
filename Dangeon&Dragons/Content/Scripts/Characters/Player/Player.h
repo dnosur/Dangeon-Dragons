@@ -30,6 +30,9 @@ class Player :
 
     void AIMovement() override;
 
+    void InitializeRender() override;
+
+    std::vector<float> GetRenderVertices() override;
 public:
     Player(
         std::string title, Window& window,
@@ -41,7 +44,7 @@ public:
 
     void Initialize() override;
 
-    void SetSideSize(Sides sides) override;
+    void SetSideSize(Sides sides, bool render = true) override;
 
     Coord GetStartPos();
 
@@ -52,5 +55,9 @@ public:
     bool IsNear(Coord pos) override;
 
     void Update() override;
+
+    void UpdateVertices() override;
+
+    void UpdateVertices(std::vector<float> vertices) override;
 };
 

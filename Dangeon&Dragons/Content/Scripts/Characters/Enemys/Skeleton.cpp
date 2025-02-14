@@ -11,6 +11,7 @@
 #include "../../../../Dodge/raycast/Raycast.h"
 #include "../../../../Dodge/raycast/RayFactory.h"
 #include "../../Utilities/RaycastUtilities.h"
+#include "../../../../Dodge/figures/Rect.h"
 
 Skeleton::Skeleton(
 	std::string title, Window& window, std::shared_ptr<ICollision> collision,
@@ -97,7 +98,20 @@ void Skeleton::Update()
 
 	Draw();
 	//animations[GetAnimationName()]->Play();
-};
+}
+
+void Skeleton::UpdateVertices()
+{
+	std::vector<float> vertices = GetRenderVertices();
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(unsigned int), vertices.data());
+}
+
+void Skeleton::UpdateVertices(std::vector<float> vertices)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(unsigned int), vertices.data());
+}
 
 void Skeleton::LoadAnimations()
 {
@@ -333,7 +347,7 @@ void Skeleton::Initialize()
 	LoadAnimations();
 }
 
-void Skeleton::SetSideSize(Sides sides)
+void Skeleton::SetSideSize(Sides sides, bool render)
 {
 	if (sides.bottom != 0) {
 		MathSide(sides.bottom, false);
@@ -350,57 +364,30 @@ void Skeleton::SetSideSize(Sides sides)
 	if (sides.right != 0) {
 		MathSide(sides.right, true);
 	}
+
+	if (!render) {
+		return;
+	}
+
+	UpdateVertices();
 }
 
 void Skeleton::Draw()
 {
-	material->Use(this);
+	if (!VBO && !VAO && !EBO) {
+		InitializeRender();
+	}
 
+	material->Use(this);
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
-	const bool isHasDiffuseVertexs = 
-		material->GetDiffuseMapVerticies().size() >= 2 && 
-		material->GetDiffuseMap().lock() != nullptr;
-
-	const Coord& textCoord1 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[0] : Coord(0, 0);
-	const Coord& textCoord2 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[1] : Coord(1, 1);
-
-	const Coord& vertex1 = vertexes[0];
-	const Coord& vertex2 = vertexes[1];
-
-	float vertices[] = {
-		// positions         // colors
-		 vertex1.X, vertex1.Y, 0.0f,  textCoord1.X, textCoord1.Y,
-		 vertex2.X, vertex1.Y, 0.0f,  textCoord2.X, textCoord1.Y,
-		 vertex2.X, vertex2.Y, 0.0f,  textCoord2.X, textCoord2.Y,
-		 vertex1.X, vertex2.Y, 0.0f,  textCoord1.X, textCoord2.Y
-	};
-
-	unsigned int VBO, VAO;
-
-	glGenBuffers(1, &VBO);
-	glGenVertexArrays(1, &VAO);
-
 	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	//diffuse
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	glDrawArrays(GL_QUADS, 0, 4);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+	//glPopAttrib();
 
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glPopAttrib();
 	material->Disable(this);
 }
 
@@ -753,4 +740,30 @@ std::vector<std::unique_ptr<Movement>> Skeleton::GetNeighbors(Coord position)
 bool Skeleton::IsWalkable(Coord position)
 {
 	return CheckForCollision(position); // ��� ����� �������� �����������
+}
+
+void Skeleton::InitializeRender()
+{
+	Rect::InitQuads(VAO, VBO, EBO, GetRenderVertices());
+}
+
+std::vector<float> Skeleton::GetRenderVertices()
+{
+	const bool isHasDiffuseVertexs =
+		material->GetDiffuseMapVerticies().size() >= 2 &&
+		material->GetDiffuseMap().lock() != nullptr;
+
+	const Coord& textCoord1 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[0] : Coord(0, 0);
+	const Coord& textCoord2 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[1] : Coord(1, 1);
+
+	const Coord& vertex1 = vertexes[0];
+	const Coord& vertex2 = vertexes[1];
+
+	return {
+		// positions         // colors
+		 (float)vertex1.X, (float)vertex1.Y, 0.0f,  (float)textCoord1.X,(float)textCoord1.Y,
+		 (float)vertex2.X, (float)vertex1.Y, 0.0f,  (float)textCoord2.X,(float)textCoord1.Y,
+		 (float)vertex2.X, (float)vertex2.Y, 0.0f,  (float)textCoord2.X, (float)textCoord2.Y,
+		 (float)vertex1.X, (float)vertex2.Y, 0.0f,  (float)textCoord1.X, (float)textCoord2.Y
+	};
 }

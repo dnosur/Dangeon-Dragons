@@ -93,6 +93,8 @@ Pawn::Pawn(
 	this->kinematic = isKinematic;
 	this->isHidden = isHidden;
 
+	VAO = VBO = EBO = 0;
+
 	SetLayer(Layer::Pawn);
 
 	SetAction(Actions::Idle);
@@ -105,14 +107,26 @@ void Pawn::SetMoveDirection(Directions moveDirection)
 	this->moveDirection = moveDirection;
 }
 
-void Pawn::SetPos(std::vector<Coord> vertexes)
+void Pawn::SetPos(std::vector<Coord> vertexes, bool render)
 {
 	MathPos(vertexes);
+
+	if (!render) {
+		return;
+	}
+
+	UpdateVertices();
 }
 
-void Pawn::SetPos(Coord pos)
+void Pawn::SetPos(Coord pos, bool render)
 {
 	MathPos(pos);
+
+	if (!render) {
+		return;
+	}
+
+	UpdateVertices();
 }
 
 void Pawn::RotateToDirection(Directions direction)
@@ -124,9 +138,15 @@ void Pawn::SetTitle(std::string title)
 	this->title = title;
 }
 
-void Pawn::SetSize(Size size)
+void Pawn::SetSize(Size size, bool render)
 {
 	MathSize(size);
+
+	if (!render) {
+		return;
+	}
+
+	UpdateVertices();
 }
 
 void Pawn::SetSpeed(float speed)

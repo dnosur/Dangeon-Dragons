@@ -267,6 +267,23 @@ std::weak_ptr<IGameObject> TinyMap::GetClassByName(std::string name)
 	return std::weak_ptr<Rect>();
 }
 
+const std::vector<std::shared_ptr<IGameObject>>& TinyMap::GetGameObjects()
+{
+	return gameObjects;
+}
+
+const std::vector<std::shared_ptr<IGameObject>>& TinyMap::GetGameClasses()
+{
+	return gameClasses;
+}
+
+void TinyMap::InitializeRender()
+{
+	for (std::shared_ptr<IGameObject>& object : gameObjects) {
+		object->InitializeRender();
+	}
+}
+
 Window* TinyMap::GetWindow()
 {
 	return window;

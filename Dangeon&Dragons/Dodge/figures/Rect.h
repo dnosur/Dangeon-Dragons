@@ -3,6 +3,8 @@
 #include "../images/ImagesController.h"
 #include "../Directions.h"
 
+extern std::vector<unsigned int> defaultIndicies;
+
 class Rect :
     public IGameObject
 {
@@ -14,6 +16,8 @@ class Rect :
     MouseClickHandler OnMouseClick;
 
     OnCollisionEnter OnCollisionEnterHandler;
+
+    unsigned int VAO, VBO, EBO;
 
     Coord vertex1;
     Coord vertex2;
@@ -49,11 +53,19 @@ class Rect :
     void MathSide(double& sideSize, bool isWidth);
 
     void Draw();
+
+    void InitializeRender();
+    std::vector<float> GetRenderVertices();
 public:
     Rect();
     Rect(std::string title, Window& window, Coord pos, Size size, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
     Rect(std::string title, Window& window, Coord vertex1, Coord vertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
     Rect(std::string title, Window& window, Coord vertex1, Coord vertex2, Coord textureVertex1, Coord textureVertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
+
+    static void InitQuads(
+        unsigned int& VAO, unsigned int& VBO, unsigned int& EBO,
+        std::vector<float> vertices, std::vector<unsigned int>& indices = defaultIndicies
+    );
 
     static std::vector<float> GetVerticesByDirection(
         Rect& rect, 
@@ -65,13 +77,17 @@ public:
 
     void Update();
 
+    void UpdateVertices();
+
+    void UpdateVertices(std::vector<float> vertices);
+
     const Coord& GetPos();
     const Coord& GetOpenGlPos();
 
-    void SetSize(Size size);
+    void SetSize(Size size, bool render = true);
     Size GetSize();
 
-    void SetSideSize(Sides sides);
+    void SetSideSize(Sides sides, bool render = true);
 
     bool MouseHover(Mouse& mouse);
     bool MouseClick(Mouse& mouse);
@@ -87,8 +103,8 @@ public:
 
     std::vector<Coord> GetVertices();
 
-    void SetPos(std::vector<Coord> vertices);
-    void SetPos(Coord pos);
+    void SetPos(std::vector<Coord> vertices, bool render = true);
+    void SetPos(Coord pos, bool render = true);
 
     void SetMaterial(std::shared_ptr<Material> material);
 

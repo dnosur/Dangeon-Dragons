@@ -183,6 +183,8 @@ void MainWindow::Update()
             mainWindowLoading.reset();
             glfwMakeContextCurrent(window);
             glfwDestroyWindow(loadingContext);
+
+            wonderWold->InitializeRender();
         }
 
         if (gameStatus == GameStatuses::Loading) {
