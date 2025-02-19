@@ -130,7 +130,6 @@ void MainWindow::Update()
         images->Load("Content/Images/PauseMenu/pauseMenu.png", "pauseMenu");
 
         wonderWold = std::make_unique<WonderWold>(
-            this,
             TinyXml::LoadMap(
                 "Content/Maps/world/world.tmx",
                 "wonder_world",
@@ -165,7 +164,7 @@ void MainWindow::Update()
     });
     loadingThread.Detach();
 
-    std::unique_ptr<HpBar> hpBar = std::make_unique<HpBar>(*this);
+    std::unique_ptr<HpBar> hpBar = std::make_unique<HpBar>();
 
     bool down = false;
 
@@ -210,7 +209,6 @@ void MainWindow::Update()
             images->DrawImage(
                 "ground",
                 Coord(0, 0),
-                GetSize(),
                 GetSize(),
                 Color(0.4f, 0.4f, 0.4f)
             );

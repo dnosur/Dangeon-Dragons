@@ -15,8 +15,6 @@
 class Pawn : public IGameObject
 {
 protected:
-	Window* window;
-
 	unsigned int VAO, VBO, EBO;
 
 	MouseHoverHandler OnMouseHover;
@@ -92,7 +90,7 @@ protected:
 	virtual std::vector<float> GetRenderVertices() = 0;
 public:
 	Pawn(
-		std::string title, Window& window,
+		std::string title,
 		std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
 		Coord position, Size size, float speed, float maxSpeed, float minSpeed, 
 		float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,

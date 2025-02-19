@@ -12,19 +12,19 @@ void Pawn::MathPos(std::vector<Coord> vertexes)
 	float centerX_GL = float(vertex1.X + vertex2.X) / 2.0f;
 	float centerY_GL = float(vertex1.Y + vertex2.Y) / 2.0f;
 
-	position = Coord(((centerX_GL + 1.0f) / 2.0f) * (float)window->GetRenderResolution().GetWidth(),
-		((1.0f - (centerY_GL + 1.0f) / 2.0f) * (float)window->GetRenderResolution().GetHeight()));
+	position = Coord(((centerX_GL + 1.0f) / 2.0f) * (float)Window::GetRenderResolution().GetWidth(),
+		((1.0f - (centerY_GL + 1.0f) / 2.0f) * (float)Window::GetRenderResolution().GetHeight()));
 }
 
 void Pawn::MathPos(Coord& position)
 {
 	this->position = position;
 
-	float glCenterX = window->PixelToGLX(position.X);
-	float glCenterY = window->PixelToGLY(position.Y);
+	float glCenterX = Window::PixelToGLX(position.X);
+	float glCenterY = Window::PixelToGLY(position.Y);
 
-	float glWidth = (float)(size.GetWidth()) / (float)window->GetRenderResolution().GetWidth() * 2.0f;
-	float glHeight = (float)size.GetHeight() / (float)window->GetRenderResolution().GetHeight() * 2.0f;
+	float glWidth = (float)(size.GetWidth()) / (float)Window::GetRenderResolution().GetWidth() * 2.0f;
+	float glHeight = (float)size.GetHeight() / (float)Window::GetRenderResolution().GetHeight() * 2.0f;
 
 	float halfWidth = glWidth / 2.0f;
 	float halfHeight = glHeight / 2.0f;
@@ -56,21 +56,20 @@ bool Pawn::MouseInRect(Mouse& mouse)
 	Coord& vertex1 = vertexes[0];
 	Coord& vertex2 = vertexes[1];
 
-	float normMouseX = (mouse.GetMouseCoord().X / window->GetRenderResolution().GetWidth()) * 2.0f - 1.0f;
-	float normMouseY = 1.0f - (mouse.GetMouseCoord().Y / window->GetRenderResolution().GetHeight()) * 2.0f;
+	float normMouseX = (mouse.GetMouseCoord().X / Window::GetRenderResolution().GetWidth()) * 2.0f - 1.0f;
+	float normMouseY = 1.0f - (mouse.GetMouseCoord().Y / Window::GetRenderResolution().GetHeight()) * 2.0f;
 
 	return (normMouseX >= vertex1.X && normMouseX <= vertex2.X &&
 		normMouseY >= vertex1.Y && normMouseY <= vertex2.Y);
 }
 
 Pawn::Pawn(
-	std::string title, Window& window,
+	std::string title,
 	std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
 	Coord position, Size size, float speed, float maxSpeed, float minSpeed,
 	float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
 	std::vector<std::shared_ptr<IAnimation>> animations
 ){
-	this->window = &window;
 
 	SetTitle(title);
 
@@ -246,11 +245,11 @@ bool Pawn::MouseHover(Mouse& mouse)
 	const bool isHover = MouseInRect(mouse);
 
 	if (isHover && OnMouseHover) {
-		OnMouseHover(this, window->GetWindow());
+		OnMouseHover(this, Window::GetWindow());
 	}
 
 	if (!isHover && OnMouseOver) {
-		OnMouseOver(this, window->GetWindow());
+		OnMouseOver(this, Window::GetWindow());
 	}
 
 	return isHover;
@@ -262,7 +261,7 @@ bool Pawn::MouseClick(Mouse& mouse)
 		return false;
 	}
 
-	OnMouseClick(this, window->GetWindow());
+	OnMouseClick(this, Window::GetWindow());
 	return true;
 }
 
@@ -275,7 +274,7 @@ bool Pawn::CollisionEnter(IGameObject& gameObject)
 	bool isEnter = collision->IsCollisionEnter(&gameObject);
 
 	if (isEnter && OnCollisionEnterHandler) {
-		OnCollisionEnterHandler(this, &gameObject, window->GetWindow());
+		OnCollisionEnterHandler(this, &gameObject, Window::GetWindow());
 	}
 }
 
@@ -301,7 +300,7 @@ void Pawn::HookOnCollisionEnter(OnCollisionEnter onCollisionEnter)
 
 Window* Pawn::GetWindow()
 {
-	return window;
+	return nullptr;
 }
 
 const Coord& Pawn::GetPos()
@@ -311,7 +310,7 @@ const Coord& Pawn::GetPos()
 
 const Coord& Pawn::GetOpenGlPos()
 {
-	return Coord(window->PixelToGLX(position.X), window->PixelToGLY(position.Y));
+	return Coord(Window::PixelToGLX(position.X), Window::PixelToGLY(position.Y));
 }
 
 std::vector<Coord> Pawn::GetVertices()
@@ -434,7 +433,7 @@ const bool Pawn::IsNear(Coord startPos, Coord targetPos, float distance)
 
 const bool Pawn::IsMouseOverlap()
 {
-	return MouseInRect(*window->GetMouse().lock());
+	return MouseInRect(*Window::GetMouse().lock());
 }
 
 const bool Pawn::IsDead()

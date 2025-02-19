@@ -10,8 +10,7 @@ void WonderWold::CreateCamera()
 	camera = std::make_shared<Camera>(
 		"Player",
 		Size(0, 0),
-		Size(1000, 1000),
-		window
+		Size(1000, 1000)
 	);
 }
 
@@ -41,7 +40,6 @@ void WonderWold::SpawnPlayer()
 
 	player = std::make_shared<Player>(
 		"Player",
-		*window,
 		std::make_unique<BoxCollision>(
 			playerSpawn->GetPos(),
 			Size(24, 16),
@@ -100,7 +98,6 @@ void WonderWold::SpawnSkeleton(Coord position)
 
 		std::shared_ptr<Skeleton> skeleton = std::make_unique<Skeleton>(
 			"Skeleton",
-			*window,
 			std::make_unique<BoxCollision>(
 				spawn->GetPos(),
 				Size(24, 16),
@@ -157,8 +154,8 @@ void WonderWold::Initialize()
 	audioController.Play("wind", true);
 }
 
-WonderWold::WonderWold(Window* window, std::unique_ptr<TileMap>  tileMap, Coord position)
-	: TinyMap(window, std::move(tileMap), position)
+WonderWold::WonderWold(std::unique_ptr<TileMap>  tileMap, Coord position)
+	: TinyMap(std::move(tileMap), position)
 {
 	Initialize();
 }

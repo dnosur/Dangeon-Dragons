@@ -14,11 +14,9 @@ class Camera
 
 	std::string title;
 
-	Window* window;
-
 	void UpdateCamera();
 public:
-	Camera(std::string title, Size cameraSize, Size mapSize, Window* window);
+	Camera(std::string title, Size cameraSize, Size mapSize);
 
 	void Update();
 

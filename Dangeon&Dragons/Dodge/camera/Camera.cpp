@@ -26,12 +26,12 @@ void Camera::UpdateCamera()
 
 float Camera::GetPixelToGLFactorX()
 {
-    return 2.0f / window->GetRenderResolution().width;
+    return 2.0f / Window::GetRenderResolution().width;
 }
 
 float Camera::GetPixelToGLFactorY()
 {
-    return 2.0f / window->GetRenderResolution().height;
+    return 2.0f / Window::GetRenderResolution().height;
 }
 
 Coord Camera::GetOffset()
@@ -46,8 +46,8 @@ void Camera::DropOffset()
     position = observed->GetPos();
 }
 
-Camera::Camera(std::string title, Size cameraSize, Size mapSize, Window* window)
-    : size(cameraSize), mapSize(mapSize), window(window), observed(nullptr), title(title) 
+Camera::Camera(std::string title, Size cameraSize, Size mapSize)
+    : size(cameraSize), mapSize(mapSize), observed(nullptr), title(title) 
 {
 }
 

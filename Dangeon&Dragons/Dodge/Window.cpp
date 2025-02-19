@@ -1,5 +1,7 @@
 #include "Window.h"
 
+GLFWwindow* Window::window = nullptr;
+
 Size Window::size;
 Size Window::renderResolution = Size(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 

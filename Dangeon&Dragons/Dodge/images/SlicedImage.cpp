@@ -20,7 +20,7 @@ void SlicedImage::CalculateVertexes(int row_index, int start_column, int max_col
 		vertexes[row_index].push_back(
 			CalculateTextureVertexes(
 				frameSize,
-				image->size,
+				image->GetSize(),
 				imageArraySize.width,
 				i + (row_index * imageArraySize.width)
 			)
@@ -31,8 +31,8 @@ void SlicedImage::CalculateVertexes(int row_index, int start_column, int max_col
 void SlicedImage::Initilize()
 {
 	imageArraySize = Size(
-		image->size.width / frameSize.GetWidth(), 
-		image->size.height / frameSize.GetHeight()
+		image->GetSize().width / frameSize.GetWidth(),
+		image->GetSize().height / frameSize.GetHeight()
 	);
 }
 

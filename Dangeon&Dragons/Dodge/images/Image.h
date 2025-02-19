@@ -6,17 +6,8 @@
 
 #include <vector>
 
-struct Image
+class Image
 {
-private:
-	unsigned int VBO, VAO, EBO;
-
-	void InitializeRender();
-
-	void UpdateVertices();
-
-	void SetPos(Coord& position);
-public:
 	std::string title;
 	std::string path;
 
@@ -27,9 +18,30 @@ public:
 
 	Coord position;
 
+	unsigned int VBO, VAO, EBO;
+
+	void InitializeRender();
+
+	void UpdateVertices();
+
+	void SetPos(Coord& position);
+public:
 	Image();
 	Image(std::string title, std::string path, GLint image, Size size, GLuint shader = 0);
 	~Image();
+
+	std::string_view GetTitle();
+
+	std::string_view GetPath();
+
+	const GLuint GetImage();
+
+	const GLuint GetShader();
+	void SetShader(GLuint& shader);
+
+	const Size& GetSize();
+
+	const Coord& GetPos();
 
 	void Draw(Color color = Color(1.0f, 1.0f, 1.0f));
 	void Draw(Coord& position, Color color = Color(1.0f, 1.0f, 1.0f));

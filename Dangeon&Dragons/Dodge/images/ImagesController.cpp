@@ -12,83 +12,12 @@ int ImagesController::GetIndexByTitle(std::string_view title)
 
 void ImagesController::ChangeIfExist(Image image)
 {
-    images[image.title] = image;
+    images[std::string(image.GetTitle())] = image;
 }
 
-void ImagesController::Draw(Image& item, Coord& position, Color& color, Size& windowSize, Size& size, bool reverse)
+void ImagesController::Draw(Image& item, Coord& position, Color& color, Size& size)
 {
     item.Draw(position, size, color);
-
-    //const GLuint image = item.image;
-    //GLuint shader = item.shader;
-
-    //float normX = (position.X / (float)windowSize.GetWidth()) * 2.0f - 1.0f;
-    //float normY = !reverse
-    //    ? (position.Y / (float)windowSize.GetHeight()) * 2.0f - 1.0f
-    //    : 1.0f - (position.Y / (float)windowSize.GetHeight()) * 2.0f;
-    //float normW = (size.width / (float)windowSize.GetWidth()) * 2.0f;
-    //float normH = (size.height / (float)windowSize.GetHeight()) * 2.0f;
-
-    //// ������� � ���������� ����������
-    //std::vector<float> vertices = {
-    //    // �������           // ���������� ����������
-    //    normX, normY, 0.0f,                 0.0f, 0.0f,  // ����� ������ ����
-    //    normX + normW, normY, 0.0f,         1.0f, 0.0f,  // ������ ������ ����
-    //    normX + normW, normY + normH, 0.0f, 1.0f, 1.0f,  // ������ ������� ����
-    //    normX, normY + normH, 0.0f,         0.0f, 1.0f   // ����� ������� ����
-    //};
-
-    //unsigned int indices[] = {
-    //    0, 1, 2, // ������ �����������
-    //    2, 3, 0  // ������ �����������
-    //};
-
-    //unsigned int VAO, VBO, EBO;
-    //glGenVertexArrays(1, &VAO);
-    //glGenBuffers(1, &VBO);
-    //glGenBuffers(1, &EBO);
-
-    //glBindVertexArray(VAO);
-
-    //glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
-
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    //glEnableVertexAttribArray(0);
-
-    ////diffuse
-    //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    //glEnableVertexAttribArray(1);
-
-    ////normal
-    //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    //glEnableVertexAttribArray(2);
-
-    ////specular
-    //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    //glEnableVertexAttribArray(3);
-
-    ////emissive
-    //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    //glEnableVertexAttribArray(4);
-
-    //glActiveTexture(GL_TEXTURE0);
-    //glBindTexture(GL_TEXTURE_2D, image);
-
-    //ShadersController::Use(shader);
-    //ShadersController::SetInt(shader, "diffuseTexture", 0);
-    //ShadersController::SetVec4(shader, "diffuseColor", color.r, color.g, color.b, color.a);
-
-    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-    //glBindVertexArray(0);
-
-    //glDeleteBuffers(1, &VBO);
-    //glDeleteVertexArrays(1, &VAO);
-    //glUseProgram(0);
 }
 
 Image ImagesController::LoadImg(std::string_view path, std::string title)
@@ -170,7 +99,7 @@ void ImagesController::Load(std::string_view path, std::string title, GLuint sha
 {
     Image image = ImagesController::LoadImg(path, title);
     if (shader) {
-        image.shader = shader;
+        image.SetShader(shader);
     }
 
     ChangeIfExist(image);
@@ -179,69 +108,41 @@ void ImagesController::Load(std::string_view path, std::string title, GLuint sha
 void ImagesController::LoadAndDrawImage(
     std::string_view path, std::string title,
     GLuint shader, Coord position,
-    Size size, Size windowSize
+    Size size
 )
 {
     Image image_obj = ImagesController::LoadImg(path, title);
-    if (!image_obj.image) {
+    if (!image_obj.GetImage()) {
         return;
     }
 
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, image_obj.image);
-
-
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glad_glOrtho(0, windowSize.GetWidth(), windowSize.GetHeight(), 0, -1, 1);
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-
-    ShadersController::Use(shader);
-
-    glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 0.0f); glVertex2f(position.X, position.Y); // ����� ������ ����
-    glTexCoord2f(1.0f, 0.0f); glVertex2f(position.X + size.width, position.Y); // ������ ������ ����
-    glTexCoord2f(1.0f, 1.0f); glVertex2f(position.X + size.width, position.Y + size.height); // ������ ������� ����
-    glTexCoord2f(0.0f, 1.0f); glVertex2f(position.X, position.Y + size.height); // ����� ������� ����
-    glEnd();
-
-
-    glPopMatrix();
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-
-    glDisable(GL_TEXTURE_2D);
+    image_obj.Draw(position, size);
 
     ChangeIfExist(image_obj);
 }
 
-void ImagesController::DrawImage(std::string_view title, Coord position, Size size, Size windowSize, Color color, bool reverse)
+void ImagesController::DrawImage(std::string_view title, Coord position, Size size, Color color)
 {
     const int index = GetIndexByTitle(title);
     if (index < 0) {
         return;
     }
 
-    Draw(*this->operator[](index), position, color, windowSize, size, reverse);
+    Draw(*this->operator[](index), position, color, size);
 }
 
-void ImagesController::DrawImage(Image*& image, Coord position, Size size, Size windowSize, Color color, bool reverse)
+void ImagesController::DrawImage(Image*& image, Coord position, Size size, Color color)
 {
-    Draw(*image, position, color, windowSize, size, reverse);
+    Draw(*image, position, color, size);
 }
 
-void ImagesController::DrawImage(std::weak_ptr<Image> image, Coord position, Size size, Size windowSize, Color color, bool reverse)
+void ImagesController::DrawImage(std::weak_ptr<Image> image, Coord position, Size size, Color color)
 {
     if (image.expired() || !image.lock()) {
         return;
     }
 
-    Draw(*image.lock(), position, color, windowSize, size, reverse);
+    Draw(*image.lock(), position, color, size);
 }
 
 const std::unordered_map<std::string, Image>& ImagesController::GetImages()
@@ -253,7 +154,7 @@ void ImagesController::SetImages(std::vector<Image> images)
 {
     Clear();
     for (Image& image : images) {
-        this->images[image.title] = image;
+        this->images[std::string(image.GetTitle())] = image;
     }
 }
 

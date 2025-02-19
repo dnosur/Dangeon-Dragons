@@ -57,7 +57,7 @@ class Skeleton
     std::vector<float> GetRenderVertices() override;
 public:
     Skeleton(
-        std::string title, Window& window,
+        std::string title,
         std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
         Coord position, Size size, float speed, float maxSpeed, float minSpeed,
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,

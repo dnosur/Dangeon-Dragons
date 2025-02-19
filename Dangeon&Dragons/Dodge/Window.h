@@ -16,7 +16,7 @@
 class Window
 {
 protected:
-	GLFWwindow* window;
+	static GLFWwindow* window;
 	GLFWmonitor* monitor;
 	GLFWwindow* share;
 
@@ -55,7 +55,7 @@ public:
 	);
 	~Window() = default;
 
-	GLFWwindow* GetWindow();
+	static GLFWwindow* GetWindow();
 	GLFWmonitor* GetMonitor();
 	GLFWwindow* GetShare();
 
@@ -76,11 +76,11 @@ public:
 	void CloseWindow();
 	const bool IsClosed();
 
-	float PixelToGLX(float pixelX);
-	float PixelToGLY(float pixelY);
+	static float PixelToGLX(float pixelX);
+	static float PixelToGLY(float pixelY);
 
-	float GLXToPixel(float glx);
-	float GLYToPixel(float gly);
+	static float GLXToPixel(float glx);
+	static float GLYToPixel(float gly);
 
 	void SetBackgroundColor(Color color);
 	Color GetBackgroundColor();

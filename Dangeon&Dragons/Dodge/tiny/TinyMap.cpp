@@ -101,8 +101,8 @@ void TinyMap::Initialize()
 								const int chunk_j = j + chunk->coord.X;
 								const int chunk_i = i + chunk->coord.Y;
 
-								vertex1 = Coord(window->PixelToGLX(((chunk_j + 1) * tileWidth) + position.X), window->PixelToGLY(((chunk_i + 1) * tileHeight) + position.Y));
-								vertex2 = Coord(window->PixelToGLX(((chunk_j * tileWidth)) + position.X), window->PixelToGLY((chunk_i * tileHeight) + position.Y));
+								vertex1 = Coord(Window::PixelToGLX(((chunk_j + 1) * tileWidth) + position.X), Window::PixelToGLY(((chunk_i + 1) * tileHeight) + position.Y));
+								vertex2 = Coord(Window::PixelToGLX(((chunk_j * tileWidth)) + position.X), Window::PixelToGLY((chunk_i * tileHeight) + position.Y));
 							}
 
 							textureVertex1 = Coord(((float)atlasX + 1.0f) * tileU, 1.0f - ((float)(atlasY + 1) * (float)tileV));
@@ -142,7 +142,6 @@ void TinyMap::Initialize()
 
 							rect = std::make_shared<Rect>(
 								obj_title,
-								*window,
 								vertex1,
 								vertex2,
 								textureVertex1,
@@ -201,7 +200,6 @@ void TinyMap::Initialize()
 
 			std::shared_ptr<Rect> circle = std::make_shared<Rect>(
 				oss.str(),
-				*window,
 				collision->GetPoints()[0],
 				Size(35, 35),
 				Color(1, 1, 1)
@@ -221,9 +219,8 @@ void TinyMap::Initialize()
 	}
 }
 
-TinyMap::TinyMap(Window* window, std::unique_ptr<TileMap> tileMap, Coord position)
+TinyMap::TinyMap(std::unique_ptr<TileMap> tileMap, Coord position)
 {
-	this->window = window;
 	this->tileMap = std::move(tileMap);
 	this->position = position;
 
@@ -282,11 +279,6 @@ void TinyMap::InitializeRender()
 	for (std::shared_ptr<IGameObject>& object : gameObjects) {
 		object->InitializeRender();
 	}
-}
-
-Window* TinyMap::GetWindow()
-{
-	return window;
 }
 
 TileMap* TinyMap::GetTileMap()

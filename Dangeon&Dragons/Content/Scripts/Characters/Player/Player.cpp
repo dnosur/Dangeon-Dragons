@@ -383,7 +383,7 @@ void Player::MathSide(double& sideSize, bool isWidth)
 	Coord& vertex1 = vertexes[0];
 	Coord& vertex2 = vertexes[1];
 
-	float glDelta = (float)sideSize / (float)window->GetRenderResolution().GetWidth() * 2.0f;
+	float glDelta = (float)sideSize / (float)Window::GetRenderResolution().GetWidth() * 2.0f;
 
 	if (isWidth) {
 		if (sideSize > 0) {
@@ -402,11 +402,11 @@ void Player::MathSide(double& sideSize, bool isWidth)
 		}
 	}
 
-	size.SetWidth((vertex1.X - vertex2.X) * window->GetRenderResolution().GetWidth() / 2.0f);
-	size.SetHeight((vertex1.Y - vertex2.Y) * window->GetRenderResolution().GetHeight() / 2.0f);
+	size.SetWidth((vertex1.X - vertex2.X) * Window::GetRenderResolution().GetWidth() / 2.0f);
+	size.SetHeight((vertex1.Y - vertex2.Y) * Window::GetRenderResolution().GetHeight() / 2.0f);
 
-	position.X = window->GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
-	position.Y = window->GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
+	position.X = Window::GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
+	position.Y = Window::GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
 }
 
 void Player::AIMovement()
@@ -511,13 +511,13 @@ void Player::LoadAudio()
 }
 
 Player::Player(
-	std::string title, Window& window, std::shared_ptr<ICollision> collision,
+	std::string title, std::shared_ptr<ICollision> collision,
 	std::shared_ptr<Material> material, Directions moveDirection, Coord position, Size size,
 	float speed, float maxSpeed, float minSpeed, 
 	float health, float maxHealth, bool isPlayable, bool isKinematic, 
 	bool isHidden, std::vector<std::shared_ptr<IAnimation>> animations)
 	: Pawn(
-		title, window, std::move(collision),
+		title, std::move(collision),
 		std::move(material), moveDirection, position, size,
 		speed, maxSpeed, minSpeed, 
 		health, maxHealth, isPlayable, isKinematic, 

@@ -27,12 +27,14 @@ void GoToXY(COORD coord)
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-void DrawSymbol(Coord coord, char symbol, Size windowSize, const Color color)
+void DrawSymbol(Coord coord, char symbol, const Color color)
 {
+	const Size windowSize = Window::GetRenderResolution();
+
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(0, windowSize.GetWidth(), windowSize.GetHeight(), 0);
+	gluOrtho2D(0, windowSize.width, windowSize.height, 0);
 
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
@@ -49,12 +51,14 @@ void DrawSymbol(Coord coord, char symbol, Size windowSize, const Color color)
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void DrawSymbols(Coord coord, char* symbols, Size windowSize, const Color color)
+void DrawSymbols(Coord coord, char* symbols, const Color color)
 {
+	const Size windowSize = Window::GetRenderResolution();
+
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(0, windowSize.GetWidth(), windowSize.GetHeight(), 0);
+	gluOrtho2D(0, windowSize.width, windowSize.height, 0);
 
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
@@ -106,16 +110,20 @@ void GetXY(int& x, int& y) {
 	y = screenBufferInfo.dwCursorPosition.Y;
 }
 
-Size MathSize(Size size, Size windowSize)
+Size MathSize(Size size)
 {
+	const Size windowSize = Window::GetRenderResolution();
+
 	return Size(
 		static_cast<int>((float)(size.width * (float)(windowSize.width / DEFAULT_WINDOW_WIDTH))),
 		static_cast<int>((float)(size.height * (float)(windowSize.height / DEFAULT_WINDOW_HEIGHT)))
 	);
 }
 
-Coord MathCoord(Coord coord, Size windowSize)
+Coord MathCoord(Coord coord)
 {
+	const Size windowSize = Window::GetRenderResolution();
+
 	return Coord(
 		static_cast<int>((float)(coord.X * (float)(windowSize.width / DEFAULT_WINDOW_WIDTH))),
 		static_cast<int>((float)(coord.Y * (float)(windowSize.height / DEFAULT_WINDOW_HEIGHT)))

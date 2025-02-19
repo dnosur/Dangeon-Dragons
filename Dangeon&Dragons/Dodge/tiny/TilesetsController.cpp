@@ -73,7 +73,7 @@ std::shared_ptr<Tileset> TilesetsController::LoadTileset(int firstgId, std::stri
 
     source = TinyXml::GetPathToTileSource(source);
     Image image_obj = ImagesController::LoadImg(source.c_str(), name);
-    if (image_obj.image <= 0) {
+    if (image_obj.GetImage() <= 0) {
         return nullptr;
     }
 

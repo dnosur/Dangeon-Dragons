@@ -9,14 +9,12 @@ class HpBar
 	std::unique_ptr<Rect> line;
 	std::unique_ptr<Rect> icon;
 
-	Window* window;
-
 	int hp;
 
 	void Draw() override;
 	void Initialize() override;
 public:
-	HpBar(Window& window, int hp = 100);
+	HpBar(int hp = 100);
 	~HpBar() = default;
 
 	void SetPos(Coord position);

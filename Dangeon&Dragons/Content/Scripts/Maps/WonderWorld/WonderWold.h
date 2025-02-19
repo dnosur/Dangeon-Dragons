@@ -29,7 +29,7 @@ class WonderWold
 
 	void Initialize();
 public:
-	WonderWold(Window* window, std::unique_ptr<TileMap> tileMap, Coord position = Coord());
+	WonderWold(std::unique_ptr<TileMap> tileMap, Coord position = Coord());
 
 	void SetCamera(std::unique_ptr<Camera> camera);
 

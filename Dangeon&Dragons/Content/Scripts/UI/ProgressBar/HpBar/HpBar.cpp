@@ -15,7 +15,6 @@ void HpBar::Initialize()
 {
     bar = std::make_unique<Rect>(
         "hpBar",
-        *window,
         ProgressBar::GetPos(),
         ProgressBar::GetSize(),
         Color(1.0f, 1.0f, 1.0f, 1.0f)
@@ -33,14 +32,13 @@ void HpBar::Initialize()
     bar->GetMaterial().lock()->SetDiffuseMapVerticies(
         SlicedImage::CalculateTextureVertexes(
             Size(128, 128),
-            bar->GetMaterial().lock()->GetDiffuseMap().lock()->size,
+            bar->GetMaterial().lock()->GetDiffuseMap().lock()->GetSize(),
             Coord(2, 0)
         )
     );
 
     line = std::make_unique<Rect>(
         "hpLine",
-        *window,
         Coord(150, 35),
         Size(120, 10),
         Color(1.0f, 0, 0)
@@ -48,7 +46,6 @@ void HpBar::Initialize()
 
     icon = std::make_unique<Rect>(
         "hpIcon",
-        *window,
         Coord(45, 35),
         Size(32, 32),
         Color(1.0f, 1.0f, 1.0f, 1.0f)
@@ -67,14 +64,14 @@ void HpBar::Initialize()
     icon->GetMaterial().lock()->SetDiffuseMapVerticies(
         SlicedImage::CalculateTextureVertexes(
             Size(32, 32),
-            icon->GetMaterial().lock()->GetDiffuseMap().lock()->size,
+            icon->GetMaterial().lock()->GetDiffuseMap().lock()->GetSize(),
             Coord(0, 0)
         )
     );
 }
 
-HpBar::HpBar(Window& window, int hp)
-    : window(&window), hp(hp), 
+HpBar::HpBar(int hp)
+    : hp(hp), 
     ProgressBar(Coord(150, 30), Size(200, 100))
 {
     Initialize();

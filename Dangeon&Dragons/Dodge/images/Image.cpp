@@ -96,6 +96,41 @@ Image::~Image()
 {
 }
 
+std::string_view Image::GetTitle()
+{
+    return title;
+}
+
+std::string_view Image::GetPath()
+{
+    return path;
+}
+
+const GLuint Image::GetImage()
+{
+    return image;
+}
+
+const GLuint Image::GetShader()
+{
+    return shader;
+}
+
+void Image::SetShader(GLuint& shader)
+{
+    this->shader = shader;
+}
+
+const Size& Image::GetSize()
+{
+    return size;
+}
+
+const Coord& Image::GetPos()
+{
+    return position;
+}
+
 void Image::Draw(Color color)
 {
     if (!VAO || !VBO || !EBO) {

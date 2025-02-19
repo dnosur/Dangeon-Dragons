@@ -27,16 +27,16 @@ void Pause();
 void GoToXY(int X, int Y);
 void GoToXY(COORD coord);
 
-void DrawSymbol(Coord coord, char symbol, Size windowSize, const Color color = Color(1, 0, 0));
-void DrawSymbols(Coord coord, char* symbols, Size windowSize, const Color color = Color(1, 0, 0));
+void DrawSymbol(Coord coord, char symbol, const Color color = Color(1, 0, 0));
+void DrawSymbols(Coord coord, char* symbols, const Color color = Color(1, 0, 0));
 void CopyStr(char* origin, char*& destination);
 void CopyStr(const char* origin, char*& destination);
 
 COORD GetXY();
 void GetXY(int& x, int& y);
 
-Size MathSize(Size size, Size windowSize);
-Coord MathCoord(Coord coord, Size windowSize);
+Size MathSize(Size size);
+Coord MathCoord(Coord coord);
 
 template <typename T>
 void CopyArray(T** origin, T** destination);

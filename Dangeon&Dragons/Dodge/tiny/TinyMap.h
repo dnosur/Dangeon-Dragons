@@ -7,7 +7,6 @@
 class TinyMap
 {
 protected:
-	Window* window;
 	std::unique_ptr<TileMap> tileMap;
 
 	Coord position;
@@ -23,7 +22,7 @@ protected:
 
 	void Initialize();
 public:
-	TinyMap(Window* window, std::unique_ptr<TileMap>, Coord position = Coord());
+	TinyMap(std::unique_ptr<TileMap>, Coord position = Coord());
 	virtual ~TinyMap() = default;
 
 	virtual void Update() = 0;
@@ -36,7 +35,5 @@ public:
 	const std::vector<std::shared_ptr<IGameObject>>& GetGameClasses();
 
 	void InitializeRender();
-
-	Window* GetWindow();
 	TileMap* GetTileMap();
 };

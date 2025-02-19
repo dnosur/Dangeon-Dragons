@@ -263,7 +263,7 @@ void SpriteAnimation::Play(Coord coord, Size size)
 
 	if (currentSpriteIndex >= 0) {
 		currentFrameTitle.reset(sprites[currentSpriteIndex]);
-		sprites.DrawImage(currentFrameTitle->title, coord, size, window->GetRenderResolution(), Color(1, 1, 1), true);
+		sprites.DrawImage(currentFrameTitle->GetTitle(), coord, size, Color(1, 1, 1));
 
 		if (rootTile != nullptr) {
 			*rootTile = *currentFrameTitle;

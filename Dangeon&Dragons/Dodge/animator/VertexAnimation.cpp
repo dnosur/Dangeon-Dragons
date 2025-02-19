@@ -133,7 +133,7 @@ void VertexAnimation::Reverse()
 
 std::string_view VertexAnimation::GetFolder()
 {
-	return object->GetMaterial().lock()->GetDiffuseMap().lock()->path;
+	return object->GetMaterial().lock()->GetDiffuseMap().lock()->GetPath();
 }
 
 void VertexAnimation::LoadFromFolder(std::string folder)

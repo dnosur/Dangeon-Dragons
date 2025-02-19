@@ -8,8 +8,8 @@ std::vector<unsigned int> defaultIndicies = {
 
 bool Rect::MouseInRect(Mouse& mouse)
 {
-    float normMouseX = (mouse.GetMouseCoord().X / window->GetRenderResolution().GetWidth()) * 2.0f - 1.0f;
-    float normMouseY = 1.0f - (mouse.GetMouseCoord().Y / window->GetRenderResolution().GetHeight()) * 2.0f;
+    float normMouseX = (mouse.GetMouseCoord().X / Window::GetRenderResolution().GetWidth()) * 2.0f - 1.0f;
+    float normMouseY = 1.0f - (mouse.GetMouseCoord().Y / Window::GetRenderResolution().GetHeight()) * 2.0f;
 
     return (normMouseX >= vertex1.X && normMouseX <= vertex2.X &&
         normMouseY >= vertex1.Y && normMouseY <= vertex2.Y);
@@ -20,8 +20,8 @@ void Rect::MathPos(Coord& vertex1, Coord& vertex2)
     this->vertex1 = vertex1;
     this->vertex2 = vertex2;
 
-    float width = (vertex2.X - vertex1.X) * (window->GetRenderResolution().GetWidth() / 2.0f);
-    float height = (vertex2.Y - vertex1.Y) * (window->GetRenderResolution().GetHeight() / 2.0f);
+    float width = (vertex2.X - vertex1.X) * (Window::GetRenderResolution().GetWidth() / 2.0f);
+    float height = (vertex2.Y - vertex1.Y) * (Window::GetRenderResolution().GetHeight() / 2.0f);
 
     // ������ ������������ �� ������ ������� ���������
     size = Size(round(std::abs(width)), round(std::abs(height)));
@@ -32,19 +32,19 @@ void Rect::MathPos(Coord& vertex1, Coord& vertex2)
 
     // ����������� OpenGL-���������� � �������
     position = Coord(
-        ((centerX_GL + 1.0f) / 2.0f) * (float)window->GetRenderResolution().GetWidth(),
-        ((1.0f - (centerY_GL + 1.0f) / 2.0f) * (float)window->GetRenderResolution().GetHeight())
+        ((centerX_GL + 1.0f) / 2.0f) * (float)Window::GetRenderResolution().GetWidth(),
+        ((1.0f - (centerY_GL + 1.0f) / 2.0f) * (float)Window::GetRenderResolution().GetHeight())
     );
 }
 
 void Rect::MathPos(Coord& position)
 {
     this->position = position;
-    float glCenterX = window->PixelToGLX(position.X);
-    float glCenterY = window->PixelToGLY(position.Y);
+    float glCenterX = Window::PixelToGLX(position.X);
+    float glCenterY = Window::PixelToGLY(position.Y);
 
-    float glWidth = (float)size.GetWidth() / (float)window->GetRenderResolution().GetWidth() * 2.0f;
-    float glHeight = (float)size.GetHeight() / (float)window->GetRenderResolution().GetHeight() * 2.0f;
+    float glWidth = (float)size.GetWidth() / (float)Window::GetRenderResolution().GetWidth() * 2.0f;
+    float glHeight = (float)size.GetHeight() / (float)Window::GetRenderResolution().GetHeight() * 2.0f;
 
     // Calculate the vertex1 and vertex2 coordinates
     vertex2.X = glCenterX - glWidth / 2.0f;
@@ -68,7 +68,6 @@ void Rect::MathSide(double& sideSize, bool isWidth)
 Rect::Rect()
 {
     title = (char*)"Undefined";
-    window = NULL;
 
     collision = nullptr;
     material = nullptr;
@@ -86,15 +85,13 @@ Rect::Rect()
 }
 
 Rect::Rect(
-    std::string title,
-    Window& window, Coord
+    std::string title, Coord
     position, Size size, Color color, 
     Directions moveDirection
 )
 {
     this->title = title;
 
-    this->window = &window;
     this->size = size;
     this->color = baseColor = color;
 
@@ -124,14 +121,12 @@ Rect::Rect(
 
 Rect::Rect(
     std::string title, 
-    Window& window, 
     Coord vertex1, Coord vertex2, 
     Color color, Directions moveDirection
 )
 {
     this->title = title;
 
-    this->window = &window;
     this->color = baseColor = color;
 
     MathPos(vertex1, vertex2);
@@ -157,7 +152,6 @@ Rect::Rect(
 
 Rect::Rect(
     std::string title, 
-    Window& window, 
     Coord vertex1, Coord vertex2, 
     Coord textureVertex1, Coord textureVertex2, 
     Color color, Directions moveDirection
@@ -165,7 +159,6 @@ Rect::Rect(
 {
     this->title = title;
 
-    this->window = &window;
     this->color = baseColor = color;
 
     MathPos(vertex1, vertex2);
@@ -438,7 +431,7 @@ const Coord& Rect::GetPos()
 
 const Coord& Rect::GetOpenGlPos()
 {
-    return Coord(window->PixelToGLX(position.X), window->PixelToGLY(position.Y));
+    return Coord(Window::PixelToGLX(position.X), Window::PixelToGLY(position.Y));
 }
 
 void Rect::SetSize(Size size, bool render)
@@ -459,7 +452,7 @@ Size Rect::GetSize()
 void Rect::SetSideSize(Sides sides, bool render)
 {
     if (sides.bottom != 0) {
-        float glDelta = abs((float)sides.bottom / (float)window->GetRenderResolution().GetWidth() * 2.0f);
+        float glDelta = abs((float)sides.bottom / (float)Window::GetRenderResolution().GetWidth() * 2.0f);
 
         if (sides.bottom > 0) {
             vertex1.Y -= glDelta;
@@ -470,7 +463,7 @@ void Rect::SetSideSize(Sides sides, bool render)
     }
 
     if (sides.top != 0) {
-        float glDelta = abs((float)sides.top / (float)window->GetRenderResolution().GetWidth() * 2.0f);
+        float glDelta = abs((float)sides.top / (float)Window::GetRenderResolution().GetWidth() * 2.0f);
 
         if (sides.top > 0) {
             vertex2.Y += glDelta;
@@ -481,7 +474,7 @@ void Rect::SetSideSize(Sides sides, bool render)
     }
 
     if (sides.left != 0) {
-        float glDelta = abs((float)sides.left / (float)window->GetRenderResolution().GetWidth() * 2.0f);
+        float glDelta = abs((float)sides.left / (float)Window::GetRenderResolution().GetWidth() * 2.0f);
 
         if (sides.left > 0) {
             vertex2.X -= glDelta;
@@ -492,7 +485,7 @@ void Rect::SetSideSize(Sides sides, bool render)
     }
 
     if (sides.right != 0) {
-        float glDelta = abs((float)sides.right / (float)window->GetRenderResolution().GetWidth() * 2.0f);
+        float glDelta = abs((float)sides.right / (float)Window::GetRenderResolution().GetWidth() * 2.0f);
 
         if (sides.right > 0) {
             vertex1.X += glDelta;
@@ -502,11 +495,11 @@ void Rect::SetSideSize(Sides sides, bool render)
         }
     }
 
-    size.SetWidth((vertex1.X - vertex2.X) * window->GetRenderResolution().GetWidth() / 2.0f);
-    size.SetHeight((vertex1.Y - vertex2.Y) * window->GetRenderResolution().GetHeight() / 2.0f);
+    size.SetWidth((vertex1.X - vertex2.X) * Window::GetRenderResolution().GetWidth() / 2.0f);
+    size.SetHeight((vertex1.Y - vertex2.Y) * Window::GetRenderResolution().GetHeight() / 2.0f);
 
-    position.X = window->GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
-    position.Y = window->GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
+    position.X = Window::GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
+    position.Y = Window::GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
 
     if (!render) {
         return;
@@ -524,11 +517,11 @@ bool Rect::MouseHover(Mouse& mouse)
     const bool isHover = MouseInRect(mouse);
 
     if (isHover && OnMouseHover) {
-        OnMouseHover(this, window->GetWindow());
+        OnMouseHover(this, Window::GetWindow());
     }
 
     if (!isHover && OnMouseOver) {
-        OnMouseOver(this, window->GetWindow());
+        OnMouseOver(this, Window::GetWindow());
     }
 
     return isHover;
@@ -541,7 +534,7 @@ bool Rect::MouseClick(Mouse& mouse)
     }
 
     if (OnMouseClick) {
-        OnMouseClick(this, window->GetWindow());
+        OnMouseClick(this, Window::GetWindow());
     }
     return true;
 }
@@ -555,13 +548,13 @@ bool Rect::CollisionEnter(IGameObject& gameObject)
     bool isEnter = collision->IsCollisionEnter(&gameObject);
 
     if (isEnter && OnCollisionEnterHandler) {
-        OnCollisionEnterHandler(this, &gameObject, window->GetWindow());
+        OnCollisionEnterHandler(this, &gameObject, Window::GetWindow());
     }
 }
 
 Window* Rect::GetWindow()
 {
-    return window;
+    return nullptr;
 }
 
 void Rect::SetColor(Color color)
@@ -651,7 +644,7 @@ Directions Rect::GetMoveDirection()
 
 const bool Rect::IsMouseOverlap()
 {
-    return MouseInRect(*window->GetMouse().lock());
+    return MouseInRect(*Window::GetMouse().lock());
 }
 
 void Rect::SetLayer(Layer layer)
@@ -702,7 +695,7 @@ void Rect::HookOnCollisionEnter(OnCollisionEnter handler)
 
 bool Rect::operator==(const Rect& other) const
 {
-    return window == other.window && position == other.position && 
+    return position == other.position && 
         vertex1 == other.vertex1 && vertex2 == other.vertex2 && size == other.size &&
         color == other.color && baseColor == other.baseColor && material == other.material &&
         title == other.title;
@@ -719,7 +712,6 @@ Rect& Rect::operator=(const Rect&& other)
         return *this;
     }
 
-    this->window = other.window;
     this->position = other.position;
 
     this->vertex1 = other.vertex1;

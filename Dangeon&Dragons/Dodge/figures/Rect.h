@@ -8,8 +8,6 @@ extern std::vector<unsigned int> defaultIndicies;
 class Rect :
     public IGameObject
 {
-    Window* window;
-
     MouseHoverHandler OnMouseHover;
     MouseHoverHandler OnMouseOver;
 
@@ -58,9 +56,9 @@ class Rect :
     std::vector<float> GetRenderVertices();
 public:
     Rect();
-    Rect(std::string title, Window& window, Coord position, Size size, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
-    Rect(std::string title, Window& window, Coord vertex1, Coord vertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
-    Rect(std::string title, Window& window, Coord vertex1, Coord vertex2, Coord textureVertex1, Coord textureVertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
+    Rect(std::string title, Coord position, Size size, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
+    Rect(std::string title, Coord vertex1, Coord vertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
+    Rect(std::string title, Coord vertex1, Coord vertex2, Coord textureVertex1, Coord textureVertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
 
     static void InitQuads(
         unsigned int& VAO, unsigned int& VBO, unsigned int& EBO,

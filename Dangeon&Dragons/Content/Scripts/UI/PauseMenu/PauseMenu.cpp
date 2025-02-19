@@ -17,14 +17,12 @@ void PauseMenu::Draw()
 		ImagesController::GetDafaultImage(),
 		Coord(), 
 		renderResolution, 
-		renderResolution, 
 		Color(0, 0, 0, .5f)
 	);
 
 	images.lock()->DrawImage(
 		"pauseMenu",
 		Coord(renderResolution.width / 4.5, 0),
-		Size(640, 720),
 		renderResolution
 	);
 }

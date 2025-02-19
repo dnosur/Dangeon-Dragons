@@ -26,25 +26,25 @@ void BaseFigureMaterial::Use(IGameObject* gameObject)
 
 	if (diffuseMap != nullptr) {
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, diffuseMap->image);
+		glBindTexture(GL_TEXTURE_2D, diffuseMap->GetImage());
 		ShadersController::SetInt(shader, "material.diffuseMap", 0);
 	}
 
 	if (normalMap != nullptr) {
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, normalMap->image);
+		glBindTexture(GL_TEXTURE_2D, normalMap->GetImage());
 		ShadersController::SetInt(shader, "material.normalMap", 1);
 	}
 
 	if (specularMap != nullptr) {
 		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, specularMap->image);
+		glBindTexture(GL_TEXTURE_2D, specularMap->GetImage());
 		ShadersController::SetInt(shader, "material.specularMap", 2);
 	}
 
 	if (emissiveMap != nullptr) {
 		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, emissiveMap->image);
+		glBindTexture(GL_TEXTURE_2D, emissiveMap->GetImage());
 		ShadersController::SetInt(shader, "material.emissiveMap", 3);
 	}
 

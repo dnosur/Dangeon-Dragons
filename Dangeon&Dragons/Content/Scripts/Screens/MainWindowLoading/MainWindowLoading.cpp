@@ -34,7 +34,7 @@ void MainWindowLoading::Draw()
 {
 	const Size& windowSize = Window::GetRenderResolutionView();
 	if (images->GetSize()) {
-		images->DrawImage(images->operator[](*imageIndex)->title, Coord(0, 0), windowSize, windowSize);
+		images->DrawImage(images->operator[](*imageIndex)->GetTitle(), Coord(0, 0), windowSize);
 		Fonts::GetFont("DreiFraktur")->RenderText(
 			L"Подсказка касаемо того как вам играть.. Что-то там ещё туда сюда какой-то текст со смыслом!",
 			Coord(Window::GetSize().width / 4.0f, 150),

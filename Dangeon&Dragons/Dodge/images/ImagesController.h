@@ -27,7 +27,7 @@ class ImagesController
 	int GetIndexByTitle(std::string_view title);
 	void ChangeIfExist(Image image);
 
-	void Draw(Image& item, Coord& position, Color& color, Size& windowSize, Size& size, bool reverse = false);
+	void Draw(Image& item, Coord& position, Color& color, Size& size);
 public:
 	static Image LoadImg(std::string_view path, std::string title);
 
@@ -37,11 +37,11 @@ public:
 	void LoadFromFolder(std::string_view path);
 
 	void Load(std::string_view path, std::string title, GLuint shader = 0);
-	void LoadAndDrawImage(std::string_view path, std::string title, GLuint shader, Coord position, Size size, Size windowSize);
+	void LoadAndDrawImage(std::string_view path, std::string title, GLuint shader, Coord position, Size size);
 
-	void DrawImage(std::string_view title, Coord position, Size size, Size windowSize, Color color = Color(1.0f, 1.0f, 1.0f), bool reverse = false);
-	void DrawImage(Image*& image, Coord position, Size size, Size windowSize, Color color = Color(1.0f, 1.0f, 1.0f), bool reverse = false);
-	void DrawImage(std::weak_ptr<Image> image, Coord position, Size size, Size windowSize, Color color = Color(1.0f, 1.0f, 1.0f), bool reverse = false);
+	void DrawImage(std::string_view title, Coord position, Size size, Color color = Color(1.0f, 1.0f, 1.0f));
+	void DrawImage(Image*& image, Coord position, Size size, Color color = Color(1.0f, 1.0f, 1.0f));
+	void DrawImage(std::weak_ptr<Image> image, Coord position, Size size, Color color = Color(1.0f, 1.0f, 1.0f));
 
 	const std::unordered_map<std::string, Image>& GetImages();
 	void SetImages(std::vector<Image> images);
