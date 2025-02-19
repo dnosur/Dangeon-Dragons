@@ -19,7 +19,7 @@ public:
 	HpBar(Window& window, int hp = 100);
 	~HpBar() = default;
 
-	void SetPos(Coord pos);
+	void SetPos(Coord position);
 	Coord GetPos() const;
 
 	void SetSize(Size size);

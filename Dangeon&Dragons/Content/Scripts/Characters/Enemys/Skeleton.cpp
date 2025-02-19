@@ -15,12 +15,12 @@
 
 Skeleton::Skeleton(
 	std::string title, Window& window, std::shared_ptr<ICollision> collision,
-	std::shared_ptr<Material> material, Directions moveDirection, Coord pos, Size size,
+	std::shared_ptr<Material> material, Directions moveDirection, Coord position, Size size,
 	float speed, float maxSpeed, float minSpeed, float health, float maxHealth,
 	bool isPlayable, bool isKinematic, bool isHidden, std::vector<std::shared_ptr<IAnimation>> animations
 ) : Pawn(
 	title, window, std::move(collision),
-	std::move(material), moveDirection, pos, size,
+	std::move(material), moveDirection, position, size,
 	speed, maxSpeed, minSpeed,
 	health, maxHealth, false, isKinematic,
 	isHidden, animations)
@@ -36,7 +36,7 @@ Coord Skeleton::GetStartPos()
 const Coord& Skeleton::GetDistanceTo(IGameObject& gameObject)
 {
 	Coord temp = gameObject.GetPos();
-	return temp - pos;
+	return temp - position;
 }
 
 float Skeleton::GetFloatDistanceTo(IGameObject& gameObject)
@@ -50,18 +50,18 @@ float Skeleton::GetFloatDistanceTo(IGameObject& gameObject)
 
 bool Skeleton::IsNear(IGameObject& gameObject)
 {
-	return (std::abs(gameObject.GetPos().X) == std::abs(this->pos.X)
-			&& std::abs(gameObject.GetPos().Y) == std::abs(this->pos.Y)) ||
-			(std::abs(gameObject.GetPos().X - this->pos.X) <= damageDistance &&
-			std::abs(gameObject.GetPos().Y - this->pos.Y) <= damageDistance);
+	return (std::abs(gameObject.GetPos().X) == std::abs(this->position.X)
+			&& std::abs(gameObject.GetPos().Y) == std::abs(this->position.Y)) ||
+			(std::abs(gameObject.GetPos().X - this->position.X) <= damageDistance &&
+			std::abs(gameObject.GetPos().Y - this->position.Y) <= damageDistance);
 }
 
-bool Skeleton::IsNear(Coord pos)
+bool Skeleton::IsNear(Coord position)
 {
-	return (std::abs(pos.X) == std::abs(this->pos.X)
-			&& std::abs(pos.Y) == std::abs(this->pos.Y)) ||
-			(std::abs(pos.X - this->pos.X) <= damageDistance &&
-			std::abs(pos.Y - this->pos.Y) <= damageDistance);
+	return (std::abs(position.X) == std::abs(this->position.X)
+			&& std::abs(position.Y) == std::abs(this->position.Y)) ||
+			(std::abs(position.X - this->position.X) <= damageDistance &&
+			std::abs(position.Y - this->position.Y) <= damageDistance);
 }
 
 void Skeleton::SetTarget(std::weak_ptr<Pawn> target)
@@ -76,7 +76,7 @@ class std::weak_ptr<class Pawn> Skeleton::GetTarget()
 
 void Skeleton::ViewPawn(Pawn* pawn)
 {
-	bool upper = pawn->GetPos().Y < this->pos.Y;
+	bool upper = pawn->GetPos().Y < this->position.Y;
 
 	if (moveDirection == DOWN) {
 
@@ -107,7 +107,7 @@ void Skeleton::UpdateVertices()
 	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(unsigned int), vertices.data());
 }
 
-void Skeleton::UpdateVertices(std::vector<float> vertices)
+void Skeleton::UpdateVertices(std::vector<float>& vertices)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(unsigned int), vertices.data());
@@ -330,7 +330,7 @@ void Skeleton::Initialize()
 	SetLayer(Layer::Enemy);
 	action = Actions::Idle;
 
-	startPos = pos;
+	startPos = position;
 	startPosVertexes[0] = vertexes[0];
 	startPosVertexes[1] = vertexes[1];
 
@@ -467,8 +467,8 @@ void Skeleton::MathSide(double& sideSize, bool isWidth)
 	size.SetWidth((vertex1.X - vertex2.X) * window->GetRenderResolution().GetWidth() / 2.0f);
 	size.SetHeight((vertex1.Y - vertex2.Y) * window->GetRenderResolution().GetHeight() / 2.0f);
 
-	pos.X = window->GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
-	pos.Y = window->GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
+	position.X = window->GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
+	position.Y = window->GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
 }
 
 void Skeleton::AIMovement()
@@ -629,7 +629,7 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 	//��� ����
 	std::unordered_map<int, float> openListCosts;
 
-	auto GetKey = [](Coord pos) { return pos.X * 10000 + pos.Y; };
+	auto GetKey = [](Coord position) { return position.X * 10000 + position.Y; };
 
 	//��������� �������
 	std::shared_ptr<Node> startNode = std::make_shared<Node>(
@@ -638,7 +638,7 @@ bool Skeleton::FindPath(Coord start, Coord goal)
 			moveDirection,
 			action,
 			animations[GetAnimationName()].lock(),
-			pos
+			position
 		),
 		0.0f, 
 		std::hypot(goal.X - start.X, goal.Y - start.Y)

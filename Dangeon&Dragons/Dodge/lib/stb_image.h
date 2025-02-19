@@ -1542,12 +1542,12 @@ STBIDEF int      stbi_is_hdr(char const* filename)
 STBIDEF int stbi_is_hdr_from_file(FILE* f)
 {
 #ifndef STBI_NO_HDR
-    long pos = ftell(f);
+    long position = ftell(f);
     int res;
     stbi__context s;
     stbi__start_file(&s, f);
     res = stbi__hdr_test(&s);
-    fseek(f, pos, SEEK_SET);
+    fseek(f, position, SEEK_SET);
     return res;
 #else
     STBI_NOTUSED(f);
@@ -7816,10 +7816,10 @@ STBIDEF int stbi_info_from_file(FILE* f, int* x, int* y, int* comp)
 {
     int r;
     stbi__context s;
-    long pos = ftell(f);
+    long position = ftell(f);
     stbi__start_file(&s, f);
     r = stbi__info_main(&s, x, y, comp);
-    fseek(f, pos, SEEK_SET);
+    fseek(f, position, SEEK_SET);
     return r;
 }
 
@@ -7837,10 +7837,10 @@ STBIDEF int stbi_is_16_bit_from_file(FILE* f)
 {
     int r;
     stbi__context s;
-    long pos = ftell(f);
+    long position = ftell(f);
     stbi__start_file(&s, f);
     r = stbi__is_16_main(&s);
-    fseek(f, pos, SEEK_SET);
+    fseek(f, position, SEEK_SET);
     return r;
 }
 #endif // !STBI_NO_STDIO

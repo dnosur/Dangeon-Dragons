@@ -18,11 +18,11 @@ std::shared_ptr<SpriteAnimation> AnimationsFactory::CreateSpriteAnimation(
 }
 
 std::shared_ptr<SpriteAnimation> AnimationsFactory::CreateSpriteAnimation(
-    std::string title, Coord pos, Size size, std::string folder, 
+    std::string title, Coord position, Size size, std::string folder, 
     int frameRate, Window* window, bool revere, std::vector<FrameSound> frameSounds)
 {
     return std::make_shared<SpriteAnimation>(
-        title, pos, size, folder, frameRate, window, revere, frameSounds
+        title, position, size, folder, frameRate, window, revere, frameSounds
     );
 }
 
@@ -36,10 +36,10 @@ std::shared_ptr<SpriteAnimation> AnimationsFactory::CreateSpriteAnimation(
 }
 
 std::shared_ptr<SpriteAnimation> AnimationsFactory::CreateSpriteAnimation(
-    std::string title, Coord pos, Size size, std::vector<Image> sprites, 
+    std::string title, Coord position, Size size, std::vector<Image> sprites, 
     int frameRate, Window* window, bool revere, std::vector<FrameSound> frameSounds)
 {
     return std::make_shared<SpriteAnimation>(
-        title, pos, size, sprites, frameRate, window, revere, frameSounds
+        title, position, size, sprites, frameRate, window, revere, frameSounds
     );
 }

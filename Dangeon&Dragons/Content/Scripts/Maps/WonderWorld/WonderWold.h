@@ -21,7 +21,7 @@ class WonderWold
 
 	void CreateCamera();
 	void SpawnPlayer();
-	void SpawnSkeleton(Coord pos);
+	void SpawnSkeleton(Coord position);
 
 	void OnTriggerEnter(IGameObject* object, IGameObject* triggeredObject) override;
 
@@ -29,7 +29,7 @@ class WonderWold
 
 	void Initialize();
 public:
-	WonderWold(Window* window, std::unique_ptr<TileMap> tileMap, Coord pos = Coord());
+	WonderWold(Window* window, std::unique_ptr<TileMap> tileMap, Coord position = Coord());
 
 	void SetCamera(std::unique_ptr<Camera> camera);
 

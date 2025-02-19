@@ -20,6 +20,8 @@ public:
 
 	static void Use(GLuint id);
 
+	static void Disable();
+
 	static void SetBool(const GLuint& id, const char* name, bool value);
 	static void SetInt(const GLuint& id, const char* name, int value);
 	static void SetFloat(const GLuint& id, const char* name, float value);

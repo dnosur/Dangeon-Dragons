@@ -16,7 +16,7 @@ class TextureProgressBar :
 	void Draw() override;
 public:
 	TextureProgressBar(
-		Coord pos,
+		Coord position,
 		Size size,
 		std::string_view path,
 		int maxValue = 100,

@@ -68,11 +68,11 @@ void SpriteAnimationController::Play(int index)
 	}
 }
 
-void SpriteAnimationController::Play(int index, Coord pos, Size size)
+void SpriteAnimationController::Play(int index, Coord position, Size size)
 {
 	SpriteAnimation* animation = GetByIndex(index);
 	if (animation != nullptr) {
-		animation->Play(pos, size);
+		animation->Play(position, size);
 		currentIndex = index;
 	}
 }
@@ -86,13 +86,13 @@ void SpriteAnimationController::PlayOnEnd(int index)
 	Play(index);
 }
 
-void SpriteAnimationController::PlayOnEnd(int index, Coord pos, Size size)
+void SpriteAnimationController::PlayOnEnd(int index, Coord position, Size size)
 {
 	if (!IsAnimationEnd()) {
 		return;
 	}
 
-	Play(index, pos, size);
+	Play(index, position, size);
 }
 
 void SpriteAnimationController::Play(std::string_view title)
@@ -104,12 +104,12 @@ void SpriteAnimationController::Play(std::string_view title)
 	}
 }
 
-void SpriteAnimationController::Play(std::string_view title, Coord pos, Size size)
+void SpriteAnimationController::Play(std::string_view title, Coord position, Size size)
 {
 	SpriteAnimation* animation = GetByTitle(title, currentIndex);
 
 	if (animation != nullptr) {
-		animation->Play(pos, size);
+		animation->Play(position, size);
 	}
 }
 
@@ -122,13 +122,13 @@ void SpriteAnimationController::PlayOnEnd(std::string_view title)
 	Play(title);
 }
 
-void SpriteAnimationController::PlayOnEnd(std::string_view title, Coord pos, Size size)
+void SpriteAnimationController::PlayOnEnd(std::string_view title, Coord position, Size size)
 {
 	if (!IsAnimationEnd()) {
 		return;
 	}
 
-	Play(title, pos, size);
+	Play(title, position, size);
 }
 
 void SpriteAnimationController::PlayAll()

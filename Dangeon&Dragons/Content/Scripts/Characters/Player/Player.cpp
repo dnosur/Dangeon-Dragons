@@ -103,7 +103,7 @@ void Player::Initialize()
 	SetLayer(Layer::MainPlayer);
 	action = Actions::Idle;
 
-	startPos = pos;
+	startPos = position;
 	startPosVertexes[0] = vertexes[0];
 	startPosVertexes[1] = vertexes[1];
 
@@ -261,7 +261,7 @@ void Player::Drag(Coord newPos)
 		audioController.Play("walk-grass");
 	}
 
-	pos += newPos - startPos;
+	position += newPos - startPos;
 }
 
 void Player::Raycasting()
@@ -351,7 +351,7 @@ bool Player::CheckForCollision()
 	return true;
 }
 
-bool Player::CheckForCollision(Coord pos, Size size)
+bool Player::CheckForCollision(Coord position, Size size)
 {
 	WindowPointer<std::vector<std::shared_ptr<IGameObject>>>* solidCollisionsObjects = WindowPointerController::GetValue<std::vector<std::shared_ptr<IGameObject>>>("SolidCollisions");
 	if (!solidCollisionsObjects || solidCollisionsObjects->GetValue().lock()->empty()) {
@@ -370,7 +370,7 @@ bool Player::CheckForCollision(Coord pos, Size size)
 			continue;
 		}
 
-		if (collision->IsCollisionEnter(pos, size)) {
+		if (collision->IsCollisionEnter(position, size)) {
 			return false;
 		}
 	}
@@ -405,8 +405,8 @@ void Player::MathSide(double& sideSize, bool isWidth)
 	size.SetWidth((vertex1.X - vertex2.X) * window->GetRenderResolution().GetWidth() / 2.0f);
 	size.SetHeight((vertex1.Y - vertex2.Y) * window->GetRenderResolution().GetHeight() / 2.0f);
 
-	pos.X = window->GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
-	pos.Y = window->GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
+	position.X = window->GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
+	position.Y = window->GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
 }
 
 void Player::AIMovement()
@@ -512,13 +512,13 @@ void Player::LoadAudio()
 
 Player::Player(
 	std::string title, Window& window, std::shared_ptr<ICollision> collision,
-	std::shared_ptr<Material> material, Directions moveDirection, Coord pos, Size size,
+	std::shared_ptr<Material> material, Directions moveDirection, Coord position, Size size,
 	float speed, float maxSpeed, float minSpeed, 
 	float health, float maxHealth, bool isPlayable, bool isKinematic, 
 	bool isHidden, std::vector<std::shared_ptr<IAnimation>> animations)
 	: Pawn(
 		title, window, std::move(collision),
-		std::move(material), moveDirection, pos, size,
+		std::move(material), moveDirection, position, size,
 		speed, maxSpeed, minSpeed, 
 		health, maxHealth, isPlayable, isKinematic, 
 		isHidden, animations)
@@ -553,12 +553,12 @@ bool Player::IsNear(IGameObject& gameObject)
 			std::abs(gameObject.GetPos().Y - this->startPos.Y) <= damageDistance);
 }
 
-bool Player::IsNear(Coord pos)
+bool Player::IsNear(Coord position)
 {
-	return (std::abs(pos.X) == std::abs(this->startPos.X)
-		&& std::abs(pos.Y) == std::abs(this->startPos.Y)) ||
-		(std::abs(pos.X - this->startPos.X) <= damageDistance &&
-			std::abs(pos.Y - this->startPos.Y) <= damageDistance);
+	return (std::abs(position.X) == std::abs(this->startPos.X)
+		&& std::abs(position.Y) == std::abs(this->startPos.Y)) ||
+		(std::abs(position.X - this->startPos.X) <= damageDistance &&
+			std::abs(position.Y - this->startPos.Y) <= damageDistance);
 }
 
 void Player::Update()
@@ -584,7 +584,7 @@ void Player::UpdateVertices()
 	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(unsigned int), vertices.data());
 }
 
-void Player::UpdateVertices(std::vector<float> vertices)
+void Player::UpdateVertices(std::vector<float>& vertices)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(unsigned int), vertices.data());

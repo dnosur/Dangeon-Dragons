@@ -15,11 +15,11 @@ void Padding::Use(float& x, float& y)
 	y -= top;
 }
 
-void Padding::Use(Coord& pos)
+void Padding::Use(Coord& position)
 {
-	pos.X += left;
-	pos.X -= right;
+	position.X += left;
+	position.X -= right;
 
-	pos.Y += bottom;
-	pos.Y -= top;
+	position.Y += bottom;
+	position.Y -= top;
 }

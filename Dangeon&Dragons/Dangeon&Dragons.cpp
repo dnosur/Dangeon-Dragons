@@ -28,6 +28,7 @@
 int main(int argc, char** argv)
 {
     //_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    setlocale(LC_ALL, "ru");
 
     srand(time(NULL));
     glutInit(&argc, argv);
@@ -36,9 +37,9 @@ int main(int argc, char** argv)
 
     SoundSystem soundSystem;
     std::shared_ptr<Window> main = std::make_shared<MainWindow>(
-        Size(1920, 1080), 
-        "Sample", 
-        true,
+        Size(1280, 720), 
+        "Dangeon", 
+        false,
         Color(.4f, .6f, 0)
     );
 

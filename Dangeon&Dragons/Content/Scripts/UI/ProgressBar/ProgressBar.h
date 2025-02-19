@@ -6,7 +6,7 @@
 
 class ProgressBar
 {
-	Coord pos;
+	Coord position;
 	Size size;
 
 	int maxValue;
@@ -19,12 +19,12 @@ class ProgressBar
 	virtual void Initialize() = 0;
 public:
 	ProgressBar(
-		Coord pos, Size size, 
+		Coord position, Size size, 
 		int maxValue = 100, int currentValue = 0, bool isFinished = false
 	);
 	~ProgressBar() = default;
 
-	void SetPos(Coord pos);
+	void SetPos(Coord position);
 	const Coord& GetPos() const;
 
 	void SetSize(Size size);

@@ -35,7 +35,7 @@ protected:
 	AnimationController animations;
 	AudioController audioController;
 
-	Coord pos;
+	Coord position;
 	Size size;
 
 	std::unique_ptr<SlicedImage> playerImages;
@@ -77,7 +77,7 @@ protected:
 	virtual void Draw() = 0;
 
 	void MathPos(std::vector<Coord> vertexes);
-	void MathPos(Coord& pos);
+	void MathPos(Coord& position);
 
 	void MathSize(Size& size);
 
@@ -94,7 +94,7 @@ public:
 	Pawn(
 		std::string title, Window& window,
 		std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
-		Coord pos, Size size, float speed, float maxSpeed, float minSpeed, 
+		Coord position, Size size, float speed, float maxSpeed, float minSpeed, 
 		float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
 		std::vector<std::shared_ptr<IAnimation>> animations = {}
 	);
@@ -105,7 +105,7 @@ public:
 	void SetMoveDirection(Directions moveDirection);
 
 	void SetPos(std::vector<Coord> vertexes, bool render = true);
-	void SetPos(Coord pos, bool render = true);
+	void SetPos(Coord position, bool render = true);
 
 	void RotateToDirection(Directions direction);
 
@@ -149,7 +149,7 @@ public:
 
 	virtual void UpdateVertices() = 0;
 
-	virtual void UpdateVertices(std::vector<float> vertices) = 0;
+	virtual void UpdateVertices(std::vector<float>& vertices) = 0;
 
 	void HookMouseHover(MouseHoverHandler OnMouseHover);
 	void HookMouseOver(MouseHoverHandler OnMouseOver);
@@ -205,7 +205,7 @@ public:
 	virtual float GetFloatDistanceTo(IGameObject& gameObject) = 0;
 
 	virtual bool IsNear(IGameObject& gameObject) = 0;
-	virtual bool IsNear(Coord pos) = 0;
+	virtual bool IsNear(Coord position) = 0;
 	const bool IsNear(Coord startPos, Coord targetPos, float distance = 10.0f);
 
 	const bool IsMouseOverlap();

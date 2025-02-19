@@ -96,7 +96,7 @@ Font::~Font()
 
 void Font::RenderText(
     std::wstring text, 
-    Coord pos, 
+    Coord position, 
     std::unique_ptr<FontRenderOptions> options
 )
 {
@@ -124,14 +124,14 @@ void Font::RenderText(
     std::shared_ptr<Size> area = options->GetRenderArea().lock();
     bool useArea = area != nullptr;
     if (useArea) {
-        area->width += pos.X;
-		area->height += pos.Y;
+        area->width += position.X;
+		area->height += position.Y;
     }
 
     std::shared_ptr<Padding> padding = options->GetPadding().lock();
 
     const float& scale = options->GetScale();
-    const double startX = pos.X;
+    const double startX = position.X;
 
     for (wchar_t c : text)
     {
@@ -144,17 +144,17 @@ void Font::RenderText(
         float w = ch.size.width * scale;
         float h = ch.size.height * scale;
 
-        if (useArea && pos.X + w > area->width) {
-            pos.X = startX;
-            pos.Y -= ch.size.height * scale;
+        if (useArea && position.X + w > area->width) {
+            position.X = startX;
+            position.Y -= ch.size.height * scale;
 
             if (padding) {
-				padding->Use(pos);
+				padding->Use(position);
             }
         }
 
-        float xpos = pos.X + ch.bearing.width * scale;
-        float ypos = pos.Y - (ch.size.height - ch.bearing.height) * scale;
+        float xpos = position.X + ch.bearing.width * scale;
+        float ypos = position.Y - (ch.size.height - ch.bearing.height) * scale;
 
         // update VBO for each character
         float vertices[6][4] = {
@@ -176,7 +176,7 @@ void Font::RenderText(
         // render quad
         glDrawArrays(GL_TRIANGLES, 0, 6);
         // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-        pos.X += (ch.advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+        position.X += (ch.advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
     }
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);

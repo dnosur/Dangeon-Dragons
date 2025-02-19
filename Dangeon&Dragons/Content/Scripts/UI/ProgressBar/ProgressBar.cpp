@@ -1,18 +1,18 @@
 #include "ProgressBar.h"
 
-ProgressBar::ProgressBar(Coord pos, Size size, int maxValue, int currentValue, bool isFinished)
-	: pos(pos), size(size), maxValue(maxValue), currentValue(currentValue), isFinished(isFinished)
+ProgressBar::ProgressBar(Coord position, Size size, int maxValue, int currentValue, bool isFinished)
+	: position(position), size(size), maxValue(maxValue), currentValue(currentValue), isFinished(isFinished)
 {
 }
 
-void ProgressBar::SetPos(Coord pos)
+void ProgressBar::SetPos(Coord position)
 {
-	this->pos = pos;
+	this->position = position;
 }
 
 const Coord& ProgressBar::GetPos() const
 {
-	return this->pos;
+	return this->position;
 }
 
 void ProgressBar::SetSize(Size size)

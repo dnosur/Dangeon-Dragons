@@ -72,7 +72,7 @@ void WonderWold::SpawnPlayer()
 	GameObjects::Add(std::dynamic_pointer_cast<class Pawn>(player));
 }
 
-void WonderWold::SpawnSkeleton(Coord pos)
+void WonderWold::SpawnSkeleton(Coord position)
 {
 	for (std::weak_ptr<IGameObject>& weakSpawn : GetClassesByName("SkeletonSpawnPoint")) {
 		std::shared_ptr<IGameObject> spawn = weakSpawn.lock();
@@ -157,8 +157,8 @@ void WonderWold::Initialize()
 	audioController.Play("wind", true);
 }
 
-WonderWold::WonderWold(Window* window, std::unique_ptr<TileMap>  tileMap, Coord pos)
-	: TinyMap(window, std::move(tileMap), pos)
+WonderWold::WonderWold(Window* window, std::unique_ptr<TileMap>  tileMap, Coord position)
+	: TinyMap(window, std::move(tileMap), position)
 {
 	Initialize();
 }

@@ -24,7 +24,7 @@ __interface IGameObject
 
 	void UpdateVertices();
 
-	void UpdateVertices(std::vector<float> vertices);
+	void UpdateVertices(std::vector<float>& vertices);
 
 	void InitializeRender();
 
@@ -43,7 +43,7 @@ __interface IGameObject
 	Color GetColor();
 
 	void SetPos(std::vector<Coord> vertices, bool render = true);
-	void SetPos(Coord pos, bool render = true);
+	void SetPos(Coord position, bool render = true);
 
 	Directions GetMoveDirection();
 

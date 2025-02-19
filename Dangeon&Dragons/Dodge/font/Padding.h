@@ -9,5 +9,5 @@ struct Padding
 	Padding(float left, float top, float right, float bottom);
 
 	void Use(float& x, float& y);
-	void Use(Coord& pos);
+	void Use(Coord& position);
 };

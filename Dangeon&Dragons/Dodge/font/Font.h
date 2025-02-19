@@ -42,7 +42,7 @@ public:
 
 	void RenderText(
 		std::wstring text, 
-		Coord pos, 
+		Coord position, 
 		std::unique_ptr<FontRenderOptions> options = std::make_unique<FontRenderOptions>()
 	);
 

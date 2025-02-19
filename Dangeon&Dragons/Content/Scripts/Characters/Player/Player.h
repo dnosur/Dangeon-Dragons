@@ -24,7 +24,7 @@ class Player :
     void Raycasting();
 
     bool CheckForCollision();
-    bool CheckForCollision(Coord pos, Size size);
+    bool CheckForCollision(Coord position, Size size);
 
     void MathSide(double& sideSize, bool isWidth) override;
 
@@ -37,7 +37,7 @@ public:
     Player(
         std::string title, Window& window,
         std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
-        Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
+        Coord position, Size size, float speed, float maxSpeed, float minSpeed,
         float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
         std::vector<std::shared_ptr<IAnimation>> animations = {}
     );
@@ -52,12 +52,12 @@ public:
     float GetFloatDistanceTo(IGameObject& gameObject) override;
 
     bool IsNear(IGameObject& gameObject) override;
-    bool IsNear(Coord pos) override;
+    bool IsNear(Coord position) override;
 
     void Update() override;
 
     void UpdateVertices() override;
 
-    void UpdateVertices(std::vector<float> vertices) override;
+    void UpdateVertices(std::vector<float>& vertices) override;
 };
 

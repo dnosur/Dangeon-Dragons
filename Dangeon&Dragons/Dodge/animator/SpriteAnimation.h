@@ -40,7 +40,7 @@ class SpriteAnimation
 
 	bool end;
 
-	Coord pos;
+	Coord position;
 	Size size;
 
 	void LoadSpritesFromFolder();
@@ -48,9 +48,9 @@ public:
 	SpriteAnimation();
 
 	SpriteAnimation(std::string title, std::string folder, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
-	SpriteAnimation(std::string title, Coord pos, Size size, std::string folder, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
+	SpriteAnimation(std::string title, Coord position, Size size, std::string folder, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
 	SpriteAnimation(std::string title, std::vector<Image> sprites, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
-	SpriteAnimation(std::string title, Coord pos, Size size, std::vector<Image> sprites, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
+	SpriteAnimation(std::string title, Coord position, Size size, std::vector<Image> sprites, int frameRate, Window* window, bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>());
 
 	void SetWindow(Window* window);
 

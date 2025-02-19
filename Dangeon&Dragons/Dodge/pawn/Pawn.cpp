@@ -12,16 +12,16 @@ void Pawn::MathPos(std::vector<Coord> vertexes)
 	float centerX_GL = float(vertex1.X + vertex2.X) / 2.0f;
 	float centerY_GL = float(vertex1.Y + vertex2.Y) / 2.0f;
 
-	pos = Coord(((centerX_GL + 1.0f) / 2.0f) * (float)window->GetRenderResolution().GetWidth(),
+	position = Coord(((centerX_GL + 1.0f) / 2.0f) * (float)window->GetRenderResolution().GetWidth(),
 		((1.0f - (centerY_GL + 1.0f) / 2.0f) * (float)window->GetRenderResolution().GetHeight()));
 }
 
-void Pawn::MathPos(Coord& pos)
+void Pawn::MathPos(Coord& position)
 {
-	this->pos = pos;
+	this->position = position;
 
-	float glCenterX = window->PixelToGLX(pos.X);
-	float glCenterY = window->PixelToGLY(pos.Y);
+	float glCenterX = window->PixelToGLX(position.X);
+	float glCenterY = window->PixelToGLY(position.Y);
 
 	float glWidth = (float)(size.GetWidth()) / (float)window->GetRenderResolution().GetWidth() * 2.0f;
 	float glHeight = (float)size.GetHeight() / (float)window->GetRenderResolution().GetHeight() * 2.0f;
@@ -48,7 +48,7 @@ void Pawn::MathPos(Coord& pos)
 void Pawn::MathSize(Size& size)
 {
 	this->size = size;
-	MathPos(pos);
+	MathPos(position);
 }
 
 bool Pawn::MouseInRect(Mouse& mouse)
@@ -66,7 +66,7 @@ bool Pawn::MouseInRect(Mouse& mouse)
 Pawn::Pawn(
 	std::string title, Window& window,
 	std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
-	Coord pos, Size size, float speed, float maxSpeed, float minSpeed,
+	Coord position, Size size, float speed, float maxSpeed, float minSpeed,
 	float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
 	std::vector<std::shared_ptr<IAnimation>> animations
 ){
@@ -78,7 +78,7 @@ Pawn::Pawn(
 	this->material = material;
 
 	this->size = size;
-	MathPos(pos);
+	MathPos(position);
 
 	this->moveDirection = moveDirection;
 
@@ -118,9 +118,9 @@ void Pawn::SetPos(std::vector<Coord> vertexes, bool render)
 	UpdateVertices();
 }
 
-void Pawn::SetPos(Coord pos, bool render)
+void Pawn::SetPos(Coord position, bool render)
 {
-	MathPos(pos);
+	MathPos(position);
 
 	if (!render) {
 		return;
@@ -306,12 +306,12 @@ Window* Pawn::GetWindow()
 
 const Coord& Pawn::GetPos()
 {
-	return pos;
+	return position;
 }
 
 const Coord& Pawn::GetOpenGlPos()
 {
-	return Coord(window->PixelToGLX(pos.X), window->PixelToGLY(pos.Y));
+	return Coord(window->PixelToGLX(position.X), window->PixelToGLY(position.Y));
 }
 
 std::vector<Coord> Pawn::GetVertices()

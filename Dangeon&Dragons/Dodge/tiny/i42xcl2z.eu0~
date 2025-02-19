@@ -2,20 +2,20 @@
 #include "../GameStatuses.h"
 #include "../animator/VertexAnimation.h"
 
-void TinyMap::MoveCollison(std::shared_ptr<ICollision> collision, Coord* position)
+void TinyMap::MoveCollison(std::shared_ptr<ICollision> collision, Coord* pos)
 {
 	if (collision == nullptr) {
 		return;
 	}
 
-	if (position == nullptr) {
-		position = new Coord(this->position);
+	if (pos == nullptr) {
+		pos = new Coord(this->pos);
 	}
 
 	std::vector<Coord> points;
 
 	for (Coord& coord : collision->GetPoints()) {
-		coord += *position;
+		coord += *pos;
 		points.push_back(coord);
 	}
 
@@ -24,6 +24,25 @@ void TinyMap::MoveCollison(std::shared_ptr<ICollision> collision, Coord* positio
 
 void TinyMap::Initialize()
 {
+	struct MaterialHash {
+		size_t operator()(const std::shared_ptr<Material>& material) const {
+			return std::hash<GLuint>{}(material->GetShader());
+		}
+	};
+
+	struct MaterialEqual {
+		bool operator()(const std::shared_ptr<Material>& lhs, const std::shared_ptr<Material>& rhs) const {
+			return *lhs == *rhs;
+		}
+	};
+
+	std::unordered_map<
+		std::shared_ptr<Material>,
+		std::vector<std::shared_ptr<IGameObject>>,
+		MaterialHash,
+		MaterialEqual
+	> gameObjectsByMaterial;
+
 	//Math Map Texture Position
 	for (const int& spriteLayerId : tileMap->spriteLayersController.GetSpriteLayerOrders()) {
 		std::shared_ptr<TinySpriteLayer> spriteLayer = tileMap->spriteLayersController.GetById(spriteLayerId).lock();
@@ -101,8 +120,8 @@ void TinyMap::Initialize()
 								const int chunk_j = j + chunk->coord.X;
 								const int chunk_i = i + chunk->coord.Y;
 
-								vertex1 = Coord(window->PixelToGLX(((chunk_j + 1) * tileWidth) + position.X), window->PixelToGLY(((chunk_i + 1) * tileHeight) + position.Y));
-								vertex2 = Coord(window->PixelToGLX(((chunk_j * tileWidth)) + position.X), window->PixelToGLY((chunk_i * tileHeight) + position.Y));
+								vertex1 = Coord(window->PixelToGLX(((chunk_j + 1) * tileWidth) + pos.X), window->PixelToGLY(((chunk_i + 1) * tileHeight) + pos.Y));
+								vertex2 = Coord(window->PixelToGLX(((chunk_j * tileWidth)) + pos.X), window->PixelToGLY((chunk_i * tileHeight) + pos.Y));
 							}
 
 							textureVertex1 = Coord(((float)atlasX + 1.0f) * tileU, 1.0f - ((float)(atlasY + 1) * (float)tileV));
@@ -172,6 +191,14 @@ void TinyMap::Initialize()
 						});
 					}
 
+					auto it = gameObjectsByMaterial.find(rect->GetMaterial().lock());
+					if (it != gameObjectsByMaterial.end()) {
+						it->second.push_back(rect);
+					}
+					else {
+						gameObjectsByMaterial[rect->GetMaterial().lock()].push_back(rect);
+					}
+
 					gameObjects.push_back(
 						rect
 					);
@@ -221,11 +248,11 @@ void TinyMap::Initialize()
 	}
 }
 
-TinyMap::TinyMap(Window* window, std::unique_ptr<TileMap> tileMap, Coord position)
+TinyMap::TinyMap(Window* window, std::unique_ptr<TileMap> tileMap, Coord pos)
 {
 	this->window = window;
 	this->tileMap = std::move(tileMap);
-	this->position = position;
+	this->pos = pos;
 
 	Initialize();
 }
@@ -279,6 +306,22 @@ const std::vector<std::shared_ptr<IGameObject>>& TinyMap::GetGameClasses()
 
 void TinyMap::InitializeRender()
 {
+	//for (int i = 0; i < gameObjects.size(); i++) {
+	//	std::shared_ptr<Material> material_a = gameObjects[i]->GetMaterial().lock();
+
+	//	for (int j = 0; j < gameObjects.size(); j++) {
+	//		if (i == j) {
+	//			continue;
+	//		}
+
+	//		std::shared_ptr<Material> material_b = gameObjects[j]->GetMaterial().lock();
+
+	//		if (*material_a == *material_b) {
+	//			std::cout << "Collision: " << gameObjects[i]->GetTitle() << " and " << gameObjects[j]->GetTitle() << std::endl;
+	//		}
+	//	}
+	//}
+
 	for (std::shared_ptr<IGameObject>& object : gameObjects) {
 		object->InitializeRender();
 	}

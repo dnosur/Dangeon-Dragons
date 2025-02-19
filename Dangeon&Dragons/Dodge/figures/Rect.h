@@ -24,7 +24,7 @@ class Rect :
 
     std::shared_ptr<ICollision> collision;
 
-    Coord pos;
+    Coord position;
 
     Size size;
 
@@ -46,7 +46,7 @@ class Rect :
     bool MouseInRect(Mouse& mouse);
 
     void MathPos(Coord& vertex1, Coord& vertex2);
-    void MathPos(Coord& pos);
+    void MathPos(Coord& position);
 
     void MathSize(Size& size);
 
@@ -58,7 +58,7 @@ class Rect :
     std::vector<float> GetRenderVertices();
 public:
     Rect();
-    Rect(std::string title, Window& window, Coord pos, Size size, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
+    Rect(std::string title, Window& window, Coord position, Size size, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
     Rect(std::string title, Window& window, Coord vertex1, Coord vertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
     Rect(std::string title, Window& window, Coord vertex1, Coord vertex2, Coord textureVertex1, Coord textureVertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
 
@@ -79,7 +79,7 @@ public:
 
     void UpdateVertices();
 
-    void UpdateVertices(std::vector<float> vertices);
+    void UpdateVertices(std::vector<float>& vertices);
 
     const Coord& GetPos();
     const Coord& GetOpenGlPos();
@@ -104,7 +104,7 @@ public:
     std::vector<Coord> GetVertices();
 
     void SetPos(std::vector<Coord> vertices, bool render = true);
-    void SetPos(Coord pos, bool render = true);
+    void SetPos(Coord position, bool render = true);
 
     void SetMaterial(std::shared_ptr<Material> material);
 

@@ -259,7 +259,7 @@ bool Material::operator==(const Material& other) const
 		emissive == other.emissive && shininess == other.shininess && metalic == other.metalic && 
 		roughness == other.roughness && specularIntensity == other.specularIntensity && 
 		emissiveIntensity == other.emissiveIntensity && shader == other.shader && camera == other.camera &&
-		diffuseMap == other.diffuseMap && normalMap == other.normalMap && specularMap == other.specularMap && 
+		*diffuseMap == *other.diffuseMap && diffuseMapVerticies == other.diffuseMapVerticies && normalMap == other.normalMap && specularMap == other.specularMap &&
 		emissiveMap == other.emissiveMap;
 }
 

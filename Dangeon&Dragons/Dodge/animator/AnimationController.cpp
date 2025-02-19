@@ -95,7 +95,7 @@ void AnimationController::Play(int index)
 	currentIndex = index;
 }
 
-void AnimationController::Play(int index, Coord pos, Size size)
+void AnimationController::Play(int index, Coord position, Size size)
 {
 	std::weak_ptr<IAnimation> weakAnimation = GetByIndex(index);
 	std::shared_ptr<IAnimation> animation = weakAnimation.lock();
@@ -105,7 +105,7 @@ void AnimationController::Play(int index, Coord pos, Size size)
 	}
 
 	DropPrevAnim(animation);
-	animation->Play(pos, size);
+	animation->Play(position, size);
 	currentIndex = index;
 }
 
@@ -118,13 +118,13 @@ void AnimationController::PlayOnEnd(int index)
 	Play(index);
 }
 
-void AnimationController::PlayOnEnd(int index, Coord pos, Size size)
+void AnimationController::PlayOnEnd(int index, Coord position, Size size)
 {
 	if (!IsAnimationEnd()) {
 		return;
 	}
 
-	Play(index, pos, size);
+	Play(index, position, size);
 }
 
 bool AnimationController::Play(std::string_view title)
@@ -149,7 +149,7 @@ bool AnimationController::Play(std::string_view title)
 	return true;
 }
 
-void AnimationController::Play(std::string_view title, Coord pos, Size size)
+void AnimationController::Play(std::string_view title, Coord position, Size size)
 {
 	int newIndex = 0;
 	std::weak_ptr<IAnimation> weakAnimation = GetByTitle(title, newIndex);
@@ -161,7 +161,7 @@ void AnimationController::Play(std::string_view title, Coord pos, Size size)
 
 	if (animation != nullptr) {
 		DropPrevAnim(animation);
-		animation->Play(pos, size);
+		animation->Play(position, size);
 		currentIndex = newIndex;
 	}
 }
@@ -175,13 +175,13 @@ void AnimationController::PlayOnEnd(std::string_view title)
 	Play(title);
 }
 
-void AnimationController::PlayOnEnd(std::string_view title, Coord pos, Size size)
+void AnimationController::PlayOnEnd(std::string_view title, Coord position, Size size)
 {
 	if (!IsAnimationEnd()) {
 		return;
 	}
 
-	Play(title, pos, size);
+	Play(title, position, size);
 }
 
 void AnimationController::PlayAll()

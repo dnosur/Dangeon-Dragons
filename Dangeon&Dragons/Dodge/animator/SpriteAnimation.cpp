@@ -55,14 +55,14 @@ SpriteAnimation::SpriteAnimation(
 }
 
 SpriteAnimation::SpriteAnimation(
-	std::string title, Coord pos, Size size, 
+	std::string title, Coord position, Size size, 
 	std::string folder, int frameRate, Window* window, bool revere,
 	std::vector<FrameSound> frameSounds
 ){
 	this->title = title;
 	this->folder = folder;
 
-	this->pos = pos;
+	this->position = position;
 	this->size = size;
 
 	play = pause = repeat = stopOnEnd = end = false;
@@ -101,7 +101,7 @@ SpriteAnimation::SpriteAnimation(
 }
 
 SpriteAnimation::SpriteAnimation(
-	std::string title, Coord pos, Size size,
+	std::string title, Coord position, Size size,
 	std::vector<Image> sprites, int frameRate, 
 	Window* window, bool revere, std::vector<FrameSound> frameSounds
 )
@@ -109,7 +109,7 @@ SpriteAnimation::SpriteAnimation(
 	this->title = title;
 	SetSprites(sprites);
 
-	this->pos = pos;
+	this->position = position;
 	this->size = size;
 
 	folder = nullptr;
@@ -216,7 +216,7 @@ int SpriteAnimation::GetCurrentSpriteIndex()
 
 void SpriteAnimation::Play()
 {
-	Play(pos, size);
+	Play(position, size);
 }
 
 void SpriteAnimation::Play(Coord coord, Size size)
@@ -343,7 +343,7 @@ bool SpriteAnimation::operator=(const SpriteAnimation& other)
 		this->currentSpriteIndex = other.currentSpriteIndex;
 		this->frameRate = other.frameRate;
 
-		this->pos = other.pos;
+		this->position = other.position;
 		this->size = other.size;
 
 		this->end = other.end;

@@ -37,6 +37,11 @@ void ShadersController::Use(GLuint id)
 	glUseProgram(id);
 }
 
+void ShadersController::Disable()
+{
+	glUseProgram(0);
+}
+
 void ShadersController::SetBool(const GLuint& id, const char* name, bool value)
 {
 	glUniform1i(glGetUniformLocation(id, name), (int)value);

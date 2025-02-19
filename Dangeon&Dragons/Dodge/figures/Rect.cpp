@@ -31,17 +31,17 @@ void Rect::MathPos(Coord& vertex1, Coord& vertex2)
     float centerY_GL = (vertex1.Y + vertex2.Y) / 2.0f;
 
     // ����������� OpenGL-���������� � �������
-    pos = Coord(
+    position = Coord(
         ((centerX_GL + 1.0f) / 2.0f) * (float)window->GetRenderResolution().GetWidth(),
         ((1.0f - (centerY_GL + 1.0f) / 2.0f) * (float)window->GetRenderResolution().GetHeight())
     );
 }
 
-void Rect::MathPos(Coord& pos)
+void Rect::MathPos(Coord& position)
 {
-    this->pos = pos;
-    float glCenterX = window->PixelToGLX(pos.X);
-    float glCenterY = window->PixelToGLY(pos.Y);
+    this->position = position;
+    float glCenterX = window->PixelToGLX(position.X);
+    float glCenterY = window->PixelToGLY(position.Y);
 
     float glWidth = (float)size.GetWidth() / (float)window->GetRenderResolution().GetWidth() * 2.0f;
     float glHeight = (float)size.GetHeight() / (float)window->GetRenderResolution().GetHeight() * 2.0f;
@@ -56,7 +56,7 @@ void Rect::MathPos(Coord& pos)
 void Rect::MathSize(Size& size)
 {
     this->size = size;
-    MathPos(pos);
+    MathPos(position);
 }
 
 void Rect::MathSide(double& sideSize, bool isWidth)
@@ -88,7 +88,7 @@ Rect::Rect()
 Rect::Rect(
     std::string title,
     Window& window, Coord
-    pos, Size size, Color color, 
+    position, Size size, Color color, 
     Directions moveDirection
 )
 {
@@ -98,7 +98,7 @@ Rect::Rect(
     this->size = size;
     this->color = baseColor = color;
 
-    MathPos(pos);
+    MathPos(position);
 
     OnMouseHover = OnMouseOver = nullptr;
     OnCollisionEnterHandler = nullptr;
@@ -259,13 +259,21 @@ void Rect::UpdateVertices()
 {
     std::vector<float> vertices = GetRenderVertices();
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(unsigned int), vertices.data());
+    void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+    if (ptr) {
+        memcpy(ptr, vertices.data(), vertices.size() * sizeof(float));
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+    }
 }
 
-void Rect::UpdateVertices(std::vector<float> vertices)
+void Rect::UpdateVertices(std::vector<float>& vertices)
 {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(unsigned int), vertices.data());
+    void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+    if (ptr) {
+        memcpy(ptr, vertices.data(), vertices.size() * sizeof(float));
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+    }
 }
 
 void Rect::InitializeRender()
@@ -425,12 +433,12 @@ void Rect::RotateToDirection(Directions direction)
 
 const Coord& Rect::GetPos()
 {
-    return pos;
+    return position;
 }
 
 const Coord& Rect::GetOpenGlPos()
 {
-    return Coord(window->PixelToGLX(pos.X), window->PixelToGLY(pos.Y));
+    return Coord(window->PixelToGLX(position.X), window->PixelToGLY(position.Y));
 }
 
 void Rect::SetSize(Size size, bool render)
@@ -497,8 +505,8 @@ void Rect::SetSideSize(Sides sides, bool render)
     size.SetWidth((vertex1.X - vertex2.X) * window->GetRenderResolution().GetWidth() / 2.0f);
     size.SetHeight((vertex1.Y - vertex2.Y) * window->GetRenderResolution().GetHeight() / 2.0f);
 
-    pos.X = window->GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
-    pos.Y = window->GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
+    position.X = window->GLXToPixel((vertex1.X + vertex2.X) / 2.0f);
+    position.Y = window->GLYToPixel((vertex1.Y + vertex2.Y) / 2.0f);
 
     if (!render) {
         return;
@@ -586,9 +594,9 @@ void Rect::SetPos(std::vector<Coord> vertices, bool render)
     UpdateVertices();
 }
 
-void Rect::SetPos(Coord pos, bool render)
+void Rect::SetPos(Coord position, bool render)
 {
-    MathPos(pos);
+    MathPos(position);
     if (!render) {
         return;
     }
@@ -669,7 +677,7 @@ void Rect::SetKinematic(bool kinematic)
 const Coord& Rect::GetDistanceTo(IGameObject& gameObject)
 {
     Coord temp = gameObject.GetPos();
-    return temp - pos;
+    return temp - position;
 }
 
 void Rect::HookMouseHover(MouseHoverHandler handler)
@@ -694,7 +702,7 @@ void Rect::HookOnCollisionEnter(OnCollisionEnter handler)
 
 bool Rect::operator==(const Rect& other) const
 {
-    return window == other.window && pos == other.pos && 
+    return window == other.window && position == other.position && 
         vertex1 == other.vertex1 && vertex2 == other.vertex2 && size == other.size &&
         color == other.color && baseColor == other.baseColor && material == other.material &&
         title == other.title;
@@ -712,7 +720,7 @@ Rect& Rect::operator=(const Rect&& other)
     }
 
     this->window = other.window;
-    this->pos = other.pos;
+    this->position = other.position;
 
     this->vertex1 = other.vertex1;
     this->vertex2 = other.vertex2;

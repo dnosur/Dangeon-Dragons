@@ -80,7 +80,7 @@ HpBar::HpBar(Window& window, int hp)
     Initialize();
 }
 
-void HpBar::SetPos(Coord pos)
+void HpBar::SetPos(Coord position)
 {
 }
 

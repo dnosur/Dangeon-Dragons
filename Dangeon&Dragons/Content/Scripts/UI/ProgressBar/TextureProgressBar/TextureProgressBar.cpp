@@ -45,14 +45,14 @@ void TextureProgressBar::Draw()
 }
 
 TextureProgressBar::TextureProgressBar(
-	Coord pos, 
+	Coord position, 
 	Size size,
 	std::string_view path, 
 	int maxValue, 
 	int currentValue, 
 	bool isFinished,
 	std::unique_ptr<Color> color
-) : ProgressBar(pos, size, maxValue, currentValue, isFinished),
+) : ProgressBar(position, size, maxValue, currentValue, isFinished),
 	color(std::move(color))
 {
 	Initialize();
