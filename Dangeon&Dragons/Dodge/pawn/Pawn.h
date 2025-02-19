@@ -154,8 +154,6 @@ public:
 	void HookMouseClick(MouseClickHandler OnMouseClick);
 
 	void HookOnCollisionEnter(OnCollisionEnter handler);
-
-	Window* GetWindow();
 	const Coord& GetPos();
 
 	const Coord& GetOpenGlPos();

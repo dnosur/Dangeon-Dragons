@@ -14,25 +14,25 @@ public:
 
 	static std::shared_ptr<SpriteAnimation> CreateSpriteAnimation(
 		std::string title, std::string folder, 
-		int frameRate, Window* window, bool revere = false, 
+		int frameRate, bool revere = false, 
 		std::vector<FrameSound> frameSounds = std::vector<FrameSound>()
 	);
 
 	static std::shared_ptr<SpriteAnimation> CreateSpriteAnimation(
 		std::string title, Coord position, Size size, 
-		std::string folder, int frameRate, Window* window, 
+		std::string folder, int frameRate, 
 		bool revere = false, std::vector<FrameSound> frameSounds = std::vector<FrameSound>()
 	);
 
 	static std::shared_ptr<SpriteAnimation> CreateSpriteAnimation(
 		std::string title, std::vector<Image> sprites, 
-		int frameRate, Window* window, bool revere = false, 
+		int frameRate, bool revere = false, 
 		std::vector<FrameSound> frameSounds = std::vector<FrameSound>()
 	);
 
 	static std::shared_ptr<SpriteAnimation> CreateSpriteAnimation(
 		std::string title, Coord position, Size size, std::vector<Image> sprites,
-		int frameRate, Window* window, bool revere = false, 
+		int frameRate, bool revere = false, 
 		std::vector<FrameSound> frameSounds = std::vector<FrameSound>()
 	);
 };

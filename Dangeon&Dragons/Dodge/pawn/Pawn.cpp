@@ -298,11 +298,6 @@ void Pawn::HookOnCollisionEnter(OnCollisionEnter onCollisionEnter)
 	OnCollisionEnterHandler = onCollisionEnter;
 }
 
-Window* Pawn::GetWindow()
-{
-	return nullptr;
-}
-
 const Coord& Pawn::GetPos()
 {
 	return position;

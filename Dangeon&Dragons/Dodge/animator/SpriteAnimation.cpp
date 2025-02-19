@@ -20,7 +20,6 @@ void SpriteAnimation::LoadSpritesFromFolder()
 
 SpriteAnimation::SpriteAnimation()
 {
-	window = nullptr;
 	title = "Undefined";
 
 	rootTile = nullptr;
@@ -33,8 +32,8 @@ SpriteAnimation::SpriteAnimation()
 }
 
 SpriteAnimation::SpriteAnimation(
-	std::string title, std::string folder, int frameRate, 
-	Window* window, bool revere, 
+	std::string title, std::string folder, 
+	int frameRate, bool revere, 
 	std::vector<FrameSound> frameSounds
 )
 {
@@ -45,7 +44,6 @@ SpriteAnimation::SpriteAnimation(
 	currentSpriteIndex = -1;
 
 	this->frameRate = frameRate;
-	this->window = window;
 	this->reverse = revere;
 
 	timePassed = .0f;
@@ -56,7 +54,7 @@ SpriteAnimation::SpriteAnimation(
 
 SpriteAnimation::SpriteAnimation(
 	std::string title, Coord position, Size size, 
-	std::string folder, int frameRate, Window* window, bool revere,
+	std::string folder, int frameRate, bool revere,
 	std::vector<FrameSound> frameSounds
 ){
 	this->title = title;
@@ -69,7 +67,6 @@ SpriteAnimation::SpriteAnimation(
 	currentSpriteIndex = -1;
 
 	this->frameRate = frameRate;
-	this->window = window;
 	this->reverse = revere;
 
 	timePassed = .0f;
@@ -80,15 +77,13 @@ SpriteAnimation::SpriteAnimation(
 
 SpriteAnimation::SpriteAnimation(
 	std::string title, std::vector<Image> sprites, 
-	int frameRate, Window* window, bool revere,
+	int frameRate, bool revere,
 	std::vector<FrameSound> frameSounds)
 {
 	this->title = title;
 	SetSprites(sprites);
-	folder = nullptr;
 
 	this->frameRate = frameRate;
-	this->window = window;
 	this->reverse = revere;
 
 	currentSpriteIndex = -1;
@@ -103,7 +98,7 @@ SpriteAnimation::SpriteAnimation(
 SpriteAnimation::SpriteAnimation(
 	std::string title, Coord position, Size size,
 	std::vector<Image> sprites, int frameRate, 
-	Window* window, bool revere, std::vector<FrameSound> frameSounds
+	bool revere, std::vector<FrameSound> frameSounds
 )
 {
 	this->title = title;
@@ -112,10 +107,7 @@ SpriteAnimation::SpriteAnimation(
 	this->position = position;
 	this->size = size;
 
-	folder = nullptr;
-
 	this->frameRate = frameRate;
-	this->window = window;
 	this->reverse = revere;
 
 	currentSpriteIndex = -1;
@@ -125,11 +117,6 @@ SpriteAnimation::SpriteAnimation(
 
 	//this->frameSounds.SetFrameSounds(frameSounds);
 	this->sprites.SetImages(sprites);
-}
-
-void SpriteAnimation::SetWindow(Window* window)
-{
-	this->window = window;
 }
 
 void SpriteAnimation::SetTitle(std::string title)

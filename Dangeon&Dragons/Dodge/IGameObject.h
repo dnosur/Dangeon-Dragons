@@ -33,7 +33,6 @@ __interface IGameObject
 	bool MouseHover(Mouse& mouse);
 	bool CollisionEnter(IGameObject& gameObject);
 
-	Window* GetWindow();
 	const Coord& GetPos();
 	const Coord& GetOpenGlPos();
 

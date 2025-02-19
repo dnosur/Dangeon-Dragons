@@ -552,11 +552,6 @@ bool Rect::CollisionEnter(IGameObject& gameObject)
     }
 }
 
-Window* Rect::GetWindow()
-{
-    return nullptr;
-}
-
 void Rect::SetColor(Color color)
 {
     this->color = color;

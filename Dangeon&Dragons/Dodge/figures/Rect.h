@@ -92,8 +92,6 @@ public:
 
     bool CollisionEnter(IGameObject& gameObject);
 
-    Window* GetWindow();
-
     void SetColor(Color color);
     Color GetColor();
 

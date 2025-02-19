@@ -10,36 +10,36 @@ std::shared_ptr<VertexAnimation> AnimationsFactory::CreateVertexAnimation(
 
 std::shared_ptr<SpriteAnimation> AnimationsFactory::CreateSpriteAnimation(
     std::string title, std::string folder, int frameRate, 
-    Window* window, bool revere, std::vector<FrameSound> frameSounds)
+    bool revere, std::vector<FrameSound> frameSounds)
 {
     return std::make_shared<SpriteAnimation>(
-        title, folder, frameRate, window, revere, frameSounds
+        title, folder, frameRate, revere, frameSounds
     );
 }
 
 std::shared_ptr<SpriteAnimation> AnimationsFactory::CreateSpriteAnimation(
     std::string title, Coord position, Size size, std::string folder, 
-    int frameRate, Window* window, bool revere, std::vector<FrameSound> frameSounds)
+    int frameRate, bool revere, std::vector<FrameSound> frameSounds)
 {
     return std::make_shared<SpriteAnimation>(
-        title, position, size, folder, frameRate, window, revere, frameSounds
+        title, position, size, folder, frameRate, revere, frameSounds
     );
 }
 
 std::shared_ptr<SpriteAnimation> AnimationsFactory::CreateSpriteAnimation(
     std::string title, std::vector<Image> sprites, int frameRate, 
-    Window* window, bool revere, std::vector<FrameSound> frameSounds)
+    bool revere, std::vector<FrameSound> frameSounds)
 {
     return std::make_shared<SpriteAnimation>(
-        title, sprites, frameRate, window, revere, frameSounds
+        title, sprites, frameRate, revere, frameSounds
     );
 }
 
 std::shared_ptr<SpriteAnimation> AnimationsFactory::CreateSpriteAnimation(
     std::string title, Coord position, Size size, std::vector<Image> sprites, 
-    int frameRate, Window* window, bool revere, std::vector<FrameSound> frameSounds)
+    int frameRate, bool revere, std::vector<FrameSound> frameSounds)
 {
     return std::make_shared<SpriteAnimation>(
-        title, position, size, sprites, frameRate, window, revere, frameSounds
+        title, position, size, sprites, frameRate, revere, frameSounds
     );
 }
