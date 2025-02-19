@@ -17,75 +17,78 @@ void ImagesController::ChangeIfExist(Image image)
 
 void ImagesController::Draw(Image& item, Coord& position, Color& color, Size& windowSize, Size& size, bool reverse)
 {
-    const GLuint image = item.image;
+    item.Draw(position, size, color);
 
-    float normX = (position.X / (float)windowSize.GetWidth()) * 2.0f - 1.0f;
-    float normY = !reverse 
-        ? (position.Y / (float)windowSize.GetHeight()) * 2.0f - 1.0f 
-        : 1.0f - (position.Y / (float)windowSize.GetHeight()) * 2.0f;
-    float normW = (size.width / (float)windowSize.GetWidth()) * 2.0f;
-    float normH = (size.height / (float)windowSize.GetHeight()) * 2.0f;
+    //const GLuint image = item.image;
+    //GLuint shader = item.shader;
 
-    // ������� � ���������� ����������
-    float vertices[] = {
-        // �������           // ���������� ����������
-        normX, normY, 0.0f,                 0.0f, 0.0f,  // ����� ������ ����
-        normX + normW, normY, 0.0f,         1.0f, 0.0f,  // ������ ������ ����
-        normX + normW, normY + normH, 0.0f, 1.0f, 1.0f,  // ������ ������� ����
-        normX, normY + normH, 0.0f,         0.0f, 1.0f   // ����� ������� ����
-    };
+    //float normX = (position.X / (float)windowSize.GetWidth()) * 2.0f - 1.0f;
+    //float normY = !reverse
+    //    ? (position.Y / (float)windowSize.GetHeight()) * 2.0f - 1.0f
+    //    : 1.0f - (position.Y / (float)windowSize.GetHeight()) * 2.0f;
+    //float normW = (size.width / (float)windowSize.GetWidth()) * 2.0f;
+    //float normH = (size.height / (float)windowSize.GetHeight()) * 2.0f;
 
-    unsigned int indices[] = {
-        0, 1, 2, // ������ �����������
-        2, 3, 0  // ������ �����������
-    };
+    //// ������� � ���������� ����������
+    //std::vector<float> vertices = {
+    //    // �������           // ���������� ����������
+    //    normX, normY, 0.0f,                 0.0f, 0.0f,  // ����� ������ ����
+    //    normX + normW, normY, 0.0f,         1.0f, 0.0f,  // ������ ������ ����
+    //    normX + normW, normY + normH, 0.0f, 1.0f, 1.0f,  // ������ ������� ����
+    //    normX, normY + normH, 0.0f,         0.0f, 1.0f   // ����� ������� ����
+    //};
 
-    unsigned int VAO, VBO, EBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+    //unsigned int indices[] = {
+    //    0, 1, 2, // ������ �����������
+    //    2, 3, 0  // ������ �����������
+    //};
 
-    glBindVertexArray(VAO);
+    //unsigned int VAO, VBO, EBO;
+    //glGenVertexArrays(1, &VAO);
+    //glGenBuffers(1, &VBO);
+    //glGenBuffers(1, &EBO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    //glBindVertexArray(VAO);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    //glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    //glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    //diffuse
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    //glEnableVertexAttribArray(0);
 
-    //normal
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(2);
+    ////diffuse
+    //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    //glEnableVertexAttribArray(1);
 
-    //specular
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(3);
+    ////normal
+    //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    //glEnableVertexAttribArray(2);
 
-    //emissive
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(4);
+    ////specular
+    //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    //glEnableVertexAttribArray(3);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, image);
+    ////emissive
+    //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    //glEnableVertexAttribArray(4);
 
-    ShadersController::Use(item.shader);
-    ShadersController::SetInt(item.shader, "diffuseTexture", 0);
-    ShadersController::SetVec4(item.shader, "diffuseColor", color.r, color.g, color.b, color.a);
+    //glActiveTexture(GL_TEXTURE0);
+    //glBindTexture(GL_TEXTURE_2D, image);
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    //ShadersController::Use(shader);
+    //ShadersController::SetInt(shader, "diffuseTexture", 0);
+    //ShadersController::SetVec4(shader, "diffuseColor", color.r, color.g, color.b, color.a);
 
-    glBindVertexArray(0);
+    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-    glDeleteBuffers(1, &VBO);
-    glDeleteVertexArrays(1, &VAO);
-    glUseProgram(0);
+    //glBindVertexArray(0);
+
+    //glDeleteBuffers(1, &VBO);
+    //glDeleteVertexArrays(1, &VAO);
+    //glUseProgram(0);
 }
 
 Image ImagesController::LoadImg(std::string_view path, std::string title)
