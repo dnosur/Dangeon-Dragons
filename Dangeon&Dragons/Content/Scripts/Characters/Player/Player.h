@@ -31,8 +31,6 @@ class Player :
     void AIMovement() override;
 
     void InitializeRender() override;
-
-    std::vector<float> GetRenderVertices() override;
 public:
     Player(
         std::string title,

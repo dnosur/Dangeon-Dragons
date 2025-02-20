@@ -11,14 +11,16 @@ bool Rect::MouseInRect(Mouse& mouse)
     float normMouseX = (mouse.GetMouseCoord().X / Window::GetRenderResolution().GetWidth()) * 2.0f - 1.0f;
     float normMouseY = 1.0f - (mouse.GetMouseCoord().Y / Window::GetRenderResolution().GetHeight()) * 2.0f;
 
+    const Coord& vertex1 = renderInstance->GetVertex1();
+    const Coord& vertex2 = renderInstance->GetVertex2();
+
     return (normMouseX >= vertex1.X && normMouseX <= vertex2.X &&
         normMouseY >= vertex1.Y && normMouseY <= vertex2.Y);
 }
 
 void Rect::MathPos(Coord& vertex1, Coord& vertex2)
 {
-    this->vertex1 = vertex1;
-    this->vertex2 = vertex2;
+    renderInstance->SetVertexes(vertex1, vertex2);
 
     float width = (vertex2.X - vertex1.X) * (Window::GetRenderResolution().GetWidth() / 2.0f);
     float height = (vertex2.Y - vertex1.Y) * (Window::GetRenderResolution().GetHeight() / 2.0f);
@@ -47,10 +49,15 @@ void Rect::MathPos(Coord& position)
     float glHeight = (float)size.GetHeight() / (float)Window::GetRenderResolution().GetHeight() * 2.0f;
 
     // Calculate the vertex1 and vertex2 coordinates
-    vertex2.X = glCenterX - glWidth / 2.0f;
-    vertex1.Y = glCenterY - glHeight / 2.0f;
-    vertex1.X = glCenterX + glWidth / 2.0f;
-    vertex2.Y = glCenterY + glHeight / 2.0f;
+    //vertex2.X = glCenterX - glWidth / 2.0f;
+    //vertex1.Y = glCenterY - glHeight / 2.0f;
+    //vertex1.X = glCenterX + glWidth / 2.0f;
+    //vertex2.Y = glCenterY + glHeight / 2.0f;
+
+    renderInstance->SetVertexes(
+        Coord(glCenterX + glWidth / 2.0f, glCenterY - glHeight / 2.0f),
+        Coord(glCenterX - glWidth / 2.0f, glCenterY + glHeight / 2.0f)
+    );
 }
 
 void Rect::MathSize(Size& size)
@@ -70,7 +77,6 @@ Rect::Rect()
     title = (char*)"Undefined";
 
     collision = nullptr;
-    material = nullptr;
 
     OnMouseHover = OnMouseOver = nullptr;
     OnCollisionEnterHandler = nullptr;
@@ -81,7 +87,7 @@ Rect::Rect()
 
     moveDirection = Directions::DOWN;
 
-    VAO = VBO = EBO = 0;
+    renderInstance = std::make_unique<RectRenderInstance>();
 }
 
 Rect::Rect(
@@ -95,13 +101,11 @@ Rect::Rect(
     this->size = size;
     this->color = baseColor = color;
 
-    MathPos(position);
-
     OnMouseHover = OnMouseOver = nullptr;
     OnCollisionEnterHandler = nullptr;
     OnMouseClick = nullptr;
 
-    material = std::make_unique<BaseFigureMaterial>();
+    std::unique_ptr<Material> material = std::make_unique<BaseFigureMaterial>();
     material->SetShader(
         ShadersController::GetShaderID("BaseFigure")
     );
@@ -116,7 +120,9 @@ Rect::Rect(
 
     collision = nullptr;
 
-    VAO = VBO = EBO = 0;
+    renderInstance = std::make_unique<RectRenderInstance>(std::move(material));
+
+    MathPos(position);
 }
 
 Rect::Rect(
@@ -129,13 +135,11 @@ Rect::Rect(
 
     this->color = baseColor = color;
 
-    MathPos(vertex1, vertex2);
-
     OnMouseHover = OnMouseOver = nullptr;
     OnCollisionEnterHandler = nullptr;
     OnMouseClick = nullptr;
 
-    material = std::make_unique<BaseFigureMaterial>();
+    std::unique_ptr<Material> material = std::make_unique<BaseFigureMaterial>();
     material->SetShader(
         ShadersController::GetShaderID("BaseFigure")
     );
@@ -147,7 +151,9 @@ Rect::Rect(
 
     collision = nullptr;
 
-    VAO = VBO = EBO = 0;
+    renderInstance = std::make_unique<RectRenderInstance>(std::move(material));
+
+    MathPos(vertex1, vertex2);
 }
 
 Rect::Rect(
@@ -161,13 +167,11 @@ Rect::Rect(
 
     this->color = baseColor = color;
 
-    MathPos(vertex1, vertex2);
-
     OnMouseHover = OnMouseOver = nullptr;
     OnCollisionEnterHandler = nullptr;
     OnMouseClick = nullptr;
 
-    material = std::make_unique<BaseFigureMaterial>();
+    std::unique_ptr<Material> material = std::make_unique<BaseFigureMaterial>();
     material->SetShader(
         ShadersController::GetShaderID("BaseFigure")
     );
@@ -184,42 +188,9 @@ Rect::Rect(
 
     collision = nullptr;
 
-    VAO = VBO = EBO = 0;
-}
+    renderInstance = std::make_unique<RectRenderInstance>(std::move(material));
 
-void Rect::InitQuads(
-    unsigned int& VAO, unsigned int& VBO, unsigned int& EBO,
-    std::vector<float> vertices, std::vector<unsigned int>& indices
-) {
-    if (VAO || VBO || EBO) {
-        return;
-    }
-
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-
-    glGenVertexArrays(1, &VAO);
-
-    glBindVertexArray(VAO);
-
-    // Передаём данные вершин в OpenGL
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
-
-    // Передаём индексы вершин в OpenGL
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
-
-    // Определяем атрибуты вершин
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // Атрибут текстурных координат
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    MathPos(vertex1, vertex2);
 }
 
 void Rect::Update()
@@ -229,78 +200,41 @@ void Rect::Update()
 
 void Rect::Draw()
 {
-    //glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-    if (!VBO && !VAO && !EBO) {
-        InitializeRender();
-	}
-
-    material->Use(this);
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-    glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-    //glPopAttrib();
-
-    material->Disable(this);
+    renderInstance->Render();
 }
 
 void Rect::UpdateVertices()
 {
-    std::vector<float> vertices = GetRenderVertices();
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-    if (ptr) {
-        memcpy(ptr, vertices.data(), vertices.size() * sizeof(float));
-        glUnmapBuffer(GL_ARRAY_BUFFER);
-    }
+    renderInstance->UpdateVertices();
 }
 
 void Rect::UpdateVertices(std::vector<float>& vertices)
 {
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-    if (ptr) {
-        memcpy(ptr, vertices.data(), vertices.size() * sizeof(float));
-        glUnmapBuffer(GL_ARRAY_BUFFER);
-    }
+    renderInstance->UpdateVertices(vertices);
 }
 
 void Rect::InitializeRender()
 {
-    InitQuads(VAO, VBO, EBO, GetRenderVertices());
-}
-
-std::vector<float> Rect::GetRenderVertices()
-{
-    const bool isHasDiffuseVertexs =
-        material->GetDiffuseMapVerticies().size() >= 2 &&
-        material->GetDiffuseMap().lock() != nullptr;
-    const Coord& textCoord1 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[0] : Coord(0, 0);
-    const Coord& textCoord2 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[1] : Coord(1, 1);
-
-    return {
-        // positions         // colors
-         (float)vertex1.X, (float)vertex1.Y, 0.0f,  (float)textCoord1.X,(float)textCoord1.Y,
-         (float)vertex2.X, (float)vertex1.Y, 0.0f, (float)textCoord2.X, (float)textCoord1.Y,
-         (float)vertex2.X, (float)vertex2.Y, 0.0f,  (float)textCoord2.X,(float)textCoord2.Y,
-         (float)vertex1.X, (float)vertex2.Y, 0.0f,  (float)textCoord1.X, (float)textCoord2.Y
-    };
+    renderInstance->Initialize();
 }
 
 std::vector<float> Rect::GetVerticesByDirection(Rect& rect, Directions moveDirection, bool returnTexCoords)
 {
-    Coord vertex1 = rect.GetVertices()[0];
-    Coord vertex2 = rect.GetVertices()[1];
+    Coord vertex1 = rect.renderInstance->GetVertex1();
+    Coord vertex2 = rect.renderInstance->GetVertex2();
+
+    std::weak_ptr<Material> weakMaterial = rect.renderInstance->GetMaterial();
+    if (weakMaterial.expired() || !weakMaterial.lock()) {
+        return rect.renderInstance->GetVertices();
+    }
+
+    std::shared_ptr<Material> material = weakMaterial.lock();
 
     const bool isHasDiffuseVertexs = 
-        rect.material->GetDiffuseMapVerticies().size() >= 2 && 
-        rect.material->GetDiffuseMap().lock() != nullptr;
-    const Coord& textCoord1 = isHasDiffuseVertexs ? rect.material->GetDiffuseMapVerticies()[0] : Coord(0, 0);
-    const Coord& textCoord2 = isHasDiffuseVertexs ? rect.material->GetDiffuseMapVerticies()[1] : Coord(1, 1);
+        material->GetDiffuseMapVerticies().size() >= 2 && 
+        material->GetDiffuseMap().lock() != nullptr;
+    const Coord& textCoord1 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[0] : Coord(0, 0);
+    const Coord& textCoord2 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[1] : Coord(1, 1);
 
     if (moveDirection == Directions::UP) {
         return returnTexCoords ? std::vector<float> {
@@ -370,6 +304,9 @@ void Rect::RotateToDirection(Directions direction)
     // ������� ��������� � ����������� �� �������� � �������� �����������
     if (moveDirection == direction) return; // ��� � ������ �����������
 
+    Coord vertex1 = renderInstance->GetVertex1();
+	Coord vertex2 = renderInstance->GetVertex2();
+
     // ���������� ���� ��������
     if ((moveDirection == Directions::RIGHT && direction == Directions::LEFT) ||
         (moveDirection == Directions::LEFT && direction == Directions::RIGHT) ||
@@ -420,6 +357,7 @@ void Rect::RotateToDirection(Directions direction)
         vertex2.Y = -tempX + centerY;
     }
 
+    renderInstance->SetVertexes(vertex1, vertex2);
     // ��������� �����������
     moveDirection = direction;
 }
@@ -451,14 +389,23 @@ Size Rect::GetSize()
 
 void Rect::SetSideSize(Sides sides, bool render)
 {
+    const Coord& vertex1 = renderInstance->GetVertex1();
+	const Coord& vertex2 = renderInstance->GetVertex2();
+
     if (sides.bottom != 0) {
         float glDelta = abs((float)sides.bottom / (float)Window::GetRenderResolution().GetWidth() * 2.0f);
 
         if (sides.bottom > 0) {
-            vertex1.Y -= glDelta;
+            renderInstance->SetVertexes(
+                Coord(vertex1.X, vertex1.Y - glDelta),
+                vertex2
+            );
         }
         else {
-            vertex1.Y += glDelta;
+            renderInstance->SetVertexes(
+                Coord(vertex1.X, vertex1.Y + glDelta),
+                vertex2
+            );
         }
     }
 
@@ -466,10 +413,14 @@ void Rect::SetSideSize(Sides sides, bool render)
         float glDelta = abs((float)sides.top / (float)Window::GetRenderResolution().GetWidth() * 2.0f);
 
         if (sides.top > 0) {
-            vertex2.Y += glDelta;
+            renderInstance->SetVertex2(
+                Coord(vertex2.X, vertex2.Y + glDelta)
+            );
         }
         else {
-            vertex2.Y -= glDelta;
+            renderInstance->SetVertex2(
+                Coord(vertex2.X, vertex2.Y - glDelta)
+            );
         }
     }
 
@@ -477,10 +428,14 @@ void Rect::SetSideSize(Sides sides, bool render)
         float glDelta = abs((float)sides.left / (float)Window::GetRenderResolution().GetWidth() * 2.0f);
 
         if (sides.left > 0) {
-            vertex2.X -= glDelta;
+            renderInstance->SetVertex2(
+                Coord(vertex2.X - glDelta, vertex2.Y)
+            );
         }
         else {
-            vertex2.X += glDelta;
+            renderInstance->SetVertex2(
+                Coord(vertex2.X + glDelta, vertex2.Y)
+            );
         }
     }
 
@@ -488,10 +443,14 @@ void Rect::SetSideSize(Sides sides, bool render)
         float glDelta = abs((float)sides.right / (float)Window::GetRenderResolution().GetWidth() * 2.0f);
 
         if (sides.right > 0) {
-            vertex1.X += glDelta;
+            renderInstance->SetVertex1(
+                Coord(vertex1.X + glDelta, vertex1.Y)
+            );
         }
         else {
-            vertex1.X -= glDelta;
+            renderInstance->SetVertex1(
+                Coord(vertex1.X - glDelta, vertex1.Y)
+            );
         }
     }
 
@@ -567,11 +526,6 @@ Color Rect::GetBaseColor()
     return baseColor;
 }
 
-std::vector<Coord> Rect::GetVertices()
-{
-    return { vertex1, vertex2 };
-}
-
 void Rect::SetPos(std::vector<Coord> vertices, bool render)
 {
     MathPos(vertices[0], vertices[1]);
@@ -594,12 +548,12 @@ void Rect::SetPos(Coord position, bool render)
 
 void Rect::SetMaterial(std::shared_ptr<Material> material)
 {
-	this->material = material;
+    renderInstance->SetMaterial(material);
 }
 
 std::weak_ptr<Material> Rect::GetMaterial()
 {
-    return material;
+    return renderInstance->GetMaterial();
 }
 
 void Rect::SetCollision(std::shared_ptr<ICollision> collision)
@@ -691,8 +645,8 @@ void Rect::HookOnCollisionEnter(OnCollisionEnter handler)
 bool Rect::operator==(const Rect& other) const
 {
     return position == other.position && 
-        vertex1 == other.vertex1 && vertex2 == other.vertex2 && size == other.size &&
-        color == other.color && baseColor == other.baseColor && material == other.material &&
+        *renderInstance == *other.renderInstance && size == other.size &&
+        color == other.color && baseColor == other.baseColor &&
         title == other.title;
 }
 
@@ -709,8 +663,7 @@ Rect& Rect::operator=(const Rect&& other)
 
     this->position = other.position;
 
-    this->vertex1 = other.vertex1;
-    this->vertex2 = other.vertex2;
+    *this->renderInstance == *other.renderInstance;
 
     this->size = other.size;
 
@@ -720,8 +673,6 @@ Rect& Rect::operator=(const Rect&& other)
     this->OnMouseHover = other.OnMouseHover;
     this->OnMouseOver = other.OnMouseOver;
     this->OnMouseClick = other.OnMouseClick;
-
-    material = other.material;
 
     this->title = other.title;
 

@@ -53,8 +53,6 @@ class Skeleton
     bool IsWalkable(Coord position);
 
     void InitializeRender() override;
-
-    std::vector<float> GetRenderVertices() override;
 public:
     Skeleton(
         std::string title,

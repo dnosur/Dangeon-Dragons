@@ -3,10 +3,11 @@
 #include "Save.h"
 
 #include "threads/Thread.h"
+#include "font/Fonts.h"
+
+#include "shaders/ShadersController.h"
 
 #include "./images/SlicedImage.h"
-
-#include "font/Fonts.h"
 
 #include "../Content/Scripts/Maps/WonderWorld/WonderWold.h"
 #include "../Content/Scripts/Characters/Player/Player.h"
@@ -18,7 +19,7 @@
 #include "../Content/Scripts/Screens/MainWindowLoading/MainWindowLoading.h"
 #include "../Content/Scripts/UI/ProgressBar/utilities.h"
 #include "../Content/Scripts/UI/PauseMenu/PauseMenu.h"
-#include "shaders/ShadersController.h"
+
 
 typedef void (*GLMaxShaderCompilerThreadsARB_t)(GLuint);
 

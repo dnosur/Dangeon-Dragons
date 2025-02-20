@@ -1,9 +1,9 @@
 #include "Pawn.h"
+#include "../render/RectRenderInstance.h"
+#include "../utilities/ptrs.h"
 
 void Pawn::MathPos(std::vector<Coord> vertexes)
 {
-	this->vertexes = vertexes;
-
 	Coord& vertex1 = vertexes[0];
 	Coord& vertex2 = vertexes[1];
 
@@ -11,6 +11,8 @@ void Pawn::MathPos(std::vector<Coord> vertexes)
 
 	float centerX_GL = float(vertex1.X + vertex2.X) / 2.0f;
 	float centerY_GL = float(vertex1.Y + vertex2.Y) / 2.0f;
+
+	renderInstance->SetVertexes(vertex1, vertex2);
 
 	position = Coord(((centerX_GL + 1.0f) / 2.0f) * (float)Window::GetRenderResolution().GetWidth(),
 		((1.0f - (centerY_GL + 1.0f) / 2.0f) * (float)Window::GetRenderResolution().GetHeight()));
@@ -37,12 +39,7 @@ void Pawn::MathPos(Coord& position)
 	vertex2.X = glCenterX + halfWidth;
 	vertex2.Y = glCenterY + halfHeight;
 
-	if (!vertexes.empty()) {
-		vertexes.clear();
-	}
-
-	vertexes.push_back(vertex1); 
-	vertexes.push_back(vertex2);
+	renderInstance->SetVertexes(vertex1, vertex2);
 }
 
 void Pawn::MathSize(Size& size)
@@ -53,8 +50,8 @@ void Pawn::MathSize(Size& size)
 
 bool Pawn::MouseInRect(Mouse& mouse)
 {
-	Coord& vertex1 = vertexes[0];
-	Coord& vertex2 = vertexes[1];
+	const Coord& vertex1 = renderInstance->GetVertex1();
+	const Coord& vertex2 = renderInstance->GetVertex2();
 
 	float normMouseX = (mouse.GetMouseCoord().X / Window::GetRenderResolution().GetWidth()) * 2.0f - 1.0f;
 	float normMouseY = 1.0f - (mouse.GetMouseCoord().Y / Window::GetRenderResolution().GetHeight()) * 2.0f;
@@ -73,8 +70,9 @@ Pawn::Pawn(
 
 	SetTitle(title);
 
+	renderInstance = std::make_unique<RectRenderInstance>(std::move(material));
+
 	this->collision = collision;
-	this->material = material;
 
 	this->size = size;
 	MathPos(position);
@@ -91,8 +89,6 @@ Pawn::Pawn(
 	this->isPlayable = isPlayable;
 	this->kinematic = isKinematic;
 	this->isHidden = isHidden;
-
-	VAO = VBO = EBO = 0;
 
 	SetLayer(Layer::Pawn);
 
@@ -205,12 +201,16 @@ void Pawn::SetCollision(std::shared_ptr<ICollision> collision)
 
 void Pawn::SetMaterial(std::shared_ptr<Material> material)
 {
-	this->material = material;
+	renderInstance->SetMaterial(material);
 }
 
 void Pawn::SetColor(Color color)
 {
-	material->SetDiffuse(color);
+	if (!ValidWeakPtr<Material>(renderInstance->GetMaterial())) {
+		return;
+	}
+
+	renderInstance->GetMaterial().lock()->SetDiffuse(color);
 }
 
 void Pawn::AddAnimation(std::shared_ptr<IAnimation> animation)
@@ -308,11 +308,6 @@ const Coord& Pawn::GetOpenGlPos()
 	return Coord(Window::PixelToGLX(position.X), Window::PixelToGLY(position.Y));
 }
 
-std::vector<Coord> Pawn::GetVertices()
-{
-	return vertexes;
-}
-
 Size Pawn::GetSize()
 {
 	return size;
@@ -320,12 +315,14 @@ Size Pawn::GetSize()
 
 Color Pawn::GetColor()
 {
-	return material->GetDiffuse();
+	return ValidWeakPtr<Material>(renderInstance->GetMaterial()) 
+		? renderInstance->GetMaterial().lock()->GetDiffuse() 
+		: Color();
 }
 
 std::weak_ptr<Material> Pawn::GetMaterial()
 {
-	return material;
+	return renderInstance->GetMaterial();
 }
 
 Directions Pawn::GetMoveDirection()
@@ -340,7 +337,9 @@ std::weak_ptr<ICollision> Pawn::GetCollision()
 
 Color Pawn::GetBaseColor()
 {
-	return material->GetDiffuse();
+	return ValidWeakPtr<Material>(renderInstance->GetMaterial())
+		? renderInstance->GetMaterial().lock()->GetDiffuse()
+		: Color();
 }
 
 AnimationController Pawn::GetAnimations()

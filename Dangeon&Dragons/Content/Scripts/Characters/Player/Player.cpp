@@ -9,10 +9,16 @@
 #include "../../../../Dodge/threads/Thread.h"
 #include "../../../../Dodge/figures/Rect.h"
 
+#include "../../../../Dodge/utilities/ptrs.h"
+
 void Player::LoadAnimations()
 {
+	if (!ValidWeakPtr<Material>(renderInstance->GetMaterial())) {
+		return;
+	}
+
 	playerImages = std::make_unique<SlicedImage>(
-		material->GetDiffuseMap().lock(),
+		renderInstance->GetMaterial().lock()->GetDiffuseMap().lock(),
 		std::vector<int>{
 			7, 7, 7, 7,
 			8, 8, 8, 8,
@@ -104,8 +110,8 @@ void Player::Initialize()
 	action = Actions::Idle;
 
 	startPos = position;
-	startPosVertexes[0] = vertexes[0];
-	startPosVertexes[1] = vertexes[1];
+	startPosVertexes[0] = renderInstance->GetVertex1();
+	startPosVertexes[1] = renderInstance->GetVertex2();
 
 	damage = 60.0f;
 	damageDistance = 60.0f;
@@ -145,21 +151,7 @@ void Player::SetSideSize(Sides sides, bool render)
 
 void Player::Draw()
 {
-	if (!VBO && !VAO && !EBO) {
-		InitializeRender();
-	}
-
-	material->Use(this);
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-	//glPopAttrib();
-
-	material->Disable(this);
+	renderInstance->Render();
 }
 
 void Player::Move()
@@ -380,25 +372,33 @@ bool Player::CheckForCollision(Coord position, Size size)
 
 void Player::MathSide(double& sideSize, bool isWidth)
 {
-	Coord& vertex1 = vertexes[0];
-	Coord& vertex2 = vertexes[1];
+	const Coord& vertex1 = renderInstance->GetVertex1();
+	const Coord& vertex2 = renderInstance->GetVertex2();
 
 	float glDelta = (float)sideSize / (float)Window::GetRenderResolution().GetWidth() * 2.0f;
 
 	if (isWidth) {
 		if (sideSize > 0) {
-			vertex1.X += glDelta;
+			renderInstance->SetVertex1(
+				Coord(vertex1.X + glDelta, vertex1.Y)
+			);
 		}
 		else {
-			vertex2.X -= glDelta;
+			renderInstance->SetVertex2(
+				Coord(vertex2.X - glDelta, vertex2.Y)
+			);
 		}
 	}
 	else {
 		if (sideSize > 0) {
-			vertex1.Y += glDelta;
+			renderInstance->SetVertex1(
+				Coord(vertex1.X + glDelta, vertex1.Y)
+			);
 		}
 		else {
-			vertex2.Y -= glDelta;
+			renderInstance->SetVertex2(
+				Coord(vertex2.X, vertex2.Y - glDelta)
+			);
 		}
 	}
 
@@ -415,28 +415,7 @@ void Player::AIMovement()
 
 void Player::InitializeRender()
 {
-	Rect::InitQuads(VAO, VBO, EBO, GetRenderVertices());
-}
-
-std::vector<float> Player::GetRenderVertices()
-{
-	const bool isHasDiffuseVertexs =
-		material->GetDiffuseMapVerticies().size() >= 2 &&
-		material->GetDiffuseMap().lock() != nullptr;
-
-	const Coord& textCoord1 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[0] : Coord(0, 0);
-	const Coord& textCoord2 = isHasDiffuseVertexs ? material->GetDiffuseMapVerticies()[1] : Coord(1, 1);
-
-	const Coord& vertex1 = vertexes[0];
-	const Coord& vertex2 = vertexes[1];
-
-	return {
-		// positions         // colors
-		 (float)vertex1.X, (float)vertex1.Y, 0.0f,  (float)textCoord1.X,(float)textCoord1.Y,
-		 (float)vertex2.X, (float)vertex1.Y, 0.0f,  (float)textCoord2.X,(float)textCoord1.Y,
-		 (float)vertex2.X, (float)vertex2.Y, 0.0f,  (float)textCoord2.X, (float)textCoord2.Y,
-		 (float)vertex1.X, (float)vertex2.Y, 0.0f,  (float)textCoord1.X, (float)textCoord2.Y
-	};
+	renderInstance->Initialize();
 }
 
 std::string_view Player::GetAnimationName()
@@ -579,13 +558,10 @@ void Player::Update()
 
 void Player::UpdateVertices()
 {
-	std::vector<float> vertices = GetRenderVertices();
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(unsigned int), vertices.data());
+	renderInstance->UpdateVertices();
 }
 
 void Player::UpdateVertices(std::vector<float>& vertices)
 {
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(unsigned int), vertices.data());
+	renderInstance->UpdateVertices(vertices);
 }

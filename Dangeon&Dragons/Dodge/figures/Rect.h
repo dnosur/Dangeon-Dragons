@@ -2,8 +2,7 @@
 #include "../materials/figures/BaseFigureMaterial.h"
 #include "../images/ImagesController.h"
 #include "../Directions.h"
-
-extern std::vector<unsigned int> defaultIndicies;
+#include "../render/RectRenderInstance.h"
 
 class Rect :
     public IGameObject
@@ -15,10 +14,7 @@ class Rect :
 
     OnCollisionEnter OnCollisionEnterHandler;
 
-    unsigned int VAO, VBO, EBO;
-
-    Coord vertex1;
-    Coord vertex2;
+    std::unique_ptr<RectRenderInstance> renderInstance;
 
     std::shared_ptr<ICollision> collision;
 
@@ -28,8 +24,6 @@ class Rect :
 
     Color color;
     Color baseColor;
-
-    std::shared_ptr<Material> material;
 
     Directions moveDirection;
 
@@ -53,17 +47,11 @@ class Rect :
     void Draw();
 
     void InitializeRender();
-    std::vector<float> GetRenderVertices();
 public:
     Rect();
     Rect(std::string title, Coord position, Size size, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
     Rect(std::string title, Coord vertex1, Coord vertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
     Rect(std::string title, Coord vertex1, Coord vertex2, Coord textureVertex1, Coord textureVertex2, Color color = Color(0, 0, 0), Directions moveDirection = Directions::DOWN);
-
-    static void InitQuads(
-        unsigned int& VAO, unsigned int& VBO, unsigned int& EBO,
-        std::vector<float> vertices, std::vector<unsigned int>& indices = defaultIndicies
-    );
 
     static std::vector<float> GetVerticesByDirection(
         Rect& rect, 
@@ -96,8 +84,6 @@ public:
     Color GetColor();
 
     Color GetBaseColor();
-
-    std::vector<Coord> GetVertices();
 
     void SetPos(std::vector<Coord> vertices, bool render = true);
     void SetPos(Coord position, bool render = true);

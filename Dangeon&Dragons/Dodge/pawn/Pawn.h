@@ -12,11 +12,11 @@
 
 #include "Actions.h"
 
+#include "../render/RectRenderInstance.h"
+
 class Pawn : public IGameObject
 {
 protected:
-	unsigned int VAO, VBO, EBO;
-
 	MouseHoverHandler OnMouseHover;
 	MouseHoverHandler OnMouseOver;
 
@@ -24,11 +24,11 @@ protected:
 
 	OnCollisionEnter OnCollisionEnterHandler;
 
-	std::vector<Coord> vertexes;
 	std::shared_ptr<ICollision> collision;
-	std::shared_ptr<Material> material;
 
 	Directions moveDirection;
+
+	std::unique_ptr<RectRenderInstance> renderInstance;
 
 	AnimationController animations;
 	AudioController audioController;
@@ -86,8 +86,6 @@ protected:
 	virtual void AIMovement() = 0;
 
 	virtual void InitializeRender() = 0;
-
-	virtual std::vector<float> GetRenderVertices() = 0;
 public:
 	Pawn(
 		std::string title,
@@ -157,8 +155,6 @@ public:
 	const Coord& GetPos();
 
 	const Coord& GetOpenGlPos();
-
-	std::vector<Coord> GetVertices();
 
 	Size GetSize();
 

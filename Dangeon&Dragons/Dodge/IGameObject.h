@@ -28,15 +28,11 @@ __interface IGameObject
 
 	void InitializeRender();
 
-	std::vector<float> GetRenderVertices();
-
 	bool MouseHover(Mouse& mouse);
 	bool CollisionEnter(IGameObject& gameObject);
 
 	const Coord& GetPos();
 	const Coord& GetOpenGlPos();
-
-	std::vector<Coord> GetVertices();
 
 	void SetColor(Color color);
 	Color GetColor();
