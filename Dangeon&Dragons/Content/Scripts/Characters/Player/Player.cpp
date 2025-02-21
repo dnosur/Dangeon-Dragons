@@ -10,6 +10,7 @@
 #include "../../../../Dodge/figures/Rect.h"
 
 #include "../../../../Dodge/utilities/ptrs.h"
+#include "../../../../Dodge/utilities/type.h"
 
 void Player::LoadAnimations()
 {
@@ -241,7 +242,7 @@ void Player::Move()
 
 void Player::Drag(Coord newPos)
 {
-	if (!CheckForCollision(newPos, Size(24, 24))) {
+	if (!CheckForCollision(newPos)) {
 		std::cout << "Collision" << std::endl;
 		return;
 	}
@@ -481,6 +482,43 @@ std::string_view Player::GetAnimationName()
 	return "idle_down";
 }
 
+std::string_view Player::GetAnimationMovementName(Coord& direction)
+{
+	if (direction == Coord(1, 0)) {
+		return "walk_right";
+	}
+
+	if (direction == Coord(-1, 0)) {
+		return "walk_left";
+	}
+
+	if (direction == Coord(0, 1)) {
+		return "walk_down";
+	}
+
+	if (direction == Coord(0, -1)) {
+		return "walk_top";
+	}
+
+	if (direction == Coord(1, 1)) {
+		return "walk_down";
+	}
+
+	if (direction == Coord(1, -1)) {
+		return "walk_top";
+	}
+
+	if (direction == Coord(-1, 1)) {
+		return "walk_down";
+	}
+
+	if (direction == Coord(-1, -1)) {
+		return "walk_top";
+	}
+
+	return "walk_down";
+}
+
 void Player::LoadAudio()
 {
 	std::unique_ptr<Audio> walkGrass = std::make_unique<Audio>("walk-grass", "Content/Sounds/WonderWorld/walk-grass.wav");
@@ -496,18 +534,13 @@ Player::Player(
 	float health, float maxHealth, bool isPlayable, bool isKinematic, 
 	bool isHidden, std::vector<std::shared_ptr<IAnimation>> animations)
 	: Pawn(
-		title, std::move(collision),
+		title, CharacterTypes::Human, std::move(collision),
 		std::move(material), moveDirection, position, size,
 		speed, maxSpeed, minSpeed, 
 		health, maxHealth, isPlayable, isKinematic, 
 		isHidden, animations)
 {
 	Initialize();
-}
-
-Coord Player::GetStartPos()
-{
-	return startPos;
 }
 
 const Coord& Player::GetDistanceTo(IGameObject& gameObject)
@@ -564,4 +597,9 @@ void Player::UpdateVertices()
 void Player::UpdateVertices(std::vector<float>& vertices)
 {
 	renderInstance->UpdateVertices(vertices);
+}
+
+const std::type_index& Player::GetClassTypeId()
+{
+	return typeid(this);
 }

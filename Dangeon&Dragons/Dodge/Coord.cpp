@@ -13,6 +13,13 @@ constexpr Coord::Coord(COORD coord): X(coord.X), Y(coord.Y), Z(0)
 {
 }
 
+void Coord::Set(double X, double Y, double Z)
+{
+    this->X = X;
+	this->Y = Y;
+    this->Z = Z;
+}
+
 bool Coord::operator==(const Coord& other) const
 {
 	return (X == other.X) && (Y == other.Y) && (Z == other.Z);

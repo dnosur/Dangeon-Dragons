@@ -12,6 +12,8 @@ struct alignas(16) Coord
     constexpr Coord(const double X, const double Y, const double Z = 0.0);
     constexpr Coord(COORD coord);
 
+    void Set(double X, double Y, double Z = 0.0);
+
     double X, Y, Z;
 
     bool operator==(const Coord& other) const;

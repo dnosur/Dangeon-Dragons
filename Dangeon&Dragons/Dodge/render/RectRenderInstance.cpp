@@ -89,7 +89,7 @@ void RectRenderInstance::InitQuads(
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
-
+ 
 void RectRenderInstance::SetVertexes(Coord vertex1, Coord vertex2)
 {
     this->vertex1 = vertex1;

@@ -13,6 +13,8 @@
 #include "Actions.h"
 
 #include "../render/RectRenderInstance.h"
+#include "../../Content/Scripts/Characters/CharacterTypes.h"
+#include "../other/Offset.h"
 
 class Pawn : public IGameObject
 {
@@ -24,6 +26,8 @@ protected:
 
 	OnCollisionEnter OnCollisionEnterHandler;
 
+	std::weak_ptr<Pawn> target;
+
 	std::shared_ptr<ICollision> collision;
 
 	Directions moveDirection;
@@ -33,10 +37,17 @@ protected:
 	AnimationController animations;
 	AudioController audioController;
 
+	Offset offset;
+
+	Coord startPos;
+	Coord startPosVertexes[2];
+
 	Coord position;
 	Size size;
 
 	std::unique_ptr<SlicedImage> playerImages;
+
+	CharacterTypes characterType;
 
 	Layer layer;
 
@@ -52,6 +63,8 @@ protected:
 	float maxHealth;
 
 	float weight;
+
+	float viewWidth;
 
 	float damage;
 	float damageDistance;
@@ -69,7 +82,6 @@ protected:
 	bool kinematic;
 
 	virtual void LoadAnimations() = 0;
-	virtual std::string_view GetAnimationName() = 0;
 
 	virtual void LoadAudio() = 0;
 	virtual void Draw() = 0;
@@ -83,12 +95,16 @@ protected:
 
 	bool MouseInRect(Mouse& mouse);
 
+	virtual bool CheckForCollision() = 0;
+	virtual bool CheckForCollision(Coord position, Size size = Size(24, 24)) = 0;
+
 	virtual void AIMovement() = 0;
 
 	virtual void InitializeRender() = 0;
 public:
 	Pawn(
 		std::string title,
+		CharacterTypes characterType,
 		std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
 		Coord position, Size size, float speed, float maxSpeed, float minSpeed, 
 		float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
@@ -129,9 +145,6 @@ public:
 
 	void SetColor(Color color);
 
-	void AddAnimation(std::shared_ptr<IAnimation> animation);
-	void AddAnimations(std::vector<std::shared_ptr<IAnimation>> animations);
-
 	void Damage(float damage);
 	void Die();
 
@@ -147,6 +160,10 @@ public:
 
 	virtual void UpdateVertices(std::vector<float>& vertices) = 0;
 
+	void SetTarget(std::weak_ptr<Pawn> target);
+
+	std::weak_ptr<class Pawn> GetTarget();
+
 	void HookMouseHover(MouseHoverHandler OnMouseHover);
 	void HookMouseOver(MouseHoverHandler OnMouseOver);
 	void HookMouseClick(MouseClickHandler OnMouseClick);
@@ -154,11 +171,15 @@ public:
 	void HookOnCollisionEnter(OnCollisionEnter handler);
 	const Coord& GetPos();
 
+	Coord GetStartPos();
+
 	const Coord& GetOpenGlPos();
 
 	Size GetSize();
 
 	Color GetColor();
+
+	Offset& GetOffset();
 
 	std::weak_ptr<Material> GetMaterial();
 	Directions GetMoveDirection();
@@ -167,7 +188,10 @@ public:
 
 	Color GetBaseColor();
 
-	AnimationController GetAnimations();
+	AnimationController& GetAnimations();
+
+	virtual std::string_view GetAnimationName() = 0;
+	virtual std::string_view GetAnimationMovementName(Coord& direction) = 0;
 
 	Layer GetLayer();
 	void SetLayer(Layer layer);
@@ -182,6 +206,10 @@ public:
 	float GetMaxSpeed();
 	float GetMinSpeed();
 
+	float GetViewDistance();
+
+	float GetViewWidth();
+
 	std::string_view GetTitle();
 	const std::string& GetTitleString();
 
@@ -189,6 +217,8 @@ public:
 	float GetMaxHealth();
 
 	float GetWeight();
+
+	float GetDamageDistance();
 
 	bool GetIsPlayable();
 	bool GetIsHidden();
@@ -203,4 +233,8 @@ public:
 	const bool IsMouseOverlap();
 
 	const bool IsDead();
+
+	const bool IsWalkable(Coord& position);
+
+	virtual const std::type_index& GetClassTypeId() = 0;
 };

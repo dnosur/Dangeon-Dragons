@@ -1,6 +1,7 @@
-#include "Pawn.h"
+﻿#include "Pawn.h"
 #include "../render/RectRenderInstance.h"
 #include "../utilities/ptrs.h"
+#include "../../Content/Scripts/AI/Movements/MovementsController.h"
 
 void Pawn::MathPos(std::vector<Coord> vertexes)
 {
@@ -62,6 +63,7 @@ bool Pawn::MouseInRect(Mouse& mouse)
 
 Pawn::Pawn(
 	std::string title,
+	CharacterTypes characterType,
 	std::shared_ptr<ICollision> collision, std::shared_ptr<Material> material, Directions moveDirection,
 	Coord position, Size size, float speed, float maxSpeed, float minSpeed,
 	float health, float maxHealth, bool isPlayable, bool isKinematic, bool isHidden,
@@ -69,6 +71,8 @@ Pawn::Pawn(
 ){
 
 	SetTitle(title);
+
+	this->characterType = characterType;
 
 	renderInstance = std::make_unique<RectRenderInstance>(std::move(material));
 
@@ -89,6 +93,8 @@ Pawn::Pawn(
 	this->isPlayable = isPlayable;
 	this->kinematic = isKinematic;
 	this->isHidden = isHidden;
+
+	target = {};
 
 	SetLayer(Layer::Pawn);
 
@@ -213,16 +219,6 @@ void Pawn::SetColor(Color color)
 	renderInstance->GetMaterial().lock()->SetDiffuse(color);
 }
 
-void Pawn::AddAnimation(std::shared_ptr<IAnimation> animation)
-{
-	animations.AddAnimation(animation);
-}
-
-void Pawn::AddAnimations(std::vector<std::shared_ptr<IAnimation>> animations)
-{
-	this->animations.AddAnimations(animations);
-}
-
 void Pawn::Damage(float damage)
 {
 	if (health <= 0) {
@@ -278,6 +274,16 @@ bool Pawn::CollisionEnter(IGameObject& gameObject)
 	}
 }
 
+void Pawn::SetTarget(std::weak_ptr<Pawn> target)
+{
+	this->target = std::move(target);
+}
+
+std::weak_ptr<class Pawn> Pawn::GetTarget()
+{
+	return target;
+}
+
 void Pawn::HookMouseHover(MouseHoverHandler onMouseHover)
 {
 	this->OnMouseHover = onMouseHover;
@@ -303,6 +309,11 @@ const Coord& Pawn::GetPos()
 	return position;
 }
 
+Coord Pawn::GetStartPos()
+{
+	return startPos;
+}
+
 const Coord& Pawn::GetOpenGlPos()
 {
 	return Coord(Window::PixelToGLX(position.X), Window::PixelToGLY(position.Y));
@@ -318,6 +329,11 @@ Color Pawn::GetColor()
 	return ValidWeakPtr<Material>(renderInstance->GetMaterial()) 
 		? renderInstance->GetMaterial().lock()->GetDiffuse() 
 		: Color();
+}
+
+Offset& Pawn::GetOffset()
+{
+	return offset;
 }
 
 std::weak_ptr<Material> Pawn::GetMaterial()
@@ -342,7 +358,7 @@ Color Pawn::GetBaseColor()
 		: Color();
 }
 
-AnimationController Pawn::GetAnimations()
+AnimationController& Pawn::GetAnimations()
 {
 	return animations;
 }
@@ -382,6 +398,16 @@ float Pawn::GetMinSpeed()
 	return minSpeed;
 }
 
+float Pawn::GetViewDistance()
+{
+	return viewDistance;
+}
+
+float Pawn::GetViewWidth()
+{
+	return viewWidth;
+}
+
 std::string_view Pawn::GetTitle()
 {
 	return title;
@@ -405,6 +431,11 @@ float Pawn::GetMaxHealth()
 float Pawn::GetWeight()
 {
 	return weight;
+}
+
+float Pawn::GetDamageDistance()
+{
+	return damageDistance;
 }
 
 bool Pawn::GetIsPlayable()
@@ -433,4 +464,9 @@ const bool Pawn::IsMouseOverlap()
 const bool Pawn::IsDead()
 {
 	return health <= 0;
+}
+
+const bool Pawn::IsWalkable(Coord& position)
+{
+	return CheckForCollision(position);
 }

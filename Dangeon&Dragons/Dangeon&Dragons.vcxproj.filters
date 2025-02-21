@@ -210,7 +210,7 @@
     <ClCompile Include="Content\Scripts\AI\Node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Content\Scripts\AI\Movement.cpp">
+    <ClCompile Include="Content\Scripts\AI\Movements\Movement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dodge\raycast\Raycast.cpp">
@@ -289,6 +289,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dodge\render\RectRenderInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Scripts\Characters\Utilities\utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Scripts\AI\Algorithms\AIContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Scripts\AI\Algorithms\WanderContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Scripts\AI\Movements\MovementsController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\Directions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dodge\other\Offset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -515,7 +533,7 @@
     <ClInclude Include="Content\Scripts\AI\Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Content\Scripts\AI\Movement.h">
+    <ClInclude Include="Content\Scripts\AI\Movements\Movement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dodge\audio\AudioStates.h">
@@ -600,6 +618,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dodge\utilities\ptrs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\Characters\CharacterTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\Characters\Utilities\utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\AI\Algorithms\AIStrategy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\AI\Algorithms\AIContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\AI\Algorithms\WanderContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Scripts\AI\Movements\MovementsController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dodge\other\Offset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

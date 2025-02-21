@@ -140,10 +140,13 @@ copy "$(MSBuildStartupDirectory)\vcpkg_installed\x64-windows\bin" "$(OutDir)"</C
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Content\Scripts\AI\Algorithms\AIContext.cpp" />
+    <ClCompile Include="Content\Scripts\Characters\Utilities\utilities.cpp" />
     <ClCompile Include="Content\Scripts\Screens\MainWindowLoading\MainWindowLoading.cpp" />
     <ClCompile Include="Content\Scripts\UI\ProgressBar\HpBar\HpBar.cpp" />
     <ClCompile Include="Dodge\camera\Camera.cpp" />
     <ClCompile Include="Dodge\animator\AnimationsFactory.cpp" />
+    <ClCompile Include="Dodge\Directions.cpp" />
     <ClCompile Include="Dodge\Layers.h" />
     <ClCompile Include="Dodge\render\RenderInstance.cpp" />
     <ClCompile Include="Dodge\Sides.cpp" />
@@ -209,7 +212,7 @@ copy "$(MSBuildStartupDirectory)\vcpkg_installed\x64-windows\bin" "$(OutDir)"</C
     <ClCompile Include="Dodge\tiny\TilesetProperties\IntPropertie.cpp" />
     <ClCompile Include="Content\Scripts\Characters\Enemys\Skeleton.cpp" />
     <ClCompile Include="Content\Scripts\AI\Node.cpp" />
-    <ClCompile Include="Content\Scripts\AI\Movement.cpp" />
+    <ClCompile Include="Content\Scripts\AI\Movements\Movement.cpp" />
     <ClCompile Include="Dodge\raycast\Raycast.cpp" />
     <ClCompile Include="Dodge\raycast\Ray.cpp" />
     <ClCompile Include="Dodge\raycast\RayFactory.cpp" />
@@ -232,8 +235,14 @@ copy "$(MSBuildStartupDirectory)\vcpkg_installed\x64-windows\bin" "$(OutDir)"</C
     <ClCompile Include="Content\Scripts\UI\PauseMenu\PauseMenu.cpp" />
     <ClCompile Include="Dodge\shaders\ShadersController.cpp" />
     <ClCompile Include="Dodge\render\RectRenderInstance.cpp" />
+    <ClCompile Include="Content\Scripts\AI\Algorithms\WanderContext.cpp" />
+    <ClCompile Include="Content\Scripts\AI\Movements\MovementsController.cpp" />
+    <ClCompile Include="Dodge\other\Offset.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Content\Scripts\AI\Algorithms\AIContext.h" />
+    <ClInclude Include="Content\Scripts\Characters\CharacterTypes.h" />
+    <ClInclude Include="Content\Scripts\Characters\Utilities\utilities.h" />
     <ClInclude Include="Content\Scripts\Screens\MainWindowLoading\MainWindowLoading.h" />
     <ClInclude Include="Content\Scripts\UI\ProgressBar\HpBar\HpBar.h" />
     <ClInclude Include="Dodge\audio\AudioStates.h" />
@@ -314,7 +323,7 @@ copy "$(MSBuildStartupDirectory)\vcpkg_installed\x64-windows\bin" "$(OutDir)"</C
     <ClInclude Include="Dodge\tiny\TilesetProperties\IntPropertie.h" />
     <ClInclude Include="Content\Scripts\Characters\Enemys\Skeleton.h" />
     <ClInclude Include="Content\Scripts\AI\Node.h" />
-    <ClInclude Include="Content\Scripts\AI\Movement.h" />
+    <ClInclude Include="Content\Scripts\AI\Movements\Movement.h" />
     <ClInclude Include="Dodge\raycast\Raycast.h" />
     <ClInclude Include="Dodge\raycast\Ray.h" />
     <ClInclude Include="Dodge\raycast\RayFactory.h" />
@@ -337,6 +346,10 @@ copy "$(MSBuildStartupDirectory)\vcpkg_installed\x64-windows\bin" "$(OutDir)"</C
     <ClInclude Include="Content\Scripts\UI\PauseMenu\PauseMenu.h" />
     <ClInclude Include="Dodge\shaders\ShadersController.h" />
     <ClInclude Include="Dodge\render\RectRenderInstance.h" />
+    <ClInclude Include="Content\Scripts\AI\Algorithms\AIStrategy.h" />
+    <ClInclude Include="Content\Scripts\AI\Algorithms\WanderContext.h" />
+    <ClInclude Include="Content\Scripts\AI\Movements\MovementsController.h" />
+    <ClInclude Include="Dodge\other\Offset.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dodge\project properties.txt" />

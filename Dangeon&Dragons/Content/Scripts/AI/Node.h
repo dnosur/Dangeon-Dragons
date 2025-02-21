@@ -4,7 +4,7 @@
 #include <cmath>
 
 #include "../../../Dodge/Coord.h"
-#include "Movement.h"
+#include "Movements/Movement.h"
 
 // Структура узла для A*
 struct Node {

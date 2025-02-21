@@ -5,52 +5,27 @@
 #include "../../../../Dodge/pawn/Pawn.h"
 #include "../../../../Dodge/images/SlicedImage.h"
 
-#include "../../AI/Movement.h"
+#include "../../AI/Movements/Movement.h"
 
 class Skeleton
 	: public Pawn, public std::enable_shared_from_this<Skeleton>
 {
-    std::weak_ptr<Pawn> target;
-    float viewDistance;
-
-    float viewWidth;
-
-    Coord startPos;
-    Coord startPosVertexes[2];
-    Coord offset;
-
-    std::vector<std::unique_ptr<Movement>> movements;
-	int movementIndex;
-
-    std::mutex pathMutex;
-    bool findingPath;
+    std::unique_ptr<AIContext> aiContext;
 
     void LoadAnimations() override;
-    std::string_view GetAnimationName() override;
-    std::string_view GetAnimationMovementName(Coord direction);
 
     void LoadAudio() override;
-
-    Directions GetDirection(Coord direction);
     void Draw() override;
 
     void Move();
     void Drag(Coord newPos);
 
-    bool CheckForCollision(Coord position);
-    bool CheckForCollision();
+    bool CheckForCollision(Coord position, Size size = Size(24, 24)) override;
+    bool CheckForCollision() override;
 
     void MathSide(double& sideSize, bool isWidth);
 
     void AIMovement() override;
-
-    Coord GenerateRandomPosition(Coord center, float radius);
-
-    bool FindPath(Coord start, Coord goal);
-    bool FindTarget();
-
-    std::vector<std::unique_ptr<Movement>> GetNeighbors(Coord position);
-    bool IsWalkable(Coord position);
 
     void InitializeRender() override;
 public:
@@ -66,25 +41,21 @@ public:
 
     void SetSideSize(Sides sides, bool render = true) override;
 
-    Coord GetStartPos();
-
     const Coord& GetDistanceTo(IGameObject& gameObject) override;
     float GetFloatDistanceTo(IGameObject& gameObject) override;
 
     bool IsNear(IGameObject& gameObject) override;
     bool IsNear(Coord position) override;
 
-    void SetTarget(std::weak_ptr<Pawn> target);
-    std::weak_ptr<class Pawn> GetTarget();
-
-    void ViewPawn(Pawn* pawn);
-
-    void SetPathOffset(Coord offset);
+    void ViewPawn(class Pawn* pawn);
+    std::string_view GetAnimationName() override;
+    std::string_view GetAnimationMovementName(Coord& direction);
 
     void Update() override;
 
     void UpdateVertices() override;
 
     void UpdateVertices(std::vector<float>& vertices) override;
-};
 
+    const std::type_index& GetClassTypeId() override;
+};

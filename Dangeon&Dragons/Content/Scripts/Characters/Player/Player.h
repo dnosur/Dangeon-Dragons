@@ -6,14 +6,10 @@
 class Player :
     public Pawn, public std::enable_shared_from_this<Player>
 {
-    //������� �� ������ ��� ���������
-    Coord startPos;
-    Coord startPosVertexes[2];
 
     std::mutex* raycastMutex;
 
     void LoadAnimations() override;
-    std::string_view GetAnimationName() override;
 
     void LoadAudio() override;
 	void Draw() override;
@@ -23,8 +19,8 @@ class Player :
 
     void Raycasting();
 
-    bool CheckForCollision();
-    bool CheckForCollision(Coord position, Size size);
+    bool CheckForCollision() override;
+    bool CheckForCollision(Coord position, Size size = Size(24, 24)) override;
 
     void MathSide(double& sideSize, bool isWidth) override;
 
@@ -44,18 +40,20 @@ public:
 
     void SetSideSize(Sides sides, bool render = true) override;
 
-    Coord GetStartPos();
-
     const Coord& GetDistanceTo(IGameObject& gameObject) override;
     float GetFloatDistanceTo(IGameObject& gameObject) override;
 
     bool IsNear(IGameObject& gameObject) override;
     bool IsNear(Coord position) override;
 
+    std::string_view GetAnimationName() override;
+    std::string_view GetAnimationMovementName(Coord& direction) override;
+
     void Update() override;
 
     void UpdateVertices() override;
 
     void UpdateVertices(std::vector<float>& vertices) override;
-};
 
+    const std::type_index& GetClassTypeId() override;
+};

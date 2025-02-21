@@ -96,7 +96,7 @@ void WonderWold::SpawnSkeleton(Coord position)
 
 		skeletonMaterial->SetCamera(camera);
 
-		std::shared_ptr<Skeleton> skeleton = std::make_unique<Skeleton>(
+		std::shared_ptr<class Skeleton> skeleton = std::make_unique<class Skeleton>(
 			"Skeleton",
 			std::make_unique<BoxCollision>(
 				spawn->GetPos(),
@@ -204,8 +204,8 @@ void WonderWold::Update()
 		for (std::shared_ptr<class Pawn>& pawn : enemys) {
 			Coord temp = pawn->GetPos();
 			pawn->SetPos(temp + cameraOffset);
-			if (std::shared_ptr<Skeleton> skeleton = std::dynamic_pointer_cast<Skeleton>(pawn)) {
-				skeleton->SetPathOffset(cameraOffset);
+			if (std::shared_ptr<class Skeleton> skeleton = std::dynamic_pointer_cast<class Skeleton>(pawn)) {
+				skeleton->GetOffset() += cameraOffset;
 			}
 
 			std::shared_ptr<ICollision> collision = pawn->GetCollision().lock();
