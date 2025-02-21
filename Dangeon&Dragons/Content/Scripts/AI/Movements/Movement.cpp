@@ -6,12 +6,15 @@ Movement::Movement()
 
 	action = Actions::Idle;
 	direction = Directions::DOWN;
+
 	animation = nullptr;
+	aiContext = nullptr;
 }
 
 Movement::Movement(
     std::string_view title, Directions direction, Actions action,
-	std::shared_ptr<IAnimation> animation, Coord position)
+	std::shared_ptr<IAnimation> animation, Coord position,
+	std::unique_ptr<AIContext> aiContext)
 {
 	this->title = title;
 	complete = false;
@@ -20,4 +23,6 @@ Movement::Movement(
 	this->action = action;
 	this->animation = animation;
 	this->position = position;
+
+	this->aiContext = std::move(aiContext);
 }
