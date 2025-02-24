@@ -81,6 +81,11 @@ void RenderInstance::SetVertices(std::vector<float> vertices)
     this->vertices = vertices;
 }
 
+bool RenderInstance::IsInitialized()
+{
+    return VAO && VBO && EBO;
+}
+
 bool RenderInstance::operator==(RenderInstance& other)
 {
     return VAO = other.VAO && VBO == other.VBO && EBO == other.EBO && 

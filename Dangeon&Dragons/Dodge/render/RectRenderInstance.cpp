@@ -133,7 +133,7 @@ void RectRenderInstance::MoveMaterial(std::shared_ptr<Material> material)
 
 void RectRenderInstance::Render()
 {
-    if (!VBO && !VAO && !EBO) {
+    if (!IsInitialized()) {
         Initialize();
     }
 

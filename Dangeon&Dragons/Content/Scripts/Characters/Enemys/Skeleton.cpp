@@ -41,7 +41,7 @@ const Coord& Skeleton::GetDistanceTo(IGameObject& gameObject)
 float Skeleton::GetFloatDistanceTo(IGameObject& gameObject)
 {
 	return CalculateDistanceWithSize(
-		startPos, 
+		position,
 		gameObject.GetPos(),
 		gameObject.GetSize()
 	);

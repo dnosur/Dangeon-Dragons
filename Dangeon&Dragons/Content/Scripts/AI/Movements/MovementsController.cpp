@@ -29,7 +29,7 @@ void MovementsController::MakeNext(class Pawn*& pawn)
 		return;
 	}
 
-	UseOffset(pawn->GetOffset().GetOffset());
+	//UseOffset(pawn->GetOffset().GetOffset());
 
 	std::unique_ptr<Movement> movement = std::move(movements[movementIndex]);
 
@@ -67,7 +67,7 @@ int MovementsController::Size()
 
 bool MovementsController::IsComplete()
 {
-	return movements.size() == movementIndex;
+	return movements.size() == movementIndex + 1;
 }
 
 std::vector<std::unique_ptr<Movement>>::iterator MovementsController::begin()

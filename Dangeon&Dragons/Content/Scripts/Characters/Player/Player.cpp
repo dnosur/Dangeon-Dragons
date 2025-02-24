@@ -10,7 +10,6 @@
 #include "../../../../Dodge/figures/Rect.h"
 
 #include "../../../../Dodge/utilities/ptrs.h"
-#include "../../../../Dodge/utilities/type.h"
 
 void Player::LoadAnimations()
 {
@@ -184,7 +183,7 @@ void Player::Move()
 				std::bind(
 					&Player::Drag,
 					this,
-					Coord(startPos.X, startPos.Y - (speed + speedBonus) * 0.1f)
+					Coord(position.X, position.Y - (speed + speedBonus) * 0.1f)
 				)
 			)
 		);
@@ -199,7 +198,7 @@ void Player::Move()
 				std::bind(
 					&Player::Drag,
 					this,
-					Coord(startPos.X, startPos.Y + (speed + speedBonus) * 0.1f)
+					Coord(position.X, position.Y + (speed + speedBonus) * 0.1f)
 				)
 			)
 		);
@@ -214,7 +213,7 @@ void Player::Move()
 				std::bind(
 					&Player::Drag,
 					this,
-					Coord(startPos.X - (speed + speedBonus) * 0.1f, startPos.Y)
+					Coord(position.X - (speed + speedBonus) * 0.1f, position.Y)
 				)
 			)
 		);
@@ -229,7 +228,7 @@ void Player::Move()
 				std::bind(
 					&Player::Drag,
 					this,
-					Coord(startPos.X + (speed + speedBonus) * 0.1f, startPos.Y)
+					Coord(position.X + (speed + speedBonus) * 0.1f, position.Y)
 				)
 			)
 		);
@@ -254,14 +253,15 @@ void Player::Drag(Coord newPos)
 		audioController.Play("walk-grass");
 	}
 
-	position += newPos - startPos;
+	position = newPos;
+	MathPos(position);
 }
 
 void Player::Raycasting()
 {
 	std::unique_ptr<Ray> interactiveRay = std::move(
 		RayFactory::CreateRay(
-			std::move(std::make_unique<Coord>(startPos)),
+			std::move(std::make_unique<Coord>(position)),
 			std::move(std::make_unique<Directions>(moveDirection)),
 			interactiveDistance,
 			20
@@ -270,7 +270,7 @@ void Player::Raycasting()
 
 	std::unique_ptr<Ray> damageRay = std::move(
 		RayFactory::CreateRay(
-			std::move(std::make_unique<Coord>(startPos)),
+			std::move(std::make_unique<Coord>(position)),
 			std::move(std::make_unique<Directions>(moveDirection)),
 			damageDistance,
 			20
@@ -545,13 +545,13 @@ Player::Player(
 
 const Coord& Player::GetDistanceTo(IGameObject& gameObject)
 {
-	return startPos - gameObject.GetPos();
+	return position - gameObject.GetPos();
 }
 
 float Player::GetFloatDistanceTo(IGameObject& gameObject)
 {
 	return CalculateDistanceWithSize(
-		startPos, 
+		position,
 		gameObject.GetPos(), 
 		gameObject.GetSize()
 	);
@@ -559,25 +559,28 @@ float Player::GetFloatDistanceTo(IGameObject& gameObject)
 
 bool Player::IsNear(IGameObject& gameObject)
 {
-	return (std::abs(gameObject.GetPos().X) == std::abs(this->startPos.X)
-		&& std::abs(gameObject.GetPos().Y) == std::abs(this->startPos.Y)) ||
-		(std::abs(gameObject.GetPos().X - this->startPos.X) <= damageDistance &&
-			std::abs(gameObject.GetPos().Y - this->startPos.Y) <= damageDistance);
+	return (std::abs(gameObject.GetPos().X) == std::abs(this->position.X)
+		&& std::abs(gameObject.GetPos().Y) == std::abs(this->position.Y)) ||
+		(std::abs(gameObject.GetPos().X - this->position.X) <= damageDistance &&
+			std::abs(gameObject.GetPos().Y - this->position.Y) <= damageDistance);
 }
 
 bool Player::IsNear(Coord position)
 {
-	return (std::abs(position.X) == std::abs(this->startPos.X)
-		&& std::abs(position.Y) == std::abs(this->startPos.Y)) ||
-		(std::abs(position.X - this->startPos.X) <= damageDistance &&
-			std::abs(position.Y - this->startPos.Y) <= damageDistance);
+	return (std::abs(position.X) == std::abs(this->position.X)
+		&& std::abs(position.Y) == std::abs(this->position.Y)) ||
+		(std::abs(position.X - this->position.X) <= damageDistance &&
+			std::abs(position.Y - this->position.Y) <= damageDistance);
 }
 
 void Player::Update()
 {
-	std::unique_ptr<Thread> th = std::make_unique<Thread>("PlayerRaycast", [this]() {
-		Raycasting();
-	});
+	std::unique_ptr<Thread> th = nullptr;
+	if (renderInstance->IsInitialized()) {
+		th = std::make_unique<Thread>("PlayerRaycast", [this]() {
+			Raycasting();
+		});
+	}
 
 	if (Window::GetGameStatus() == GameStatuses::Start) {
 		Move();
@@ -586,7 +589,9 @@ void Player::Update()
 
 	Draw();
 
-	th->Join();
+	if (th) {
+		th->Join();
+	}
 }
 
 void Player::UpdateVertices()

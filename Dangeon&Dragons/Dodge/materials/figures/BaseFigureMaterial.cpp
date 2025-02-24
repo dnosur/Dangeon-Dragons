@@ -64,8 +64,11 @@ void BaseFigureMaterial::Use(IGameObject* gameObject)
 	if (camera) {
 		ShadersController::SetBool(shader, "useCamera", false);
 
-		Coord cameraOffsetPosition = camera->GetPosition();
-		ShadersController::SetVec3(shader, "camera.cameraOffsetPosition", cameraOffsetPosition.X, cameraOffsetPosition.Y, 0.0f);
+		glm::mat4 view = camera->GetViewMatrix();
+		glm::mat4 projection = camera->GetProjectionMatrix();
+
+		ShadersController::SetMat4(shader, "camera.view", view);
+		ShadersController::SetMat4(shader, "camera.projection", projection);
 	}
 }
 

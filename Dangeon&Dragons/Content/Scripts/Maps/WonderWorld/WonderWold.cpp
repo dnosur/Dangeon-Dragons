@@ -9,8 +9,8 @@ void WonderWold::CreateCamera()
 {
 	camera = std::make_shared<Camera>(
 		"Player",
-		Size(0, 0),
-		Size(1000, 1000)
+		Window::GetRenderResolutionView(),
+		Size(4000, 4000)
 	);
 }
 
@@ -37,6 +37,8 @@ void WonderWold::SpawnPlayer()
 			)
 		)
 	);
+
+	playerMaterial->SetCamera(camera);
 
 	player = std::make_shared<Player>(
 		"Player",
@@ -141,6 +143,26 @@ void WonderWold::Initialize()
 	SpawnPlayer();
 	SpawnSkeleton(Coord(450, 300));
 
+	for (std::shared_ptr<IGameObject>& obj : gameObjects) {
+		if (!obj->GetMaterial().lock() || obj->GetMaterial().expired()) {
+			continue;
+		}
+
+		obj->GetMaterial().lock()->SetCamera(camera);
+	}
+
+	for (std::shared_ptr<IGameObject>& classObj : gameClasses) {
+		if (!classObj->GetMaterial().lock() || classObj->GetMaterial().expired()) {
+			continue;
+		}
+
+		classObj->GetMaterial().lock()->SetCamera(camera);
+	}
+
+	if (camera) {
+		camera->Update();
+	}
+
 	std::unique_ptr<Audio> main = std::make_unique<Audio>("main", "Content/Sounds/WonderWorld/main.wav");
 	main->SetVolume(0.05f);
 
@@ -172,16 +194,8 @@ void WonderWold::Update()
 
 	bool isPause = Window::GetGameStatus() == GameStatuses::Pause;
 
-	Coord cameraOffset = camera->GetOffset();
-	bool cameraMove = (cameraOffset.X != 0 || cameraOffset.Y != 0) && !isPause;
-
 	for (std::shared_ptr<IGameObject>& obj : gameObjects)
 	{
-		if (cameraMove) {
-			Coord temp = obj->GetPos();
-			obj->SetPos(temp + cameraOffset);
-		}
-
 		if (!isPause) {
 			animationController.Play(obj->GetTitle());
 		}
@@ -192,40 +206,12 @@ void WonderWold::Update()
 
 		const Coord& distance = lockedObserved->GetDistanceTo(*obj);
 
-		if (distance.X >= 500 || distance.X <= -838 ||
-			distance.Y >= 584|| distance.Y <= -200) {
+		if (distance.X >= Window::GetRenderResolutionView().width * 0.5f || distance.X <= -(Window::GetRenderResolutionView().width * 0.65f) ||
+			distance.Y >= Window::GetRenderResolutionView().height * 0.5f || distance.Y <= -(Window::GetRenderResolutionView().height * 0.65f)) {
 			continue;
 		}
 
 		obj->Update();
-	}
-
-	if (cameraMove) {
-		for (std::shared_ptr<class Pawn>& pawn : enemys) {
-			Coord temp = pawn->GetPos();
-			pawn->SetPos(temp + cameraOffset);
-			if (std::shared_ptr<class Skeleton> skeleton = std::dynamic_pointer_cast<class Skeleton>(pawn)) {
-				skeleton->GetOffset() += cameraOffset;
-			}
-
-			std::shared_ptr<ICollision> collision = pawn->GetCollision().lock();
-			if (collision == nullptr) {
-				continue;
-			}
-
-			collision->SetPoints({
-				pawn->GetPos()
-			});
-		}
-
-		for (std::shared_ptr<IGameObject>& obj : gameClasses)
-		{
-			Coord temp = obj->GetPos();
-			obj->SetPos(temp + cameraOffset);
-			obj->GetCollision().lock()->SetPoints({
-				obj->GetPos()
-			});
-		}
 	}
 
 	UpdatePawns();
@@ -233,11 +219,14 @@ void WonderWold::Update()
 
 void WonderWold::UpdatePawns()
 {
-	camera->DropOffset();
 	for (std::shared_ptr<class Pawn>& pawn : enemys)
 	{
 		pawn->Update();
 	}
 
 	player->Update();
+
+	if (camera) {
+		camera->Update();
+	}
 }

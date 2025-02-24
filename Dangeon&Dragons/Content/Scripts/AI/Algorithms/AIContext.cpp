@@ -17,10 +17,10 @@ bool AIContext::Invoke(Pawn* pawn, AIContext* sender)
 {
 	if (pawn && strategy)
 	{
-		std::cout << "AIContext '" << typeid(*strategy).name() << "': invoke" << std::endl;
+		//std::cout << "AIContext '" << typeid(*strategy).name() << "': invoke" << std::endl;
 		return strategy->Invoke(pawn, sender);
 	}
 
-	std::cout << "AIContext: invoke failed! No AI strategy" << std::endl;
+	//std::cout << "AIContext: invoke failed! No AI strategy" << std::endl;
 	return false;
 }

@@ -31,5 +31,7 @@ public:
 
 	virtual void Render() = 0;
 
+	bool IsInitialized();
+
 	bool operator == (RenderInstance& other);
 };

@@ -5,77 +5,82 @@
 #include "../Material.h"
 
 
+Camera::Camera(std::string title, Size cameraSize, Size mapSize)
+    : size(cameraSize), mapSize(mapSize), observed(nullptr), title(title), oldPos(Coord(0, 0))
+{
+}
+
 void Camera::UpdateCamera()
 {
     if (!observed) return;
 
-    // �������� ������� ������� (������) � ��������
+    // 🔹 Получаем позицию игрока
     Coord playerPosition = observed->GetPos();
 
-    // ���������� ������ ������������ ������
-    position = playerPosition - Coord(size.width / 2.0, size.height / 2.0);
+    // 🔹 Получаем размеры игрока
+    double playerWidth = observed->GetSize().GetWidth();
+    double playerHeight = observed->GetSize().GetHeight();
 
-    // ������������ �������� ������ ��������� �����
-    position.X = Max<double>(0.0, Min<double>(position.X, mapSize.width - size.width));
-    position.Y = Max<double>(0.0, Min<double>(position.Y, mapSize.height - size.height));
+    // 🔹 Корректируем центр игрока (сместим позицию в центр его спрайта)
+    double centeredX = playerPosition.X + playerWidth / 2.0;
+    double centeredY = playerPosition.Y + playerHeight / 2.0 + Window::GetRenderResolution().GetHeight();
 
-    // �������
-    std::cout << "Player: " << playerPosition.X << " " << playerPosition.Y << std::endl;
-    std::cout << "Camera Position (pixels): " << position.X << ", " << position.Y << std::endl;
+    // 🔹 Центрируем камеру на центре игрока
+    position = Coord(centeredX - size.width / 2.0, centeredY - size.height / 2.0);
+
+    // 🔹 Ограничиваем границы, чтобы камера не выходила за карту
+    position.X = Window::PixelToGLX(Min<double>(position.X, mapSize.width - size.width));
+    position.Y = Window::PixelToGLY(Min<double>(position.Y, mapSize.height - size.height));
+
+    oldPos = playerPosition;
+
+    std::cout << "Player pos: " << playerPosition.X << ", " << playerPosition.Y << std::endl;
+    std::cout << "Camera pos GL: " << position.X << ", " << position.Y << std::endl;
 }
 
-float Camera::GetPixelToGLFactorX()
-{
-    return 2.0f / Window::GetRenderResolution().width;
-}
-
-float Camera::GetPixelToGLFactorY()
-{
-    return 2.0f / Window::GetRenderResolution().height;
-}
-
-Coord Camera::GetOffset()
-{
-    if (!observed) return Coord(0.0f, 0.0f);
-
-    return position - observed->GetPos();
-}
-
-void Camera::DropOffset()
-{
-    position = observed->GetPos();
-}
-
-Camera::Camera(std::string title, Size cameraSize, Size mapSize)
-    : size(cameraSize), mapSize(mapSize), observed(nullptr), title(title) 
-{
-}
 
 void Camera::Update()
 {
-    UpdateCamera();
+    if (oldPos != observed->GetPos()) {
+        UpdateCamera();
+    }
 }
 
-
-Mat4 Camera::GetViewMatrix() const {
-    // ������� ����: ����� ����� ������������ ������� ������
-    return Mat4::Translate(Vec2(-position.X, -position.Y));
+glm::mat4 Camera::GetViewMatrix() const
+{
+    return glm::translate(glm::mat4(1.0f), glm::vec3(-position.X, -position.Y, 0.0f));
 }
 
-Mat4 Camera::GetProjectionMatrix() const {
-    // ��������������� ��������
-    return Mat4::Ortho(0.0f, size.width, size.height, 0.0f);
+glm::mat4 Camera::GetProjectionMatrix() const {
+    float left = 0.0f;
+    float right = static_cast<float>(size.width);
+    float bottom = static_cast<float>(size.height);
+    float top = 0.0f;
+
+    // Переводим пиксели в OpenGL-координаты от -1 до 1
+    float scaleX = 2.0f / (right - left);
+    float scaleY = 2.0f / (bottom - top);
+
+    // Используем ортографическую проекцию, но с нормализацией в OpenGL координаты
+    glm::mat4 projection = glm::ortho(left * scaleX, right * scaleX, top * scaleY, bottom * scaleY, -1.0f, 1.0f);
+
+    return projection;
 }
 
 Coord Camera::GetPosition() const
 {
-    return Coord(position.X, position.Y);
+    return position;
 }
 
 void Camera::SetObservedObj(std::shared_ptr<IGameObject> obj)
 {
-    this->observed = obj;
-    position = this->observed->GetPos();
+    observed = obj;
+    position = observed->GetPos();
+}
+
+const Coord& Camera::GetOldObservedPos()
+{
+    return oldPos;
 }
 
 std::weak_ptr<IGameObject> Camera::GetObservedObj()
