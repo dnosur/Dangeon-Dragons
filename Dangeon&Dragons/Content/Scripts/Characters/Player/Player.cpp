@@ -177,61 +177,25 @@ void Player::Move()
 		moveDirection = Directions::UP;
 		action = Actions::Move;
 
-		std::future<void>(
-			std::async(
-				std::launch::async,
-				std::bind(
-					&Player::Drag,
-					this,
-					Coord(position.X, position.Y - (speed + speedBonus) * 0.1f)
-				)
-			)
-		);
+		Drag(Coord(position.X, position.Y - (speed + speedBonus) * 0.1f));
 	}
 	if (keyboard->Pressed(KeyboardKeys::S)) {
 		moveDirection = Directions::DOWN;
 		action = Actions::Move;
 
-		std::future<void>(
-			std::async(
-				std::launch::async,
-				std::bind(
-					&Player::Drag,
-					this,
-					Coord(position.X, position.Y + (speed + speedBonus) * 0.1f)
-				)
-			)
-		);
+		Drag(Coord(position.X, position.Y + (speed + speedBonus) * 0.1f));
 	}
 	if (keyboard->Pressed(KeyboardKeys::A)) {
 		moveDirection = Directions::LEFT;
 		action = Actions::Move;
 
-		std::future<void>(
-			std::async(
-				std::launch::async,
-				std::bind(
-					&Player::Drag,
-					this,
-					Coord(position.X - (speed + speedBonus) * 0.1f, position.Y)
-				)
-			)
-		);
+		Drag(Coord(position.X - (speed + speedBonus) * 0.1f, position.Y));
 	}
 	if (keyboard->Pressed(KeyboardKeys::D)) {
 		moveDirection = Directions::RIGHT;
 		action = Actions::Move;
 
-		std::future<void>(
-			std::async(
-				std::launch::async,
-				std::bind(
-					&Player::Drag,
-					this,
-					Coord(position.X + (speed + speedBonus) * 0.1f, position.Y)
-				)
-			)
-		);
+		Drag(Coord(position.X + (speed + speedBonus) * 0.1f, position.Y));
 	}
 
 	if (keyboard->Pressed(KeyboardKeys::Space)) {
@@ -253,8 +217,7 @@ void Player::Drag(Coord newPos)
 		audioController.Play("walk-grass");
 	}
 
-	position = newPos;
-	MathPos(position);
+	SetPos(newPos);
 }
 
 void Player::Raycasting()
