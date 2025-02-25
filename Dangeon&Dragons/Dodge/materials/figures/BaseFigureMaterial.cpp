@@ -10,10 +10,17 @@ BaseFigureMaterial::BaseFigureMaterial(
 	std::shared_ptr<Image> diffuseMap, 
 	std::shared_ptr<Image> normalMap, 
 	std::shared_ptr<Image> specularMap, 
-	std::shared_ptr<Image> emissiveMap
-) : Material(ambient, diffuse, specular, emissive, shininess, metalic, roughness, specularIntensity, emissiveIntensity, shader, diffuseMap, normalMap, specularMap, emissiveMap)
-{
-}
+	std::shared_ptr<Image> emissiveMap,
+
+	std::shared_ptr<Camera> camera
+) : Material(
+	ambient, diffuse, specular, emissive, 
+	shininess, metalic, roughness, specularIntensity, 
+	emissiveIntensity,
+	shader, 
+	diffuseMap, normalMap, specularMap, emissiveMap,
+	camera
+){}
 
 void BaseFigureMaterial::Use(IGameObject* gameObject)
 {
@@ -61,15 +68,18 @@ void BaseFigureMaterial::Use(IGameObject* gameObject)
 	ShadersController::SetFloat(shader, "material.roughness", roughness);
 
 	//Camera 
-	if (camera) {
+	if (!camera) {
 		ShadersController::SetBool(shader, "useCamera", false);
-
-		glm::mat4 view = camera->GetViewMatrix();
-		glm::mat4 projection = camera->GetProjectionMatrix();
-
-		ShadersController::SetMat4(shader, "camera.view", view);
-		ShadersController::SetMat4(shader, "camera.projection", projection);
+		return;
 	}
+
+	ShadersController::SetBool(shader, "useCamera", true);
+
+	glm::mat4 view = camera->GetViewMatrix();
+	glm::mat4 projection = camera->GetProjectionMatrix();
+
+	ShadersController::SetMat4(shader, "camera.view", view);
+	ShadersController::SetMat4(shader, "camera.projection", projection);
 }
 
 void BaseFigureMaterial::Disable(IGameObject* gameObject)

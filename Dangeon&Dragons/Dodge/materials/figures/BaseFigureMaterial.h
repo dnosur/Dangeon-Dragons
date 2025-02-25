@@ -22,7 +22,9 @@ public:
 		std::shared_ptr<Image> diffuseMap = nullptr,
 		std::shared_ptr<Image> normalMap = nullptr,
 		std::shared_ptr<Image> specularMap = nullptr,
-		std::shared_ptr<Image> emissiveMap = nullptr
+		std::shared_ptr<Image> emissiveMap = nullptr,
+
+		std::shared_ptr<Camera> camera = Window::GetCamera().lock()
 	);
 
 	void Use(IGameObject* gameObject) override;
