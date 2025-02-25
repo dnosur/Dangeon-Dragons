@@ -13,6 +13,8 @@
 #include "Color.h"
 #include "Timer.h"
 
+class Camera;
+
 class Window
 {
 protected:
@@ -27,6 +29,8 @@ protected:
 
 	static std::shared_ptr<Mouse> mouse;
 	static std::shared_ptr<Keyboard> keyboard;
+
+	static std::shared_ptr<Camera> mainCamera;
 
 	Timer timer;
 
@@ -65,6 +69,9 @@ public:
 	static Size GetRenderResolution();
 
 	static const GameStatuses& GetGameStatus();
+
+	static std::weak_ptr<Camera> GetCamera();
+	static void SetCamera(std::unique_ptr<Camera> camera);
 
 	std::string GetTitle();
 

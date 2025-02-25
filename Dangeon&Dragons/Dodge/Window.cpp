@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include "camera/Camera.h"
+
 GLFWwindow* Window::window = nullptr;
 
 Size Window::size;
@@ -10,6 +12,8 @@ std::shared_ptr<AudioController> Window::audioController = nullptr;
 
 std::shared_ptr<Mouse> Window::mouse = nullptr;
 std::shared_ptr<Keyboard> Window::keyboard = nullptr;
+
+std::shared_ptr<Camera> Window::mainCamera = nullptr;
 
 GameStatuses Window::gameStatus;
 
@@ -117,6 +121,16 @@ Size Window::GetRenderResolution()
 const GameStatuses& Window::GetGameStatus()
 {
     return gameStatus;
+}
+
+std::weak_ptr<Camera> Window::GetCamera()
+{
+    return mainCamera;
+}
+
+void Window::SetCamera(std::unique_ptr<Camera> camera)
+{
+    Window::mainCamera = std::move(camera);
 }
 
 const Size& Window::GetSizeView()
