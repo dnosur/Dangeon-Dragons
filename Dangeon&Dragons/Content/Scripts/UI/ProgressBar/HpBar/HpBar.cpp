@@ -2,6 +2,8 @@
 #include "../../../../../Dodge/images/SlicedImage.h"
 #include "../../../../../Dodge/Sides.h"
 
+#include "../../../../../Dodge/camera/Camera.h"
+
 void HpBar::Draw()
 {
     line->Update();
@@ -84,6 +86,13 @@ void HpBar::SetPos(Coord position)
 Coord HpBar::GetPos() const
 {
 	return Coord();
+}
+
+void HpBar::SetCamera(std::shared_ptr<Camera> camera)
+{
+    bar->GetMaterial().lock()->SetCamera(camera);
+    line->GetMaterial().lock()->SetCamera(camera);
+    icon->GetMaterial().lock()->SetCamera(camera);
 }
 
 void HpBar::SetSize(Size size)

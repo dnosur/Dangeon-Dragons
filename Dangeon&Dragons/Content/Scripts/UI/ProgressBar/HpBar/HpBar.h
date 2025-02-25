@@ -20,6 +20,8 @@ public:
 	void SetPos(Coord position);
 	Coord GetPos() const;
 
+	void SetCamera(std::shared_ptr<Camera> camera);
+
 	void SetSize(Size size);
 	Size GetSize() const;
 
