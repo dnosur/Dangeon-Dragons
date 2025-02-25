@@ -11,6 +11,8 @@ Material::Material(
 	std::shared_ptr<Image> specularMap, 
 	std::shared_ptr<Image> emissiveMap,
 
+	std::shared_ptr<Camera> camera,
+
 	std::vector<Coord> diffuseMapVerticies, std::vector<Coord> normalMapVerticies,
 	std::vector<Coord> specularMapVerticies,std::vector<Coord> emissiveMapVerticies
 )
@@ -37,6 +39,8 @@ Material::Material(
 	this->normalMapVerticies = normalMapVerticies;
 	this->specularMapVerticies = specularMapVerticies;
 	this->emissiveMapVerticies = emissiveMapVerticies;
+
+	this->camera = camera;
 }
 
 void Material::SetShader(const GLuint& shader)

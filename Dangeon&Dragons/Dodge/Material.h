@@ -51,6 +51,8 @@ public:
 		std::shared_ptr<Image> specularMap = nullptr,
 		std::shared_ptr<Image> emissiveMap = nullptr,
 
+		std::shared_ptr<Camera> camera = Window::GetCamera().lock(),
+
 		std::vector<Coord> diffuseMapVerticies = std::vector<Coord>(),
 		std::vector<Coord> normalMapVerticies = std::vector<Coord>(),
 		std::vector<Coord> specularMapVerticies = std::vector<Coord>(),
