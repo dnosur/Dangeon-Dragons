@@ -12,7 +12,6 @@ struct Camera {
 };
 
 uniform Camera camera;
-
 uniform bool useCamera;
 
 out vec2 diffuseTexCoord;
@@ -23,7 +22,13 @@ out vec2 emissiveTexCoord;
 void main()
 {
 	vec4 pos = vec4(position, 1.0);
-	gl_Position = camera.projection * camera.view * pos;
+
+	if (useCamera) {
+		gl_Position = camera.projection * camera.view * pos;
+	}
+	else {
+		gl_Position = pos;
+	}
 
 	diffuseTexCoord = dTexCoord;
 	normalTexCoord = nTexCoord;
