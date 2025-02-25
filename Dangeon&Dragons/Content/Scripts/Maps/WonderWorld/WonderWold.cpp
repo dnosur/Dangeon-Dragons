@@ -5,14 +5,6 @@
 #include "../../../../Dodge/GameObjects.h"
 #include "../../../../Dodge/shaders/ShadersController.h"
 
-void WonderWold::CreateCamera()
-{
-	camera = std::make_shared<Camera>(
-		"Player",
-		Window::GetRenderResolutionView(),
-		Size(4000, 4000)
-	);
-}
 
 void WonderWold::SpawnPlayer()
 {
@@ -38,7 +30,7 @@ void WonderWold::SpawnPlayer()
 		)
 	);
 
-	playerMaterial->SetCamera(camera);
+	//playerMaterial->SetCamera(camera);
 
 	player = std::make_shared<Player>(
 		"Player",
@@ -63,7 +55,7 @@ void WonderWold::SpawnPlayer()
 		false
 	);
 
-	camera->SetObservedObj(player);
+	Window::GetCamera().lock()->SetObservedObj(player);
 
 	WindowPointerController::SetPointer(
 		WindowPointer<Player>("player", player)
@@ -95,8 +87,6 @@ void WonderWold::SpawnSkeleton(Coord position)
 				)
 			)
 		);
-
-		skeletonMaterial->SetCamera(camera);
 
 		std::shared_ptr<class Skeleton> skeleton = std::make_unique<class Skeleton>(
 			"Skeleton",
@@ -138,8 +128,6 @@ Propertie* WonderWold::GetObjectPropertie(std::string propertie_name, IGameObjec
 
 void WonderWold::Initialize()
 {
-	CreateCamera();
-
 	SpawnPlayer();
 	SpawnSkeleton(Coord(450, 300));
 
@@ -147,20 +135,12 @@ void WonderWold::Initialize()
 		if (!obj->GetMaterial().lock() || obj->GetMaterial().expired()) {
 			continue;
 		}
-
-		obj->GetMaterial().lock()->SetCamera(camera);
 	}
 
 	for (std::shared_ptr<IGameObject>& classObj : gameClasses) {
 		if (!classObj->GetMaterial().lock() || classObj->GetMaterial().expired()) {
 			continue;
 		}
-
-		classObj->GetMaterial().lock()->SetCamera(camera);
-	}
-
-	if (camera) {
-		camera->Update();
 	}
 
 	std::unique_ptr<Audio> main = std::make_unique<Audio>("main", "Content/Sounds/WonderWorld/main.wav");
@@ -182,15 +162,18 @@ WonderWold::WonderWold(std::unique_ptr<TileMap>  tileMap, Coord position)
 	Initialize();
 }
 
-void WonderWold::SetCamera(std::unique_ptr<Camera> camera)
-{
-	this->camera = std::move(camera);
-}
-
 void WonderWold::Update()
 {
-	std::weak_ptr<IGameObject> observed = camera->GetObservedObj();
-	std::shared_ptr<IGameObject> lockedObserved = observed.lock();
+	if (!Window::GetCamera().lock() || Window::GetCamera().expired()) {
+		std::cout << "NULL CAMERA!" << std::endl;
+		return;
+	}
+
+	std::shared_ptr<IGameObject> lockedObserved = Window::GetCamera().lock()->GetObservedObj().lock();
+	if (!lockedObserved) {
+		std::cout << "Camera need observed object!" << std::endl;
+		return;
+	}
 
 	bool isPause = Window::GetGameStatus() == GameStatuses::Pause;
 
@@ -226,7 +209,7 @@ void WonderWold::UpdatePawns()
 
 	player->Update();
 
-	if (camera) {
-		camera->Update();
+	if (Window::GetCamera().lock() && !Window::GetCamera().expired()) {
+		Window::GetCamera().lock()->Update();
 	}
 }

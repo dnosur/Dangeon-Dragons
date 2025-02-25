@@ -10,7 +10,6 @@ class WonderWold
 	: public TinyMap
 {
 	std::shared_ptr<Player> player;
-	std::shared_ptr<Camera> camera;
 
 	std::vector<std::shared_ptr<class Pawn>> enemys;
 
@@ -19,7 +18,6 @@ class WonderWold
 	std::mutex pawnUpdate;
 	std::mutex posUpdate;
 
-	void CreateCamera();
 	void SpawnPlayer();
 	void SpawnSkeleton(Coord position);
 
@@ -30,8 +28,6 @@ class WonderWold
 	void Initialize();
 public:
 	WonderWold(std::unique_ptr<TileMap> tileMap, Coord position = Coord());
-
-	void SetCamera(std::unique_ptr<Camera> camera);
 
 	void Update() override;
 	void UpdatePawns();
