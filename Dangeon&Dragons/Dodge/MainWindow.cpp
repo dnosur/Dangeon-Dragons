@@ -47,6 +47,15 @@ void MainWindow::Initialize()
 
     gameStatus = GameStatuses::Initialize;
 
+    //Camera
+    SetCamera(
+        std::make_unique<Camera>(
+            "MainCamera",
+            Window::GetRenderResolutionView(),
+            Size(4000, 4000)
+        )
+    );
+
     //Shaders
 
     ShadersController::LoadShader(
@@ -166,6 +175,7 @@ void MainWindow::Update()
     loadingThread.Detach();
 
     std::unique_ptr<HpBar> hpBar = std::make_unique<HpBar>();
+    hpBar->SetCamera(nullptr);
 
     bool down = false;
 
