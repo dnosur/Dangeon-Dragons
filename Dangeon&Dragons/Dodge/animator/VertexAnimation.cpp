@@ -17,8 +17,6 @@ VertexAnimation::VertexAnimation(
 
 	this->frames = frames;
 
-	timer = new Timer();
-
 	delay = timePassed = .0f;
 
 	currentAnimationIndex = -1;
@@ -40,7 +38,7 @@ void VertexAnimation::Play(Coord coord, Size size)
 		return;
 	}
 
-	timePassed += timer->GetDeltaTime();
+	timePassed += Window::GetDeltaTime();
 
 	if (timePassed >= delay / 1000.0f) {
 		timePassed = 0;

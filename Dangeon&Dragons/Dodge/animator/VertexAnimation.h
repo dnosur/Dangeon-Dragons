@@ -13,8 +13,6 @@ class VertexAnimation :
 		std::pair<int, std::vector<Coord>>
     > frames;
 
-    Timer* timer;
-
 	std::string title;
 
 	int frameRate;
