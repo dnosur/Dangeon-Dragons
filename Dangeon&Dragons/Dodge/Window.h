@@ -32,7 +32,8 @@ protected:
 
 	static std::shared_ptr<Camera> mainCamera;
 
-	Timer timer;
+	std::unique_ptr<Timer> timer;
+	static float deltaTime;
 
 	static Size size;
 	static Size renderResolution;
@@ -114,7 +115,8 @@ public:
 
 	const GLFWvidmode* GetVideoMode();
 
-	Timer& GetTimer();
+	void UpdateDeltaTime();
+	static const float& GetDeltaTime();
 
 	void Debug(bool norm = false);
 };

@@ -247,6 +247,8 @@ void MainWindow::Update()
 
             mouse->Update();
             keyboard->Update();
+
+            UpdateDeltaTime();
 		}
 
         //Debug();  // ֲûגמהטל סטלגמכ

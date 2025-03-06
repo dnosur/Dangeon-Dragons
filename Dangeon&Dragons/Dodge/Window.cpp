@@ -17,6 +17,8 @@ std::shared_ptr<Keyboard> Window::keyboard = nullptr;
 
 std::shared_ptr<Camera> Window::mainCamera = nullptr;
 
+float Window::deltaTime = .0f;
+
 GameStatuses Window::gameStatus;
 
 void Window::MakeWindow()
@@ -37,6 +39,8 @@ void Window::MakeWindow()
 
     mouse = std::make_shared<Mouse>(window);
     keyboard = std::make_shared<Keyboard>(window);
+
+    timer = std::make_unique<Timer>();
 
     closed = false;
 }
@@ -116,10 +120,10 @@ void Window::Render(
 
     SoundSystem soundSystem;
     std::shared_ptr<Window> main = std::make_shared<MainWindow>(
-        Size(1280, 720),
-        "Dangeon",
-        false,
-        Color(.4f, .6f, 0)
+        size,
+        name,
+        fullscreen,
+        backgroundColor
     );
 
     main->MakeContext();
@@ -283,9 +287,14 @@ const GLFWvidmode* Window::GetVideoMode()
 	return glfwGetVideoMode(monitor);
 }
 
-Timer& Window::GetTimer()
+void Window::UpdateDeltaTime()
 {
-    return timer;
+    deltaTime = timer->GetDeltaTime();
+}
+
+const float& Window::GetDeltaTime()
+{
+    return deltaTime;
 }
 
 void Window::Debug(bool norm)
