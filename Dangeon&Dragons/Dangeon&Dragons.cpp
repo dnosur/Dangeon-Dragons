@@ -17,37 +17,11 @@
 
 #include <iostream>
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#include "Dodge/MainWindow.h"
-#include "Dodge/audio/SoundSystem.h"
-
-#include "Dodge/tiny/TinyXml.h"
+#include "Dodge/Window.h"
 
 int main(int argc, char** argv)
 {
-    //_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-    setlocale(LC_ALL, "ru");
-
-    srand(time(NULL));
-    glutInit(&argc, argv);
-    if (!glfwInit())
-        return -1;
-
-    SoundSystem soundSystem;
-    std::shared_ptr<Window> main = std::make_shared<MainWindow>(
-        Size(1280, 720), 
-        "Dangeon", 
-        false,
-        Color(.4f, .6f, 0)
-    );
-
-    main->MakeContext();
-    main->Initialize();
-    main->Update();
-
-    _CrtDumpMemoryLeaks();
+    Window::Render(argc, argv, Size(1280, 720), "Dangeon", false, Color(.4f, .6f, 0));
     return 0;
 }
 
