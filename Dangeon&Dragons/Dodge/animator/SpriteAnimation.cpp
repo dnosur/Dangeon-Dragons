@@ -216,7 +216,7 @@ void SpriteAnimation::Play(Coord coord, Size size)
 		return;
 	}
 
-	timePassed += timer.GetDeltaTime();
+	timePassed += Window::GetDeltaTime();
 	if (timePassed >= (1.0f / frameRate)) {
 		timePassed = 0;
 
@@ -343,8 +343,6 @@ bool SpriteAnimation::operator=(const SpriteAnimation& other)
 
 		this->stopOnEnd = other.stopOnEnd;
 		this->timePassed = other.timePassed;
-
-		this->timer = other.timer;
 
 		this->folder = other.folder;
 		this->title = other.title;

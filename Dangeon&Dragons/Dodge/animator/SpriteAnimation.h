@@ -20,8 +20,6 @@ class SpriteAnimation
 	std::shared_ptr<Image> currentFrameTitle;
 	std::shared_ptr<Image> rootTile;
 
-	Timer timer;
-
 	std::string title;
 
 	std::string folder;
