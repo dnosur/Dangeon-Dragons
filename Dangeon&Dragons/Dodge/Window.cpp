@@ -1,6 +1,8 @@
 #include "Window.h"
 
 #include "camera/Camera.h"
+#include "MainWindow.h"
+#include "audio/SoundSystem.h"
 
 GLFWwindow* Window::window = nullptr;
 
@@ -91,6 +93,40 @@ Window::Window(
     audioController = std::make_shared<AudioController>();
 
     MakeWindow();
+}
+
+void Window::Render(
+    int& argc,
+    char**& argv, 
+
+    Size size, 
+    std::string name, 
+
+    bool fullscreen, 
+    Color backgroundColor
+)
+{
+    //_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    setlocale(LC_ALL, "ru");
+
+    srand(time(NULL));
+    glutInit(&argc, argv);
+    if (!glfwInit())
+        return;
+
+    SoundSystem soundSystem;
+    std::shared_ptr<Window> main = std::make_shared<MainWindow>(
+        Size(1280, 720),
+        "Dangeon",
+        false,
+        Color(.4f, .6f, 0)
+    );
+
+    main->MakeContext();
+    main->Initialize();
+    main->Update();
+
+    _CrtDumpMemoryLeaks();
 }
 
 GLFWwindow* Window::GetWindow()

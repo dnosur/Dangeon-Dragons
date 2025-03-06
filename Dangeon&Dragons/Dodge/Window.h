@@ -59,6 +59,17 @@ public:
 	);
 	~Window() = default;
 
+	static void Render(
+		int& argc, 
+		char**& argv,
+
+		Size size, 
+		std::string name, 
+
+		bool fullscreen = false, 
+		Color backgroundColor = Color(1, 1, 1)
+	);
+
 	static GLFWwindow* GetWindow();
 	GLFWmonitor* GetMonitor();
 	GLFWwindow* GetShare();
